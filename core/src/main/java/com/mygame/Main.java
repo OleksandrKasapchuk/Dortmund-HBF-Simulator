@@ -15,10 +15,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -28,9 +30,11 @@ import java.util.ArrayList;
 public class Main extends ApplicationAdapter {
     private Player player;
     private ArrayList<NPC> npcs = new ArrayList<>();
-    Texture texture;
+    private Texture texture;
     private SpriteBatch batch;
     private BitmapFont font;
+
+    private Label dialogueLabel;
 
     private World world;
     private Stage stage;
@@ -45,6 +49,9 @@ public class Main extends ApplicationAdapter {
     private Texture knobTexture;
     private Texture bgTexture;
 
+    static public int getWorldWidth(){return WORLD_WIDTH;}
+    static public int getWorldHeight(){return WORLD_HEIGHT;}
+
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -54,6 +61,34 @@ public class Main extends ApplicationAdapter {
         font.getData().setScale(2.5f);
         font.setUseIntegerPositions(false);
 
+        stage = new Stage(new FitViewport(2000, 1000));
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+
+        dialogueLabel = new Label("", skin);
+        dialogueLabel.setFontScale(3f);
+        dialogueLabel.setColor(Color.WHITE);
+
+        // позиція внизу екрана (залишається стабільною)
+        dialogueLabel.setPosition(800, 100);
+        dialogueLabel.setVisible(false);
+
+        dialogueLabel.setSize(600, 150);
+        dialogueLabel.setPosition(700, 80); // трохи нижче, по центру
+        dialogueLabel.setAlignment(Align.center); // текст по центру
+
+
+        // Фон для діалогу
+        Pixmap bgPixmap = new Pixmap(600, 150, Pixmap.Format.RGBA8888);
+        bgPixmap.setColor(new Color(0.1f, 0.1f, 0.5f, 0.6f)); // синій відтінок
+        bgPixmap.fillRectangle(0, 0, 600, 150);
+        Texture bgTexture = new Texture(bgPixmap);
+
+
+        // Додаємо фон у Label
+        dialogueLabel.getStyle().background = new TextureRegionDrawable(new TextureRegion(bgTexture));
+
+
+        stage.addActor(dialogueLabel);
         camera = new OrthographicCamera();
         viewport = new FitViewport(2000, 1000, camera);
 
@@ -61,14 +96,13 @@ public class Main extends ApplicationAdapter {
 
         player = new Player(500,100,100, 200,200, texture, world);
 
-        NPC npc1 = new NPC(100, 100, 500, 300, texture, world, "HELLO PISIUNCHYK!!!");
-        NPC npc2 = new NPC(90, 90, 900, 100, texture, world, "HELLO ZHOPA!!!");
+        NPC npc1 = new NPC(100, 100, 500, 300, texture, world,1, 0, "HELLO PISIUNCHYK!!!");
+        NPC npc2 = new NPC(90, 90, 1100, 500, texture, world,0, 1, "HELLO ZHOPA!!!");
+        NPC npc3 = new NPC(90, 90, 700, 700, texture, world,1, 1, "HELLO POPA!!!");
         npcs.add(npc1);
         npcs.add(npc2);
+        npcs.add(npc3);
 
-        stage = new Stage(new FitViewport(2000, 1000));
-
-        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
             Gdx.input.setInputProcessor(stage);
@@ -80,7 +114,7 @@ public class Main extends ApplicationAdapter {
             knobTexture = new Texture(knobPixmap);
             knobPixmap.dispose();
 
-            Pixmap bgPixmap = new Pixmap(100, 100, Pixmap.Format.RGBA8888);
+            bgPixmap = new Pixmap(100, 100, Pixmap.Format.RGBA8888);
             bgPixmap.setColor(new Color(0.3f,0.3f,0.3f,0.5f));
             bgPixmap.fillCircle(50, 50, 50);
             bgTexture = new Texture(bgPixmap);
@@ -115,6 +149,7 @@ public class Main extends ApplicationAdapter {
             });
             stage.addActor(actButton);
         }
+        bgPixmap.dispose();
     }
 
     @Override
@@ -131,7 +166,6 @@ public class Main extends ApplicationAdapter {
         for (NPC npc : npcs)
             npc.update(delta);
 
-        // Move camera logic before rendering
         float targetX = player.x + player.width / 2f;
         float targetY = player.y + player.height / 2f;
 
@@ -154,6 +188,8 @@ public class Main extends ApplicationAdapter {
         world.draw(batch);
         player.draw(batch);
 
+        //dialogue
+        boolean dialogueVisible = false;
         for (NPC npc : npcs){
             npc.draw(batch);
 
@@ -162,12 +198,16 @@ public class Main extends ApplicationAdapter {
                 if (Gdx.input.isKeyPressed(Input.Keys.E) || player.actPressed) {
                     npc.interacted = true;
                 }
-                if (npc.interacted)
-                    font.draw(batch, npc.getText(), 800, 100);
+                if (npc.interacted) {
+                    dialogueLabel.setText(npc.getText());
+                    dialogueVisible = true;
+                }
             } else {
                 npc.interacted = false;
             }
         }
+        dialogueLabel.setVisible(dialogueVisible);
+
         batch.end();
 
         if (stage != null) {

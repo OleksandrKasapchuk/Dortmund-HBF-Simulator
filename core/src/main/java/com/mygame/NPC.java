@@ -6,11 +6,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class NPC extends Entity {
     private float timer = 0f;
     private boolean isPaused = false;
-    private int direction = 1;
+    private int directionX;
+    private int directionY;
     public boolean interacted = false;
     private final String text;
 
-    public NPC(int width, int height, float x, float y, Texture texture, World world, String text){
+    public NPC(int width, int height, float x, float y, Texture texture, World world, int directionX, int directionY, String text){
         this.width = width;
         this.height = height;
         this.x = x;
@@ -18,12 +19,14 @@ public class NPC extends Entity {
         this.texture = texture;
         this.world = world;
         this.text = text;
+        this.directionX = directionX;
+        this.directionY = directionY;
     }
 
     @Override
     public void update(float delta) {
         float pauseTime = 3f;
-        float moveTime = 1f;
+        float moveTime = 2f;
         int speed = 100;
         timer += delta;
 
@@ -31,13 +34,35 @@ public class NPC extends Entity {
             if (timer >= pauseTime) {
                 timer = 0f;
                 isPaused = false;
-                direction *= -1;
+                directionX *= -1;
+                directionY *= -1;
             }
         } else {
-            x += this.direction * speed * delta;
+
+            float newX = x + directionX * speed * delta;
+            float newY = y + directionY * speed * delta;
+
+            // Перевірка колізії з світом
+            boolean collide =
+                world.isSolid(newX, newY) ||               // лівий верхній
+                    world.isSolid(newX + width, newY) ||       // правий верхній
+                    world.isSolid(newX, newY - height) ||      // лівий нижній
+                    world.isSolid(newX + width, newY - height); // правий нижній
+
+            boolean outOfBounds = newX < 0 || newX + width > Main.getWorldWidth()
+                || newY < 0 || newY + height > Main.getWorldHeight();
+
+            if (!collide && !outOfBounds) {
+                x = newX;
+                y = newY;
+            } else {
+                isPaused = true;
+                timer = 0f;
+            }
+
             if (timer > moveTime){
                 isPaused = true;
-                timer = 0;
+                timer = 0f;
             }
         }
     }
