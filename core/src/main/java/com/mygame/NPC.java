@@ -8,14 +8,16 @@ public class NPC extends Entity {
     private boolean isPaused = false;
     private int direction = 1;
     public boolean interacted = false;
+    private final String text;
 
-    public NPC(int width, int height, float x, float y, Texture texture, World world){
+    public NPC(int width, int height, float x, float y, Texture texture, World world, String text){
         this.width = width;
         this.height = height;
         this.x = x;
         this.y = y;
         this.texture = texture;
         this.world = world;
+        this.text = text;
     }
 
     @Override
@@ -41,12 +43,14 @@ public class NPC extends Entity {
     }
 
     @Override
-    public void draw(SpriteBatch batch) {
-        batch.draw(this.texture, x, y, width, height);
-    }
+    public void draw(SpriteBatch batch) {batch.draw(this.texture, x, y, width, height);}
 
     public boolean isPlayerNear(Player player) {
         float distance = (float) Math.sqrt(Math.pow(player.x - this.x, 2) + Math.pow(player.y - this.y, 2));
         return distance < 150;
+    }
+
+    public String getText() {
+        return this.text;
     }
 }

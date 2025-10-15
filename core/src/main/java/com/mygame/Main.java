@@ -15,7 +15,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
@@ -23,10 +22,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.ArrayList;
+
 
 public class Main extends ApplicationAdapter {
     private Player player;
-    private NPC npc;
+    private ArrayList<NPC> npcs = new ArrayList<>();
     Texture texture;
     private SpriteBatch batch;
     private BitmapFont font;
@@ -59,7 +60,12 @@ public class Main extends ApplicationAdapter {
         world = new World();
 
         player = new Player(500,100,100, 200,200, texture, world);
-        npc = new NPC(100, 100, 500, 300, texture, world);
+
+        NPC npc1 = new NPC(100, 100, 500, 300, texture, world, "HELLO PISIUNCHYK!!!");
+        NPC npc2 = new NPC(90, 90, 900, 100, texture, world, "HELLO ZHOPA!!!");
+        npcs.add(npc1);
+        npcs.add(npc2);
+
         stage = new Stage(new FitViewport(2000, 1000));
 
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
@@ -121,7 +127,9 @@ public class Main extends ApplicationAdapter {
     public void render() {
         float delta = Gdx.graphics.getDeltaTime();
         player.update(delta);
-        npc.update(delta);
+
+        for (NPC npc : npcs)
+            npc.update(delta);
 
         // Move camera logic before rendering
         float targetX = player.x + player.width / 2f;
@@ -145,17 +153,20 @@ public class Main extends ApplicationAdapter {
 
         world.draw(batch);
         player.draw(batch);
-        npc.draw(batch);
 
-        if (npc.isPlayerNear(player)) {
-            font.draw(batch, "Press E/ACT to interact", npc.x - 100, npc.y + npc.height + 40);
-            if (Gdx.input.isKeyPressed(Input.Keys.E) || player.actPressed) {
-                npc.interacted = true;
+        for (NPC npc : npcs){
+            npc.draw(batch);
+
+            if (npc.isPlayerNear(player)) {
+                font.draw(batch, "Press E/ACT to interact", npc.x - 100, npc.y + npc.height + 40);
+                if (Gdx.input.isKeyPressed(Input.Keys.E) || player.actPressed) {
+                    npc.interacted = true;
+                }
+                if (npc.interacted)
+                    font.draw(batch, npc.getText(), 800, 100);
+            } else {
+                npc.interacted = false;
             }
-            if (npc.interacted)
-                font.draw(batch, "HELLO PISIUNCHYK", 800, 100);
-        } else {
-            npc.interacted = false;
         }
         batch.end();
 
