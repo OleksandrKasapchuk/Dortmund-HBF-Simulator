@@ -11,7 +11,7 @@ public class Player extends Entity {
     public boolean moveRightPressed = false;
     public boolean moveUpPressed = false;
     public boolean moveDownPressed = false;
-
+    public boolean actPressed = false;
 
     public Player(int speed, int width, int height, float x, float y, Texture texture, World world){
         this.speed = speed;
@@ -24,7 +24,7 @@ public class Player extends Entity {
     }
 
     @Override
-    public void update(float delta, int worldWidth, int worldHeight){
+    public void update(float delta){
         float newX = x;
         float newY = y;
 
@@ -49,4 +49,5 @@ public class Player extends Entity {
     public void draw(SpriteBatch batch){
         batch.draw(this.texture, x, y, width, height);
     }
+
 }

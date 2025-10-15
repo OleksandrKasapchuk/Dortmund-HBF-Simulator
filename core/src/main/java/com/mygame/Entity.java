@@ -11,6 +11,6 @@ public abstract class Entity {
     protected Texture texture;
     protected World world;
 
-    public abstract void update(float delta, int worldWidth, int worldHeight);
+    public abstract void update(float delta);
     public abstract void draw(SpriteBatch batch);
 }
