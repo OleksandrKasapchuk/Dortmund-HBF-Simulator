@@ -1,17 +1,16 @@
 package com.mygame;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 
 public class Player extends Entity {
     protected int speed;
-    public boolean moveLeftPressed = false;
-    public boolean moveRightPressed = false;
-    public boolean moveUpPressed = false;
-    public boolean moveDownPressed = false;
     public boolean actPressed = false;
+    public Touchpad touchpad;
 
     public Player(int speed, int width, int height, float x, float y, Texture texture, World world){
         this.speed = speed;
@@ -28,12 +27,17 @@ public class Player extends Entity {
         float newX = x;
         float newY = y;
 
-        // рух
-        if ((Gdx.input.isKeyPressed(Input.Keys.LEFT) || moveLeftPressed)) newX -= speed * delta;
-        if ((Gdx.input.isKeyPressed(Input.Keys.RIGHT) || moveRightPressed)) newX += speed * delta;
-        if ((Gdx.input.isKeyPressed(Input.Keys.UP) || moveUpPressed)) newY += speed * delta;
-        if ((Gdx.input.isKeyPressed(Input.Keys.DOWN) || moveDownPressed)) newY -= speed * delta;
-
+        if (Gdx.app.getType() != Application.ApplicationType.Android) {
+            if ((Gdx.input.isKeyPressed(Input.Keys.LEFT))) newX -= speed * delta;
+            if ((Gdx.input.isKeyPressed(Input.Keys.RIGHT))) newX += speed * delta;
+            if ((Gdx.input.isKeyPressed(Input.Keys.UP))) newY += speed * delta;
+            if ((Gdx.input.isKeyPressed(Input.Keys.DOWN))) newY -= speed * delta;
+        } else if (touchpad != null) {
+            float dx = touchpad.getKnobPercentX(); // -1 до 1
+            float dy = touchpad.getKnobPercentY(); // -1 до 1
+            newX += dx * speed * delta;
+            newY += dy * speed * delta;
+        }
 
         boolean collide =
             world.isSolid(newX, newY - this.height) || // лівий нижній
