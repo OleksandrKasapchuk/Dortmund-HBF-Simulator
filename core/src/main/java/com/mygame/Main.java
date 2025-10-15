@@ -26,111 +26,117 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
 
-
 public class Main extends ApplicationAdapter {
+
+    // === Основні ігрові об'єкти ===
     private Player player;
     private ArrayList<NPC> npcs = new ArrayList<>();
-    private Texture texture;
-    private SpriteBatch batch;
-    private BitmapFont font;
-
-    private Label dialogueLabel;
-
     private World world;
-    private Stage stage;
-    private Skin skin;
 
+    // === Рендеринг та графіка ===
+    private SpriteBatch batch;
     private OrthographicCamera camera;
     private Viewport viewport;
+    private Texture texture;
+    private BitmapFont font;
 
-    private static final int WORLD_WIDTH = 4000;
-    private static final int WORLD_HEIGHT = 2000;
+    // === Інтерфейс ===
+    private Stage stage;
+    private Skin skin;
+    private Label dialogueLabel;
+    private Texture dialogueBgTexture;
+    private String fullText;    // Повний текст
+    private String currentText; // Текст, що вже показується
+    private float textTimer = 0f;    // Таймер
+    private float textSpeed = 0.05f; // Швидкість появи символів (менше = швидше)
 
+
+    // === Елементи для сенсорного управління ===
     private Texture knobTexture;
     private Texture bgTexture;
 
-    static public int getWorldWidth(){return WORLD_WIDTH;}
-    static public int getWorldHeight(){return WORLD_HEIGHT;}
+    // === Константи світу ===
+    private static final int WORLD_WIDTH = 4000;
+    private static final int WORLD_HEIGHT = 2000;
+
+    //
+    public static int getWorldWidth() { return WORLD_WIDTH; }
+    public static int getWorldHeight() { return WORLD_HEIGHT; }
 
     @Override
     public void create() {
+        // === Ініціалізація базових систем ===
         batch = new SpriteBatch();
         texture = new Texture("ui/zoe.png");
 
+        // Шрифт для тексту
         font = new BitmapFont();
         font.getData().setScale(2.5f);
         font.setUseIntegerPositions(false);
 
-        stage = new Stage(new FitViewport(2000, 1000));
-        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-
-        dialogueLabel = new Label("", skin);
-        dialogueLabel.setFontScale(3f);
-        dialogueLabel.setColor(Color.WHITE);
-
-        // позиція внизу екрана (залишається стабільною)
-        dialogueLabel.setPosition(800, 100);
-        dialogueLabel.setVisible(false);
-
-        dialogueLabel.setSize(600, 150);
-        dialogueLabel.setPosition(700, 80); // трохи нижче, по центру
-        dialogueLabel.setAlignment(Align.center); // текст по центру
-
-
-        // Фон для діалогу
-        Pixmap bgPixmap = new Pixmap(600, 150, Pixmap.Format.RGBA8888);
-        bgPixmap.setColor(new Color(0.1f, 0.1f, 0.5f, 0.6f)); // синій відтінок
-        bgPixmap.fillRectangle(0, 0, 600, 150);
-        Texture bgTexture = new Texture(bgPixmap);
-
-
-        // Додаємо фон у Label
-        dialogueLabel.getStyle().background = new TextureRegionDrawable(new TextureRegion(bgTexture));
-
-
-        stage.addActor(dialogueLabel);
+        // Камера та в'юпорт
         camera = new OrthographicCamera();
         viewport = new FitViewport(2000, 1000, camera);
 
+        // Створюємо світ (фон, колізії тощо)
         world = new World();
 
-        player = new Player(500,100,100, 200,200, texture, world);
+        // === Гравець та NPC ===
+        player = new Player(500, 100, 100, 200, 200, texture, world);
 
-        NPC npc1 = new NPC(100, 100, 500, 300, texture, world,1, 0, "HELLO PISIUNCHYK!!!");
-        NPC npc2 = new NPC(90, 90, 1100, 500, texture, world,0, 1, "HELLO ZHOPA!!!");
-        NPC npc3 = new NPC(90, 90, 700, 700, texture, world,1, 1, "HELLO POPA!!!");
-        npcs.add(npc1);
-        npcs.add(npc2);
-        npcs.add(npc3);
+        npcs.add(new NPC(100, 100, 500, 300, texture, world, 1, 0, "HELLO PISIUNCHYK!!!"));
+        npcs.add(new NPC(90, 90, 1100, 500, texture, world, 0, 1, "HELLO ZHOPA!!!"));
+        npcs.add(new NPC(90, 90, 700, 700, texture, world, 1, 1, "HELLO POPA!!!"));
 
+        // === Інтерфейс ===
+        stage = new Stage(new FitViewport(2000, 1000));
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
+        // Діалогове вікно
+        dialogueLabel = new Label("", skin);
+        dialogueLabel.setFontScale(3f);
+        dialogueLabel.setSize(1950, 150);
+        dialogueLabel.setPosition(25, 50);
+        dialogueLabel.setAlignment(Align.center);
+        dialogueLabel.setVisible(false);
+
+        // Фон діалогу (Pixmap -> Texture)
+        Pixmap dialogueBg = new Pixmap(1950, 150, Pixmap.Format.RGBA8888);
+        dialogueBg.setColor(new Color(0.1f, 0.1f, 0.5f, 0.6f));
+        dialogueBg.fillRectangle(0, 0, 1950, 150);
+        dialogueBgTexture = new Texture(dialogueBg);
+        dialogueBg.dispose();
+        dialogueLabel.getStyle().background = new TextureRegionDrawable(new TextureRegion(dialogueBgTexture));
+
+        stage.addActor(dialogueLabel);
+
+        // === Сенсорне керування (для Android) ===
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
             Gdx.input.setInputProcessor(stage);
 
-            // Create textures for the touchpad
+            // Кнопка руху (джойстик)
             Pixmap knobPixmap = new Pixmap(50, 50, Pixmap.Format.RGBA8888);
             knobPixmap.setColor(Color.WHITE);
             knobPixmap.fillCircle(25, 25, 25);
             knobTexture = new Texture(knobPixmap);
             knobPixmap.dispose();
 
-            bgPixmap = new Pixmap(100, 100, Pixmap.Format.RGBA8888);
-            bgPixmap.setColor(new Color(0.3f,0.3f,0.3f,0.5f));
+            Pixmap bgPixmap = new Pixmap(100, 100, Pixmap.Format.RGBA8888);
+            bgPixmap.setColor(new Color(0.3f, 0.3f, 0.3f, 0.5f));
             bgPixmap.fillCircle(50, 50, 50);
             bgTexture = new Texture(bgPixmap);
             bgPixmap.dispose();
 
-            // Create the touchpad style
             Touchpad.TouchpadStyle touchpadStyle = new Touchpad.TouchpadStyle();
             touchpadStyle.knob = new TextureRegionDrawable(new TextureRegion(knobTexture));
             touchpadStyle.background = new TextureRegionDrawable(new TextureRegion(bgTexture));
 
-            // Create the touchpad, set its bounds, and add it to the stage
             Touchpad touchpad = new Touchpad(10, touchpadStyle);
             touchpad.setBounds(150, 150, 200, 200);
             stage.addActor(touchpad);
-            player.touchpad = touchpad; // Assign the touchpad to the player
+            player.touchpad = touchpad;
 
+            // Кнопка взаємодії
             TextButton actButton = new TextButton("ACT", skin);
             actButton.setSize(150, 150);
             actButton.setPosition(1800, 150);
@@ -147,25 +153,20 @@ public class Main extends ApplicationAdapter {
                     player.actPressed = false;
                 }
             });
+
             stage.addActor(actButton);
         }
-        bgPixmap.dispose();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height, true);
-        stage.getViewport().update(width, height, true);
     }
 
     @Override
     public void render() {
         float delta = Gdx.graphics.getDeltaTime();
+
+        // === Оновлення логіки ===
         player.update(delta);
+        for (NPC npc : npcs) npc.update(delta);
 
-        for (NPC npc : npcs)
-            npc.update(delta);
-
+        // === Камера слідкує за гравцем ===
         float targetX = player.x + player.width / 2f;
         float targetY = player.y + player.height / 2f;
 
@@ -177,70 +178,74 @@ public class Main extends ApplicationAdapter {
         camera.position.set(cameraX, cameraY, 0);
         camera.update();
 
+        // === Малювання ===
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         viewport.apply();
-        batch.setProjectionMatrix(camera.combined);
 
+        batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
         world.draw(batch);
         player.draw(batch);
 
-        //dialogue
+        // === Перевірка взаємодії з NPC ===
         boolean dialogueVisible = false;
-        for (NPC npc : npcs){
+        for (NPC npc : npcs) {
             npc.draw(batch);
-
             if (npc.isPlayerNear(player)) {
-                font.draw(batch, "Press E/ACT to interact", npc.x - 100, npc.y + npc.height + 40);
+                font.draw(batch, "Press E / ACT to interact", npc.x - 100, npc.y + npc.height + 40);
                 if (Gdx.input.isKeyPressed(Input.Keys.E) || player.actPressed) {
                     npc.interacted = true;
                 }
                 if (npc.interacted) {
-                    dialogueLabel.setText(npc.getText());
+
+                    fullText = npc.getText();
+
+                    textTimer += delta;
+                    int lettersToShow = (int)(textTimer / textSpeed);
+
+                    if (lettersToShow > fullText.length()) {
+                        lettersToShow = fullText.length();
+                    }
+
+                    currentText = fullText.substring(0, lettersToShow);
+                    dialogueLabel.setText(currentText);
                     dialogueVisible = true;
+
+                } else {
+                    textTimer = 0f;
+                    currentText = "";
                 }
             } else {
                 npc.interacted = false;
             }
         }
         dialogueLabel.setVisible(dialogueVisible);
-
         batch.end();
 
-        if (stage != null) {
-            stage.act(delta);
-            stage.draw();
-        }
+        // === Рендеринг UI ===
+        stage.act(delta);
+        stage.draw();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height, true);
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
     public void dispose() {
-        if (texture != null) {
-            texture.dispose();
-        }
-        if (batch != null) {
-            batch.dispose();
-        }
-        if (font != null) {
-            font.dispose();
-        }
-        if (stage != null) {
-            stage.dispose();
-        }
-        if (skin != null) {
-            skin.dispose();
-        }
-        if (world != null) {
-            world.dispose();
-        }
-        if (knobTexture != null) {
-            knobTexture.dispose();
-        }
-        if (bgTexture != null) {
-            bgTexture.dispose();
-        }
+        // === Очищення пам’яті ===
+        texture.dispose();
+        batch.dispose();
+        font.dispose();
+        stage.dispose();
+        skin.dispose();
+        world.dispose();
+        dialogueBgTexture.dispose();
+        if (knobTexture != null) knobTexture.dispose();
+        if (bgTexture != null) bgTexture.dispose();
     }
 }
