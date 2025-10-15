@@ -45,10 +45,9 @@ public class Main extends ApplicationAdapter {
     private Skin skin;
     private Label dialogueLabel;
     private Texture dialogueBgTexture;
-    private String fullText;    // Повний текст
-    private String currentText; // Текст, що вже показується
-    private float textTimer = 0f;    // Таймер
-    private float textSpeed = 0.05f; // Швидкість появи символів (менше = швидше)
+    private float textTimer = 0f;
+    private NPC activeNpc = null;
+    private boolean actButtonJustPressed = false;
 
 
     // === Елементи для сенсорного управління ===
@@ -84,9 +83,9 @@ public class Main extends ApplicationAdapter {
         // === Гравець та NPC ===
         player = new Player(500, 100, 100, 200, 200, texture, world);
 
-        npcs.add(new NPC(100, 100, 500, 300, texture, world, 1, 0, "HELLO PISIUNCHYK!!!"));
-        npcs.add(new NPC(90, 90, 1100, 500, texture, world, 0, 1, "HELLO ZHOPA!!!"));
-        npcs.add(new NPC(90, 90, 700, 700, texture, world, 1, 1, "HELLO POPA!!!"));
+        npcs.add(new NPC(100, 100, 500, 300, texture, world, 1, 0, new String[]{"HELLO PISIUNCHYK!!!", "TEST PHRASE 2", "TEST PHRASE 3"}));
+        npcs.add(new NPC(90, 90, 1100, 500, texture, world, 0, 1, new String[]{"HELLO ZHOPA!!!"}));
+        npcs.add(new NPC(90, 90, 700, 700, texture, world, 1, 1, new String[]{"HELLO POPA!!!"}));
 
         // === Інтерфейс ===
         stage = new Stage(new FitViewport(2000, 1000));
@@ -145,12 +144,8 @@ public class Main extends ApplicationAdapter {
             actButton.addListener(new InputListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    player.actPressed = true;
+                    actButtonJustPressed = true;
                     return true;
-                }
-                @Override
-                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    player.actPressed = false;
                 }
             });
 
@@ -189,44 +184,79 @@ public class Main extends ApplicationAdapter {
         world.draw(batch);
         player.draw(batch);
 
-        // === Перевірка взаємодії з NPC ===
-        boolean dialogueVisible = false;
+        boolean interactPressed = Gdx.input.isKeyJustPressed(Input.Keys.E) || actButtonJustPressed;
+
+        // Малюємо NPC і підказки
         for (NPC npc : npcs) {
             npc.draw(batch);
             if (npc.isPlayerNear(player)) {
                 font.draw(batch, "Press E / ACT to interact", npc.x - 100, npc.y + npc.height + 40);
-                if (Gdx.input.isKeyPressed(Input.Keys.E) || player.actPressed) {
-                    npc.interacted = true;
-                }
-                if (npc.interacted) {
-
-                    fullText = npc.getText();
-
-                    textTimer += delta;
-                    int lettersToShow = (int)(textTimer / textSpeed);
-
-                    if (lettersToShow > fullText.length()) {
-                        lettersToShow = fullText.length();
-                    }
-
-                    currentText = fullText.substring(0, lettersToShow);
-                    dialogueLabel.setText(currentText);
-                    dialogueVisible = true;
-
-                } else {
-                    textTimer = 0f;
-                    currentText = "";
-                }
-            } else {
-                npc.interacted = false;
             }
         }
-        dialogueLabel.setVisible(dialogueVisible);
+
+        // --- Логіка діалогів ---
+
+        // 1. Обробка натискання кнопки
+        if (interactPressed) {
+            if (activeNpc != null) {
+                // Діалог вже активний: пропускаємо анімацію або переходимо до наступної фрази
+                String fullText = activeNpc.getCurrentPhrase();
+                float textSpeed = 0.05f;
+                int lettersToShow = (int)(textTimer / textSpeed);
+
+                if (lettersToShow < fullText.length()) {
+                    // Анімація ще триває -> пропускаємо її
+                    textTimer = fullText.length() * textSpeed; // Показуємо весь текст
+                } else {
+                    // Анімація завершена -> переходимо до наступної фрази
+                    activeNpc.advanceDialogue();
+                    textTimer = 0f; // Скидаємо таймер для нової фрази
+                }
+            } else {
+                // Діалог неактивний: шукаємо NPC поруч, щоб почати розмову
+                for (NPC npc : npcs) {
+                    if (npc.isPlayerNear(player)) {
+                        activeNpc = npc;
+                        textTimer = 0f;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // 2. Якщо гравець відійшов від активного NPC, завершуємо діалог
+        if (activeNpc != null && !activeNpc.isPlayerNear(player)) {
+            activeNpc.resetDialogue();
+            activeNpc = null;
+        }
+
+        // 3. Якщо є активний діалог, анімуємо текст
+        if (activeNpc != null) {
+            dialogueLabel.setVisible(true);
+            String fullText = activeNpc.getCurrentPhrase();
+            float textSpeed = 0.05f;
+
+            textTimer += delta;
+            int lettersToShow = (int)(textTimer / textSpeed);
+
+            if (lettersToShow > fullText.length()) {
+                lettersToShow = fullText.length();
+            }
+            String currentText = fullText.substring(0, lettersToShow);
+            dialogueLabel.setText(currentText);
+        } else {
+            // Немає активного діалогу, ховаємо вікно
+            dialogueLabel.setVisible(false);
+        }
+
         batch.end();
 
         // === Рендеринг UI ===
         stage.act(delta);
         stage.draw();
+
+        // Скидаємо прапорець натискання кнопки в кінці кадру
+        actButtonJustPressed = false;
     }
 
     @Override

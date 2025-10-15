@@ -9,16 +9,18 @@ public class NPC extends Entity {
     private int directionX;
     private int directionY;
     public boolean interacted = false;
-    private final String text;
+    private final String[] texts;
+    private int count = 0;
 
-    public NPC(int width, int height, float x, float y, Texture texture, World world, int directionX, int directionY, String text){
+
+    public NPC(int width, int height, float x, float y, Texture texture, World world, int directionX, int directionY, String[] texts){
         this.width = width;
         this.height = height;
         this.x = x;
         this.y = y;
         this.texture = texture;
         this.world = world;
-        this.text = text;
+        this.texts = texts;
         this.directionX = directionX;
         this.directionY = directionY;
     }
@@ -75,7 +77,23 @@ public class NPC extends Entity {
         return distance < 150;
     }
 
-    public String getText() {
-        return this.text;
+    public String getCurrentPhrase() {
+        if (texts == null || texts.length == 0) {
+            return "";
+        }
+        return texts[count];
+    }
+
+    public void advanceDialogue() {
+        if (count < texts.length - 1)
+            count++;
+    }
+
+    public boolean isDialogueFinished() {
+        return count >= texts.length - 1;
+    }
+
+    public void resetDialogue() {
+        this.count = 0;
     }
 }

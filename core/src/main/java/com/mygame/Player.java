@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 
 public class Player extends Entity {
     protected int speed;
-    public boolean actPressed = false;
     public Touchpad touchpad;
 
     public Player(int speed, int width, int height, float x, float y, Texture texture, World world){
