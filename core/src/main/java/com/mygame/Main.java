@@ -39,14 +39,13 @@ public class Main extends ApplicationAdapter {
     private Viewport viewport;
     private Texture texture;
     private BitmapFont font;
+    private DialogueManager dialogueManager;
 
     // === Інтерфейс ===
     private Stage stage;
     private Skin skin;
     private Label dialogueLabel;
     private Texture dialogueBgTexture;
-    private float textTimer = 0f;
-    private NPC activeNpc = null;
     private boolean actButtonJustPressed = false;
 
 
@@ -83,9 +82,12 @@ public class Main extends ApplicationAdapter {
         // === Гравець та NPC ===
         player = new Player(500, 100, 100, 200, 200, texture, world);
 
-        npcs.add(new NPC(100, 100, 500, 300, texture, world, 1, 0, new String[]{"HELLO PISIUNCHYK!!!", "TEST PHRASE 2", "TEST PHRASE 3"}));
-        npcs.add(new NPC(90, 90, 1100, 500, texture, world, 0, 1, new String[]{"HELLO ZHOPA!!!"}));
-        npcs.add(new NPC(90, 90, 700, 700, texture, world, 1, 1, new String[]{"HELLO POPA!!!"}));
+        npcs.add(new NPC(100, 100, 500, 300, texture, world, 1, 0,
+            new String[]{"Hello Pisiunchyk! How are you doing?", "Oh, I'm sorry, I forgot you can't answer me", "nevermind, just fuck off"}));
+        npcs.add(new NPC(90, 90, 1100, 500, texture, world, 0, 1,
+            new String[]{"Hello Zhopa!!!","I have nothing to say", "I guess..."}));
+        npcs.add(new NPC(90, 90, 700, 700, texture, world, 1, 1,
+            new String[]{"Hello Popa!!!", "I'm not in mood to talk"}));
 
         // === Інтерфейс ===
         stage = new Stage(new FitViewport(2000, 1000));
@@ -109,6 +111,7 @@ public class Main extends ApplicationAdapter {
 
         stage.addActor(dialogueLabel);
 
+        dialogueManager = new DialogueManager(dialogueLabel);
         // === Сенсорне керування (для Android) ===
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
             Gdx.input.setInputProcessor(stage);
@@ -184,8 +187,6 @@ public class Main extends ApplicationAdapter {
         world.draw(batch);
         player.draw(batch);
 
-        boolean interactPressed = Gdx.input.isKeyJustPressed(Input.Keys.E) || actButtonJustPressed;
-
         // Малюємо NPC і підказки
         for (NPC npc : npcs) {
             npc.draw(batch);
@@ -193,61 +194,9 @@ public class Main extends ApplicationAdapter {
                 font.draw(batch, "Press E / ACT to interact", npc.x - 100, npc.y + npc.height + 40);
             }
         }
+        boolean interactPressed = Gdx.input.isKeyJustPressed(Input.Keys.E) || actButtonJustPressed;
+        dialogueManager.update(delta, npcs, player, interactPressed);
 
-        // --- Логіка діалогів ---
-
-        // 1. Обробка натискання кнопки
-        if (interactPressed) {
-            if (activeNpc != null) {
-                // Діалог вже активний: пропускаємо анімацію або переходимо до наступної фрази
-                String fullText = activeNpc.getCurrentPhrase();
-                float textSpeed = 0.05f;
-                int lettersToShow = (int)(textTimer / textSpeed);
-
-                if (lettersToShow < fullText.length()) {
-                    // Анімація ще триває -> пропускаємо її
-                    textTimer = fullText.length() * textSpeed; // Показуємо весь текст
-                } else {
-                    // Анімація завершена -> переходимо до наступної фрази
-                    activeNpc.advanceDialogue();
-                    textTimer = 0f; // Скидаємо таймер для нової фрази
-                }
-            } else {
-                // Діалог неактивний: шукаємо NPC поруч, щоб почати розмову
-                for (NPC npc : npcs) {
-                    if (npc.isPlayerNear(player)) {
-                        activeNpc = npc;
-                        textTimer = 0f;
-                        break;
-                    }
-                }
-            }
-        }
-
-        // 2. Якщо гравець відійшов від активного NPC, завершуємо діалог
-        if (activeNpc != null && !activeNpc.isPlayerNear(player)) {
-            activeNpc.resetDialogue();
-            activeNpc = null;
-        }
-
-        // 3. Якщо є активний діалог, анімуємо текст
-        if (activeNpc != null) {
-            dialogueLabel.setVisible(true);
-            String fullText = activeNpc.getCurrentPhrase();
-            float textSpeed = 0.05f;
-
-            textTimer += delta;
-            int lettersToShow = (int)(textTimer / textSpeed);
-
-            if (lettersToShow > fullText.length()) {
-                lettersToShow = fullText.length();
-            }
-            String currentText = fullText.substring(0, lettersToShow);
-            dialogueLabel.setText(currentText);
-        } else {
-            // Немає активного діалогу, ховаємо вікно
-            dialogueLabel.setVisible(false);
-        }
 
         batch.end();
 

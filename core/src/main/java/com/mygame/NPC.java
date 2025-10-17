@@ -8,7 +8,6 @@ public class NPC extends Entity {
     private boolean isPaused = false;
     private int directionX;
     private int directionY;
-    public boolean interacted = false;
     private final String[] texts;
     private int count = 0;
 
@@ -85,12 +84,11 @@ public class NPC extends Entity {
     }
 
     public void advanceDialogue() {
-        if (count < texts.length - 1)
-            count++;
+        count++;
     }
 
     public boolean isDialogueFinished() {
-        return count >= texts.length - 1;
+        return count >= texts.length;
     }
 
     public void resetDialogue() {
