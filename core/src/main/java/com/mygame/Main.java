@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -37,9 +38,15 @@ public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private Viewport viewport;
-    private Texture texture;
     private BitmapFont font;
     private DialogueManager dialogueManager;
+
+    // Текстури
+    private Texture textureZoe;
+    private Texture textureRyzhyi;
+    private Texture textureDenys;
+    private Texture textureIgo;
+    private Texture textureBaryga;
 
     // === Інтерфейс ===
     private Stage stage;
@@ -65,7 +72,11 @@ public class Main extends ApplicationAdapter {
     public void create() {
         // === Ініціалізація базових систем ===
         batch = new SpriteBatch();
-        texture = new Texture("ui/zoe.png");
+        textureZoe = new Texture("ui/zoe.png");
+        textureRyzhyi = new Texture("ryzhyi.png");
+        textureDenys = new Texture("denys.png");
+        textureIgo = new Texture("igo.png");
+        textureBaryga = new Texture("baryga.png");
 
         // Шрифт для тексту
         font = new BitmapFont();
@@ -80,38 +91,56 @@ public class Main extends ApplicationAdapter {
         world = new World();
 
         // === Гравець та NPC ===
-        player = new Player(500, 100, 100, 200, 200, texture, world);
+        player = new Player(500, 100, 100, 200, 200, textureZoe, world);
 
-        npcs.add(new NPC(100, 100, 500, 300, texture, world, 1, 0,
+        npcs.add(new NPC("Igo",100, 100, 500, 300, textureIgo, world, 1, 0,
             new String[]{"Hello Pisiunchyk! How are you doing?", "Oh, I'm sorry, I forgot you can't answer me", "nevermind, just fuck off"}));
-        npcs.add(new NPC(90, 90, 1100, 500, texture, world, 0, 1,
+        npcs.add(new NPC("Ryzhyi",90, 90, 1100, 500, textureRyzhyi, world, 0, 1,
             new String[]{"Hello Zhopa!!!","I have nothing to say", "I guess..."}));
-        npcs.add(new NPC(90, 90, 700, 700, texture, world, 1, 1,
+        npcs.add(new NPC("Denys",90, 90, 700, 700, textureDenys, world, 1, 1,
             new String[]{"Hello Popa!!!", "I'm not in mood to talk"}));
-
+        npcs.add(new NPC("Baryga",90, 90, 800, 200, textureBaryga, world, 0, 1,
+            new String[]{"Bruder was brauchst du?", "Grass 10 Euro"}));
         // === Інтерфейс ===
         stage = new Stage(new FitViewport(2000, 1000));
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
-        // Діалогове вікно
-        dialogueLabel = new Label("", skin);
-        dialogueLabel.setFontScale(3f);
-        dialogueLabel.setSize(1950, 150);
-        dialogueLabel.setPosition(25, 50);
-        dialogueLabel.setAlignment(Align.center);
-        dialogueLabel.setVisible(false);
-
-        // Фон діалогу (Pixmap -> Texture)
-        Pixmap dialogueBg = new Pixmap(1950, 150, Pixmap.Format.RGBA8888);
+        // === Діалогова таблиця ===
+        Pixmap dialogueBg = new Pixmap(1950, 180, Pixmap.Format.RGBA8888);
         dialogueBg.setColor(new Color(0.1f, 0.1f, 0.5f, 0.6f));
-        dialogueBg.fillRectangle(0, 0, 1950, 150);
-        dialogueBgTexture = new Texture(dialogueBg);
+        dialogueBg.fill();
+        this.dialogueBgTexture = new Texture(dialogueBg);
         dialogueBg.dispose();
-        dialogueLabel.getStyle().background = new TextureRegionDrawable(new TextureRegion(dialogueBgTexture));
 
-        stage.addActor(dialogueLabel);
+        TextureRegionDrawable background = new TextureRegionDrawable(new TextureRegion(dialogueBgTexture));
 
-        dialogueManager = new DialogueManager(dialogueLabel);
+        Table dialogueTable = new Table();
+        dialogueTable.setSize(1950, 180);
+        dialogueTable.setPosition(25, 30);
+        dialogueTable.setBackground(background);
+
+        // --- Ім’я NPC ---
+        Label nameLabel = new Label("", skin);
+        nameLabel.setFontScale(3f);
+        nameLabel.setColor(Color.GOLD);
+        nameLabel.setAlignment(Align.left);
+
+        // --- Текст ---
+        Label dialogueLabel = new Label("", skin);
+        dialogueLabel.setFontScale(3f);
+        dialogueLabel.setWrap(true);
+        dialogueLabel.setAlignment(Align.left);
+
+        // --- Додаємо у таблицю ---
+        dialogueTable.add(nameLabel).left().padLeft(10).padBottom(20).row();
+        dialogueTable.add(dialogueLabel).width(1800).padLeft(60).left();
+
+        dialogueTable.setVisible(false);
+        stage.addActor(dialogueTable);
+
+        // === Менеджер діалогів ===
+        this.dialogueManager = new DialogueManager(dialogueTable, nameLabel, dialogueLabel);
+
         // === Сенсорне керування (для Android) ===
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
             Gdx.input.setInputProcessor(stage);
@@ -168,10 +197,8 @@ public class Main extends ApplicationAdapter {
         float targetX = player.x + player.width / 2f;
         float targetY = player.y + player.height / 2f;
 
-        float cameraX = Math.max(camera.viewportWidth / 2f,
-            Math.min(targetX, WORLD_WIDTH - camera.viewportWidth / 2f));
-        float cameraY = Math.max(camera.viewportHeight / 2f,
-            Math.min(targetY, WORLD_HEIGHT - camera.viewportHeight / 2f));
+        float cameraX = Math.max(camera.viewportWidth / 2f, Math.min(targetX, WORLD_WIDTH - camera.viewportWidth / 2f));
+        float cameraY = Math.max(camera.viewportHeight / 2f, Math.min(targetY, WORLD_HEIGHT - camera.viewportHeight / 2f));
 
         camera.position.set(cameraX, cameraY, 0);
         camera.update();
@@ -197,7 +224,6 @@ public class Main extends ApplicationAdapter {
         boolean interactPressed = Gdx.input.isKeyJustPressed(Input.Keys.E) || actButtonJustPressed;
         dialogueManager.update(delta, npcs, player, interactPressed);
 
-
         batch.end();
 
         // === Рендеринг UI ===
@@ -217,7 +243,10 @@ public class Main extends ApplicationAdapter {
     @Override
     public void dispose() {
         // === Очищення пам’яті ===
-        texture.dispose();
+        textureZoe.dispose();
+        textureRyzhyi.dispose();
+        textureDenys.dispose();
+        textureIgo.dispose();
         batch.dispose();
         font.dispose();
         stage.dispose();

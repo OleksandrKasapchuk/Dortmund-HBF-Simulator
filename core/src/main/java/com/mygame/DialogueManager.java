@@ -1,6 +1,7 @@
 package com.mygame;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import java.util.ArrayList;
 
@@ -9,13 +10,17 @@ public class DialogueManager {
     private Label dialogueLabel;
     private float textSpeed = 0.05f;
     private NPC activeNpc = null;
-    public DialogueManager(Label dialogueLabel) {
+    private Table dialogueTable;
+    private Label nameLabel;
+
+
+    public DialogueManager(Table dialogueTable, Label nameLabel, Label dialogueLabel) {
+        this.dialogueTable = dialogueTable;
+        this.nameLabel = nameLabel;
         this.dialogueLabel = dialogueLabel;
     }
-
+    // --- Логіка діалогів ---
     public void update(float delta, ArrayList<NPC> npcs, Player player, boolean interactPressed) {
-        // --- Логіка діалогів ---
-
         // 1. Обробка натискання кнопки
         if (interactPressed) {
             if (activeNpc != null) {
@@ -42,17 +47,16 @@ public class DialogueManager {
                 }
             }
         }
-
         // 2. Якщо гравець відійшов від активного NPC, завершуємо діалог
         if (activeNpc != null && !activeNpc.isPlayerNear(player)) {
             activeNpc.resetDialogue();
             activeNpc = null;
         }
-
         // 3. Якщо є активний діалог, анімуємо текст
         if (activeNpc != null) {
             if (!activeNpc.isDialogueFinished()) {
-                dialogueLabel.setVisible(true);
+                dialogueTable.setVisible(true);
+                nameLabel.setText(activeNpc.getName());
                 String fullText = activeNpc.getCurrentPhrase();
 
                 textTimer += delta;
@@ -69,7 +73,7 @@ public class DialogueManager {
             }
         } else {
             // Немає активного діалогу, ховаємо вікно
-            dialogueLabel.setVisible(false);
+            dialogueTable.setVisible(false);
         }
     }
 }

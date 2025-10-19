@@ -10,9 +10,11 @@ public class NPC extends Entity {
     private int directionY;
     private final String[] texts;
     private int count = 0;
+    private String name;
 
 
-    public NPC(int width, int height, float x, float y, Texture texture, World world, int directionX, int directionY, String[] texts){
+    public NPC(String name, int width, int height, float x, float y, Texture texture, World world, int directionX, int directionY, String[] texts){
+        this.name = name;
         this.width = width;
         this.height = height;
         this.x = x;
@@ -93,5 +95,8 @@ public class NPC extends Entity {
 
     public void resetDialogue() {
         this.count = 0;
+    }
+    public String getName(){
+        return this.name;
     }
 }
