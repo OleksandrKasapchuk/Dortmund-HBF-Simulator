@@ -46,8 +46,10 @@ public class Main extends ApplicationAdapter {
     private Texture textureRyzhyi;
     private Texture textureDenys;
     private Texture textureIgo;
+    private Texture textureIgo2;
     private Texture textureBaryga;
     private Texture textureChikita;
+    private Texture texturePolice;
 
     // === Інтерфейс ===
     private Stage stage;
@@ -77,12 +79,14 @@ public class Main extends ApplicationAdapter {
     public void create() {
         // === Ініціалізація базових систем ===
         batch = new SpriteBatch();
-        textureZoe = new Texture("ui/zoe.png");
+        textureZoe = new Texture("zoe.png");
         textureRyzhyi = new Texture("ryzhyi.png");
         textureDenys = new Texture("denys.png");
         textureIgo = new Texture("igo.png");
         textureBaryga = new Texture("baryga.png");
         textureChikita = new Texture("chikita.png");
+        textureIgo2 = new Texture("igo2.png");
+        texturePolice = new Texture("police.png");
 
         // Шрифт для тексту
         font = new BitmapFont();
@@ -111,6 +115,7 @@ public class Main extends ApplicationAdapter {
                     questMessage = "";
                     igo.nextDialogueCount();
                     igo.setTexts(new String[]{"Danke Bruder!"});
+                    igo.setTexture(textureIgo2);
                 } else {
                     showInfoMessage("Not enough kosyak", 1.5f);
                     questMessage = "Get some kosyak for igo";
@@ -158,6 +163,15 @@ public class Main extends ApplicationAdapter {
             } else {
                 showInfoMessage("Not enough grass", 1.5f);
             }
+        });
+
+        NPC police = new NPC("Police",120, 120, 575, 350, texturePolice, world, 1, 0, 3f, 6f, 75,
+            new String[]{"Polizeikontrolle, haben Sie Grass?"});
+        npcs.add(police);
+
+        police.setAction(() -> {
+            player.getInventory().removeItem("grass", 1);
+            player.getInventory().removeItem("kosyak", 1);
         });
 
         // === Інтерфейс ===
@@ -412,8 +426,10 @@ public class Main extends ApplicationAdapter {
         textureRyzhyi.dispose();
         textureDenys.dispose();
         textureIgo.dispose();
+        textureIgo2.dispose();
         textureBaryga.dispose();
         textureChikita.dispose();
+        texturePolice.dispose();
         batch.dispose();
         font.dispose();
         stage.dispose();

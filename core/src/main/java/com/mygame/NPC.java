@@ -92,4 +92,7 @@ public class NPC extends Entity {
     }
     public void nextDialogueCount(){this.dialogueCount++;}
     public int getDialogueCount(){return this.dialogueCount;}
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
 }
