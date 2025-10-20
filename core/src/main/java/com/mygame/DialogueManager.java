@@ -68,6 +68,7 @@ public class DialogueManager {
                 String currentText = fullText.substring(0, lettersToShow);
                 dialogueLabel.setText(currentText);
             } else {
+                activeNpc.runAction();
                 activeNpc.resetDialogue();
                 activeNpc = null;
             }
