@@ -47,6 +47,7 @@ public class Main extends ApplicationAdapter {
     private Texture textureDenys;
     private Texture textureIgo;
     private Texture textureBaryga;
+    private Texture textureChikita;
 
     // === Інтерфейс ===
     private Stage stage;
@@ -55,6 +56,8 @@ public class Main extends ApplicationAdapter {
     private boolean actButtonJustPressed = false;
     private Label moneylabel;
     private Label infolabel;
+    private Label questlabel;
+    private String questMessage = "";
     private String infoMessage = "";
     private float infoMessageTimer = 0f; // скільки ще показувати повідомлення
     private Table inventoryTable;
@@ -79,6 +82,7 @@ public class Main extends ApplicationAdapter {
         textureDenys = new Texture("denys.png");
         textureIgo = new Texture("igo.png");
         textureBaryga = new Texture("baryga.png");
+        textureChikita = new Texture("chikita.png");
 
         // Шрифт для тексту
         font = new BitmapFont();
@@ -99,12 +103,31 @@ public class Main extends ApplicationAdapter {
             new String[]{"Hallo Bruder!", "Gib kosyak"});
         npcs.add(igo);
 
+        igo.setAction(() -> {
+            if (igo.getDialogueCount() == 1)
+                if(player.getInventory().removeItem("kosyak", 1)) {
+                    player.getInventory().addItem("Vape", 1);
+                    showInfoMessage("You got 1 Vape", 1.5f);
+                    questMessage = "";
+                    igo.nextDialogueCount();
+                    igo.setTexts(new String[]{"Danke Bruder!"});
+                } else {
+                    showInfoMessage("Not enough kosyak", 1.5f);
+                    questMessage = "Get some kosyak for igo";
+                }
+        });
+
         NPC ryzhyi = new NPC("Ryzhyi",100, 100, 1100, 500, textureRyzhyi, world, 0, 1, 1f, 2f,200,
             new String[]{"Please take 10 euro but fuck off"});
         npcs.add(ryzhyi);
+
         ryzhyi.setAction(() -> {
-            player.getInventory().addItem("money", 10);
-            showInfoMessage("You got 10 euro",1.5f);
+            if (ryzhyi.getDialogueCount() == 1) {
+                player.getInventory().addItem("money", 10);
+                showInfoMessage("You got 10 euro",1.5f);
+                ryzhyi.nextDialogueCount();
+                ryzhyi.setTexts(new String[]{"I gave 10 euro why do I still see you "});
+            }
         });
 
         NPC denys = new NPC("Denys",100, 100, 700, 700, textureDenys, world, 1, 1,2f, 1f, 100,
@@ -114,12 +137,26 @@ public class Main extends ApplicationAdapter {
         NPC baryga = new NPC("Baryga",100, 100, 1000, 200, textureBaryga, world, 0, 1, 3f, 0f, 0,
             new String[]{"Bruder was brauchst du?", "Grass 10 Euro"});
         npcs.add(baryga);
+
         baryga.setAction(() -> {
             if (player.getInventory().removeItem("money",10)) {
-                player.getInventory().addItem("kosyak", 1);
-                showInfoMessage("You got 1 kosyak for 10 euro", 1.5f);
+                player.getInventory().addItem("grass", 1);
+                showInfoMessage("You got 1g grass for 10 euro", 1.5f);
             } else {
                 showInfoMessage("Not enough money", 1.5f);
+            }
+        });
+
+        NPC chikita = new NPC("Chikita",100, 100, 1575, 200, textureChikita, world, 0, 1, 3f, 0f, 0,
+            new String[]{"Gib grass du bekommen kosyak"});
+        npcs.add(chikita);
+
+        chikita.setAction(() -> {
+            if (player.getInventory().removeItem("grass",1)) {
+                player.getInventory().addItem("kosyak", 1);
+                showInfoMessage("You got 1 kosyak", 1.5f);
+            } else {
+                showInfoMessage("Not enough grass", 1.5f);
             }
         });
 
@@ -193,6 +230,12 @@ public class Main extends ApplicationAdapter {
         infolabel.setPosition(stage.getViewport().getWorldWidth() / 2f - infolabel.getWidth() / 2f, 850);
         stage.addActor(infolabel);
 
+        questlabel = new Label("Mission: " + questMessage, skin);
+        questlabel.setPosition(stage.getViewport().getWorldWidth() / 2f - infolabel.getWidth() / 2f, 925);
+        questlabel.setColor(Color.ORANGE);
+        questlabel.setAlignment(Align.center);
+        questlabel.setFontScale(4f);
+        stage.addActor(questlabel);
         // === Сенсорне керування (для Android) ===
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
             Gdx.input.setInputProcessor(stage);
@@ -297,6 +340,7 @@ public class Main extends ApplicationAdapter {
         for (NPC npc : npcs) npc.update(delta);
 
         moneylabel.setText("Money: " + player.getMoney());
+        questlabel.setText("Mission: " + questMessage);
         // Оновлюємо таймер повідомлення
         if (infoMessageTimer > 0) {
             infoMessageTimer -= delta;
@@ -369,6 +413,7 @@ public class Main extends ApplicationAdapter {
         textureDenys.dispose();
         textureIgo.dispose();
         textureBaryga.dispose();
+        textureChikita.dispose();
         batch.dispose();
         font.dispose();
         stage.dispose();

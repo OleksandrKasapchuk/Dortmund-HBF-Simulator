@@ -8,13 +8,14 @@ public class NPC extends Entity {
     private boolean isPaused = false;
     private int directionX;
     private int directionY;
-    private final String[] texts;
+    private  String[] texts;
     private int count = 0;
     private String name;
     private float pauseTime;
     private float moveTime;
     private int speed;
     private Runnable action = null;
+    private int dialogueCount = 1;
 
     public NPC(String name, int width, int height, float x, float y, Texture texture, World world, int directionX, int directionY, float pauseTime, float moveTime, int speed, String[] texts){
         super(width, height, x, y, texture, world);
@@ -86,4 +87,9 @@ public class NPC extends Entity {
     public String getName(){return this.name;}
     public void setAction(Runnable action){this.action = action;}
     public void runAction(){if (action != null) action.run();}
+    public void setTexts(String[] texts) {
+        this.texts = texts;
+    }
+    public void nextDialogueCount(){this.dialogueCount++;}
+    public int getDialogueCount(){return this.dialogueCount;}
 }
