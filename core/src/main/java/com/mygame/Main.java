@@ -24,7 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
+import java.util.Map;
 import java.util.ArrayList;
 
 public class Main extends ApplicationAdapter {
@@ -57,6 +57,8 @@ public class Main extends ApplicationAdapter {
     private Label infolabel;
     private String infoMessage = "";
     private float infoMessageTimer = 0f; // скільки ще показувати повідомлення
+    private Table inventoryTable;
+    private boolean inventoryVisible = false;
 
     // === Елементи для сенсорного управління ===
     private Texture knobTexture;
@@ -158,6 +160,22 @@ public class Main extends ApplicationAdapter {
         dialogueTable.setVisible(false);
         stage.addActor(dialogueTable);
 
+        // --- Таблиця інвентаря ---
+        inventoryTable = new Table();
+        inventoryTable.setSize(1600, 800); // розмір спливаючого вікна
+        inventoryTable.setPosition(stage.getViewport().getWorldWidth()/2f - 800, stage.getViewport().getWorldHeight()/2f - 400);
+        inventoryTable.align(Align.topLeft).pad(20); // <--- ВИРІВНЮЄМО ВМІСТ ТАБЛИЦІ
+
+        // фон (прозорий синій прямокутник)
+        Pixmap pixmap = new Pixmap(1600, 800, Pixmap.Format.RGBA8888);
+        pixmap.setColor(new Color(0.1f, 0.1f, 0.7f, 0.4f));
+        pixmap.fill();
+        inventoryTable.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(pixmap))));
+        pixmap.dispose();
+
+        inventoryTable.setVisible(false);
+        stage.addActor(inventoryTable);
+
         // === Менеджер діалогів ===
         this.dialogueManager = new DialogueManager(dialogueTable, nameLabel, dialogueLabel);
 
@@ -173,8 +191,8 @@ public class Main extends ApplicationAdapter {
         infolabel.setAlignment(Align.center);
         infolabel.setFontScale(4f);
         infolabel.setPosition(stage.getViewport().getWorldWidth() / 2f - infolabel.getWidth() / 2f, 850);
-
         stage.addActor(infolabel);
+
         // === Сенсорне керування (для Android) ===
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
             Gdx.input.setInputProcessor(stage);
@@ -214,16 +232,40 @@ public class Main extends ApplicationAdapter {
                     return true;
                 }
             });
-
             stage.addActor(actButton);
         }
     }
+
     // --- приватний метод для повідомлень ---
     private void showInfoMessage(String message, float duration) {
         infoMessage = message;
         infoMessageTimer = duration;
         infolabel.setText(infoMessage);
         infolabel.setVisible(true);
+    }
+
+    private void updateInventoryTable() {
+        inventoryTable.clear(); // очищаємо попередні Label
+
+        Label titleLabel = new Label("INVENTORY", skin);
+        titleLabel.setFontScale(4f);
+        titleLabel.setColor(Color.GOLD);
+        inventoryTable.add(titleLabel).pad(30).row();
+
+        Inventory inv = player.getInventory();
+
+        for (Map.Entry<String, Integer> entry : inv.getItems().entrySet()) {
+            String itemName = entry.getKey();
+
+            Label itemLabel = new Label(itemName + ": ", skin);
+            itemLabel.setFontScale(3f);
+
+            Label countLabel = new Label(String.valueOf(entry.getValue()), skin);
+            countLabel.setFontScale(3f);
+
+            inventoryTable.add(itemLabel).left().padTop(20).padLeft(30);
+            inventoryTable.add(countLabel).left().padTop(20).row();
+        }
     }
     @Override
     public void render() {
@@ -239,6 +281,14 @@ public class Main extends ApplicationAdapter {
             infoMessageTimer -= delta;
             if (infoMessageTimer <= 0) {
                 infolabel.setVisible(false);
+            }
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
+            inventoryVisible = !inventoryVisible;
+            inventoryTable.setVisible(inventoryVisible);
+
+            if (inventoryVisible) {
+                updateInventoryTable();
             }
         }
         // === Камера слідкує за гравцем ===
@@ -280,7 +330,7 @@ public class Main extends ApplicationAdapter {
         stage.act(delta);
         stage.draw();
 
-        // Скидаємо прапорець натискання кнопки в кінці кадру
+        // Скидаємо прапорець натискання кнопки в кінці
         actButtonJustPressed = false;
     }
 
@@ -297,6 +347,7 @@ public class Main extends ApplicationAdapter {
         textureRyzhyi.dispose();
         textureDenys.dispose();
         textureIgo.dispose();
+        textureBaryga.dispose();
         batch.dispose();
         font.dispose();
         stage.dispose();

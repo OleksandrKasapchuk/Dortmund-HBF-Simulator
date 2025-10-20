@@ -7,9 +7,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 
+import java.util.HashMap;
+
 public class Player extends Entity {
     protected int speed;
     public Touchpad touchpad;
+    private float money = 0;
     private Inventory inventory = new Inventory();
 
     public Player(int speed, int width, int height, float x, float y, Texture texture, World world){

@@ -35,14 +35,5 @@ public class Inventory {
 
     // Отримати кількість предмета
     public int getAmount(String itemName) {return items.getOrDefault(itemName, 0);}
-
-    // Показати всі предмети
-    public void printInventory() {
-        System.out.println("=== Inventory ===");
-        for (Map.Entry<String, Integer> entry : items.entrySet()) {
-            System.out.println(entry.getKey() + ": " + entry.getValue());
-        }
-    }
-
     public Map<String, Integer> getItems() {return items;}
 }
