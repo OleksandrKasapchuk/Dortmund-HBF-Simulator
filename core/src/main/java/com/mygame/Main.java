@@ -54,6 +54,9 @@ public class Main extends ApplicationAdapter {
     private Texture dialogueBgTexture;
     private boolean actButtonJustPressed = false;
     private Label moneylabel;
+    private Label infolabel;
+    private String infoMessage = "";
+    private float infoMessageTimer = 0f; // скільки ще показувати повідомлення
 
     // === Елементи для сенсорного управління ===
     private Texture knobTexture;
@@ -90,19 +93,33 @@ public class Main extends ApplicationAdapter {
         // === Гравець та NPC ===
         player = new Player(500, 100, 100, 200, 200, textureZoe, world);
 
-        npcs.add(new NPC("Igo",100, 100, 500, 300, textureIgo, world, 1, 0, 3f, 0f,0,
-            new String[]{"Hallo Bruder!", "Gib kosyak"}));
+        NPC igo = new NPC("Igo",100, 100, 500, 300, textureIgo, world, 1, 0, 3f, 0f,0,
+            new String[]{"Hallo Bruder!", "Gib kosyak"});
+        npcs.add(igo);
 
         NPC ryzhyi = new NPC("Ryzhyi",100, 100, 1100, 500, textureRyzhyi, world, 0, 1, 1f, 2f,200,
-            new String[]{"Please take 10 euro"});
-        ryzhyi.setAction(() -> {player.addMoney(10); System.out.println("Money got: " + player.getMoney());});
-
+            new String[]{"Please take 10 euro but fuck off"});
         npcs.add(ryzhyi);
-        npcs.add(new NPC("Denys",100, 100, 700, 700, textureDenys, world, 1, 1,2f, 1f, 100,
-            new String[]{"Hello Popa!!!", "I'm not in mood to talk"}));
+        ryzhyi.setAction(() -> {
+            player.getInventory().addItem("money", 10);
+            showInfoMessage("You got 10 euro",1.5f);
+        });
 
-        npcs.add(new NPC("Baryga",100, 100, 1000, 200, textureBaryga, world, 0, 1, 3f, 0f, 0,
-            new String[]{"Bruder was brauchst du?", "Grass 10 Euro"}));
+        NPC denys = new NPC("Denys",100, 100, 700, 700, textureDenys, world, 1, 1,2f, 1f, 100,
+            new String[]{"Hello Popa!!!", "I'm not in mood to talk"});
+        npcs.add(denys);
+
+        NPC baryga = new NPC("Baryga",100, 100, 1000, 200, textureBaryga, world, 0, 1, 3f, 0f, 0,
+            new String[]{"Bruder was brauchst du?", "Grass 10 Euro"});
+        npcs.add(baryga);
+        baryga.setAction(() -> {
+            if (player.getInventory().removeItem("money",10)) {
+                player.getInventory().addItem("kosyak", 1);
+                showInfoMessage("You got 1 kosyak for 10 euro", 1.5f);
+            } else {
+                showInfoMessage("Not enough money", 1.5f);
+            }
+        });
 
         // === Інтерфейс ===
         stage = new Stage(new FitViewport(2000, 1000));
@@ -146,10 +163,18 @@ public class Main extends ApplicationAdapter {
 
         // --- Гроші ---
         moneylabel = new Label("Money: " + player.getMoney(), skin);
-        moneylabel.setPosition(1650, 925);
+        moneylabel.setPosition(1700, 925);
         moneylabel.setFontScale(3f);
         stage.addActor(moneylabel);
 
+        // --- Інформація ---
+        infolabel = new Label("", skin);
+        infolabel.setColor(Color.GOLD);
+        infolabel.setAlignment(Align.center);
+        infolabel.setFontScale(4f);
+        infolabel.setPosition(stage.getViewport().getWorldWidth() / 2f - infolabel.getWidth() / 2f, 850);
+
+        stage.addActor(infolabel);
         // === Сенсорне керування (для Android) ===
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
             Gdx.input.setInputProcessor(stage);
@@ -193,7 +218,13 @@ public class Main extends ApplicationAdapter {
             stage.addActor(actButton);
         }
     }
-
+    // --- приватний метод для повідомлень ---
+    private void showInfoMessage(String message, float duration) {
+        infoMessage = message;
+        infoMessageTimer = duration;
+        infolabel.setText(infoMessage);
+        infolabel.setVisible(true);
+    }
     @Override
     public void render() {
         float delta = Gdx.graphics.getDeltaTime();
@@ -203,7 +234,13 @@ public class Main extends ApplicationAdapter {
         for (NPC npc : npcs) npc.update(delta);
 
         moneylabel.setText("Money: " + player.getMoney());
-
+        // Оновлюємо таймер повідомлення
+        if (infoMessageTimer > 0) {
+            infoMessageTimer -= delta;
+            if (infoMessageTimer <= 0) {
+                infolabel.setVisible(false);
+            }
+        }
         // === Камера слідкує за гравцем ===
         float targetX = player.x + player.width / 2f;
         float targetY = player.y + player.height / 2f;

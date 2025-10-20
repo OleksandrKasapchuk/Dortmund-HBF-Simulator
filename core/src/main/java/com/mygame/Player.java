@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 public class Player extends Entity {
     protected int speed;
     public Touchpad touchpad;
-    private float money = 0;
+    private Inventory inventory = new Inventory();
 
     public Player(int speed, int width, int height, float x, float y, Texture texture, World world){
         super(width, height, x, y, texture, world);
@@ -48,6 +48,6 @@ public class Player extends Entity {
     public void draw(SpriteBatch batch){
         batch.draw(this.texture, x, y, width, height);
     }
-    public float getMoney(){return money;}
-    public void addMoney(float value){money += value;}
+    public int getMoney(){return inventory.getAmount("money");}
+    public Inventory getInventory(){return inventory;}
 }
