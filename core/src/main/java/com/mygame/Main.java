@@ -51,10 +51,8 @@ public class Main extends ApplicationAdapter {
     // === Інтерфейс ===
     private Stage stage;
     private Skin skin;
-    private Label dialogueLabel;
     private Texture dialogueBgTexture;
     private boolean actButtonJustPressed = false;
-
 
     // === Елементи для сенсорного управління ===
     private Texture knobTexture;
@@ -63,8 +61,6 @@ public class Main extends ApplicationAdapter {
     // === Константи світу ===
     private static final int WORLD_WIDTH = 4000;
     private static final int WORLD_HEIGHT = 2000;
-
-    //
     public static int getWorldWidth() { return WORLD_WIDTH; }
     public static int getWorldHeight() { return WORLD_HEIGHT; }
 
@@ -93,14 +89,15 @@ public class Main extends ApplicationAdapter {
         // === Гравець та NPC ===
         player = new Player(500, 100, 100, 200, 200, textureZoe, world);
 
-        npcs.add(new NPC("Igo",100, 100, 500, 300, textureIgo, world, 1, 0,
-            new String[]{"Hello Pisiunchyk! How are you doing?", "Oh, I'm sorry, I forgot you can't answer me", "nevermind, just fuck off"}));
-        npcs.add(new NPC("Ryzhyi",90, 90, 1100, 500, textureRyzhyi, world, 0, 1,
-            new String[]{"Hello Zhopa!!!","I have nothing to say", "I guess..."}));
-        npcs.add(new NPC("Denys",90, 90, 700, 700, textureDenys, world, 1, 1,
+        npcs.add(new NPC("Igo",100, 100, 500, 300, textureIgo, world, 1, 0, 3f, 0f,0,
+            new String[]{"Hallo Bruder!", "Gib kosyak"}));
+        npcs.add(new NPC("Ryzhyi",100, 100, 1100, 500, textureRyzhyi, world, 0, 1, 1f, 2f,200,
+            new String[]{"Hello Zhoapa!!!","I have nothing to say", "I guess..."}));
+        npcs.add(new NPC("Denys",100, 100, 700, 700, textureDenys, world, 1, 1,2f, 1f, 100,
             new String[]{"Hello Popa!!!", "I'm not in mood to talk"}));
-        npcs.add(new NPC("Baryga",90, 90, 800, 200, textureBaryga, world, 0, 1,
+        npcs.add(new NPC("Baryga",100, 100, 800, 200, textureBaryga, world, 0, 1, 3f, 0f, 0,
             new String[]{"Bruder was brauchst du?", "Grass 10 Euro"}));
+
         // === Інтерфейс ===
         stage = new Stage(new FitViewport(2000, 1000));
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));

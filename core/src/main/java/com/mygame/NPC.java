@@ -11,61 +11,61 @@ public class NPC extends Entity {
     private final String[] texts;
     private int count = 0;
     private String name;
+    private float pauseTime;
+    private float moveTime;
+    private int speed;
 
 
-    public NPC(String name, int width, int height, float x, float y, Texture texture, World world, int directionX, int directionY, String[] texts){
+    public NPC(String name, int width, int height, float x, float y, Texture texture, World world, int directionX, int directionY, float pauseTime, float moveTime, int speed, String[] texts){
+        super(width, height, x, y, texture, world);
         this.name = name;
-        this.width = width;
-        this.height = height;
-        this.x = x;
-        this.y = y;
-        this.texture = texture;
-        this.world = world;
         this.texts = texts;
         this.directionX = directionX;
         this.directionY = directionY;
+        this.pauseTime = pauseTime;
+        this.moveTime = moveTime;
+        this.speed = speed;
     }
 
     @Override
     public void update(float delta) {
-        float pauseTime = 3f;
-        float moveTime = 2f;
-        int speed = 100;
-        timer += delta;
+        if (moveTime != 0) {
+            timer += delta;
 
-        if (isPaused) {
-            if (timer >= pauseTime) {
-                timer = 0f;
-                isPaused = false;
-                directionX *= -1;
-                directionY *= -1;
-            }
-        } else {
-
-            float newX = x + directionX * speed * delta;
-            float newY = y + directionY * speed * delta;
-
-            // Перевірка колізії з світом
-            boolean collide =
-                world.isSolid(newX, newY) ||               // лівий верхній
-                    world.isSolid(newX + width, newY) ||       // правий верхній
-                    world.isSolid(newX, newY - height) ||      // лівий нижній
-                    world.isSolid(newX + width, newY - height); // правий нижній
-
-            boolean outOfBounds = newX < 0 || newX + width > Main.getWorldWidth()
-                || newY < 0 || newY + height > Main.getWorldHeight();
-
-            if (!collide && !outOfBounds) {
-                x = newX;
-                y = newY;
+            if (isPaused) {
+                if (timer >= pauseTime) {
+                    timer = 0f;
+                    isPaused = false;
+                    directionX *= -1;
+                    directionY *= -1;
+                }
             } else {
-                isPaused = true;
-                timer = 0f;
-            }
 
-            if (timer > moveTime){
-                isPaused = true;
-                timer = 0f;
+                float newX = x + directionX * speed * delta;
+                float newY = y + directionY * speed * delta;
+
+                // Перевірка колізії з світом
+                boolean collide =
+                    world.isSolid(newX, newY) ||               // лівий верхній
+                        world.isSolid(newX + width, newY) ||       // правий верхній
+                        world.isSolid(newX, newY - height) ||      // лівий нижній
+                        world.isSolid(newX + width, newY - height); // правий нижній
+
+                boolean outOfBounds = newX < 0 || newX + width > Main.getWorldWidth()
+                    || newY < 0 || newY + height > Main.getWorldHeight();
+
+                if (!collide && !outOfBounds) {
+                    x = newX;
+                    y = newY;
+                } else {
+                    isPaused = true;
+                    timer = 0f;
+                }
+
+                if (timer > moveTime){
+                    isPaused = true;
+                    timer = 0f;
+                }
             }
         }
     }

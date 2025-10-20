@@ -11,6 +11,14 @@ public abstract class Entity {
     protected Texture texture;
     protected World world;
 
+    public Entity(int width, int height, float x, float y, Texture texture, World world) {
+        this.width = width;
+        this.height = height;
+        this.x = x;
+        this.y = y;
+        this.texture = texture;
+        this.world = world;
+    }
     public abstract void update(float delta);
     public abstract void draw(SpriteBatch batch);
 }
