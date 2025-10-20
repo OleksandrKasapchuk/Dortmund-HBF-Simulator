@@ -233,6 +233,27 @@ public class Main extends ApplicationAdapter {
                 }
             });
             stage.addActor(actButton);
+
+            // --- Кнопка інвентаря ---
+            TextButton inventoryButton = new TextButton("INV", skin);
+            inventoryButton.setSize(150, 150);
+            inventoryButton.setPosition(1800, 325); // правий нижній кут
+            inventoryButton.getLabel().setFontScale(3f);
+
+            inventoryButton.addListener(new InputListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    inventoryVisible = !inventoryVisible; // перемикаємо видимість
+                    inventoryTable.setVisible(inventoryVisible);
+
+                    if (inventoryVisible) {
+                        updateInventoryTable(); // оновлюємо список предметів
+                    }
+                    return true;
+                }
+            });
+
+            stage.addActor(inventoryButton);
         }
     }
 
