@@ -95,7 +95,7 @@ public class Main extends ApplicationAdapter {
             new String[]{"Hello Zhoapa!!!","I have nothing to say", "I guess..."}));
         npcs.add(new NPC("Denys",100, 100, 700, 700, textureDenys, world, 1, 1,2f, 1f, 100,
             new String[]{"Hello Popa!!!", "I'm not in mood to talk"}));
-        npcs.add(new NPC("Baryga",100, 100, 800, 200, textureBaryga, world, 0, 1, 3f, 0f, 0,
+        npcs.add(new NPC("Baryga",100, 100, 1000, 200, textureBaryga, world, 0, 1, 3f, 0f, 0,
             new String[]{"Bruder was brauchst du?", "Grass 10 Euro"}));
 
         // === Інтерфейс ===
@@ -137,6 +137,12 @@ public class Main extends ApplicationAdapter {
 
         // === Менеджер діалогів ===
         this.dialogueManager = new DialogueManager(dialogueTable, nameLabel, dialogueLabel);
+
+        // --- Гроші ---
+        Label money = new Label("Money: " + player.getMoney(), skin);
+        money.setPosition(1650, 925);
+        money.setFontScale(3f);
+        stage.addActor(money);
 
         // === Сенсорне керування (для Android) ===
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
@@ -210,6 +216,8 @@ public class Main extends ApplicationAdapter {
 
         world.draw(batch);
         player.draw(batch);
+
+
 
         // Малюємо NPC і підказки
         for (NPC npc : npcs) {

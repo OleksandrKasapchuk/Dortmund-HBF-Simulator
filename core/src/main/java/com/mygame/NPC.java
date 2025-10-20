@@ -29,7 +29,7 @@ public class NPC extends Entity {
 
     @Override
     public void update(float delta) {
-        if (moveTime != 0) {
+        if (moveTime != 0 && speed != 0) {
             timer += delta;
 
             if (isPaused) {
@@ -40,16 +40,15 @@ public class NPC extends Entity {
                     directionY *= -1;
                 }
             } else {
-
                 float newX = x + directionX * speed * delta;
                 float newY = y + directionY * speed * delta;
 
                 // Перевірка колізії з світом
                 boolean collide =
-                    world.isSolid(newX, newY) ||               // лівий верхній
-                        world.isSolid(newX + width, newY) ||       // правий верхній
-                        world.isSolid(newX, newY - height) ||      // лівий нижній
-                        world.isSolid(newX + width, newY - height); // правий нижній
+                    world.isSolid(newX, newY) ||                       // лівий верхній
+                    world.isSolid(newX + width, newY) ||            // правий верхній
+                    world.isSolid(newX, newY - height) ||           // лівий нижній
+                    world.isSolid(newX + width, newY - height);  // правий нижній
 
                 boolean outOfBounds = newX < 0 || newX + width > Main.getWorldWidth()
                     || newY < 0 || newY + height > Main.getWorldHeight();
@@ -73,10 +72,7 @@ public class NPC extends Entity {
     @Override
     public void draw(SpriteBatch batch) {batch.draw(this.texture, x, y, width, height);}
 
-    public boolean isPlayerNear(Player player) {
-        float distance = (float) Math.sqrt(Math.pow(player.x - this.x, 2) + Math.pow(player.y - this.y, 2));
-        return distance < 150;
-    }
+    public boolean isPlayerNear(Player player) {return Math.sqrt(Math.pow(player.x - this.x, 2) + Math.pow(player.y - this.y, 2)) < 150;}
 
     public String getCurrentPhrase() {
         if (texts == null || texts.length == 0) {
@@ -85,18 +81,8 @@ public class NPC extends Entity {
         return texts[count];
     }
 
-    public void advanceDialogue() {
-        count++;
-    }
-
-    public boolean isDialogueFinished() {
-        return count >= texts.length;
-    }
-
-    public void resetDialogue() {
-        this.count = 0;
-    }
-    public String getName(){
-        return this.name;
-    }
+    public void advanceDialogue(){count++;}
+    public boolean isDialogueFinished(){return count >= texts.length;}
+    public void resetDialogue(){this.count = 0;}
+    public String getName(){return this.name;}
 }
