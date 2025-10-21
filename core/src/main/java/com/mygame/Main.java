@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 
+
 public class Main extends ApplicationAdapter {
 
     // === Основні ігрові об'єкти ===
@@ -27,6 +28,8 @@ public class Main extends ApplicationAdapter {
 
     // Текстури
     private Texture textureZoe;
+    private Texture textureSpoon;
+    private InteractableObject spoon;
 
     // === Константи світу ===
     private static final int WORLD_WIDTH = 4000;
@@ -39,6 +42,7 @@ public class Main extends ApplicationAdapter {
         // === Ініціалізація базових систем ===
         batch = new SpriteBatch();
         textureZoe = new Texture("zoe.png");
+        textureSpoon = new Texture("spoon.png");
 
         font = new BitmapFont();
         font.getData().setScale(2.5f);
@@ -51,6 +55,7 @@ public class Main extends ApplicationAdapter {
         player = new Player(500, 90, 90, 200, 200, textureZoe, world);
         uiManager = new UIManager(player);
         npcManager = new NpcManager(batch, player,world,uiManager,font);
+        spoon = new InteractableObject("spoon", 60, 60, 500, 1800, textureSpoon, world);
     }
 
     @Override
@@ -60,7 +65,10 @@ public class Main extends ApplicationAdapter {
         // === Оновлення ігрової логіки ===
         player.update(delta);
         uiManager.update(delta, player, npcManager.getNpcs());
-
+        if (spoon != null && spoon.isPlayerNear(player)){
+            player.getInventory().addItem(spoon.getName(), 1);
+            spoon = null;
+        }
         // === Камера слідкує за гравцем ===
         float targetX = player.x + player.width / 2f;
         float targetY = player.y + player.height / 2f;
@@ -78,6 +86,7 @@ public class Main extends ApplicationAdapter {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         world.draw(batch);
+        if(spoon!=null){spoon.draw(batch);}
         player.draw(batch);
         npcManager.render();
         batch.end();
@@ -96,6 +105,7 @@ public class Main extends ApplicationAdapter {
     public void dispose() {
         // === Очищення пам’яті ===
         textureZoe.dispose();
+        textureSpoon.dispose();
         batch.dispose();
         font.dispose();
         world.dispose();

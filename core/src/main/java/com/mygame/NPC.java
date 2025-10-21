@@ -71,7 +71,6 @@ public class NPC extends Entity {
         }
     }
 
-
     public String getCurrentPhrase() {
         if (texts == null || texts.length == 0) {
             return "";
@@ -86,12 +85,11 @@ public class NPC extends Entity {
     public String getName(){return this.name;}
     public void setAction(Runnable action){this.action = action;}
     public void runAction(){if (action != null) action.run();}
-    public void setTexts(String[] texts) {
-        this.texts = texts;
-    }
+
+    public void setTexts(String[] texts) {this.texts = texts;}
+
     public void nextDialogueCount(){this.dialogueCount++;}
     public int getDialogueCount(){return this.dialogueCount;}
-    public void setTexture(Texture texture) {
-        this.texture = texture;
-    }
+
+    public void setTexture(Texture texture) {this.texture = texture;}
 }

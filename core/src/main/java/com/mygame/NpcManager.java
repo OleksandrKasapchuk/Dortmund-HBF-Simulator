@@ -16,6 +16,7 @@ public class NpcManager {
     private Texture textureChikita;
     private Texture texturePolice;
     private Texture textureKioskMan;
+    private Texture textureJunky;
     private  NPC police;
 
     private Player player;
@@ -35,6 +36,7 @@ public class NpcManager {
         textureChikita = new Texture("chikita.png");
         texturePolice = new Texture("police.png");
         textureKioskMan = new Texture("kioskman.png");
+        textureJunky = new Texture("junky.png");
 
         NPC igo = new NPC("Igo",100, 100, 500, 300, textureIgo, world,
             1, 0, 3f, 0f,0,150,
@@ -134,6 +136,19 @@ public class NpcManager {
                 uiManager.showInfoMessage("You enough money", 1.5f);
             }
         });
+
+        NPC junky = new NPC("Junky",100, 100, 100, 700, textureJunky,
+            world, 1, 0, 3f, 0, 75, 100,
+            new String[]{"Hast du mal nen Loffel?"});
+        npcs.add(junky);
+
+        junky.setAction(() -> {
+            if (player.getInventory().removeItem("spoon", 1)) {
+                uiManager.showInfoMessage("You got respect from junky", 1.5f);
+            } else {
+                uiManager.showInfoMessage("You do not have a spoon", 1.5f);
+            }
+        });
     }
 
     public void render(){
@@ -154,6 +169,8 @@ public class NpcManager {
         textureBaryga.dispose();
         textureChikita.dispose();
         texturePolice.dispose();
+        textureKioskMan.dispose();
+        textureJunky.dispose();
     }
     public ArrayList<NPC> getNpcs() {return npcs;}
 }
