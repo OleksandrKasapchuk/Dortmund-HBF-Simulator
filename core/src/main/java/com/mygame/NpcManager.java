@@ -16,6 +16,7 @@ public class NpcManager {
     private Texture textureBaryga;
     private Texture textureChikita;
     private Texture texturePolice;
+    private  NPC police;
 
     private Player player;
     private SpriteBatch batch;
@@ -95,7 +96,7 @@ public class NpcManager {
             }
         });
 
-        NPC police = new NPC("Police",120, 120, 575, 350, texturePolice, world, 1, 0, 3f, 6f, 75,
+        police = new NPC("Police",120, 120, 400, 600, texturePolice, world, 1, 0, 3f, 0, 75,
             new String[]{"Polizeikontrolle, haben Sie Grass?"});
         npcs.add(police);
 

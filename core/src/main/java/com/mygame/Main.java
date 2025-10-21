@@ -16,7 +16,6 @@ public class Main extends ApplicationAdapter {
 
     // === Основні ігрові об'єкти ===
     private Player player;
-
     private World world;
     private UIManager uiManager;
     private NpcManager npcManager;
@@ -42,6 +41,7 @@ public class Main extends ApplicationAdapter {
         batch = new SpriteBatch();
         textureZoe = new Texture("zoe.png");
 
+
         font = new BitmapFont();
         font.getData().setScale(2.5f);
         font.setUseIntegerPositions(false);
@@ -50,7 +50,6 @@ public class Main extends ApplicationAdapter {
         viewport = new FitViewport(2000, 1000, camera);
         world = new World();
 
-        // === Гравець та UI Manager ===
         player = new Player(500, 100, 100, 200, 200, textureZoe, world);
         uiManager = new UIManager(player);
         npcManager = new NpcManager(batch, player,world,uiManager,font);
@@ -62,7 +61,6 @@ public class Main extends ApplicationAdapter {
 
         // === Оновлення ігрової логіки ===
         player.update(delta);
-
         uiManager.update(delta, player, npcManager.getNpcs());
 
         // === Камера слідкує за гравцем ===
@@ -83,13 +81,11 @@ public class Main extends ApplicationAdapter {
         batch.begin();
         world.draw(batch);
         player.draw(batch);
-
         npcManager.render();
         batch.end();
 
         // --- UI ---
         uiManager.render();
-
     }
 
     @Override

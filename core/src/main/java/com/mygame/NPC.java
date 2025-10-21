@@ -69,9 +69,6 @@ public class NPC extends Entity {
         }
     }
 
-    @Override
-    public void draw(SpriteBatch batch) {batch.draw(this.texture, x, y, width, height);}
-
     public boolean isPlayerNear(Player player) {return Math.sqrt(Math.pow(player.x - this.x, 2) + Math.pow(player.y - this.y, 2)) < 150;}
 
     public String getCurrentPhrase() {

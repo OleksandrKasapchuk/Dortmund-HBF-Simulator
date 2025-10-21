@@ -20,5 +20,5 @@ public abstract class Entity {
         this.world = world;
     }
     public abstract void update(float delta);
-    public abstract void draw(SpriteBatch batch);
+    public void draw(SpriteBatch batch){batch.draw(this.texture, x, y, width, height);}
 }
