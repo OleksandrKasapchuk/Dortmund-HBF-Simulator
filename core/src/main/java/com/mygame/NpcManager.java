@@ -4,10 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class NpcManager {
     private ArrayList<NPC> npcs = new ArrayList<>();
@@ -29,6 +26,7 @@ public class NpcManager {
         this.batch = batch;
         this.player = player;
         this.font = font;
+
         textureRyzhyi = new Texture("ryzhyi.png");
         textureDenys = new Texture("denys.png");
         textureIgo = new Texture("igo.png");
@@ -66,9 +64,9 @@ public class NpcManager {
         ryzhyi.setAction(() -> {
             if (ryzhyi.getDialogueCount() == 1) {
                 player.getInventory().addItem("money", 20);
-                uiManager.showInfoMessage("You got 10 euro",1.5f);
+                uiManager.showInfoMessage("You got 20 euro",1.5f);
                 ryzhyi.nextDialogueCount();
-                ryzhyi.setTexts(new String[]{"I gave 10 euro why do I still see you "});
+                ryzhyi.setTexts(new String[]{"I gave 20 euro why do I still see you "});
             }
         });
 
@@ -91,17 +89,19 @@ public class NpcManager {
             }
         });
 
-        NPC chikita = new NPC("Chikita",100, 100, 1575, 100, textureChikita,
+        NPC chikita = new NPC("Chikita",100, 100, 1500, 600, textureChikita,
             world, 0, 1, 3f, 0f, 0,150,
-            new String[]{"Gib grass du bekommen kosyak"});
+            new String[]{"Gib grass und papier dann du bekommen kosyak"});
         npcs.add(chikita);
 
         chikita.setAction(() -> {
-            if (player.getInventory().removeItem("grass",1)) {
+            if (player.getInventory().hasItem("grass") &&  player.getInventory().hasItem("papier")) {
+                player.getInventory().removeItem("grass",1);
+                player.getInventory().removeItem("papier",1);
                 player.getInventory().addItem("kosyak", 1);
                 uiManager.showInfoMessage("You got 1 kosyak", 1.5f);
             } else {
-                uiManager.showInfoMessage("Not enough grass", 1.5f);
+                uiManager.showInfoMessage("Not enough grass or papier", 1.5f);
             }
         });
 
@@ -125,6 +125,15 @@ public class NpcManager {
             world, 1, 0, 3f, 0, 75, 100,
             new String[]{"Hallo! Was wollen Sie?"});
         npcs.add(kioskman);
+
+        kioskman.setAction(() -> {
+            if (player.getInventory().removeItem("money", 5)) {
+                player.getInventory().addItem("papier", 1);
+                uiManager.showInfoMessage("You got 1 papier", 1.5f);
+            } else {
+                uiManager.showInfoMessage("You enough money", 1.5f);
+            }
+        });
     }
 
     public void render(){

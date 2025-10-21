@@ -17,6 +17,7 @@ public class NPC extends Entity {
     private int dialogueCount = 1;
     private int distance;
 
+
     public NPC(String name, int width, int height, float x, float y, Texture texture, World world, int directionX, int directionY, float pauseTime, float moveTime, int speed,int distance, String[] texts){
         super(width, height, x, y, texture, world);
         this.name = name;

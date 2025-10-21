@@ -12,50 +12,41 @@ public class DialogueManager {
     private NPC activeNpc = null;
     private final Table dialogueTable;
     private final Label nameLabel;
-    private NPC recentlyFinishedForcedNpc = null; // NPC, з яким щойно завершився примусовий діалог
-
+    private NPC recentlyFinishedForcedNpc = null;
 
     public DialogueManager(Table dialogueTable, Label nameLabel, Label dialogueLabel) {
         this.dialogueTable = dialogueTable;
         this.nameLabel = nameLabel;
         this.dialogueLabel = dialogueLabel;
     }
-    // --- Логіка діалогів ---
+
     public void update(float delta, ArrayList<NPC> npcs, Player player, boolean interactPressed) {
-        // --- Скидання "імунітету", якщо гравець відійшов від поліцейського ---
         if (recentlyFinishedForcedNpc != null && !recentlyFinishedForcedNpc.isPlayerNear(player)) {
             recentlyFinishedForcedNpc = null;
         }
 
-        // --- Примусовий діалог (для поліції) ---
-        if (activeNpc == null) { // Перевіряємо, тільки якщо немає активного діалогу
+        if (activeNpc == null) {
             for (NPC npc : npcs) {
-                // Починаємо діалог, тільки якщо це поліцейський і ми не щойно закінчили з ним розмову
                 if (npc.getName().equals("Police") && npc.isPlayerNear(player) && npc != recentlyFinishedForcedNpc) {
-                    activeNpc = npc; // Примусово починаємо діалог
+                    activeNpc = npc;
                     textTimer = 0f;
-                    break; // Виходимо, щоб не перевіряти інших
+                    break;
                 }
             }
         }
 
-        // 1. Обробка натискання кнопки
         if (interactPressed) {
             if (activeNpc != null) {
-                // Діалог вже початий: пропускаємо анімацію або переходимо до наступної фрази
                 String fullText = activeNpc.getCurrentPhrase();
-                int lettersToShow = (int)(textTimer / textSpeed);
+                int lettersToShow = (int) (textTimer / textSpeed);
 
                 if (lettersToShow < fullText.length()) {
-                    // Анімація ще триває -> пропускаємо її
-                    textTimer = fullText.length() * textSpeed; // Показуємо весь текст
+                    textTimer = fullText.length() * textSpeed;
                 } else {
-                    // Анімація завершена -> переходимо до наступної фрази
                     activeNpc.advanceDialogue();
-                    textTimer = 0f; // Скидаємо таймер для нової фрази
+                    textTimer = 0f;
                 }
             } else {
-                // Діалог неактивний: шукаємо NPC поруч, щоб почати розмову
                 for (NPC npc : npcs) {
                     if (npc.isPlayerNear(player)) {
                         activeNpc = npc;
@@ -65,12 +56,12 @@ public class DialogueManager {
                 }
             }
         }
-        // 2. Якщо гравець відійшов від активного NPC, завершуємо діалог
+
         if (activeNpc != null && !activeNpc.isPlayerNear(player)) {
             activeNpc.resetDialogue();
             activeNpc = null;
         }
-        // 3. Якщо є активний діалог, анімуємо текст
+
         if (activeNpc != null) {
             if (!activeNpc.isDialogueFinished()) {
                 if (activeNpc.getName().equals("Police")) {
@@ -81,7 +72,7 @@ public class DialogueManager {
                 String fullText = activeNpc.getCurrentPhrase();
 
                 textTimer += delta;
-                int lettersToShow = (int)(textTimer / textSpeed);
+                int lettersToShow = (int) (textTimer / textSpeed);
 
                 if (lettersToShow > fullText.length()) {
                     lettersToShow = fullText.length();
@@ -91,17 +82,13 @@ public class DialogueManager {
             } else {
                 activeNpc.runAction();
                 activeNpc.resetDialogue();
-
-                // Позначаємо, що ми щойно закінчили примусовий діалог
                 if (activeNpc.getName().equals("Police")) {
                     recentlyFinishedForcedNpc = activeNpc;
                     player.setMovementLocked(false);
                 }
-
-                activeNpc = null;
+                activeNpc = null; // Завершуємо діалог
             }
         } else {
-            // Немає активного діалогу, ховаємо вікно
             dialogueTable.setVisible(false);
         }
     }

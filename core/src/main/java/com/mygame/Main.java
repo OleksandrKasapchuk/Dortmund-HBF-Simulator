@@ -1,6 +1,5 @@
 package com.mygame;
 
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -40,7 +39,6 @@ public class Main extends ApplicationAdapter {
         // === Ініціалізація базових систем ===
         batch = new SpriteBatch();
         textureZoe = new Texture("zoe.png");
-
 
         font = new BitmapFont();
         font.getData().setScale(2.5f);
