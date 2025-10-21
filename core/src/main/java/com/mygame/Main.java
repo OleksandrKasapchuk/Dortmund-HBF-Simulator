@@ -50,7 +50,7 @@ public class Main extends ApplicationAdapter {
         viewport = new FitViewport(2000, 1000, camera);
         world = new World();
 
-        player = new Player(500, 100, 100, 200, 200, textureZoe, world);
+        player = new Player(500, 90, 90, 200, 200, textureZoe, world);
         uiManager = new UIManager(player);
         npcManager = new NpcManager(batch, player,world,uiManager,font);
     }

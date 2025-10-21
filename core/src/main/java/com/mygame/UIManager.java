@@ -149,6 +149,24 @@ public class UIManager {
             }
         });
         stage.addActor(actButton);
+
+        // Кнопка інвентаря
+        TextButton inventoryButton = new TextButton("INV", skin);
+        inventoryButton.setSize(150, 150);
+        inventoryButton.setPosition(1800, 325); // трохи лівіше від ACT
+        inventoryButton.getLabel().setFontScale(3.5f);
+        inventoryButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                inventoryVisible = !inventoryVisible;
+                inventoryTable.setVisible(inventoryVisible);
+                if (inventoryVisible) {
+                    updateInventoryTable(player);
+                }
+                return true;
+            }
+        });
+        stage.addActor(inventoryButton);
     }
 
     public void update(float delta, Player player, ArrayList<NPC> npcs) {

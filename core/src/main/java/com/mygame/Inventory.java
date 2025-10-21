@@ -16,19 +16,18 @@ public class Inventory {
     }
 
     // Забрати предмет
-    public boolean removeItem(String itemName, int amount) {
-        if (items.containsKey(itemName)) {
-            int current = items.get(itemName);
-            if (current >= amount) {
-                items.put(itemName, current - amount);
-                if (items.get(itemName) == 0) {
-                    items.remove(itemName);
-                }
-                return true; // вистачає
-            }
+    public boolean removeItem(String itemName, int count) {
+        if (!items.containsKey(itemName)) return false;
+
+        int current = items.get(itemName);
+        if (current <= count) {
+            items.remove(itemName); // видаляємо весь стек
+        } else {
+            items.put(itemName, current - count);
         }
-        return false; // не вистачає кількості або предмета
+        return true;
     }
+
 
     // Перевірити наявність
     public boolean hasItem(String itemName) {return items.containsKey(itemName);}

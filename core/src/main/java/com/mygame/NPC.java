@@ -1,7 +1,6 @@
 package com.mygame;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class NPC extends Entity {
     private float timer = 0f;
@@ -16,8 +15,9 @@ public class NPC extends Entity {
     private int speed;
     private Runnable action = null;
     private int dialogueCount = 1;
+    private int distance;
 
-    public NPC(String name, int width, int height, float x, float y, Texture texture, World world, int directionX, int directionY, float pauseTime, float moveTime, int speed, String[] texts){
+    public NPC(String name, int width, int height, float x, float y, Texture texture, World world, int directionX, int directionY, float pauseTime, float moveTime, int speed,int distance, String[] texts){
         super(width, height, x, y, texture, world);
         this.name = name;
         this.texts = texts;
@@ -26,6 +26,7 @@ public class NPC extends Entity {
         this.pauseTime = pauseTime;
         this.moveTime = moveTime;
         this.speed = speed;
+        this.distance = distance;
     }
 
     @Override
@@ -69,7 +70,6 @@ public class NPC extends Entity {
         }
     }
 
-    public boolean isPlayerNear(Player player) {return Math.sqrt(Math.pow(player.x - this.x, 2) + Math.pow(player.y - this.y, 2)) < 150;}
 
     public String getCurrentPhrase() {
         if (texts == null || texts.length == 0) {
@@ -78,6 +78,7 @@ public class NPC extends Entity {
         return texts[count];
     }
 
+    public boolean isPlayerNear(Player player) {return Math.sqrt(Math.pow(player.x - this.x, 2) + Math.pow(player.y - this.y, 2)) < this.distance;}
     public void advanceDialogue(){count++;}
     public boolean isDialogueFinished(){return count >= texts.length;}
     public void resetDialogue(){this.count = 0;}

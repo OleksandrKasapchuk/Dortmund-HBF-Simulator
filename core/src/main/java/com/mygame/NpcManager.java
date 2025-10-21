@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class NpcManager {
     private ArrayList<NPC> npcs = new ArrayList<>();
@@ -16,6 +18,7 @@ public class NpcManager {
     private Texture textureBaryga;
     private Texture textureChikita;
     private Texture texturePolice;
+    private Texture textureKioskMan;
     private  NPC police;
 
     private Player player;
@@ -33,15 +36,17 @@ public class NpcManager {
         textureBaryga = new Texture("baryga.png");
         textureChikita = new Texture("chikita.png");
         texturePolice = new Texture("police.png");
+        textureKioskMan = new Texture("kioskman.png");
 
-        NPC igo = new NPC("Igo",100, 100, 500, 300, textureIgo, world, 1, 0, 3f, 0f,0,
+        NPC igo = new NPC("Igo",100, 100, 500, 300, textureIgo, world,
+            1, 0, 3f, 0f,0,150,
             new String[]{"Hallo Bruder!", "Gib kosyak"});
         npcs.add(igo);
 
         igo.setAction(() -> {
             if (igo.getDialogueCount() == 1)
                 if(player.getInventory().removeItem("kosyak", 1)) {
-                    player.getInventory().addItem("Vape", 1);
+                    player.getInventory().addItem("vape", 1);
                     uiManager.showInfoMessage("You got 1 Vape", 1.5f);
                     uiManager.updateQuestMessage("");
                     igo.nextDialogueCount();
@@ -53,24 +58,27 @@ public class NpcManager {
                 }
         });
 
-        NPC ryzhyi = new NPC("Ryzhyi",100, 100, 1100, 500, textureRyzhyi, world, 0, 1, 1f, 2f,200,
+        NPC ryzhyi = new NPC("Ryzhyi",100, 100, 1100, 500, textureRyzhyi,
+            world, 0, 1, 1f, 2f,200, 150,
             new String[]{"Please take 10 euro but fuck off"});
         npcs.add(ryzhyi);
 
         ryzhyi.setAction(() -> {
             if (ryzhyi.getDialogueCount() == 1) {
-                player.getInventory().addItem("money", 10);
+                player.getInventory().addItem("money", 20);
                 uiManager.showInfoMessage("You got 10 euro",1.5f);
                 ryzhyi.nextDialogueCount();
                 ryzhyi.setTexts(new String[]{"I gave 10 euro why do I still see you "});
             }
         });
 
-        NPC denys = new NPC("Denys",100, 100, 700, 700, textureDenys, world, 1, 1,2f, 1f, 100,
+        NPC denys = new NPC("Denys",100, 100, 700, 700, textureDenys,
+            world, 1, 1,2f, 1f, 100, 150,
             new String[]{"Hello Popa!!!", "I'm not in mood to talk"});
         npcs.add(denys);
 
-        NPC baryga = new NPC("Baryga",100, 100, 1000, 200, textureBaryga, world, 0, 1, 3f, 0f, 0,
+        NPC baryga = new NPC("Baryga",100, 100, 1000, 200, textureBaryga,
+            world, 0, 1, 3f, 0f, 0,150,
             new String[]{"Bruder was brauchst du?", "Grass 10 Euro"});
         npcs.add(baryga);
 
@@ -83,7 +91,8 @@ public class NpcManager {
             }
         });
 
-        NPC chikita = new NPC("Chikita",100, 100, 1575, 200, textureChikita, world, 0, 1, 3f, 0f, 0,
+        NPC chikita = new NPC("Chikita",100, 100, 1575, 100, textureChikita,
+            world, 0, 1, 3f, 0f, 0,150,
             new String[]{"Gib grass du bekommen kosyak"});
         npcs.add(chikita);
 
@@ -96,14 +105,26 @@ public class NpcManager {
             }
         });
 
-        police = new NPC("Police",120, 120, 400, 600, texturePolice, world, 1, 0, 3f, 0, 75,
+        police = new NPC("Police",120, 120, 400, 600, texturePolice,
+            world, 1, 0, 3f, 0, 75, 100,
             new String[]{"Polizeikontrolle, haben Sie Grass?"});
         npcs.add(police);
 
         police.setAction(() -> {
-            player.getInventory().removeItem("grass", 1);
-            player.getInventory().removeItem("kosyak", 1);
+            if (player.getInventory().removeItem("grass", 10) |
+                player.getInventory().removeItem("kosyak", 10) |
+                player.getInventory().removeItem("vape", 10)) {
+
+                uiManager.showInfoMessage("You lost your stuff", 1.5f);
+            } else {
+                uiManager.showInfoMessage("You passed the Polizeikontrolle", 1.5f);
+            }
         });
+
+        NPC kioskman = new NPC("Mohammed",100, 100, 1575, 350, textureKioskMan,
+            world, 1, 0, 3f, 0, 75, 100,
+            new String[]{"Hallo! Was wollen Sie?"});
+        npcs.add(kioskman);
     }
 
     public void render(){
@@ -120,6 +141,7 @@ public class NpcManager {
         textureRyzhyi.dispose();
         textureDenys.dispose();
         textureIgo.dispose();
+        textureIgo2.dispose();
         textureBaryga.dispose();
         textureChikita.dispose();
         texturePolice.dispose();
