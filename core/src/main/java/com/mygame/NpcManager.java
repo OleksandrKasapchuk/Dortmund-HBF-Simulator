@@ -1,22 +1,13 @@
 package com.mygame;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import java.util.ArrayList;
 
 public class NpcManager {
     private ArrayList<NPC> npcs = new ArrayList<>();
-    private Texture textureRyzhyi;
-    private Texture textureDenys;
-    private Texture textureIgo;
-    private Texture textureIgo2;
-    private Texture textureBaryga;
-    private Texture textureChikita;
-    private Texture texturePolice;
-    private Texture textureKioskMan;
-    private Texture textureJunky;
+
     private  NPC police;
 
     private Player player;
@@ -28,17 +19,9 @@ public class NpcManager {
         this.player = player;
         this.font = font;
 
-        textureRyzhyi = new Texture("ryzhyi.png");
-        textureDenys = new Texture("denys.png");
-        textureIgo = new Texture("igo.png");
-        textureIgo2 = new Texture("igo2.png");
-        textureBaryga = new Texture("baryga.png");
-        textureChikita = new Texture("chikita.png");
-        texturePolice = new Texture("police.png");
-        textureKioskMan = new Texture("kioskman.png");
-        textureJunky = new Texture("junky.png");
 
-        NPC igo = new NPC("Igo",100, 100, 500, 300, textureIgo, world,
+
+        NPC igo = new NPC("Igo",100, 100, 500, 300, Assets.textureIgo, world,
             1, 0, 3f, 0f,0,150,
             new String[]{"Hallo Bruder!", "Gib kosyak"});
         npcs.add(igo);
@@ -51,14 +34,24 @@ public class NpcManager {
                     uiManager.updateQuestMessage("");
                     igo.nextDialogueCount();
                     igo.setTexts(new String[]{"Danke Bruder!"});
-                    igo.setTexture(textureIgo2);
+                    Assets.lighterSound.play();
+
+                    // Відкладена зміна текстури через Timer
+                    float soundDuration = 5f; // тривалість в секундах
+                    com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                        @Override
+                        public void run() {
+                            igo.setTexture(Assets.textureIgo2);
+                        }
+                    }, soundDuration);
+
                 } else {
                     uiManager.showInfoMessage("Not enough kosyak", 1.5f);
                     uiManager.updateQuestMessage("Get some kosyak for igo");
                 }
         });
 
-        NPC ryzhyi = new NPC("Ryzhyi",100, 100, 1100, 500, textureRyzhyi,
+        NPC ryzhyi = new NPC("Ryzhyi",100, 100, 1100, 500, Assets.textureRyzhyi,
             world, 0, 1, 1f, 2f,200, 150,
             new String[]{"Please take 10 euro but fuck off"});
         npcs.add(ryzhyi);
@@ -66,18 +59,19 @@ public class NpcManager {
         ryzhyi.setAction(() -> {
             if (ryzhyi.getDialogueCount() == 1) {
                 player.getInventory().addItem("money", 20);
+                Assets.moneySound.play(0.5f);
                 uiManager.showInfoMessage("You got 20 euro",1.5f);
                 ryzhyi.nextDialogueCount();
                 ryzhyi.setTexts(new String[]{"I gave 20 euro why do I still see you "});
             }
         });
 
-        NPC denys = new NPC("Denys",100, 100, 700, 700, textureDenys,
+        NPC denys = new NPC("Denys",100, 100, 700, 700, Assets.textureDenys,
             world, 1, 1,2f, 1f, 100, 150,
             new String[]{"Hello Popa!!!", "I'm not in mood to talk"});
         npcs.add(denys);
 
-        NPC baryga = new NPC("Baryga",100, 100, 1000, 200, textureBaryga,
+        NPC baryga = new NPC("Baryga",100, 100, 1000, 200, Assets.textureBaryga,
             world, 0, 1, 3f, 0f, 0,150,
             new String[]{"Bruder was brauchst du?", "Grass 10 Euro"});
         npcs.add(baryga);
@@ -91,7 +85,7 @@ public class NpcManager {
             }
         });
 
-        NPC chikita = new NPC("Chikita",100, 100, 1500, 600, textureChikita,
+        NPC chikita = new NPC("Chikita",100, 100, 1500, 600, Assets.textureChikita,
             world, 0, 1, 3f, 0f, 0,150,
             new String[]{"Gib grass und papier dann du bekommen kosyak"});
         npcs.add(chikita);
@@ -100,14 +94,21 @@ public class NpcManager {
             if (player.getInventory().hasItem("grass") &&  player.getInventory().hasItem("papier")) {
                 player.getInventory().removeItem("grass",1);
                 player.getInventory().removeItem("papier",1);
-                player.getInventory().addItem("kosyak", 1);
-                uiManager.showInfoMessage("You got 1 kosyak", 1.5f);
+                Assets.kosyakSound.play(0.6f);
+                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                    @Override
+                    public void run() {
+                        player.getInventory().addItem("kosyak", 1);
+                        uiManager.showInfoMessage("You got 1 kosyak", 1.5f);
+                    }
+                }, 1);
+
             } else {
                 uiManager.showInfoMessage("Not enough grass or papier", 1.5f);
             }
         });
 
-        police = new NPC("Police",120, 120, 400, 600, texturePolice,
+        police = new NPC("Police",120, 120, 400, 600, Assets.texturePolice,
             world, 1, 0, 3f, 0, 75, 100,
             new String[]{"Polizeikontrolle, haben Sie Grass?"});
         npcs.add(police);
@@ -123,7 +124,7 @@ public class NpcManager {
             }
         });
 
-        NPC kioskman = new NPC("Mohammed",100, 100, 1575, 350, textureKioskMan,
+        NPC kioskman = new NPC("Mohammed",100, 100, 1575, 350, Assets.textureKioskMan,
             world, 1, 0, 3f, 0, 75, 100,
             new String[]{"Hallo! Was wollen Sie?"});
         npcs.add(kioskman);
@@ -137,7 +138,7 @@ public class NpcManager {
             }
         });
 
-        NPC junky = new NPC("Junky",100, 100, 100, 700, textureJunky,
+        NPC junky = new NPC("Junky",100, 100, 100, 700, Assets.textureJunky,
             world, 1, 0, 3f, 0, 75, 100,
             new String[]{"Hast du mal nen Loffel?"});
         npcs.add(junky);
@@ -161,16 +162,6 @@ public class NpcManager {
             }
         }
     }
-    public void dispose(){
-        textureRyzhyi.dispose();
-        textureDenys.dispose();
-        textureIgo.dispose();
-        textureIgo2.dispose();
-        textureBaryga.dispose();
-        textureChikita.dispose();
-        texturePolice.dispose();
-        textureKioskMan.dispose();
-        textureJunky.dispose();
-    }
+
     public ArrayList<NPC> getNpcs() {return npcs;}
 }

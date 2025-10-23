@@ -4,7 +4,6 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -27,8 +26,6 @@ public class Main extends ApplicationAdapter {
     private BitmapFont font;
 
     // Текстури
-    private Texture textureZoe;
-    private Texture textureSpoon;
     private InteractableObject spoon;
 
     // === Константи світу ===
@@ -39,10 +36,9 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void create() {
-        // === Ініціалізація базових систем ===
+        Assets.load();
         batch = new SpriteBatch();
-        textureZoe = new Texture("zoe.png");
-        textureSpoon = new Texture("spoon.png");
+
 
         font = new BitmapFont();
         font.getData().setScale(2.5f);
@@ -52,10 +48,10 @@ public class Main extends ApplicationAdapter {
         viewport = new FitViewport(2000, 1000, camera);
         world = new World();
 
-        player = new Player(500, 90, 90, 200, 200, textureZoe, world);
+        player = new Player(500, 90, 90, 200, 200, Assets.textureZoe, world);
         uiManager = new UIManager(player);
         npcManager = new NpcManager(batch, player,world,uiManager,font);
-        spoon = new InteractableObject("spoon", 60, 60, 500, 1800, textureSpoon, world);
+        spoon = new InteractableObject("spoon", 60, 60, 500, 1800, Assets.textureSpoon, world);
     }
 
     @Override
@@ -104,12 +100,9 @@ public class Main extends ApplicationAdapter {
     @Override
     public void dispose() {
         // === Очищення пам’яті ===
-        textureZoe.dispose();
-        textureSpoon.dispose();
+        Assets.dispose();
         batch.dispose();
         font.dispose();
-        world.dispose();
         uiManager.dispose();
-        npcManager.dispose();
     }
 }

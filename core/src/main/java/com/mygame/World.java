@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class World {
 
     int tileSize = 100;
-    Texture brick;
-    Texture bush;
 
     Block[][] blocks;
 
@@ -35,16 +33,15 @@ public class World {
     };
 
     public World() {
-        brick = new Texture("brick.png");
-        bush = new Texture("bush.png");
+
         blocks = new Block[map.length][map[0].length];
 
         for (int y = 0; y < map.length; y++) {
             for (int x = 0; x < map[y].length; x++) {
                 if (map[y][x] == 1){
-                    blocks[y][x] = new Block(true,brick);
+                    blocks[y][x] = new Block(true,Assets.brick);
                 } else if (map[y][x] == 2) {
-                    blocks[y][x] = new Block(false,bush);
+                    blocks[y][x] = new Block(false,Assets.bush);
                 }
             }
         }
@@ -70,10 +67,5 @@ public class World {
                 }
             }
         }
-    }
-
-    public void dispose() {
-        brick.dispose();
-        bush.dispose();
     }
 }
