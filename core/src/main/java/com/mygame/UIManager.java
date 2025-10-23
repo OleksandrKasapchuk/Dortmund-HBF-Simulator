@@ -12,81 +12,46 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import java.util.ArrayList;
-import java.util.Map;
+
 
 public class UIManager {
     private final Stage stage;
     private final Skin skin;
+
+    //Labels
     private final Label moneyLabel;
     private final Label infoLabel;
 
-    private final Table inventoryTable;
     private final DialogueManager dialogueManager;
 
-    private boolean inventoryVisible = false;
     private float infoMessageTimer = 0f;
     private boolean actButtonJustPressed = false;
 
     // Disposable resources
-    private final Texture dialogueBgTexture;
     private Texture knobTexture;
     private Texture bgTexture;
-    private final Texture inventoryBgTexture;
 
-    private final Table questTable;
-    private boolean questVisible = false;
+    //UI MANAGERS
+    private QuestUI questUI;
+    private InventoryUI inventoryUI;
+    private DialogueUI dialogueUI;
 
     public UIManager(Player player) {
         stage = new Stage(new FitViewport(2000, 1000));
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
-        // === Діалогова таблиця ===
-        Pixmap dialogueBg = new Pixmap(1950, 180, Pixmap.Format.RGBA8888);
-        dialogueBg.setColor(new Color(0.1f, 0.1f, 0.5f, 0.6f));
-        dialogueBg.fill();
-        this.dialogueBgTexture = new Texture(dialogueBg);
-        dialogueBg.dispose();
-        TextureRegionDrawable background = new TextureRegionDrawable(new TextureRegion(dialogueBgTexture));
-        Table dialogueTable = new Table();
-        dialogueTable.setSize(1950, 180);
-        dialogueTable.setPosition(25, 30);
-        dialogueTable.setBackground(background);
-        Label nameLabel = new Label("", skin);
-        nameLabel.setFontScale(3f);
-        nameLabel.setColor(Color.GOLD);
-        nameLabel.setAlignment(Align.left);
-        Label dialogueLabel = new Label("", skin);
-        dialogueLabel.setFontScale(3f);
-        dialogueLabel.setWrap(true);
-        dialogueLabel.setAlignment(Align.left);
-        dialogueTable.add(nameLabel).left().padLeft(10).padBottom(20).row();
-        dialogueTable.add(dialogueLabel).width(1800).padLeft(60).left();
-        dialogueTable.setVisible(false);
-        stage.addActor(dialogueTable);
+        questUI = new QuestUI(skin, stage, 1200, 800);
+        inventoryUI = new InventoryUI(stage, skin);
+        dialogueUI = new DialogueUI(skin, stage, 1950, 180, 25f, 30f);
 
-        // === Менеджер діалогів ===
-        this.dialogueManager = new DialogueManager(dialogueTable, nameLabel, dialogueLabel);
 
-        // === Таблиця інвентаря ===
-        inventoryTable = new Table();
-        inventoryTable.setSize(1600, 800);
-        inventoryTable.setPosition(stage.getViewport().getWorldWidth()/2f - 800, stage.getViewport().getWorldHeight()/2f - 400);
-        inventoryTable.align(Align.topLeft).pad(20);
-        Pixmap pixmap = new Pixmap(1600, 800, Pixmap.Format.RGBA8888);
-        pixmap.setColor(new Color(0.1f, 0.1f, 0.7f, 0.4f));
-        pixmap.fill();
-        inventoryBgTexture = new Texture(pixmap);
-        inventoryTable.setBackground(new TextureRegionDrawable(new TextureRegion(inventoryBgTexture)));
-        pixmap.dispose();
-        inventoryTable.setVisible(false);
-        stage.addActor(inventoryTable);
+        this.dialogueManager = new DialogueManager(dialogueUI);
 
 
         // --- Гроші ---
@@ -102,22 +67,6 @@ public class UIManager {
         infoLabel.setFontScale(4f);
         infoLabel.setPosition(stage.getViewport().getWorldWidth() / 2f, 850, Align.center);
         stage.addActor(infoLabel);
-
-        // === Таблиця квестів ===
-        questTable = new Table();
-        questTable.setSize(1200, 800);
-        questTable.setPosition(stage.getViewport().getWorldWidth()/2f - 600, stage.getViewport().getWorldHeight()/2f - 400);
-        questTable.align(Align.topLeft).pad(20);
-
-        Pixmap questBg = new Pixmap(1200, 800, Pixmap.Format.RGBA8888);
-        questBg.setColor(new Color(0.1f, 0.5f, 0.2f, 0.5f)); // зелений відтінок
-        questBg.fill();
-        Texture questBgTexture = new Texture(questBg);
-        questTable.setBackground(new TextureRegionDrawable(new TextureRegion(questBgTexture)));
-        questBg.dispose();
-
-        questTable.setVisible(false);
-        stage.addActor(questTable);
 
 
         // === Сенсорне керування (для Android) ===
@@ -169,11 +118,7 @@ public class UIManager {
         inventoryButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                inventoryVisible = !inventoryVisible;
-                inventoryTable.setVisible(inventoryVisible);
-                if (inventoryVisible) {
-                    updateInventoryTable(player);
-                }
+                inventoryUI.toggle(player);
                 return true;
             }
         });
@@ -191,14 +136,8 @@ public class UIManager {
                 infoLabel.setVisible(false);
             }
         }
-
-        // Перевірка інпут для інвентаря
         if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
-            inventoryVisible = !inventoryVisible;
-            inventoryTable.setVisible(inventoryVisible);
-            if (inventoryVisible) {
-                updateInventoryTable(player);
-            }
+            inventoryUI.toggle(player);
         }
 
         // Оновлення діалогів
@@ -213,19 +152,15 @@ public class UIManager {
         stage.act(delta);
     }
 
-    public void render() {
-        stage.draw();
-    }
+    public void render() {stage.draw();}
 
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
-    }
+    public void resize(int width, int height) {stage.getViewport().update(width, height, true);}
 
     public void dispose() {
         stage.dispose();
         skin.dispose();
-        dialogueBgTexture.dispose();
-        inventoryBgTexture.dispose();
+        dialogueUI.dispose();
+        inventoryUI.dispose();
         if (knobTexture != null) knobTexture.dispose();
         if (bgTexture != null) bgTexture.dispose();
     }
@@ -238,50 +173,7 @@ public class UIManager {
         infoLabel.setVisible(true);
     }
 
-    private void updateInventoryTable(Player player) {
-        inventoryTable.clear();
-        Label titleLabel = new Label("INVENTORY", skin);
-        titleLabel.setFontScale(3f);
-        titleLabel.setColor(Color.GOLD);
-        inventoryTable.add(titleLabel).padBottom(20).colspan(2).row();
-
-        for (Map.Entry<String, Integer> entry : player.getInventory().getItems().entrySet()) {
-            Label itemLabel = new Label(entry.getKey() + ": ", skin);
-            itemLabel.setFontScale(4f);
-            Label countLabel = new Label(String.valueOf(entry.getValue()), skin);
-            countLabel.setFontScale(4f);
-            inventoryTable.add(itemLabel).left();
-            inventoryTable.add(countLabel).left().row();
-        }
-    }
-    public void updateQuestTable() {
-        questTable.clear();
-
-        Label titleLabel = new Label("QUESTS", skin);
-        titleLabel.setFontScale(3f);
-        titleLabel.setColor(Color.GOLD);
-        questTable.add(titleLabel).colspan(2).padBottom(30).center().row();
-
-        if (QuestManager.getQuests().isEmpty()) {
-            Label noQuestLabel = new Label("No quests yet.", skin);
-            noQuestLabel.setFontScale(2.5f);
-            questTable.add(noQuestLabel).center();
-            return;
-        }
-
-        for (QuestManager.Quest quest : QuestManager.getQuests()) {
-            Label questLabel = new Label("• " + quest.getDescription(), skin);
-            questLabel.setFontScale(2.5f);
-            questTable.add(questLabel).left().pad(10).row();
-        }
-    }
-
     public void toggleQuestTable() {
-        questVisible = !questVisible;
-        questTable.setVisible(questVisible);
-
-        if (questVisible) {
-            updateQuestTable();
-        }
+        questUI.toggle();
     }
 }

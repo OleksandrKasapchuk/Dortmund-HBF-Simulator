@@ -7,17 +7,14 @@ import java.util.ArrayList;
 
 public class DialogueManager {
     private float textTimer = 0f;
-    private final Label dialogueLabel;
     private final float textSpeed = 0.05f;
     private NPC activeNpc = null;
-    private final Table dialogueTable;
-    private final Label nameLabel;
     private NPC recentlyFinishedForcedNpc = null;
 
-    public DialogueManager(Table dialogueTable, Label nameLabel, Label dialogueLabel) {
-        this.dialogueTable = dialogueTable;
-        this.nameLabel = nameLabel;
-        this.dialogueLabel = dialogueLabel;
+    private final DialogueUI dialogueUI;
+
+    public DialogueManager(DialogueUI dialogueUI) {
+        this.dialogueUI = dialogueUI;
     }
 
     public void update(float delta, ArrayList<NPC> npcs, Player player, boolean interactPressed) {
@@ -67,18 +64,9 @@ public class DialogueManager {
                 if (activeNpc.getName().equals("Police")) {
                     player.setMovementLocked(true);
                 }
-                dialogueTable.setVisible(true);
-                nameLabel.setText(activeNpc.getName());
-                String fullText = activeNpc.getCurrentPhrase();
-
+                dialogueUI.show(activeNpc.getName(), activeNpc.getCurrentPhrase().substring(0,
+                    Math.min(activeNpc.getCurrentPhrase().length(), (int)(textTimer / textSpeed))));
                 textTimer += delta;
-                int lettersToShow = (int) (textTimer / textSpeed);
-
-                if (lettersToShow > fullText.length()) {
-                    lettersToShow = fullText.length();
-                }
-                String currentText = fullText.substring(0, lettersToShow);
-                dialogueLabel.setText(currentText);
             } else {
                 activeNpc.runAction();
                 activeNpc.resetDialogue();
@@ -86,10 +74,11 @@ public class DialogueManager {
                     recentlyFinishedForcedNpc = activeNpc;
                     player.setMovementLocked(false);
                 }
-                activeNpc = null; // Завершуємо діалог
+                activeNpc = null;
+                dialogueUI.hide();
             }
         } else {
-            dialogueTable.setVisible(false);
+            dialogueUI.hide();
         }
     }
 }

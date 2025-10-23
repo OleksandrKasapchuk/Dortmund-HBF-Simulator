@@ -3,10 +3,10 @@ package com.mygame;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class Inventory {
+public class InventoryManager {
     private Map<String, Integer> items; // itemName -> quantity
 
-    public Inventory() {
+    public InventoryManager() {
         items = new LinkedHashMap<>();
     }
 
