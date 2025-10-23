@@ -60,18 +60,6 @@ public class DialogueUI {
         dialogueTable.setVisible(false);
     }
 
-    public Label getDialogueLabel() {
-        return dialogueLabel;
-    }
-
-    public Label getNameLabel() {
-        return nameLabel;
-    }
-
-    public Table getTable() {
-        return dialogueTable;
-    }
-
     public void dispose() {
         dialogueBgTexture.dispose();
     }

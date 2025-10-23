@@ -15,6 +15,7 @@ public class QuestUI {
     private final Table questTable;
     private final Skin skin;
     private boolean visible = false;
+    private final Texture bgTexture; // Додано поле для текстури
 
     public QuestUI(Skin skin, Stage stage, float width, float height) {
         this.skin = skin;
@@ -28,7 +29,8 @@ public class QuestUI {
         Pixmap bg = new Pixmap((int)width, (int)height, Pixmap.Format.RGBA8888);
         bg.setColor(new Color(0.1f, 0.5f, 0.2f, 0.5f));
         bg.fill();
-        questTable.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(bg))));
+        bgTexture = new Texture(bg); // Зберігаємо текстуру
+        questTable.setBackground(new TextureRegionDrawable(new TextureRegion(bgTexture)));
         bg.dispose();
 
         questTable.setVisible(false);
@@ -60,5 +62,10 @@ public class QuestUI {
         visible = !visible;
         questTable.setVisible(visible);
         if (visible) update();
+    }
+
+    // Метод для звільнення пам'яті
+    public void dispose() {
+        bgTexture.dispose();
     }
 }
