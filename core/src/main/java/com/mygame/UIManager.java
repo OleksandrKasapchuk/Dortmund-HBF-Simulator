@@ -26,7 +26,7 @@ public class UIManager {
     private final Skin skin;
     private final Label moneyLabel;
     private final Label infoLabel;
-    private final Label questLabel; // Додано Label для квестів
+
     private final Table inventoryTable;
     private final DialogueManager dialogueManager;
 
@@ -39,6 +39,9 @@ public class UIManager {
     private Texture knobTexture;
     private Texture bgTexture;
     private final Texture inventoryBgTexture;
+
+    private final Table questTable;
+    private boolean questVisible = false;
 
     public UIManager(Player player) {
         stage = new Stage(new FitViewport(2000, 1000));
@@ -68,6 +71,9 @@ public class UIManager {
         dialogueTable.setVisible(false);
         stage.addActor(dialogueTable);
 
+        // === Менеджер діалогів ===
+        this.dialogueManager = new DialogueManager(dialogueTable, nameLabel, dialogueLabel);
+
         // === Таблиця інвентаря ===
         inventoryTable = new Table();
         inventoryTable.setSize(1600, 800);
@@ -82,8 +88,6 @@ public class UIManager {
         inventoryTable.setVisible(false);
         stage.addActor(inventoryTable);
 
-        // === Менеджер діалогів ===
-        this.dialogueManager = new DialogueManager(dialogueTable, nameLabel, dialogueLabel);
 
         // --- Гроші ---
         moneyLabel = new Label("Money: " + player.getMoney(), skin);
@@ -99,14 +103,21 @@ public class UIManager {
         infoLabel.setPosition(stage.getViewport().getWorldWidth() / 2f, 850, Align.center);
         stage.addActor(infoLabel);
 
-        // --- Квест ---
-        questLabel = new Label("", skin);
-        questLabel.setPosition(50, 925);
-        questLabel.setFontScale(4f);
-        questLabel.setAlignment(Align.center);
-        questLabel.setColor(Color.ORANGE);
-        questLabel.setPosition(stage.getViewport().getWorldWidth() / 2f - questLabel.getWidth() / 2f, 925);
-        stage.addActor(questLabel);
+        // === Таблиця квестів ===
+        questTable = new Table();
+        questTable.setSize(1200, 800);
+        questTable.setPosition(stage.getViewport().getWorldWidth()/2f - 600, stage.getViewport().getWorldHeight()/2f - 400);
+        questTable.align(Align.topLeft).pad(20);
+
+        Pixmap questBg = new Pixmap(1200, 800, Pixmap.Format.RGBA8888);
+        questBg.setColor(new Color(0.1f, 0.5f, 0.2f, 0.5f)); // зелений відтінок
+        questBg.fill();
+        Texture questBgTexture = new Texture(questBg);
+        questTable.setBackground(new TextureRegionDrawable(new TextureRegion(questBgTexture)));
+        questBg.dispose();
+
+        questTable.setVisible(false);
+        stage.addActor(questTable);
 
 
         // === Сенсорне керування (для Android) ===
@@ -227,10 +238,6 @@ public class UIManager {
         infoLabel.setVisible(true);
     }
 
-    public void updateQuestMessage(String message) {
-        questLabel.setText("Mission: "+message);
-    }
-
     private void updateInventoryTable(Player player) {
         inventoryTable.clear();
         Label titleLabel = new Label("INVENTORY", skin);
@@ -245,6 +252,36 @@ public class UIManager {
             countLabel.setFontScale(4f);
             inventoryTable.add(itemLabel).left();
             inventoryTable.add(countLabel).left().row();
+        }
+    }
+    public void updateQuestTable() {
+        questTable.clear();
+
+        Label titleLabel = new Label("QUESTS", skin);
+        titleLabel.setFontScale(3f);
+        titleLabel.setColor(Color.GOLD);
+        questTable.add(titleLabel).colspan(2).padBottom(30).center().row();
+
+        if (QuestManager.getQuests().isEmpty()) {
+            Label noQuestLabel = new Label("No quests yet.", skin);
+            noQuestLabel.setFontScale(2.5f);
+            questTable.add(noQuestLabel).center();
+            return;
+        }
+
+        for (QuestManager.Quest quest : QuestManager.getQuests()) {
+            Label questLabel = new Label("• " + quest.getDescription(), skin);
+            questLabel.setFontScale(2.5f);
+            questTable.add(questLabel).left().pad(10).row();
+        }
+    }
+
+    public void toggleQuestTable() {
+        questVisible = !questVisible;
+        questTable.setVisible(questVisible);
+
+        if (questVisible) {
+            updateQuestTable();
         }
     }
 }

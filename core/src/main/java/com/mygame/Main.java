@@ -2,6 +2,7 @@ package com.mygame;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -15,6 +16,7 @@ public class Main extends ApplicationAdapter {
 
     // === Основні ігрові об'єкти ===
     private Player player;
+    private InteractableObject spoon;
     private World world;
     private UIManager uiManager;
     private NpcManager npcManager;
@@ -25,9 +27,6 @@ public class Main extends ApplicationAdapter {
     private Viewport viewport;
     private BitmapFont font;
 
-    // Текстури
-    private InteractableObject spoon;
-
     // === Константи світу ===
     private static final int WORLD_WIDTH = 4000;
     private static final int WORLD_HEIGHT = 2000;
@@ -37,8 +36,8 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         Assets.load();
-        batch = new SpriteBatch();
 
+        batch = new SpriteBatch();
 
         font = new BitmapFont();
         font.getData().setScale(2.5f);
@@ -57,7 +56,9 @@ public class Main extends ApplicationAdapter {
     @Override
     public void render() {
         float delta = Gdx.graphics.getDeltaTime();
-
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+            uiManager.toggleQuestTable();
+        }
         // === Оновлення ігрової логіки ===
         player.update(delta);
         uiManager.update(delta, player, npcManager.getNpcs());

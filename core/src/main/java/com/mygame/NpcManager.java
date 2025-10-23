@@ -31,7 +31,7 @@ public class NpcManager {
                 if(player.getInventory().removeItem("kosyak", 1)) {
                     player.getInventory().addItem("vape", 1);
                     uiManager.showInfoMessage("You got 1 Vape", 1.5f);
-                    uiManager.updateQuestMessage("");
+                    QuestManager.removeQuest("Igo");
                     igo.nextDialogueCount();
                     igo.setTexts(new String[]{"Danke Bruder!"});
                     Assets.lighterSound.play();
@@ -47,7 +47,7 @@ public class NpcManager {
 
                 } else {
                     uiManager.showInfoMessage("Not enough kosyak", 1.5f);
-                    uiManager.updateQuestMessage("Get some kosyak for igo");
+                    QuestManager.addQuest(new QuestManager.Quest("Igo","Get some kosyak for igo"));
                 }
         });
 
@@ -146,7 +146,9 @@ public class NpcManager {
         junky.setAction(() -> {
             if (player.getInventory().removeItem("spoon", 1)) {
                 uiManager.showInfoMessage("You got respect from junky", 1.5f);
+                QuestManager.removeQuest("Spoon");
             } else {
+                QuestManager.addQuest(new QuestManager.Quest("Spoon","Find a spoon for junky"));
                 uiManager.showInfoMessage("You do not have a spoon", 1.5f);
             }
         });
