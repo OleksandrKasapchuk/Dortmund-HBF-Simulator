@@ -18,7 +18,7 @@ public class TouchControlsUI {
 
     private boolean actButtonJustPressed = false;
 
-    public TouchControlsUI(Skin skin,Stage stage, Player player,InventoryUI inventoryUI) {
+    public TouchControlsUI(Skin skin,Stage stage, Player player,InventoryUI inventoryUI, QuestUI questUI) {
         Pixmap knobPixmap = new Pixmap(50, 50, Pixmap.Format.RGBA8888);
         knobPixmap.setColor(Color.WHITE);
         knobPixmap.fillCircle(25, 25, 25);
@@ -67,6 +67,22 @@ public class TouchControlsUI {
             }
         });
         stage.addActor(inventoryButton);
+
+
+        TextButton questButton = new TextButton("QUESTS", skin);
+        questButton.setSize(200, 100); // ширина, висота
+        questButton.setPosition(20, stage.getViewport().getWorldHeight() - 120); // лівий верхній кут
+        questButton.getLabel().setFontScale(2f);
+
+        questButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                questUI.toggle(); // відкриваємо або закриваємо панель квестів
+                return true;
+            }
+        });
+
+        stage.addActor(questButton);
     }
 
 

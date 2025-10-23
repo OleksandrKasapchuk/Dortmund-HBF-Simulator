@@ -54,10 +54,11 @@ public class UIManager {
         infoLabel.setPosition(stage.getViewport().getWorldWidth() / 2f, 850, Align.center);
         stage.addActor(infoLabel);
 
+
         // === Сенсорне керування (для Android) ===
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
             Gdx.input.setInputProcessor(stage);
-            touchControlsUI = new TouchControlsUI(skin, stage, player, inventoryUI);
+            touchControlsUI = new TouchControlsUI(skin, stage, player, inventoryUI, questUI);
         }
     }
 
