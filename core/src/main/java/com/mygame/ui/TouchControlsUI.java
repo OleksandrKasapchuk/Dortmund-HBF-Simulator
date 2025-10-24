@@ -1,4 +1,4 @@
-package com.mygame;
+package com.mygame.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.mygame.Player;
 
 public class TouchControlsUI {
     private Texture knobTexture;
@@ -18,7 +19,7 @@ public class TouchControlsUI {
 
     private boolean actButtonJustPressed = false;
 
-    public TouchControlsUI(Skin skin,Stage stage, Player player,InventoryUI inventoryUI, QuestUI questUI) {
+    public TouchControlsUI(Skin skin, Stage stage, Player player, InventoryUI inventoryUI, QuestUI questUI) {
         Pixmap knobPixmap = new Pixmap(50, 50, Pixmap.Format.RGBA8888);
         knobPixmap.setColor(Color.WHITE);
         knobPixmap.fillCircle(25, 25, 25);

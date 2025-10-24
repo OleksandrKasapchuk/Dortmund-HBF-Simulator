@@ -1,4 +1,4 @@
-package com.mygame;
+package com.mygame.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.mygame.QuestManager;
 
 public class QuestUI {
     private final Table questTable;
@@ -22,8 +23,7 @@ public class QuestUI {
 
         questTable = new Table();
         questTable.setSize(width, height);
-        questTable.setPosition(stage.getViewport().getWorldWidth()/2f - width/2,
-            stage.getViewport().getWorldHeight()/2f - height/2);
+        questTable.setPosition(stage.getViewport().getWorldWidth()/2f - width/2, stage.getViewport().getWorldHeight()/2f - height/2);
         questTable.align(Align.topLeft).pad(20);
 
         Pixmap bg = new Pixmap((int)width, (int)height, Pixmap.Format.RGBA8888);

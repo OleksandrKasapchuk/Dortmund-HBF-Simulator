@@ -3,6 +3,8 @@ package com.mygame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygame.ui.UIManager;
+
 import java.util.ArrayList;
 
 public class NpcManager {
@@ -18,7 +20,6 @@ public class NpcManager {
         this.batch = batch;
         this.player = player;
         this.font = font;
-
 
 
         NPC igo = new NPC("Igo",100, 100, 500, 300, Assets.textureIgo, world,
@@ -53,7 +54,7 @@ public class NpcManager {
 
         NPC ryzhyi = new NPC("Ryzhyi",100, 100, 1100, 500, Assets.textureRyzhyi,
             world, 0, 1, 1f, 2f,200, 150,
-            new String[]{"Please take 10 euro but fuck off"});
+            new String[]{"Please take 20 euro but fuck off"});
         npcs.add(ryzhyi);
 
         ryzhyi.setAction(() -> {

@@ -1,6 +1,7 @@
 package com.mygame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
@@ -26,27 +27,39 @@ public class Assets {
     public static Sound kosyakSound;
     public static Sound lighterSound;
 
+    // Music
+    public static Music startMusic;
+    public static Music backMusic1;
+    public static Music backMusic2;
+    public static Music backMusic3;
+
     // === Завантаження ===
     public static void load() {
         // Текстури
-        textureRyzhyi = new Texture(Gdx.files.internal("ryzhyi.png"));
-        textureDenys = new Texture(Gdx.files.internal("denys.png"));
-        textureIgo = new Texture(Gdx.files.internal("igo.png"));
-        textureIgo2 = new Texture(Gdx.files.internal("igo2.png"));
-        textureBaryga = new Texture(Gdx.files.internal("baryga.png"));
-        textureChikita = new Texture(Gdx.files.internal("chikita.png"));
-        texturePolice = new Texture(Gdx.files.internal("police.png"));
-        textureKioskMan = new Texture(Gdx.files.internal("kioskman.png"));
-        textureJunky = new Texture(Gdx.files.internal("junky.png"));
-        textureZoe = new Texture(Gdx.files.internal("zoe.png"));
-        textureSpoon = new Texture(Gdx.files.internal("spoon.png"));
-        brick = new Texture(Gdx.files.internal("brick.png"));
-        bush = new Texture(Gdx.files.internal("bush.png"));
+        textureRyzhyi = new Texture(Gdx.files.internal("images/ryzhyi.png"));
+        textureDenys = new Texture(Gdx.files.internal("images/denys.png"));
+        textureIgo = new Texture(Gdx.files.internal("images/igo.png"));
+        textureIgo2 = new Texture(Gdx.files.internal("images/igo2.png"));
+        textureBaryga = new Texture(Gdx.files.internal("images/baryga.png"));
+        textureChikita = new Texture(Gdx.files.internal("images/chikita.png"));
+        texturePolice = new Texture(Gdx.files.internal("images/police.png"));
+        textureKioskMan = new Texture(Gdx.files.internal("images/kioskman.png"));
+        textureJunky = new Texture(Gdx.files.internal("images/junky.png"));
+        textureZoe = new Texture(Gdx.files.internal("images/zoe.png"));
+        textureSpoon = new Texture(Gdx.files.internal("images/spoon.png"));
+        brick = new Texture(Gdx.files.internal("images/brick.png"));
+        bush = new Texture(Gdx.files.internal("images/bush.png"));
 
         // Звуки
-        moneySound = Gdx.audio.newSound(Gdx.files.internal("money.ogg"));
-        kosyakSound = Gdx.audio.newSound(Gdx.files.internal("kosyak.wav"));
-        lighterSound = Gdx.audio.newSound(Gdx.files.internal("lighter.ogg"));
+        moneySound = Gdx.audio.newSound(Gdx.files.internal("sound/money.ogg"));
+        kosyakSound = Gdx.audio.newSound(Gdx.files.internal("sound/kosyak.wav"));
+        lighterSound = Gdx.audio.newSound(Gdx.files.internal("sound/lighter.ogg"));
+
+        // Фонова музика
+        startMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/start.ogg"));
+        backMusic1 = Gdx.audio.newMusic(Gdx.files.internal("sound/epic_back1.ogg"));
+        backMusic2 = Gdx.audio.newMusic(Gdx.files.internal("sound/epic_back2.ogg"));
+        backMusic3 = Gdx.audio.newMusic(Gdx.files.internal("sound/minigame.ogg"));
     }
 
     // === Звільнення пам’яті ===
@@ -70,5 +83,11 @@ public class Assets {
         moneySound.dispose();
         kosyakSound.dispose();
         lighterSound.dispose();
+
+        // Музика
+        startMusic.dispose();
+        backMusic1.dispose();
+        backMusic2.dispose();
+        backMusic3.dispose();
     }
 }

@@ -1,7 +1,6 @@
 package com.mygame;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.mygame.ui.DialogueUI;
 
 import java.util.ArrayList;
 

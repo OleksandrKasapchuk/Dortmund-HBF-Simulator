@@ -1,4 +1,4 @@
-package com.mygame;
+package com.mygame.ui;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -9,6 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.mygame.DialogueManager;
+import com.mygame.NPC;
+import com.mygame.Player;
+
 import java.util.ArrayList;
 
 
@@ -68,15 +72,14 @@ public class UIManager {
         // Оновлюємо таймер повідомлення
         if (infoMessageTimer > 0) {
             infoMessageTimer -= delta;
-            if (infoMessageTimer <= 0) {
-                infoLabel.setVisible(false);
-            }
+            if (infoMessageTimer <= 0) {infoLabel.setVisible(false);}
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
-            inventoryUI.toggle(player);
-        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {inventoryUI.toggle(player);}
 
-        boolean interactPressed = Gdx.input.isKeyJustPressed(Input.Keys.E) || touchControlsUI.isActButtonJustPressed();
+        boolean interactPressed = Gdx.input.isKeyJustPressed(Input.Keys.E);
+
+        if (touchControlsUI != null) {interactPressed = touchControlsUI.isActButtonJustPressed();}
+
         dialogueManager.update(delta, npcs, player, interactPressed);
 
         stage.act(delta);
@@ -91,7 +94,7 @@ public class UIManager {
         dialogueUI.dispose();
         inventoryUI.dispose();
         questUI.dispose();
-        touchControlsUI.dispose();
+        if (touchControlsUI != null) {touchControlsUI.dispose();}
     }
 
     public void showInfoMessage(String message, float duration) {
@@ -101,6 +104,5 @@ public class UIManager {
         infoLabel.setPosition(stage.getViewport().getWorldWidth() / 2f, 850, Align.center);
         infoLabel.setVisible(true);
     }
-
     public void toggleQuestTable() {questUI.toggle();}
 }
