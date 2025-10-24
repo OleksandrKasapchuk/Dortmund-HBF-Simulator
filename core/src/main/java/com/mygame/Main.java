@@ -32,9 +32,8 @@ public class Main extends ApplicationAdapter {
     public static int getWorldWidth() { return WORLD_WIDTH; }
     public static int getWorldHeight() { return WORLD_HEIGHT; }
 
-    private static boolean started = false;
-    private static boolean isPaused = false;
-
+    private enum GameState { MENU, PLAYING, PAUSED }
+    private GameState state = GameState.MENU;
 
     @Override
     public void create() {
@@ -63,60 +62,91 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
-        if (started) {
-            float delta = Gdx.graphics.getDeltaTime();
-            if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
-                uiManager.toggleQuestTable();
-            }
-            // === Оновлення ігрової логіки ===
-            player.update(delta);
-            uiManager.update(delta, player, npcManager.getNpcs());
-            if (spoon != null && spoon.isPlayerNear(player)){
-                player.getInventory().addItem(spoon.getName(), 1);
-                spoon = null;
-            }
-            // === Камера слідкує за гравцем ===
-            float targetX = player.x + player.width / 2f;
-            float targetY = player.y + player.height / 2f;
-            float cameraX = Math.max(camera.viewportWidth / 2f, Math.min(targetX, WORLD_WIDTH - camera.viewportWidth / 2f));
-            float cameraY = Math.max(camera.viewportHeight / 2f, Math.min(targetY, WORLD_HEIGHT - camera.viewportHeight / 2f));
-            camera.position.set(cameraX, cameraY, 0);
-            camera.update();
+        switch (state) {
+            case MENU -> renderMenu();
+            case PLAYING -> renderGame();
+            case PAUSED -> renderPaused();
 
-            // === Малювання ===
-            Gdx.gl.glClearColor(0.1f,0.1f, 0.35f,1);
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-            // --- Ігровий світ ---
-            viewport.apply();
-            batch.setProjectionMatrix(camera.combined);
-            batch.begin();
-            world.draw(batch);
-            if(spoon!=null){spoon.draw(batch);}
-            player.draw(batch);
-            npcManager.render();
-            batch.end();
-
-            // --- UI ---
-            uiManager.render();
-        } else {
-            // === Малювання ===
-            Gdx.gl.glClearColor(0.3f, 0.3f, 0.35f, 1);
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-            batch.begin();
-            font.draw(batch,"PRESS SPACE TO START GAME", 700,500);
-            batch.end();
-            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-                started = true;
-                // Зупиняємо стартову музику
-                Assets.startMusic.stop();
-
-                // Вмикаємо фонову
-                Assets.backMusic1.setLooping(true);
-                Assets.backMusic1.setVolume(0.5f);
-                Assets.backMusic1.play();
-            }
         }
+    }
+
+    public void renderMenu() {
+        // === Малювання ===
+        Gdx.gl.glClearColor(0.3f, 0.3f, 0.35f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        drawCenteredText("PRESS SPACE TO START GAME", 700);
+        batch.end();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            state = GameState.PLAYING;
+
+            Assets.startMusic.stop();
+            Assets.backMusic1.setLooping(true);
+            Assets.backMusic1.setVolume(0.5f);
+            Assets.backMusic1.play();
+        }
+    }
+
+    public void renderGame(){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            state = GameState.PAUSED;
+            Assets.backMusic1.pause();
+            return;
+        }
+
+        float delta = Gdx.graphics.getDeltaTime();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+            uiManager.toggleQuestTable();
+        }
+
+        player.update(delta);
+
+        uiManager.update(delta, player, npcManager.getNpcs());
+
+        if (spoon != null && spoon.isPlayerNear(player)) {
+            player.getInventory().addItem(spoon.getName(), 1);
+            spoon = null;
+        }
+
+        // === Камера слідкує за гравцем ===
+        float targetX = player.x + player.width / 2f;
+        float targetY = player.y + player.height / 2f;
+        float cameraX = Math.max(camera.viewportWidth / 2f, Math.min(targetX, WORLD_WIDTH - camera.viewportWidth / 2f));
+        float cameraY = Math.max(camera.viewportHeight / 2f, Math.min(targetY, WORLD_HEIGHT - camera.viewportHeight / 2f));
+        camera.position.set(cameraX, cameraY, 0);
+        camera.update();
+
+        Gdx.gl.glClearColor(0.1f, 0.1f, 0.35f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        viewport.apply();
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        world.draw(batch);
+        if (spoon != null) {
+            spoon.draw(batch);
+        }
+        player.draw(batch);
+        npcManager.render();
+        batch.end();
+        uiManager.render();
+    }
+
+    public void renderPaused() {
+        Gdx.gl.glClearColor(0.3f, 0.3f, 0.35f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        drawCenteredText("PAUSED", 550);
+        drawCenteredText("PRESS P TO RESUME", 450);
+        batch.end();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            state = GameState.PLAYING;
+            Assets.backMusic1.play();
+        }
+    }
+
+    private void drawCenteredText(String text, float y) {
+        font.draw(batch, text, 950 - text.length() * 10, y);
     }
 
     @Override

@@ -138,8 +138,7 @@ public class NpcManager {
                 uiManager.showInfoMessage("You enough money", 1.5f);
             }
         });
-
-        NPC junky = new NPC("Junky",100, 100, 100, 700, Assets.textureJunky,
+        NPC junky = new NPC("Junky",100, 100, 200, 300, Assets.textureJunky,
             world, 1, 0, 3f, 0, 75, 100,
             new String[]{"Hast du mal nen Loffel?"});
         npcs.add(junky);
@@ -153,6 +152,7 @@ public class NpcManager {
                 uiManager.showInfoMessage("You do not have a spoon", 1.5f);
             }
         });
+
     }
 
     public void render(){
