@@ -11,15 +11,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.mygame.Main;
 import com.mygame.Player;
 
 public class TouchControlsUI {
     private Texture knobTexture;
     private Texture bgTexture;
+    private TextButton startButton;
 
     private boolean actButtonJustPressed = false;
 
-    public TouchControlsUI(Skin skin, Stage stage, Player player, InventoryUI inventoryUI, QuestUI questUI) {
+    public TouchControlsUI(Skin skin, Stage menuStage,Stage gameStage,Stage pauseStage, Player player, InventoryUI inventoryUI, QuestUI questUI) {
         Pixmap knobPixmap = new Pixmap(50, 50, Pixmap.Format.RGBA8888);
         knobPixmap.setColor(Color.WHITE);
         knobPixmap.fillCircle(25, 25, 25);
@@ -38,7 +40,7 @@ public class TouchControlsUI {
 
         Touchpad touchpad = new Touchpad(10, touchpadStyle);
         touchpad.setBounds(150, 150, 200, 200);
-        stage.addActor(touchpad);
+        gameStage.addActor(touchpad);
         player.touchpad = touchpad;
 
         // Кнопка взаємодії
@@ -53,7 +55,7 @@ public class TouchControlsUI {
                 return true;
             }
         });
-        stage.addActor(actButton);
+        gameStage.addActor(actButton);
 
         // Кнопка інвентаря
         TextButton inventoryButton = new TextButton("INV", skin);
@@ -67,23 +69,64 @@ public class TouchControlsUI {
                 return true;
             }
         });
-        stage.addActor(inventoryButton);
+        gameStage.addActor(inventoryButton);
 
 
         TextButton questButton = new TextButton("QUESTS", skin);
         questButton.setSize(200, 100); // ширина, висота
-        questButton.setPosition(20, stage.getViewport().getWorldHeight() - 120); // лівий верхній кут
+        questButton.setPosition(20, gameStage.getViewport().getWorldHeight() - 120); // лівий верхній кут
         questButton.getLabel().setFontScale(2f);
 
         questButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                questUI.toggle(); // відкриваємо або закриваємо панель квестів
+                questUI.toggle();
                 return true;
             }
         });
 
-        stage.addActor(questButton);
+        gameStage.addActor(questButton);
+
+        // Кнопка паузи
+        TextButton pauseButton = new TextButton("PAUSE", skin);
+        pauseButton.setSize(150, 75);
+        pauseButton.setPosition(1750,800);
+        pauseButton.getLabel().setFontScale(2f);
+        pauseButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Main.togglePause();
+                return true;
+            }
+        });
+        gameStage.addActor(pauseButton);
+
+        startButton = new TextButton("START", skin);
+        startButton.setSize(300, 150);
+        startButton.setPosition(800,400);
+        startButton.getLabel().setFontScale(3f);
+        startButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Main.startGame();
+                return true;
+            }
+        });
+        menuStage.addActor(startButton);
+
+
+        TextButton resumeButton = new TextButton("RESUME", skin);
+        resumeButton.setSize(300, 150);
+        resumeButton.setPosition(pauseStage.getViewport().getWorldWidth()/2 - 150,400);
+        resumeButton.getLabel().setFontScale(3f);
+        resumeButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Main.togglePause();
+                return true;
+            }
+        });
+        pauseStage.addActor(resumeButton);
     }
 
 

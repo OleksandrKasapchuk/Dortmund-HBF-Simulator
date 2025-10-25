@@ -17,7 +17,7 @@ public class Main extends ApplicationAdapter {
     private Player player;
     private InteractableObject spoon;
     private World world;
-    private UIManager uiManager;
+    private static UIManager uiManager;
     private NpcManager npcManager;
 
     // === Рендеринг та графіка ===
@@ -32,8 +32,8 @@ public class Main extends ApplicationAdapter {
     public static int getWorldWidth() { return WORLD_WIDTH; }
     public static int getWorldHeight() { return WORLD_HEIGHT; }
 
-    private enum GameState { MENU, PLAYING, PAUSED }
-    private GameState state = GameState.MENU;
+    public enum GameState { MENU, PLAYING, PAUSED }
+    private static GameState state = GameState.MENU;
 
     @Override
     public void create() {
@@ -56,39 +56,61 @@ public class Main extends ApplicationAdapter {
 
         MusicManager.playMusic(Assets.startMusic, 0.4f);
     }
+    public static void startGame() {
+        state = GameState.PLAYING;
+        MusicManager.playMusic(Assets.backMusic1, 0.2f);
+        uiManager.setCurrentStage(2);
+    }
+
+    public static void togglePause() {
+        if (state == GameState.PLAYING) {
+            state = GameState.PAUSED;
+            MusicManager.pauseMusic();
+            uiManager.setCurrentStage(3);
+        } else if (state == GameState.PAUSED) {
+            state = GameState.PLAYING;
+            MusicManager.resumeMusic();
+            uiManager.setCurrentStage(2);
+        }
+    }
 
     @Override
     public void render() {
         float delta = Gdx.graphics.getDeltaTime();
-
-        // Обов’язково оновлюємо менеджер музики кожен кадр
+        Gdx.gl.glClearColor(0.1f, 0.1f, 0.15f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.setProjectionMatrix(camera.combined);
         MusicManager.update(delta);
+
         switch (state) {
-            case MENU -> renderMenu();
-            case PLAYING -> renderGame();
-            case PAUSED -> renderPaused();
+            case MENU:
+                renderMenu();
+                break;
+            case PAUSED:
+                renderPaused();
+                break;
+            case PLAYING:
+                renderGame();
+                break;
 
         }
     }
 
     public void renderMenu() {
-        // === Малювання ===
-        Gdx.gl.glClearColor(0.3f, 0.3f, 0.35f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        uiManager.update(Gdx.graphics.getDeltaTime(), player, npcManager.getNpcs());
+        uiManager.render();
         batch.begin();
-        drawCenteredText("PRESS SPACE TO START GAME", 700);
+        font.draw(batch,"DORTMUND HBF SIMULATOR", 700, 600);
+        font.draw(batch,"PRESS ENTER TO START", 710, 500);
         batch.end();
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            state = GameState.PLAYING;
-
-            MusicManager.playMusic(Assets.backMusic1, 0.2f);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            startGame();
         }
     }
 
     public void renderGame(){
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-            state = GameState.PAUSED;
-            MusicManager.pauseMusic();
+            togglePause();
             return;
         }
 
@@ -115,10 +137,8 @@ public class Main extends ApplicationAdapter {
         camera.position.set(cameraX, cameraY, 0);
         camera.update();
 
-        Gdx.gl.glClearColor(0.1f, 0.1f, 0.35f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         viewport.apply();
-        batch.setProjectionMatrix(camera.combined);
+
         batch.begin();
         world.draw(batch);
         if (spoon != null) {
@@ -131,20 +151,16 @@ public class Main extends ApplicationAdapter {
     }
 
     public void renderPaused() {
-        Gdx.gl.glClearColor(0.3f, 0.3f, 0.35f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        uiManager.update(Gdx.graphics.getDeltaTime(), player, npcManager.getNpcs());
+        uiManager.render();
         batch.begin();
-        drawCenteredText("PAUSED", 550);
-        drawCenteredText("PRESS P TO RESUME", 450);
+        font.draw(batch,"GAME PAUSED", 825, 600);
+        font.draw(batch,"PRESS P TO RESUME", 775, 500);
         batch.end();
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-            state = GameState.PLAYING;
-            MusicManager.resumeMusic();
+            togglePause();
+            return;
         }
-    }
-
-    private void drawCenteredText(String text, float y) {
-        font.draw(batch, text, 950 - text.length() * 10, y);
     }
 
     @Override
