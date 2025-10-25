@@ -32,6 +32,7 @@ public class Assets {
     public static Music backMusic1;
     public static Music backMusic2;
     public static Music backMusic3;
+    public static Music backMusic4;
 
     // === Завантаження ===
     public static void load() {
@@ -60,6 +61,7 @@ public class Assets {
         backMusic1 = Gdx.audio.newMusic(Gdx.files.internal("sound/epic_back1.ogg"));
         backMusic2 = Gdx.audio.newMusic(Gdx.files.internal("sound/epic_back2.ogg"));
         backMusic3 = Gdx.audio.newMusic(Gdx.files.internal("sound/minigame.ogg"));
+        backMusic4 = Gdx.audio.newMusic(Gdx.files.internal("sound/norm.ogg"));
     }
 
     // === Звільнення пам’яті ===

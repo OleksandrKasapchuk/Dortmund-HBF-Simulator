@@ -54,14 +54,15 @@ public class Main extends ApplicationAdapter {
         npcManager = new NpcManager(batch, player,world,uiManager,font);
         spoon = new InteractableObject("spoon", 60, 60, 500, 1800, Assets.textureSpoon, world);
 
-        // === Музика стартового екрану ===
-        Assets.startMusic.setLooping(true);
-        Assets.startMusic.setVolume(0.6f);
-        Assets.startMusic.play();// запускає музику
+        MusicManager.playMusic(Assets.startMusic, 0.4f);
     }
 
     @Override
     public void render() {
+        float delta = Gdx.graphics.getDeltaTime();
+
+        // Обов’язково оновлюємо менеджер музики кожен кадр
+        MusicManager.update(delta);
         switch (state) {
             case MENU -> renderMenu();
             case PLAYING -> renderGame();
@@ -80,17 +81,14 @@ public class Main extends ApplicationAdapter {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             state = GameState.PLAYING;
 
-            Assets.startMusic.stop();
-            Assets.backMusic1.setLooping(true);
-            Assets.backMusic1.setVolume(0.5f);
-            Assets.backMusic1.play();
+            MusicManager.playMusic(Assets.backMusic1, 0.2f);
         }
     }
 
     public void renderGame(){
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
             state = GameState.PAUSED;
-            Assets.backMusic1.pause();
+            MusicManager.pauseMusic();
             return;
         }
 
@@ -141,7 +139,7 @@ public class Main extends ApplicationAdapter {
         batch.end();
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
             state = GameState.PLAYING;
-            Assets.backMusic1.play();
+            MusicManager.resumeMusic();
         }
     }
 
@@ -162,5 +160,6 @@ public class Main extends ApplicationAdapter {
         batch.dispose();
         font.dispose();
         uiManager.dispose();
+        MusicManager.stopAll();
     }
 }

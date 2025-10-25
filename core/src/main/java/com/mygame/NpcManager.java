@@ -60,7 +60,7 @@ public class NpcManager {
         ryzhyi.setAction(() -> {
             if (ryzhyi.getDialogueCount() == 1) {
                 player.getInventory().addItem("money", 20);
-                Assets.moneySound.play(0.5f);
+                Assets.moneySound.play(0.8f);
                 uiManager.showInfoMessage("You got 20 euro",1.5f);
                 ryzhyi.nextDialogueCount();
                 ryzhyi.setTexts(new String[]{"I gave 20 euro why do I still see you "});
@@ -95,7 +95,7 @@ public class NpcManager {
             if (player.getInventory().hasItem("grass") &&  player.getInventory().hasItem("papier")) {
                 player.getInventory().removeItem("grass",1);
                 player.getInventory().removeItem("papier",1);
-                Assets.kosyakSound.play(0.6f);
+                Assets.kosyakSound.play(2f);
                 com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
                     @Override
                     public void run() {
