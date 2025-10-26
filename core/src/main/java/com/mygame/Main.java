@@ -49,7 +49,7 @@ public class Main extends ApplicationAdapter {
         viewport = new FitViewport(2000, 1000, camera);
         world = new World();
 
-        player = new Player(500, 90, 90, 200, 200, Assets.textureZoe, world);
+        player = new Player(500, 80, 80, 200, 200, Assets.textureZoe, world);
         uiManager = new UIManager(player);
         npcManager = new NpcManager(batch, player,world,uiManager,font);
         spoon = new InteractableObject("spoon", 60, 60, 500, 1800, Assets.textureSpoon, world);
@@ -79,7 +79,6 @@ public class Main extends ApplicationAdapter {
         float delta = Gdx.graphics.getDeltaTime();
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.15f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.setProjectionMatrix(camera.combined);
         MusicManager.update(delta);
 
         switch (state) {
@@ -138,7 +137,9 @@ public class Main extends ApplicationAdapter {
         camera.update();
 
         viewport.apply();
-
+        batch.setProjectionMatrix(camera.combined);
+        Gdx.gl.glClearColor(0.1f,0.1f, 0.35f,1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         world.draw(batch);
         if (spoon != null) {
@@ -151,16 +152,16 @@ public class Main extends ApplicationAdapter {
     }
 
     public void renderPaused() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            togglePause();
+            return;
+        }
         uiManager.update(Gdx.graphics.getDeltaTime(), player, npcManager.getNpcs());
         uiManager.render();
         batch.begin();
         font.draw(batch,"GAME PAUSED", 825, 600);
         font.draw(batch,"PRESS P TO RESUME", 775, 500);
         batch.end();
-        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-            togglePause();
-            return;
-        }
     }
 
     @Override

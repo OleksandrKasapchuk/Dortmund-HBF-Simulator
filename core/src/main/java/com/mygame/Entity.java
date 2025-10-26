@@ -10,7 +10,6 @@ public abstract class Entity {
     protected float y;
     protected Texture texture;
     protected World world;
-
     public Entity(int width, int height, float x, float y, Texture texture, World world) {
         this.width = width;
         this.height = height;

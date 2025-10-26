@@ -18,6 +18,8 @@ public class Assets {
     public static Texture textureKioskMan;
     public static Texture textureJunky;
     public static Texture textureZoe;
+    public static Texture textureBoss;
+
     public static Texture textureSpoon;
     public static Texture brick;
     public static Texture bush;
@@ -47,6 +49,8 @@ public class Assets {
         textureKioskMan = new Texture(Gdx.files.internal("images/kioskman.png"));
         textureJunky = new Texture(Gdx.files.internal("images/junky.png"));
         textureZoe = new Texture(Gdx.files.internal("images/zoe.png"));
+        textureBoss = new Texture(Gdx.files.internal("images/boss.png"));
+
         textureSpoon = new Texture(Gdx.files.internal("images/spoon.png"));
         brick = new Texture(Gdx.files.internal("images/brick.png"));
         bush = new Texture(Gdx.files.internal("images/bush.png"));

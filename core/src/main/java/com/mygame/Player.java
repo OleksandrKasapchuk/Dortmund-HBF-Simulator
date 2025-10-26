@@ -15,7 +15,6 @@ public class Player extends Entity {
 
 
     public void setMovementLocked(boolean locked) {this.isMovementLocked = locked;}
-    public boolean getMovementLocked() {return isMovementLocked;}
 
     public Player(int speed, int width, int height, float x, float y, Texture texture, World world){
         super(width, height, x, y, texture, world);
@@ -29,6 +28,7 @@ public class Player extends Entity {
             float newX = x;
             float newY = y;
 
+            // === Керування ===
             if (Gdx.app.getType() != Application.ApplicationType.Android) {
                 if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A))
                     newX -= speed * delta;
@@ -39,20 +39,31 @@ public class Player extends Entity {
                 if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S))
                     newY -= speed * delta;
             } else if (touchpad != null) {
-                float dx = touchpad.getKnobPercentX(); // -1 до 1
-                float dy = touchpad.getKnobPercentY(); // -1 до 1
+                float dx = touchpad.getKnobPercentX();
+                float dy = touchpad.getKnobPercentY();
                 newX += dx * speed * delta;
                 newY += dy * speed * delta;
             }
 
-            boolean collide =
-                world.isSolid(newX, newY - this.height) || // лівий нижній
-                    world.isSolid(newX + this.width, newY - this.height) || // правий нижній
-                    world.isSolid(newX, newY) || // лівий верхній
-                    world.isSolid(newX + this.width, newY);   // правий верхній
+            // === Спочатку перевірка по X ===
+            boolean collideX =
+                world.isSolid(newX, y - this.height - 20) ||
+                    world.isSolid(newX + this.width, y - this.height - 20) ||
+                    world.isSolid(newX, y - 20) ||
+                    world.isSolid(newX + this.width, y - 20);
 
-            if (!collide) {
+            if (!collideX) {
                 x = newX;
+            }
+
+            // === Потім перевірка по Y ===
+            boolean collideY =
+                world.isSolid(x, newY - this.height - 20) ||
+                    world.isSolid(x + this.width, newY - this.height - 20) ||
+                    world.isSolid(x, newY - 20) ||
+                    world.isSolid(x + this.width, newY - 20);
+
+            if (!collideY) {
                 y = newY;
             }
         }

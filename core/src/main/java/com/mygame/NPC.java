@@ -46,22 +46,23 @@ public class NPC extends Entity {
                 float newX = x + directionX * speed * delta;
                 float newY = y + directionY * speed * delta;
 
-                // Перевірка колізії з світом
-                boolean collide =
-                    world.isSolid(newX, newY) ||                       // лівий верхній
-                    world.isSolid(newX + width, newY) ||            // правий верхній
-                    world.isSolid(newX, newY - height) ||           // лівий нижній
-                    world.isSolid(newX + width, newY - height);  // правий нижній
+                boolean collideX =
+                    world.isSolid(newX, y - this.height - 20) ||
+                    world.isSolid(newX + this.width, y - this.height - 20) ||
+                    world.isSolid(newX, y - 20) ||
+                    world.isSolid(newX + this.width, y - 20);
 
-                boolean outOfBounds = newX < 0 || newX + width > Main.getWorldWidth()
-                    || newY < 0 || newY + height > Main.getWorldHeight();
-
-                if (!collide && !outOfBounds) {
+                if (!collideX) {
                     x = newX;
+                }
+                boolean collideY =
+                    world.isSolid(x, newY - this.height - 20) ||
+                    world.isSolid(x + this.width, newY - this.height - 20) ||
+                    world.isSolid(x, newY - 20) ||
+                    world.isSolid(x + this.width, newY - 20);
+
+                if (!collideY) {
                     y = newY;
-                } else {
-                    isPaused = true;
-                    timer = 0f;
                 }
                 if (timer > moveTime){
                     isPaused = true;
@@ -83,6 +84,7 @@ public class NPC extends Entity {
     public boolean isDialogueFinished(){return count >= texts.length;}
     public void resetDialogue(){this.count = 0;}
     public String getName(){return this.name;}
+
     public void setAction(Runnable action){this.action = action;}
     public void runAction(){if (action != null) action.run();}
 

@@ -22,9 +22,9 @@ public class NpcManager {
         this.font = font;
 
 
-        NPC igo = new NPC("Igo",100, 100, 500, 300, Assets.textureIgo, world,
+        NPC igo = new NPC("Igo",90, 90, 500, 300, Assets.textureIgo, world,
             1, 0, 3f, 0f,0,150,
-            new String[]{"Hallo Bruder!", "Gib kosyak"});
+            new String[]{"Hi bro!", "Give me kosyak"});
         npcs.add(igo);
 
         igo.setAction(() -> {
@@ -34,7 +34,7 @@ public class NpcManager {
                     uiManager.showInfoMessage("You got 1 Vape", 1.5f);
                     QuestManager.removeQuest("Igo");
                     igo.nextDialogueCount();
-                    igo.setTexts(new String[]{"Danke Bruder!"});
+                    igo.setTexts(new String[]{"Thanks bro!"});
                     Assets.lighterSound.play();
 
                     // Відкладена зміна текстури через Timer
@@ -52,7 +52,7 @@ public class NpcManager {
                 }
         });
 
-        NPC ryzhyi = new NPC("Ryzhyi",100, 100, 1100, 500, Assets.textureRyzhyi,
+        NPC ryzhyi = new NPC("Ryzhyi",90, 90, 1100, 500, Assets.textureRyzhyi,
             world, 0, 1, 1f, 2f,200, 150,
             new String[]{"Please take 20 euro but fuck off"});
         npcs.add(ryzhyi);
@@ -67,14 +67,14 @@ public class NpcManager {
             }
         });
 
-        NPC denys = new NPC("Denys",100, 100, 700, 700, Assets.textureDenys,
+        NPC denys = new NPC("Denys",90, 90, 700, 700, Assets.textureDenys,
             world, 1, 1,2f, 1f, 100, 150,
-            new String[]{"Hello Popa!!!", "I'm not in mood to talk"});
+            new String[]{"Hello!", "I'm not in mood to talk"});
         npcs.add(denys);
 
-        NPC baryga = new NPC("Baryga",100, 100, 1000, 200, Assets.textureBaryga,
+        NPC baryga = new NPC("Baryga",90, 90, 1000, 200, Assets.textureBaryga,
             world, 0, 1, 3f, 0f, 0,150,
-            new String[]{"Bruder was brauchst du?", "Grass 10 Euro"});
+            new String[]{"What do you need?", "Grass 10 euro"});
         npcs.add(baryga);
 
         baryga.setAction(() -> {
@@ -86,9 +86,9 @@ public class NpcManager {
             }
         });
 
-        NPC chikita = new NPC("Chikita",100, 100, 1500, 600, Assets.textureChikita,
+        NPC chikita = new NPC("Chikita",90, 90, 1500, 600, Assets.textureChikita,
             world, 0, 1, 3f, 0f, 0,150,
-            new String[]{"Gib grass und papier dann du bekommen kosyak"});
+            new String[]{"Give me grass und paper and you get kosyak"});
         npcs.add(chikita);
 
         chikita.setAction(() -> {
@@ -109,9 +109,9 @@ public class NpcManager {
             }
         });
 
-        police = new NPC("Police",120, 120, 400, 600, Assets.texturePolice,
+        police = new NPC("Police",100, 100, 400, 600, Assets.texturePolice,
             world, 1, 0, 3f, 0, 75, 100,
-            new String[]{"Polizeikontrolle, haben Sie Grass?"});
+            new String[]{"Police check, do you have some forbidden stuff?"});
         npcs.add(police);
 
         police.setAction(() -> {
@@ -121,13 +121,13 @@ public class NpcManager {
 
                 uiManager.showInfoMessage("You lost your stuff", 1.5f);
             } else {
-                uiManager.showInfoMessage("You passed the Polizeikontrolle", 1.5f);
+                uiManager.showInfoMessage("You passed the police check", 1.5f);
             }
         });
 
-        NPC kioskman = new NPC("Mohammed",100, 100, 1575, 350, Assets.textureKioskMan,
+        NPC kioskman = new NPC("Mohammed",90, 90, 1575, 350, Assets.textureKioskMan,
             world, 1, 0, 3f, 0, 75, 100,
-            new String[]{"Hallo! Was wollen Sie?"});
+            new String[]{"Hi! Paper 5 euro?"});
         npcs.add(kioskman);
 
         kioskman.setAction(() -> {
@@ -135,12 +135,12 @@ public class NpcManager {
                 player.getInventory().addItem("papier", 1);
                 uiManager.showInfoMessage("You got 1 papier", 1.5f);
             } else {
-                uiManager.showInfoMessage("You enough money", 1.5f);
+                uiManager.showInfoMessage("Not enough money", 1.5f);
             }
         });
         NPC junky = new NPC("Junky",100, 100, 200, 300, Assets.textureJunky,
             world, 1, 0, 3f, 0, 75, 100,
-            new String[]{"Hast du mal nen Loffel?"});
+            new String[]{"Do you have a spoon?"});
         npcs.add(junky);
 
         junky.setAction(() -> {
@@ -151,6 +151,18 @@ public class NpcManager {
                 QuestManager.addQuest(new QuestManager.Quest("Spoon","Find a spoon for junky"));
                 uiManager.showInfoMessage("You do not have a spoon", 1.5f);
             }
+        });
+
+        NPC boss = new NPC("???",100, 100, 400, 200, Assets.textureBoss,
+            world, 1, 0, 3f, 0, 75, 100,
+            new String[]{"DO you wanna get some money?", "I have a task for you", "You have to hide 1kg in the bush behind your house", "But remember I'll see when you are doing not what i asked"});
+        npcs.add(boss);
+
+        boss.setAction(() -> {
+            QuestManager.addQuest(new QuestManager.Quest("Big delivery","Hide 1kg in the bush"));
+            uiManager.showInfoMessage("You got 1kg grass", 1.5f);
+            player.getInventory().addItem("grass", 1000);
+            boss.setTexts(new String[] {"You know what to do", "So go ahead, I don't wanna wait too much"});
         });
 
     }
