@@ -16,6 +16,7 @@ public class Main extends ApplicationAdapter {
     // === Основні ігрові об'єкти ===
     private Player player;
     private InteractableObject spoon;
+    private InteractableObject bush;
     private World world;
     private static UIManager uiManager;
     private NpcManager npcManager;
@@ -29,10 +30,8 @@ public class Main extends ApplicationAdapter {
     // === Константи світу ===
     private static final int WORLD_WIDTH = 4000;
     private static final int WORLD_HEIGHT = 2000;
-    public static int getWorldWidth() { return WORLD_WIDTH; }
-    public static int getWorldHeight() { return WORLD_HEIGHT; }
 
-    public enum GameState { MENU, PLAYING, PAUSED }
+    public enum GameState { MENU, PLAYING, PAUSED, DEATH}
     private static GameState state = GameState.MENU;
 
     @Override
@@ -53,24 +52,25 @@ public class Main extends ApplicationAdapter {
         uiManager = new UIManager(player);
         npcManager = new NpcManager(batch, player,world,uiManager,font);
         spoon = new InteractableObject("spoon", 60, 60, 500, 1800, Assets.textureSpoon, world);
+        bush = new InteractableObject("bush",200,100,800,1800,Assets.bush,world);
 
         MusicManager.playMusic(Assets.startMusic, 0.4f);
     }
     public static void startGame() {
         state = GameState.PLAYING;
         MusicManager.playMusic(Assets.backMusic1, 0.2f);
-        uiManager.setCurrentStage(2);
+        uiManager.setCurrentStage("GAME");
     }
 
     public static void togglePause() {
         if (state == GameState.PLAYING) {
             state = GameState.PAUSED;
             MusicManager.pauseMusic();
-            uiManager.setCurrentStage(3);
+            uiManager.setCurrentStage("PAUSE");
         } else if (state == GameState.PAUSED) {
             state = GameState.PLAYING;
             MusicManager.resumeMusic();
-            uiManager.setCurrentStage(2);
+            uiManager.setCurrentStage("GAME");
         }
     }
 
@@ -82,26 +82,16 @@ public class Main extends ApplicationAdapter {
         MusicManager.update(delta);
 
         switch (state) {
-            case MENU:
-                renderMenu();
-                break;
-            case PAUSED:
-                renderPaused();
-                break;
-            case PLAYING:
-                renderGame();
-                break;
-
+            case MENU: renderMenu();break;
+            case PAUSED: renderPaused();break;
+            case PLAYING: renderGame();break;
+            case DEATH: renderDeath();break;
         }
     }
 
     public void renderMenu() {
         uiManager.update(Gdx.graphics.getDeltaTime(), player, npcManager.getNpcs());
         uiManager.render();
-        batch.begin();
-        font.draw(batch,"DORTMUND HBF SIMULATOR", 700, 600);
-        font.draw(batch,"PRESS ENTER TO START", 710, 500);
-        batch.end();
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             startGame();
         }
@@ -111,6 +101,35 @@ public class Main extends ApplicationAdapter {
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
             togglePause();
             return;
+        }
+        // === Перевірка виконання завдання від боса ===
+        if (QuestManager.hasQuest("Big delivery") && player.getInventory().getAmount("grass") < 1000) {
+            NPC boss = npcManager.getBoss();
+
+            if (!uiManager.getDialogueManager().isDialogueActive()) {
+                // Змінюємо тексти і блокуємо рух
+                boss.setTexts(new String[]{
+                    "You are not doing the task!",
+                    "I told you to hide the grass, not lose it.",
+                    "Now you will regret this..."
+                });
+                boss.setAction(() -> {
+                    uiManager.getGameUI().showInfoMessage("You died", 2f);
+
+                });
+
+
+                // (опційно) після 1 секунди почати показ тексту
+                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                    @Override
+                    public void run() {
+                        uiManager.getDialogueManager().startForcedDialogue(boss);
+                        uiManager.getDialogueUI().show();
+                        player.setMovementLocked(true);
+                        uiManager.getDialogueManager().forceAdvance();
+                    }
+                }, 2f);
+            }
         }
 
         float delta = Gdx.graphics.getDeltaTime();
@@ -142,9 +161,16 @@ public class Main extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         world.draw(batch);
-        if (spoon != null) {
-            spoon.draw(batch);
+        if (spoon != null) {spoon.draw(batch);}
+        bush.draw(batch);
+
+        if (bush.isPlayerNear(player)) {
+            font.draw(batch, "Press E to hide your kg", bush.x, bush.y);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+                player.getInventory().removeItem("grass", 1000);
+            }
         }
+
         player.draw(batch);
         npcManager.render();
         batch.end();
@@ -158,12 +184,9 @@ public class Main extends ApplicationAdapter {
         }
         uiManager.update(Gdx.graphics.getDeltaTime(), player, npcManager.getNpcs());
         uiManager.render();
-        batch.begin();
-        font.draw(batch,"GAME PAUSED", 825, 600);
-        font.draw(batch,"PRESS P TO RESUME", 775, 500);
-        batch.end();
     }
 
+    public void renderDeath(){}
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);

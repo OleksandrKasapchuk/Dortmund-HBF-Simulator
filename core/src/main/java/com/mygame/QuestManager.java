@@ -16,6 +16,9 @@ public class QuestManager {
     public static ArrayList<Quest> getQuests() {
         return quests;
     }
+    public static boolean hasQuest(String title){
+        return quests.stream().anyMatch(q -> q.getTitle().equals(title));
+    }
 
     // --- Вкладений клас ---
     public static class Quest {

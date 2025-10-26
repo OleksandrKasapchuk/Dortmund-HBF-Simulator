@@ -10,7 +10,8 @@ import java.util.ArrayList;
 public class NpcManager {
     private ArrayList<NPC> npcs = new ArrayList<>();
 
-    private  NPC police;
+    private NPC police;
+    private NPC boss;
 
     private Player player;
     private SpriteBatch batch;
@@ -31,7 +32,7 @@ public class NpcManager {
             if (igo.getDialogueCount() == 1)
                 if(player.getInventory().removeItem("kosyak", 1)) {
                     player.getInventory().addItem("vape", 1);
-                    uiManager.showInfoMessage("You got 1 Vape", 1.5f);
+                    uiManager.getGameUI().showInfoMessage("You got 1 Vape", 1.5f);
                     QuestManager.removeQuest("Igo");
                     igo.nextDialogueCount();
                     igo.setTexts(new String[]{"Thanks bro!"});
@@ -47,7 +48,7 @@ public class NpcManager {
                     }, soundDuration);
 
                 } else {
-                    uiManager.showInfoMessage("Not enough kosyak", 1.5f);
+                    uiManager.getGameUI().showInfoMessage("Not enough kosyak", 1.5f);
                     QuestManager.addQuest(new QuestManager.Quest("Igo","Get some kosyak for igo"));
                 }
         });
@@ -61,7 +62,7 @@ public class NpcManager {
             if (ryzhyi.getDialogueCount() == 1) {
                 player.getInventory().addItem("money", 20);
                 Assets.moneySound.play(0.8f);
-                uiManager.showInfoMessage("You got 20 euro",1.5f);
+                uiManager.getGameUI().showInfoMessage("You got 20 euro",1.5f);
                 ryzhyi.nextDialogueCount();
                 ryzhyi.setTexts(new String[]{"I gave 20 euro why do I still see you "});
             }
@@ -80,9 +81,9 @@ public class NpcManager {
         baryga.setAction(() -> {
             if (player.getInventory().removeItem("money",10)) {
                 player.getInventory().addItem("grass", 1);
-                uiManager.showInfoMessage("You got 1g grass for 10 euro", 1.5f);
+                uiManager.getGameUI().showInfoMessage("You got 1g grass for 10 euro", 1.5f);
             } else {
-                uiManager.showInfoMessage("Not enough money", 1.5f);
+                uiManager.getGameUI().showInfoMessage("Not enough money", 1.5f);
             }
         });
 
@@ -100,12 +101,12 @@ public class NpcManager {
                     @Override
                     public void run() {
                         player.getInventory().addItem("kosyak", 1);
-                        uiManager.showInfoMessage("You got 1 kosyak", 1.5f);
+                        uiManager.getGameUI().showInfoMessage("You got 1 kosyak", 1.5f);
                     }
                 }, 1);
 
             } else {
-                uiManager.showInfoMessage("Not enough grass or papier", 1.5f);
+                uiManager.getGameUI().showInfoMessage("Not enough grass or papier", 1.5f);
             }
         });
 
@@ -119,9 +120,9 @@ public class NpcManager {
                 player.getInventory().removeItem("kosyak", 10) |
                 player.getInventory().removeItem("vape", 10)) {
 
-                uiManager.showInfoMessage("You lost your stuff", 1.5f);
+                uiManager.getGameUI().showInfoMessage("You lost your stuff", 1.5f);
             } else {
-                uiManager.showInfoMessage("You passed the police check", 1.5f);
+                uiManager.getGameUI().showInfoMessage("You passed the police check", 1.5f);
             }
         });
 
@@ -133,9 +134,9 @@ public class NpcManager {
         kioskman.setAction(() -> {
             if (player.getInventory().removeItem("money", 5)) {
                 player.getInventory().addItem("papier", 1);
-                uiManager.showInfoMessage("You got 1 papier", 1.5f);
+                uiManager.getGameUI().showInfoMessage("You got 1 papier", 1.5f);
             } else {
-                uiManager.showInfoMessage("Not enough money", 1.5f);
+                uiManager.getGameUI().showInfoMessage("Not enough money", 1.5f);
             }
         });
         NPC junky = new NPC("Junky",100, 100, 200, 300, Assets.textureJunky,
@@ -145,22 +146,22 @@ public class NpcManager {
 
         junky.setAction(() -> {
             if (player.getInventory().removeItem("spoon", 1)) {
-                uiManager.showInfoMessage("You got respect from junky", 1.5f);
+                uiManager.getGameUI().showInfoMessage("You got respect from junky", 1.5f);
                 QuestManager.removeQuest("Spoon");
             } else {
                 QuestManager.addQuest(new QuestManager.Quest("Spoon","Find a spoon for junky"));
-                uiManager.showInfoMessage("You do not have a spoon", 1.5f);
+                uiManager.getGameUI().showInfoMessage("You do not have a spoon", 1.5f);
             }
         });
 
-        NPC boss = new NPC("???",100, 100, 400, 200, Assets.textureBoss,
+        boss = new NPC("???",100, 100, 400, 200, Assets.textureBoss,
             world, 1, 0, 3f, 0, 75, 100,
             new String[]{"DO you wanna get some money?", "I have a task for you", "You have to hide 1kg in the bush behind your house", "But remember I'll see when you are doing not what i asked"});
         npcs.add(boss);
 
         boss.setAction(() -> {
             QuestManager.addQuest(new QuestManager.Quest("Big delivery","Hide 1kg in the bush"));
-            uiManager.showInfoMessage("You got 1kg grass", 1.5f);
+            uiManager.getGameUI().showInfoMessage("You got 1kg grass", 1.5f);
             player.getInventory().addItem("grass", 1000);
             boss.setTexts(new String[] {"You know what to do", "So go ahead, I don't wanna wait too much"});
         });
@@ -179,4 +180,5 @@ public class NpcManager {
     }
 
     public ArrayList<NPC> getNpcs() {return npcs;}
+    public NPC getBoss() {return boss;}
 }

@@ -16,14 +16,12 @@ import com.mygame.Player;
 import java.util.Map;
 
 public class InventoryUI {
-    private final Stage stage;
     private final Skin skin;
     private final Table inventoryTable;
     private final Texture inventoryBgTexture;
     private boolean visible = false;
 
     public InventoryUI(Stage stage, Skin skin) {
-        this.stage = stage;
         this.skin = skin;
 
         inventoryTable = new Table();

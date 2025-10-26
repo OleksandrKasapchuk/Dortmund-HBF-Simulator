@@ -70,4 +70,6 @@ public class Player extends Entity {
     }
     public int getMoney(){return inventory.getAmount("money");}
     public InventoryManager getInventory(){return inventory;}
+    public float getX(){return x;}
+    public float getY(){return y;}
 }

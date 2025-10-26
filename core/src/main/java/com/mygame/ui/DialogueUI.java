@@ -59,7 +59,7 @@ public class DialogueUI {
     public void hide() {
         dialogueTable.setVisible(false);
     }
-
+    public void show(){dialogueTable.setVisible(true);}
     public void dispose() {
         dialogueBgTexture.dispose();
     }

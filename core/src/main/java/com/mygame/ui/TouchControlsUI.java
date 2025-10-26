@@ -103,7 +103,7 @@ public class TouchControlsUI {
 
         startButton = new TextButton("START", skin);
         startButton.setSize(300, 150);
-        startButton.setPosition(800,400);
+        startButton.setPosition(800,250);
         startButton.getLabel().setFontScale(3f);
         startButton.addListener(new InputListener() {
             @Override
@@ -117,7 +117,7 @@ public class TouchControlsUI {
 
         TextButton resumeButton = new TextButton("RESUME", skin);
         resumeButton.setSize(300, 150);
-        resumeButton.setPosition(pauseStage.getViewport().getWorldWidth()/2 - 150,400);
+        resumeButton.setPosition(pauseStage.getViewport().getWorldWidth()/2 - 150,250);
         resumeButton.getLabel().setFontScale(3f);
         resumeButton.addListener(new InputListener() {
             @Override

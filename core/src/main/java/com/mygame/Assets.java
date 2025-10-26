@@ -82,6 +82,7 @@ public class Assets {
         textureJunky.dispose();
         textureZoe.dispose();
         textureSpoon.dispose();
+        textureBoss.dispose();
         brick.dispose();
         bush.dispose();
 
@@ -95,5 +96,6 @@ public class Assets {
         backMusic1.dispose();
         backMusic2.dispose();
         backMusic3.dispose();
+        backMusic4.dispose();
     }
 }

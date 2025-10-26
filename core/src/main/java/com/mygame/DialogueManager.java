@@ -9,6 +9,7 @@ public class DialogueManager {
     private final float textSpeed = 0.05f;
     private NPC activeNpc = null;
     private NPC recentlyFinishedForcedNpc = null;
+    private boolean forcedDialogue = false;
 
     private final DialogueUI dialogueUI;
 
@@ -16,6 +17,21 @@ public class DialogueManager {
         this.dialogueUI = dialogueUI;
     }
 
+    public void startForcedDialogue(NPC npc) {
+        activeNpc = npc;
+        textTimer = 0f;
+        forcedDialogue = true;
+    }
+
+    public boolean isDialogueActive() {
+        return activeNpc != null;
+    }
+
+    public void forceAdvance() {
+        if (activeNpc != null) {
+            textTimer = activeNpc.getCurrentPhrase().length() * textSpeed;
+        }
+    }
     public void update(float delta, ArrayList<NPC> npcs, Player player, boolean interactPressed) {
         if (recentlyFinishedForcedNpc != null && !recentlyFinishedForcedNpc.isPlayerNear(player)) {
             recentlyFinishedForcedNpc = null;
@@ -53,7 +69,7 @@ public class DialogueManager {
             }
         }
 
-        if (activeNpc != null && !activeNpc.isPlayerNear(player)) {
+        if (activeNpc != null && !forcedDialogue && !activeNpc.isPlayerNear(player)) {
             activeNpc.resetDialogue();
             activeNpc = null;
         }
@@ -71,6 +87,13 @@ public class DialogueManager {
                 activeNpc.resetDialogue();
                 if (activeNpc.getName().equals("Police")) {
                     recentlyFinishedForcedNpc = activeNpc;
+                    player.setMovementLocked(false);
+                }
+
+                // Якщо це forced NPC — відмічаємо як recentlyFinishedForcedNpc
+                if (forcedDialogue) {
+                    recentlyFinishedForcedNpc = activeNpc;
+                    forcedDialogue = false;
                     player.setMovementLocked(false);
                 }
                 activeNpc = null;
