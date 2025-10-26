@@ -11,8 +11,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygame.ui.UIManager;
 
-
 public class Main extends ApplicationAdapter {
+    private static Main instance;
+
     // === Основні ігрові об'єкти ===
     private Player player;
     private InteractableObject spoon;
@@ -21,7 +22,7 @@ public class Main extends ApplicationAdapter {
     private static UIManager uiManager;
     private NpcManager npcManager;
 
-    // === Рендеринг та графіка ===
+    // === Рендеринг та графіка (створюються один раз) ===
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -36,30 +37,59 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void create() {
-        Assets.load();
+        instance = this;
 
+        // Створюємо базові об'єкти, які живуть протягом усієї гри
         batch = new SpriteBatch();
-
         font = new BitmapFont();
         font.getData().setScale(2.5f);
         font.setUseIntegerPositions(false);
-
         camera = new OrthographicCamera();
         viewport = new FitViewport(2000, 1000, camera);
+        Assets.load();
+
+        // Ініціалізуємо ігрову сесію
+        initGame();
+    }
+
+    /**
+     * Ініціалізує або перезапускає стан ігрового світу.
+     */
+    private void initGame() {
+        MusicManager.stopAll();
+        QuestManager.reset();
+
+        // Створюємо нові екземпляри ігрових об'єктів
         world = new World();
-
         player = new Player(500, 80, 80, 200, 200, Assets.textureZoe, world);
-        uiManager = new UIManager(player);
-        npcManager = new NpcManager(batch, player,world,uiManager,font);
-        spoon = new InteractableObject("spoon", 60, 60, 500, 1800, Assets.textureSpoon, world);
-        bush = new InteractableObject("bush",200,100,800,1800,Assets.bush,world);
 
+        if (uiManager != null) uiManager.dispose();
+        uiManager = new UIManager(player);
+
+        npcManager = new NpcManager(batch, player, world, uiManager, font);
+        spoon = new InteractableObject("spoon", 60, 60, 500, 1800, Assets.textureSpoon, world);
+        bush = new InteractableObject("bush", 200, 100, 800, 1800, Assets.bush, world);
+
+        state = GameState.MENU;
+        uiManager.setCurrentStage("MENU");
         MusicManager.playMusic(Assets.startMusic, 0.4f);
     }
+
+    public static void restartGame() {
+        instance.initGame();
+    }
+
     public static void startGame() {
         state = GameState.PLAYING;
         MusicManager.playMusic(Assets.backMusic1, 0.2f);
         uiManager.setCurrentStage("GAME");
+    }
+
+    public static void playerDied() {
+        state = GameState.DEATH;
+        MusicManager.stopAll();
+        MusicManager.playMusic(Assets.backMusic4, 2f);
+        uiManager.setCurrentStage("DEATH");
     }
 
     public static void togglePause() {
@@ -82,10 +112,10 @@ public class Main extends ApplicationAdapter {
         MusicManager.update(delta);
 
         switch (state) {
-            case MENU: renderMenu();break;
-            case PAUSED: renderPaused();break;
-            case PLAYING: renderGame();break;
-            case DEATH: renderDeath();break;
+            case MENU: renderMenu(); break;
+            case PAUSED: renderPaused(); break;
+            case PLAYING: renderGame(); break;
+            case DEATH: renderDeath(); break;
         }
     }
 
@@ -106,20 +136,15 @@ public class Main extends ApplicationAdapter {
         if (QuestManager.hasQuest("Big delivery") && player.getInventory().getAmount("grass") < 1000) {
             NPC boss = npcManager.getBoss();
 
-            if (!uiManager.getDialogueManager().isDialogueActive()) {
+            if (boss != null && !uiManager.getDialogueManager().isDialogueActive()) {
                 // Змінюємо тексти і блокуємо рух
                 boss.setTexts(new String[]{
                     "You are not doing the task!",
                     "I told you to hide the grass, not lose it.",
                     "Now you will regret this..."
                 });
-                boss.setAction(() -> {
-                    uiManager.getGameUI().showInfoMessage("You died", 2f);
+                boss.setAction(Main::playerDied);
 
-                });
-
-
-                // (опційно) після 1 секунди почати показ тексту
                 com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
                     @Override
                     public void run() {
@@ -186,20 +211,25 @@ public class Main extends ApplicationAdapter {
         uiManager.render();
     }
 
-    public void renderDeath(){}
+    public void renderDeath(){
+        Gdx.gl.glClearColor(0, 0, 0, 1); // Black background
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        uiManager.render();
+    }
+
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height, true);
-        uiManager.resize(width, height);
+        if (viewport != null) viewport.update(width, height, true);
+        if (uiManager != null) uiManager.resize(width, height);
     }
 
     @Override
     public void dispose() {
         // === Очищення пам’яті ===
         Assets.dispose();
-        batch.dispose();
-        font.dispose();
-        uiManager.dispose();
+        if (batch != null) batch.dispose();
+        if (font != null) font.dispose();
+        if (uiManager != null) uiManager.dispose();
         MusicManager.stopAll();
     }
 }

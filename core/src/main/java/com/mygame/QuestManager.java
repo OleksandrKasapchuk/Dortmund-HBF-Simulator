@@ -20,6 +20,10 @@ public class QuestManager {
         return quests.stream().anyMatch(q -> q.getTitle().equals(title));
     }
 
+    public static void reset() {
+        quests.clear();
+    }
+
     // --- Вкладений клас ---
     public static class Quest {
         private String title;

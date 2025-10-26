@@ -154,7 +154,7 @@ public class NpcManager {
             }
         });
 
-        boss = new NPC("???",100, 100, 400, 200, Assets.textureBoss,
+        boss = new NPC("???",100, 100, 700, 100, Assets.textureBoss,
             world, 1, 0, 3f, 0, 75, 100,
             new String[]{"DO you wanna get some money?", "I have a task for you", "You have to hide 1kg in the bush behind your house", "But remember I'll see when you are doing not what i asked"});
         npcs.add(boss);

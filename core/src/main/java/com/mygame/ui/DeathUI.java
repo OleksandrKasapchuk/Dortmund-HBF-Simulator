@@ -1,40 +1,49 @@
 package com.mygame.ui;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.mygame.Main;
 
 public class DeathUI {
     private Stage stage;
-    private Label deathLabel;
-    private TextButton restartButton;
 
     public DeathUI(Skin skin) {
         stage = new Stage(new FitViewport(2000, 1000));
 
-        deathLabel = new Label("You Failed!", skin);
-        deathLabel.setFontScale(5f);
-        deathLabel.setPosition(1000, 700, com.badlogic.gdx.utils.Align.center);
-        stage.addActor(deathLabel);
+        Table table = new Table();
+        table.setFillParent(true);
+        stage.addActor(table);
 
-        restartButton = new TextButton("Restart", skin);
-        restartButton.setTransform(true);
-        restartButton.setPosition(1000, 500, com.badlogic.gdx.utils.Align.center);
+        Label deathLabel = new Label("YOU DIED", skin);
+        deathLabel.setColor(Color.RED);
+        deathLabel.setFontScale(6f);
+
+        TextButton restartButton = new TextButton("Restart", skin);
         restartButton.getLabel().setFontScale(3f);
-        restartButton.addListener(new ChangeListener() {
+        restartButton.addListener(new InputListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                // Ти можеш викликати Main.restartGame();
-                // або GameManager.resetGame()
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Main.restartGame();
+                return true;
             }
         });
-        stage.addActor(restartButton);
+
+        table.add(deathLabel).padBottom(50).row();
+        table.add(restartButton).width(300).height(100);
     }
 
-    public Stage getStage() { return stage; }
-    public void dispose() { stage.dispose(); }
+    public Stage getStage() {
+        return stage;
+    }
+
+    public void dispose() {
+        stage.dispose();
+    }
 }
