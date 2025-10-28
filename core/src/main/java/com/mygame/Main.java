@@ -171,7 +171,7 @@ public class Main extends ApplicationAdapter {
             player.getInventory().addItem(spoon.getName(), 1);
             spoon = null;
         }
-
+        npcManager.updatePolice();
         // === Камера слідкує за гравцем ===
         float targetX = player.x + player.width / 2f;
         float targetY = player.y + player.height / 2f;
@@ -189,10 +189,12 @@ public class Main extends ApplicationAdapter {
         if (spoon != null) {spoon.draw(batch);}
         bush.draw(batch);
 
-        if (bush.isPlayerNear(player)) {
+        if (QuestManager.hasQuest("Big delivery") && bush.isPlayerNear(player)) {
             font.draw(batch, "Press E to hide your kg", bush.x, bush.y);
             if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
                 player.getInventory().removeItem("grass", 1000);
+                QuestManager.removeQuest("Big delivery");
+                npcManager.callPolice();
             }
         }
 
