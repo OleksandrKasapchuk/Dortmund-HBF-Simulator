@@ -1,5 +1,6 @@
 package com.mygame;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
 public class NPC extends Entity {
@@ -29,7 +30,19 @@ public class NPC extends Entity {
         this.speed = speed;
         this.distance = distance;
     }
-
+    public void followPlayer(Player player) {
+        float delta = Gdx.graphics.getDeltaTime();
+        if (x>player.x){
+            x -= speed * delta;
+        } else if (x<player.x){
+            x += speed * delta;
+        }
+        if (y>player.y){
+            y -= speed * delta;
+        } else if (y<player.y){
+            y += speed * delta;
+        }
+    }
     @Override
     public void update(float delta) {
         if (moveTime != 0 && speed != 0) {
