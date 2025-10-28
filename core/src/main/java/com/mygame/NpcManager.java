@@ -12,16 +12,19 @@ public class NpcManager {
 
     private NPC police;
     private NPC boss;
+    private NPC police1, police2;
+
 
     private Player player;
     private SpriteBatch batch;
     private BitmapFont font;
+    private World world;
 
     public NpcManager(SpriteBatch batch, Player player, World world, UIManager uiManager, BitmapFont font) {
         this.batch = batch;
         this.player = player;
         this.font = font;
-
+        this.world = world;
 
         NPC igo = new NPC("Igo",90, 90, 500, 300, Assets.textureIgo, world,
             1, 0, 3f, 0f,0,150,
@@ -49,7 +52,8 @@ public class NpcManager {
 
                 } else {
                     uiManager.getGameUI().showInfoMessage("Not enough kosyak", 1.5f);
-                    QuestManager.addQuest(new QuestManager.Quest("Igo","Get some kosyak for igo"));
+                    if (!QuestManager.hasQuest("Igo"))
+                        QuestManager.addQuest(new QuestManager.Quest("Igo","Get some kosyak for igo"));
                 }
         });
 
@@ -178,7 +182,25 @@ public class NpcManager {
             }
         }
     }
-
+    public void updatePolice() {
+        if (police1 != null) {
+            police1.followPlayer(player);
+            police2.followPlayer(player);
+        }
+    }
     public ArrayList<NPC> getNpcs() {return npcs;}
     public NPC getBoss() {return boss;}
+
+    public void callPolice(){
+        police1 = new NPC("Police",100, 100, player.getX() + 50, player.getY() - 300, Assets.texturePolice,
+            world, 1, 0, 3f, 0, 200, 100,
+            new String[]{"You got caught!"});
+        npcs.add(police1);
+        police2 = new NPC("Police",100, 100, player.getX() - 50, player.getY() - 300, Assets.texturePolice,
+            this.world, 1, 0, 3f, 0, 200, 100,
+            new String[]{"You got caught!"});
+        npcs.add(police2);
+        police2.setAction(Main::playerDied);
+        police1.setAction(Main::playerDied);
+    }
 }
