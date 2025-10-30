@@ -23,8 +23,7 @@ public class Assets {
     public static Texture textureSpoon;
     public static Texture brick;
     public static Texture bush;
-
-
+    public static Texture pfand;
     // === Звуки ===
     public static Sound moneySound;
     public static Sound kosyakSound;
@@ -57,6 +56,7 @@ public class Assets {
         textureSpoon = new Texture(Gdx.files.internal("images/spoon.png"));
         brick = new Texture(Gdx.files.internal("images/brick.png"));
         bush = new Texture(Gdx.files.internal("images/bush.png"));
+        pfand= new Texture(Gdx.files.internal("images/pfand.png"));
 
         // Звуки
         moneySound = Gdx.audio.newSound(Gdx.files.internal("sound/money.ogg"));
@@ -89,12 +89,13 @@ public class Assets {
         textureBoss.dispose();
         brick.dispose();
         bush.dispose();
+        pfand.dispose();
 
         // Звуки
         moneySound.dispose();
         kosyakSound.dispose();
         lighterSound.dispose();
-
+        bushSound.dispose();
         // Музика
         startMusic.dispose();
         backMusic1.dispose();
