@@ -5,7 +5,7 @@ import com.badlogic.gdx.audio.Music;
 public class MusicManager {
     private static Music currentMusic;
     private static float currentVolume = 0f;
-    private static float targetVolume = 0.6f;
+    private static float targetVolume = 0.5f;
     private static float fadeSpeed = 1.2f;
     private static boolean isPaused = false;
 

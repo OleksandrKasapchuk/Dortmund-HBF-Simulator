@@ -30,19 +30,26 @@ public class NPC extends Entity {
         this.speed = speed;
         this.distance = distance;
     }
-    public void followPlayer(Player player) {
+    public boolean followPlayer(Player player, float offsetX, float offsetY) {
         float delta = Gdx.graphics.getDeltaTime();
-        if (x>player.x){
-            x -= speed * delta;
-        } else if (x<player.x){
-            x += speed * delta;
-        }
-        if (y>player.y){
-            y -= speed * delta;
-        } else if (y<player.y){
-            y += speed * delta;
-        }
+
+        float targetX = player.x + offsetX;
+        float targetY = player.y + offsetY;
+
+        if (x > targetX) x -= speed * delta;
+        else if (x < targetX) x += speed * delta;
+
+        if (y > targetY) y -= speed * delta;
+        else if (y < targetY) y += speed * delta;
+
+        return Math.sqrt(Math.pow(player.x - this.x, 2) + Math.pow(player.y - this.y, 2)) < 1500;
     }
+//    public boolean collidesWith(float px, float py, float pWidth, float pHeight) {
+//        return px < x + width &&
+//            px + pWidth > x &&
+//            py < y + height &&
+//            py + pHeight > y;
+//    }
     @Override
     public void update(float delta) {
         if (moveTime != 0 && speed != 0) {

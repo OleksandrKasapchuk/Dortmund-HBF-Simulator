@@ -28,14 +28,14 @@ public class NpcManager {
 
         NPC igo = new NPC("Igo",90, 90, 500, 300, Assets.textureIgo, world,
             1, 0, 3f, 0f,0,150,
-            new String[]{"Hi bro!", "Give me kosyak"});
+            new String[]{"Hi bro!", "Give me some joint"});
         npcs.add(igo);
 
         igo.setAction(() -> {
             if (igo.getDialogueCount() == 1)
-                if(player.getInventory().removeItem("kosyak", 1)) {
+                if(player.getInventory().removeItem("joint", 1)) {
                     player.getInventory().addItem("vape", 1);
-                    uiManager.getGameUI().showInfoMessage("You got 1 Vape", 1.5f);
+                    uiManager.getGameUI().showInfoMessage("You got 1 vape", 1.5f);
                     QuestManager.removeQuest("Igo");
                     igo.nextDialogueCount();
                     igo.setTexts(new String[]{"Thanks bro!"});
@@ -51,9 +51,9 @@ public class NpcManager {
                     }, soundDuration);
 
                 } else {
-                    uiManager.getGameUI().showInfoMessage("Not enough kosyak", 1.5f);
+                    uiManager.getGameUI().showInfoMessage("Not enough joint", 1.5f);
                     if (!QuestManager.hasQuest("Igo"))
-                        QuestManager.addQuest(new QuestManager.Quest("Igo","Get some kosyak for igo"));
+                        QuestManager.addQuest(new QuestManager.Quest("Igo","Get some joint for igo"));
                 }
         });
 
@@ -93,24 +93,27 @@ public class NpcManager {
 
         NPC chikita = new NPC("Chikita",90, 90, 1500, 600, Assets.textureChikita,
             world, 0, 1, 3f, 0f, 0,150,
-            new String[]{"Give me grass und paper and you get kosyak"});
+            new String[]{"Give me grass und pape and I make you a joint"});
         npcs.add(chikita);
 
         chikita.setAction(() -> {
-            if (player.getInventory().hasItem("grass") &&  player.getInventory().hasItem("papier")) {
+            if (player.getInventory().hasItem("grass") &&  player.getInventory().hasItem("pape")) {
                 player.getInventory().removeItem("grass",1);
-                player.getInventory().removeItem("papier",1);
+                player.getInventory().removeItem("pape",1);
+                player.setMovementLocked(true);
                 Assets.kosyakSound.play(2f);
                 com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
                     @Override
                     public void run() {
-                        player.getInventory().addItem("kosyak", 1);
-                        uiManager.getGameUI().showInfoMessage("You got 1 kosyak", 1.5f);
+                        player.getInventory().addItem("joint", 1);
+                        uiManager.getGameUI().showInfoMessage("You got 1 joint", 1.5f);
+                        player.setMovementLocked(false);
                     }
                 }, 1);
 
+
             } else {
-                uiManager.getGameUI().showInfoMessage("Not enough grass or papier", 1.5f);
+                uiManager.getGameUI().showInfoMessage("Not enough grass or pape", 1.5f);
             }
         });
 
@@ -120,9 +123,9 @@ public class NpcManager {
         npcs.add(police);
 
         police.setAction(() -> {
-            if (player.getInventory().removeItem("grass", 10) |
-                player.getInventory().removeItem("kosyak", 10) |
-                player.getInventory().removeItem("vape", 10)) {
+            if (player.getInventory().removeItem("grass", 100) |
+                player.getInventory().removeItem("joint", 100) |
+                player.getInventory().removeItem("vape", 100)) {
 
                 uiManager.getGameUI().showInfoMessage("You lost your stuff", 1.5f);
             } else {
@@ -132,13 +135,13 @@ public class NpcManager {
 
         NPC kioskman = new NPC("Mohammed",90, 90, 1575, 350, Assets.textureKioskMan,
             world, 1, 0, 3f, 0, 75, 100,
-            new String[]{"Hi! Paper 5 euro?"});
+            new String[]{"Hi! Pape 5 euro"});
         npcs.add(kioskman);
 
         kioskman.setAction(() -> {
             if (player.getInventory().removeItem("money", 5)) {
-                player.getInventory().addItem("papier", 1);
-                uiManager.getGameUI().showInfoMessage("You got 1 papier", 1.5f);
+                player.getInventory().addItem("pape", 1);
+                uiManager.getGameUI().showInfoMessage("You got 1 pape", 1.5f);
             } else {
                 uiManager.getGameUI().showInfoMessage("Not enough money", 1.5f);
             }
@@ -160,7 +163,7 @@ public class NpcManager {
 
         boss = new NPC("???",100, 100, 700, 100, Assets.textureBoss,
             world, 1, 0, 3f, 0, 75, 100,
-            new String[]{"DO you wanna get some money?", "I have a task for you", "You have to hide 1kg in the bush behind your house", "But remember I'll see when you are doing not what i asked"});
+            new String[]{"Do you wanna get some money?", "I have a task for you", "You have to hide 1kg in the bush behind your house", "But remember! I'll see if you aren't doing what i asked for"});
         npcs.add(boss);
 
         boss.setAction(() -> {
@@ -170,6 +173,10 @@ public class NpcManager {
             boss.setTexts(new String[] {"You know what to do", "So go ahead, I don't wanna wait too much"});
         });
 
+        NPC kamil = new NPC("Kamil",90, 90, 500, 100, Assets.textureKamil,
+            world, 1, 0, 3f, 0, 75, 100,
+            new String[]{"Hello kurwa"});
+        npcs.add(kamil);
     }
 
     public void render(){
@@ -182,11 +189,17 @@ public class NpcManager {
             }
         }
     }
-    public void updatePolice() {
+    public boolean updatePolice() {
         if (police1 != null) {
-            police1.followPlayer(player);
-            police2.followPlayer(player);
+            if (!police1.followPlayer(player, -50,0) & !police2.followPlayer(player, 50, 0)){
+                npcs.remove(police1);
+                npcs.remove(police2);
+            }
+            return true;
+        } else {
+            return false;
         }
+
     }
     public ArrayList<NPC> getNpcs() {return npcs;}
     public NPC getBoss() {return boss;}

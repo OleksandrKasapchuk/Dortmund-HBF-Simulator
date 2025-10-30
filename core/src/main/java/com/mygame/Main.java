@@ -171,7 +171,8 @@ public class Main extends ApplicationAdapter {
             player.getInventory().addItem(spoon.getName(), 1);
             spoon = null;
         }
-        npcManager.updatePolice();
+        if (!npcManager.updatePolice()){uiManager.getGameUI().showInfoMessage("You ran away from the police", 1.5f);}
+
         // === Камера слідкує за гравцем ===
         float targetX = player.x + player.width / 2f;
         float targetY = player.y + player.height / 2f;
@@ -194,7 +195,16 @@ public class Main extends ApplicationAdapter {
             if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
                 player.getInventory().removeItem("grass", 1000);
                 QuestManager.removeQuest("Big delivery");
-                npcManager.callPolice();
+                Assets.bushSound.play();
+                player.setMovementLocked(true);
+                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                    @Override
+                    public void run() {
+                        uiManager.getGameUI().showInfoMessage("You've hidden the grass", 1.5f);
+                        player.setMovementLocked(false);
+                        npcManager.callPolice();
+                    }
+                }, 1.8f);
             }
         }
 

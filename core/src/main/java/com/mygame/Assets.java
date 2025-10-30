@@ -19,15 +19,17 @@ public class Assets {
     public static Texture textureJunky;
     public static Texture textureZoe;
     public static Texture textureBoss;
-
+    public static Texture textureKamil;
     public static Texture textureSpoon;
     public static Texture brick;
     public static Texture bush;
+
 
     // === Звуки ===
     public static Sound moneySound;
     public static Sound kosyakSound;
     public static Sound lighterSound;
+    public static Sound bushSound;
 
     // Music
     public static Music startMusic;
@@ -50,6 +52,7 @@ public class Assets {
         textureJunky = new Texture(Gdx.files.internal("images/junky.png"));
         textureZoe = new Texture(Gdx.files.internal("images/zoe.png"));
         textureBoss = new Texture(Gdx.files.internal("images/boss.png"));
+        textureKamil = new Texture(Gdx.files.internal("images/kamil.png"));
 
         textureSpoon = new Texture(Gdx.files.internal("images/spoon.png"));
         brick = new Texture(Gdx.files.internal("images/brick.png"));
@@ -59,6 +62,7 @@ public class Assets {
         moneySound = Gdx.audio.newSound(Gdx.files.internal("sound/money.ogg"));
         kosyakSound = Gdx.audio.newSound(Gdx.files.internal("sound/kosyak.wav"));
         lighterSound = Gdx.audio.newSound(Gdx.files.internal("sound/lighter.ogg"));
+        bushSound = Gdx.audio.newSound(Gdx.files.internal("sound/bush.ogg"));
 
         // Фонова музика
         startMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/start.ogg"));
