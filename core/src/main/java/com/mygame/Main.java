@@ -49,18 +49,12 @@ public class Main extends ApplicationAdapter {
         viewport = new FitViewport(2000, 1000, camera);
         Assets.load();
 
-        // Ініціалізуємо ігрову сесію
         initGame();
     }
-
-    /**
-     * Ініціалізує або перезапускає стан ігрового світу.
-     */
     private void initGame() {
         MusicManager.stopAll();
         QuestManager.reset();
 
-        // Створюємо нові екземпляри ігрових об'єктів
         world = new World();
         player = new Player(500, 80, 80, 200, 200, Assets.textureZoe, world);
 
@@ -70,7 +64,7 @@ public class Main extends ApplicationAdapter {
         npcManager = new NpcManager(batch, player, world, uiManager, font);
         spoon = new InteractableObject("spoon", 60, 60, 500, 1800, Assets.textureSpoon, world);
         bush = new InteractableObject("bush", 200, 100, 800, 1800, Assets.bush, world);
-
+        pfand = new InteractableObject("pfand", 75, 75, 600, 300, Assets.pfand, world);
         state = GameState.MENU;
         uiManager.setCurrentStage("MENU");
         MusicManager.playMusic(Assets.startMusic, 0.4f);
@@ -133,7 +127,6 @@ public class Main extends ApplicationAdapter {
             togglePause();
             return;
         }
-        // === Перевірка виконання завдання від боса ===
         if (QuestManager.hasQuest("Big delivery") && player.getInventory().getAmount("grass") < 1000) {
             NPC boss = npcManager.getBoss();
 
@@ -172,7 +165,16 @@ public class Main extends ApplicationAdapter {
             player.getInventory().addItem(spoon.getName(), 1);
             spoon = null;
         }
-        npcManager.updatePolice();
+        if (pfand != null && pfand.isPlayerNear(player)) {
+            player.getInventory().addItem(pfand.getName(), 1);
+            pfand = null;
+        }
+
+        if(npcManager.updatePolice()){
+            MusicManager.playMusic(Assets.backMusic4, 0.3f);
+            uiManager.getGameUI().showInfoMessage("You ran away from the police", 1.5f);
+        }
+
         // === Камера слідкує за гравцем ===
         float targetX = player.x + player.width / 2f;
         float targetY = player.y + player.height / 2f;
@@ -188,6 +190,7 @@ public class Main extends ApplicationAdapter {
         batch.begin();
         world.draw(batch);
         if (spoon != null) {spoon.draw(batch);}
+        if (pfand != null) {pfand.draw(batch);}
         bush.draw(batch);
 
         if (QuestManager.hasQuest("Big delivery") && bush.isPlayerNear(player)) {
@@ -195,7 +198,17 @@ public class Main extends ApplicationAdapter {
             if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
                 player.getInventory().removeItem("grass", 1000);
                 QuestManager.removeQuest("Big delivery");
-                npcManager.callPolice();
+                Assets.bushSound.play();
+                player.setMovementLocked(true);
+                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                    @Override
+                    public void run() {
+                        player.setMovementLocked(false);
+                        npcManager.callPolice();
+                        uiManager.getGameUI().showInfoMessage("RUN", 2f);
+                        MusicManager.playMusic(Assets.backMusic4, 1.5f);
+                    }
+                }, 2f);
             }
         }
 

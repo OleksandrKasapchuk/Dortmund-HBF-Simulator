@@ -194,12 +194,10 @@ public class NpcManager {
             if (!police1.followPlayer(player, -50,0) & !police2.followPlayer(player, 50, 0)){
                 npcs.remove(police1);
                 npcs.remove(police2);
+                return true;
             }
-            return true;
-        } else {
-            return false;
         }
-
+        return false;
     }
     public ArrayList<NPC> getNpcs() {return npcs;}
     public NPC getBoss() {return boss;}

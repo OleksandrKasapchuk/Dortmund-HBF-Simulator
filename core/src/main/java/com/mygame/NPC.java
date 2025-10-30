@@ -42,7 +42,7 @@ public class NPC extends Entity {
         if (y > targetY) y -= speed * delta;
         else if (y < targetY) y += speed * delta;
 
-        return Math.sqrt(Math.pow(player.x - this.x, 2) + Math.pow(player.y - this.y, 2)) < 1500;
+        return Math.sqrt(Math.pow(player.x - this.x, 2) + Math.pow(player.y - this.y, 2)) < 1250;
     }
 //    public boolean collidesWith(float px, float py, float pWidth, float pHeight) {
 //        return px < x + width &&
