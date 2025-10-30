@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 public class Player extends Entity {
     protected int speed;
     public Touchpad touchpad;
-    private InventoryManager inventory = new InventoryManager();
+    private final InventoryManager inventory = new InventoryManager();
     private boolean isMovementLocked = false;
 
 

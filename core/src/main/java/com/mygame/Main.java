@@ -18,6 +18,7 @@ public class Main extends ApplicationAdapter {
     private Player player;
     private InteractableObject spoon;
     private InteractableObject bush;
+    private InteractableObject pfand;
     private World world;
     private static UIManager uiManager;
     private NpcManager npcManager;
@@ -48,13 +49,9 @@ public class Main extends ApplicationAdapter {
         viewport = new FitViewport(2000, 1000, camera);
         Assets.load();
 
-        // Ініціалізуємо ігрову сесію
         initGame();
     }
 
-    /**
-     * Ініціалізує або перезапускає стан ігрового світу.
-     */
     private void initGame() {
         MusicManager.stopAll();
         QuestManager.reset();
@@ -69,7 +66,7 @@ public class Main extends ApplicationAdapter {
         npcManager = new NpcManager(batch, player, world, uiManager, font);
         spoon = new InteractableObject("spoon", 60, 60, 500, 1800, Assets.textureSpoon, world);
         bush = new InteractableObject("bush", 200, 100, 800, 1800, Assets.bush, world);
-
+        pfand = new InteractableObject("pfand", 100, 100, 600, 300, Assets.pfand, world);
         state = GameState.MENU;
         uiManager.setCurrentStage("MENU");
         MusicManager.playMusic(Assets.startMusic, 0.4f);
@@ -171,6 +168,10 @@ public class Main extends ApplicationAdapter {
             player.getInventory().addItem(spoon.getName(), 1);
             spoon = null;
         }
+        if (pfand != null && pfand.isPlayerNear(player)) {
+            player.getInventory().addItem(pfand.getName(), 1);
+            pfand = null;
+        }
         npcManager.updatePolice();
         // === Камера слідкує за гравцем ===
         float targetX = player.x + player.width / 2f;
@@ -187,6 +188,7 @@ public class Main extends ApplicationAdapter {
         batch.begin();
         world.draw(batch);
         if (spoon != null) {spoon.draw(batch);}
+        if (pfand != null) {pfand.draw(batch);}
         bush.draw(batch);
 
         if (QuestManager.hasQuest("Big delivery") && bush.isPlayerNear(player)) {
