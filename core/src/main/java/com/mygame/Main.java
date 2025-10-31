@@ -16,12 +16,12 @@ public class Main extends ApplicationAdapter {
 
     // === Основні ігрові об'єкти ===
     private Player player;
-    private InteractableObject spoon;
-    private InteractableObject bush;
-    private InteractableObject pfand;
+    private Item spoon;
+    private Item bush;
     private World world;
     private static UIManager uiManager;
     private NpcManager npcManager;
+    private PfandManager pfandManager;
 
     // === Рендеринг та графіка (створюються один раз) ===
     private SpriteBatch batch;
@@ -62,12 +62,16 @@ public class Main extends ApplicationAdapter {
         uiManager = new UIManager(player);
 
         npcManager = new NpcManager(batch, player, world, uiManager, font);
-        spoon = new InteractableObject("spoon", 60, 60, 500, 1800, Assets.textureSpoon, world);
-        bush = new InteractableObject("bush", 200, 100, 800, 1800, Assets.bush, world);
-        pfand = new InteractableObject("pfand", 75, 75, 600, 300, Assets.pfand, world);
+        pfandManager = new PfandManager();
+
+        spoon = new Item("spoon", 60, 60, 500, 1800, Assets.textureSpoon, world);
+        bush = new Item("bush", 200, 100, 800, 1800, Assets.bush, world);
         state = GameState.MENU;
         uiManager.setCurrentStage("MENU");
         MusicManager.playMusic(Assets.startMusic, 0.4f);
+        for(int i=0; i<10; i++){
+            pfandManager.spawnRandomPfand(world);
+        }
     }
 
     public static void restartGame() {
@@ -131,7 +135,6 @@ public class Main extends ApplicationAdapter {
             NPC boss = npcManager.getBoss();
 
             if (boss != null && !uiManager.getDialogueManager().isDialogueActive()) {
-                // Змінюємо тексти і блокуємо рух
                 boss.setTexts(new String[]{
                     "You are not doing the task!",
                     "I told you to hide the grass, not lose it.",
@@ -160,15 +163,12 @@ public class Main extends ApplicationAdapter {
         player.update(delta);
 
         uiManager.update(delta, player, npcManager.getNpcs());
-
+        pfandManager.update(delta, player, world);
         if (spoon != null && spoon.isPlayerNear(player)) {
             player.getInventory().addItem(spoon.getName(), 1);
             spoon = null;
         }
-        if (pfand != null && pfand.isPlayerNear(player)) {
-            player.getInventory().addItem(pfand.getName(), 1);
-            pfand = null;
-        }
+
 
         if(npcManager.updatePolice()){
             MusicManager.playMusic(Assets.backMusic4, 0.3f);
@@ -190,7 +190,6 @@ public class Main extends ApplicationAdapter {
         batch.begin();
         world.draw(batch);
         if (spoon != null) {spoon.draw(batch);}
-        if (pfand != null) {pfand.draw(batch);}
         bush.draw(batch);
 
         if (QuestManager.hasQuest("Big delivery") && bush.isPlayerNear(player)) {
@@ -214,6 +213,7 @@ public class Main extends ApplicationAdapter {
 
         player.draw(batch);
         npcManager.render();
+        pfandManager.draw(batch);
         batch.end();
         uiManager.render();
     }

@@ -10,7 +10,6 @@ public class MusicManager {
     private static boolean isPaused = false;
 
     public static void playMusic(Music newMusic, float volume) {
-        // Якщо вже грає цей самий трек — нічого не робимо
         if (currentMusic == newMusic && !isPaused) return;
 
         // Якщо зараз грає інший трек — зупиняємо його

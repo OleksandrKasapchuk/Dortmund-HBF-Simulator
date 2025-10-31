@@ -199,6 +199,7 @@ public class NpcManager {
         }
         return false;
     }
+
     public ArrayList<NPC> getNpcs() {return npcs;}
     public NPC getBoss() {return boss;}
 

@@ -2,10 +2,10 @@ package com.mygame;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public class InteractableObject extends Entity {
+public class Item extends Entity {
     private String name;
 
-    public InteractableObject(String name, int width, int height, float x, float y, Texture texture, World world){
+    public Item(String name, int width, int height, float x, float y, Texture texture, World world){
         super(width, height, x, y, texture, world);
         this.name = name;
     }
