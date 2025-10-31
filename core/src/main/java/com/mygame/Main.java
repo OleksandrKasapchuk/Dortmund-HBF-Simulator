@@ -16,12 +16,12 @@ public class Main extends ApplicationAdapter {
 
     // === Основні ігрові об'єкти ===
     private Player player;
-    private Item spoon;
-    private Item bush;
+
     private World world;
     private static UIManager uiManager;
     private NpcManager npcManager;
     private PfandManager pfandManager;
+    private ItemManager itemManager;
 
     // === Рендеринг та графіка (створюються один раз) ===
     private SpriteBatch batch;
@@ -63,9 +63,8 @@ public class Main extends ApplicationAdapter {
 
         npcManager = new NpcManager(batch, player, world, uiManager, font);
         pfandManager = new PfandManager();
+        itemManager = new ItemManager(world);
 
-        spoon = new Item("spoon", 60, 60, 500, 1800, Assets.textureSpoon, world);
-        bush = new Item("bush", 200, 100, 800, 1800, Assets.bush, world);
         state = GameState.MENU;
         uiManager.setCurrentStage("MENU");
         MusicManager.playMusic(Assets.startMusic, 0.4f);
@@ -109,13 +108,13 @@ public class Main extends ApplicationAdapter {
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.15f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         MusicManager.update(delta);
-
         switch (state) {
             case MENU: renderMenu(); break;
             case PAUSED: renderPaused(); break;
             case PLAYING: renderGame(); break;
             case DEATH: renderDeath(); break;
         }
+
     }
 
     public void renderMenu() {
@@ -161,14 +160,10 @@ public class Main extends ApplicationAdapter {
         }
 
         player.update(delta);
+        itemManager.update(player);
 
         uiManager.update(delta, player, npcManager.getNpcs());
         pfandManager.update(delta, player, world);
-        if (spoon != null && spoon.isPlayerNear(player)) {
-            player.getInventory().addItem(spoon.getName(), 1);
-            spoon = null;
-        }
-
 
         if(npcManager.updatePolice()){
             MusicManager.playMusic(Assets.backMusic4, 0.3f);
@@ -185,15 +180,13 @@ public class Main extends ApplicationAdapter {
 
         viewport.apply();
         batch.setProjectionMatrix(camera.combined);
-        Gdx.gl.glClearColor(0.1f,0.1f, 0.35f,1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         batch.begin();
         world.draw(batch);
-        if (spoon != null) {spoon.draw(batch);}
-        bush.draw(batch);
 
-        if (QuestManager.hasQuest("Big delivery") && bush.isPlayerNear(player)) {
-            font.draw(batch, "Press E to hide your kg", bush.x, bush.y);
+
+        if (QuestManager.hasQuest("Big delivery") && itemManager.getBush().isPlayerNear(player)) {
+            font.draw(batch, "Press E to hide your kg", itemManager.getBush().x, itemManager.getBush().y);
             if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
                 player.getInventory().removeItem("grass", 1000);
                 QuestManager.removeQuest("Big delivery");
@@ -211,6 +204,7 @@ public class Main extends ApplicationAdapter {
             }
         }
 
+        itemManager.draw(batch);
         player.draw(batch);
         npcManager.render();
         pfandManager.draw(batch);

@@ -24,6 +24,8 @@ public class Assets {
     public static Texture brick;
     public static Texture bush;
     public static Texture pfand;
+    public static Texture deathBack;
+
     // === Звуки ===
     public static Sound moneySound;
     public static Sound kosyakSound;
@@ -52,6 +54,9 @@ public class Assets {
         textureZoe = new Texture(Gdx.files.internal("images/zoe.png"));
         textureBoss = new Texture(Gdx.files.internal("images/boss.png"));
         textureKamil = new Texture(Gdx.files.internal("images/kamil.png"));
+
+
+        deathBack = new Texture(Gdx.files.internal("images/deathScreen.jpg"));
 
         textureSpoon = new Texture(Gdx.files.internal("images/spoon.png"));
         brick = new Texture(Gdx.files.internal("images/brick.png"));
@@ -90,6 +95,7 @@ public class Assets {
         brick.dispose();
         bush.dispose();
         pfand.dispose();
+        deathBack.dispose();
 
         // Звуки
         moneySound.dispose();

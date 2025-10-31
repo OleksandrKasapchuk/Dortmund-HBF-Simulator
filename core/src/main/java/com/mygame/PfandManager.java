@@ -43,7 +43,7 @@ public class PfandManager {
     public void spawnRandomPfand(World world) {
         if (spawnPoints.isEmpty()) return;
         float[] pos = spawnPoints.get(random.nextInt(spawnPoints.size()));
-        pfands.add(new Item("pfand", 75, 75, pos[0], pos[1], Assets.pfand, world));
+        pfands.add(new Item("pfand", 75, 75, pos[0], pos[1], Assets.pfand, world, true));
     }
 
     public void draw(SpriteBatch batch) {

@@ -189,6 +189,7 @@ public class NpcManager {
             }
         }
     }
+
     public boolean updatePolice() {
         if (police1 != null) {
             if (!police1.followPlayer(player, -50,0) & !police2.followPlayer(player, 50, 0)){

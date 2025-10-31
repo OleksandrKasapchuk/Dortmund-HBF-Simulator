@@ -21,7 +21,7 @@ public class DeathUI {
         table.setFillParent(true);
         stage.addActor(table);
 
-        Label deathLabel = new Label("YOU DIED", skin);
+        Label deathLabel = new Label("WASTED", skin);
         deathLabel.setColor(Color.RED);
         deathLabel.setFontScale(6f);
 
