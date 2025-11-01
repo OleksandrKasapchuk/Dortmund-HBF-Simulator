@@ -13,7 +13,7 @@ public class Item extends Entity {
 
     @Override
     public void update(float delta) {}
-    public boolean isPlayerNear(Player player) {return Math.sqrt(Math.pow(player.getX() - this.getX(), 2) + Math.pow(player.getX() - this.getY(), 2)) < 100;}
+    public boolean isPlayerNear(Player player) {return Math.sqrt(Math.pow(player.getX() - this.getX(), 2) + Math.pow(player.getY() - this.getY(), 2)) < 100;}
     public String getName(){return name;}
     public boolean canBePickedUp(){return canBePickedUp;}
 }

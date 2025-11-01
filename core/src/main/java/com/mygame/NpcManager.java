@@ -14,7 +14,6 @@ public class NpcManager {
     private NPC boss;
     private NPC police1;
 
-
     private Player player;
     private SpriteBatch batch;
     private BitmapFont font;
@@ -191,24 +190,21 @@ public class NpcManager {
     }
 
     public boolean updatePolice() {
-        if (police1 != null) {
-            if (!police1.followPlayer(player, -50,0)){
-                npcs.remove(police1);
-                return true;
-            }
+        if (police1 != null && !police1.followPlayer(player)) {
+            npcs.remove(police1);
+            return true;
         }
         return false;
     }
 
     public ArrayList<NPC> getNpcs() {return npcs;}
     public NPC getBoss() {return boss;}
+    public NPC getPolice1(){return police1;}
 
     public void callPolice(){
-        police1 = new NPC("Police",100, 100, player.getX() + 50, player.getY() - 300, Assets.texturePolice,
+        police1 = new NPC("Police",100, 100, player.getX(), player.getY() - 300, Assets.texturePolice,
             world, 1, 0, 3f, 0, 200, 100,
             new String[]{"What are you doing?", "Stop right there!"});
         npcs.add(police1);
-        police1.setTexts(new String[]{"You got caught!"});
-        police1.setAction(Main::playerDied);
     }
 }

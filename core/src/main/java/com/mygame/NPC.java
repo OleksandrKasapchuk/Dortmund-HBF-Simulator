@@ -17,6 +17,7 @@ public class NPC extends Entity {
     private Runnable action = null;
     private int dialogueCount = 1;
     private int distance;
+    private boolean isFollowing = false;
 
 
     public NPC(String name, int width, int height, float x, float y, Texture texture, World world, int directionX, int directionY, float pauseTime, float moveTime, int speed,int distance, String[] texts){
@@ -30,18 +31,20 @@ public class NPC extends Entity {
         this.speed = speed;
         this.distance = distance;
     }
-    public boolean followPlayer(Player player, float offsetX, float offsetY) {
-        float delta = Gdx.graphics.getDeltaTime();
+    public boolean followPlayer(Player player) {
+        if (isFollowing) {
+            float delta = Gdx.graphics.getDeltaTime();
 
-        float targetX = player.getX() + offsetX;
-        float targetY = player.getY() + offsetY;
+            float targetX = player.getX();
+            float targetY = player.getY();
 
-        if (this.getX() > targetX) this.setX(this.getX() - speed * delta);
-        else if (this.getX() < targetX) this.setX(this.getX() + speed * delta);
+            if (this.getX() > targetX) this.setX(this.getX() - speed * delta);
+            else if (this.getX() < targetX) this.setX(this.getX() + speed * delta);
 
-        if (this.getY() > targetY) this.setY(this.getY() - speed * delta);
-        else if (this.getY() < targetY) this.setY(this.getY() + speed * delta);
+            if (this.getY() > targetY) this.setY(this.getY() - speed * delta);
+            else if (this.getY() < targetY) this.setY(this.getY() + speed * delta);
 
+        }
         return Math.sqrt(Math.pow(player.getX() - this.getX(), 2) + Math.pow(player.getY() - this.getY(), 2)) < 1400;
     }
 
@@ -107,4 +110,6 @@ public class NPC extends Entity {
     public int getDialogueCount(){return this.dialogueCount;}
 
     public void setTexture(Texture texture) {this.texture = texture;}
+    public void setFollowing(boolean isFollowing) {this.isFollowing = isFollowing;}
+    public boolean isFollowing() {return this.isFollowing;}
 }

@@ -79,9 +79,7 @@ public class Assets {
         backMusic4 = Gdx.audio.newMusic(Gdx.files.internal("sound/norm.ogg"));
     }
 
-    // === Звільнення пам’яті ===
     public static void dispose() {
-        // Текстури
         textureRyzhyi.dispose();
         textureDenys.dispose();
         textureIgo.dispose();

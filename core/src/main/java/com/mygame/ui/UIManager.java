@@ -14,7 +14,6 @@ public class UIManager {
     private final Skin skin;
     private final DialogueManager dialogueManager;
 
-    // UI
     private QuestUI questUI;
     private InventoryUI inventoryUI;
     private DialogueUI dialogueUI;
@@ -30,26 +29,22 @@ public class UIManager {
     public UIManager(Player player) {
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
-        // Ініціалізація UI-класів
         gameUI = new GameUI(skin, player);
         menuUI = new MenuUI(skin);
         pauseUI = new PauseUI(skin);
         deathUI = new DeathUI(skin);
 
-        // Стейдж по замовчуванню
         currentStage = menuUI.getStage();
         Gdx.input.setInputProcessor(currentStage);
 
-        // Quest, Inventory, Dialogue
+
         questUI = new QuestUI(skin, gameUI.getStage(), 1200, 800);
         inventoryUI = new InventoryUI(gameUI.getStage(), skin);
         dialogueUI = new DialogueUI(skin, gameUI.getStage(), 1950, 180, 25f, 30f);
         dialogueManager = new DialogueManager(dialogueUI);
 
-        // Сенсорне керування (Android)
-        if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            touchControlsUI = new TouchControlsUI(skin, menuUI.getStage(), gameUI.getStage(), pauseUI.getStage(), player, inventoryUI, questUI);
-        }
+
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {touchControlsUI = new TouchControlsUI(skin, menuUI.getStage(), gameUI.getStage(), pauseUI.getStage(), player, inventoryUI, questUI);}
     }
 
     public void setCurrentStage(String stageName) {
@@ -64,24 +59,18 @@ public class UIManager {
 
     public void update(float delta, Player player, ArrayList<NPC> npcs) {
         if (currentStage == gameUI.getStage()) {
-            gameUI.update(delta); // таймер infoLabel всередині GameUI
+            gameUI.update(delta);
             gameUI.updateMoney(player.getMoney());
 
-            if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.TAB)) {
-                inventoryUI.toggle(player);
-            }
+            if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.TAB)) {inventoryUI.toggle(player);}
 
-            boolean interactPressed = Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.E)
-                    || (touchControlsUI != null && touchControlsUI.isActButtonJustPressed());
+            dialogueManager.update(delta, npcs, player, isInteractPressed());
 
-            dialogueManager.update(delta, npcs, player, interactPressed);
         }
         currentStage.act(delta);
     }
-
-    public void render() {
-        currentStage.draw();
-    }
+    public boolean isInteractPressed() {return Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.E) || (touchControlsUI != null && touchControlsUI.isActButtonJustPressed());}
+    public void render() {currentStage.draw();}
 
     public void resize(int width, int height) {
         menuUI.getStage().getViewport().update(width, height, true);
@@ -106,6 +95,5 @@ public class UIManager {
 
     public DialogueManager getDialogueManager() { return dialogueManager; }
     public DialogueUI getDialogueUI() { return dialogueUI; }
-    public DeathUI getDeathUI() { return deathUI; }
     public GameUI getGameUI() { return gameUI; }
 }

@@ -14,7 +14,6 @@ import com.mygame.ui.UIManager;
 public class Main extends ApplicationAdapter {
     private static Main instance;
 
-    // === Основні ігрові об'єкти ===
     private Player player;
 
     private World world;
@@ -23,13 +22,12 @@ public class Main extends ApplicationAdapter {
     private PfandManager pfandManager;
     private ItemManager itemManager;
 
-    // === Рендеринг та графіка (створюються один раз) ===
+
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private Viewport viewport;
     private BitmapFont font;
 
-    // === Константи світу ===
     private static final int WORLD_WIDTH = 4000;
     private static final int WORLD_HEIGHT = 2000;
 
@@ -40,7 +38,6 @@ public class Main extends ApplicationAdapter {
     public void create() {
         instance = this;
 
-        // Створюємо базові об'єкти, які живуть протягом усієї гри
         batch = new SpriteBatch();
         font = new BitmapFont();
         font.getData().setScale(2.5f);
@@ -189,7 +186,7 @@ public class Main extends ApplicationAdapter {
 
 
         if (QuestManager.hasQuest("Big delivery") && itemManager.getBush().isPlayerNear(player)) {
-            font.draw(batch, "Press E to hide your kg", itemManager.getBush().getY(), itemManager.getBush().getY());
+            font.draw(batch, "Press E to hide your kg", itemManager.getBush().getX(), itemManager.getBush().getY());
             if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
                 player.getInventory().removeItem("grass", 1000);
                 QuestManager.removeQuest("Big delivery");
@@ -198,12 +195,20 @@ public class Main extends ApplicationAdapter {
                 com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
                     @Override
                     public void run() {
-                        player.setMovementLocked(false);
                         npcManager.callPolice();
-                        uiManager.getGameUI().showInfoMessage("RUN", 2f);
-                        MusicManager.playMusic(Assets.backMusic4, 1.5f);
+                        uiManager.getDialogueManager().startForcedDialogue(npcManager.getPolice1());
+                        npcManager.getPolice1().setAction(() -> {
+                            npcManager.getPolice1().setFollowing(true);
+                            uiManager.getGameUI().showInfoMessage("RUN", 2f);
+                            MusicManager.playMusic(Assets.backMusic4, 1.5f);
+                            npcManager.getPolice1().setTexts(new String[]{"You got caught!"});
+                            npcManager.getPolice1().setAction(Main::playerDied);
+                        });
                     }
                 }, 2f);
+
+
+
             }
         }
 
@@ -224,11 +229,7 @@ public class Main extends ApplicationAdapter {
         uiManager.render();
     }
 
-    public void renderDeath(){
-//        Gdx.gl.glClearColor(0, 0, 0, 1); // Black background
-//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        uiManager.render();
-    }
+    public void renderDeath(){uiManager.render();}
 
     @Override
     public void resize(int width, int height) {
@@ -238,7 +239,6 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void dispose() {
-        // === Очищення пам’яті ===
         Assets.dispose();
         if (batch != null) batch.dispose();
         if (font != null) font.dispose();
