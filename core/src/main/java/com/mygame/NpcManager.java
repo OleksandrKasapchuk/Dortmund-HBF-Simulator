@@ -12,7 +12,7 @@ public class NpcManager {
 
     private NPC police;
     private NPC boss;
-    private NPC police1, police2;
+    private NPC police1;
 
 
     private Player player;
@@ -185,16 +185,15 @@ public class NpcManager {
         for (NPC npc : npcs) {
             npc.draw(batch);
             if (npc.isPlayerNear(player)) {
-                font.draw(batch, "Press E / ACT to interact", npc.x - 100, npc.y + npc.height + 40);
+                font.draw(batch, "Press E / ACT to interact", npc.getX() - 100, npc.getY() + npc.height + 40);
             }
         }
     }
 
     public boolean updatePolice() {
         if (police1 != null) {
-            if (!police1.followPlayer(player, -50,0) & !police2.followPlayer(player, 50, 0)){
+            if (!police1.followPlayer(player, -50,0)){
                 npcs.remove(police1);
-                npcs.remove(police2);
                 return true;
             }
         }
@@ -207,13 +206,9 @@ public class NpcManager {
     public void callPolice(){
         police1 = new NPC("Police",100, 100, player.getX() + 50, player.getY() - 300, Assets.texturePolice,
             world, 1, 0, 3f, 0, 200, 100,
-            new String[]{"You got caught!"});
+            new String[]{"What are you doing?", "Stop right there!"});
         npcs.add(police1);
-        police2 = new NPC("Police",100, 100, player.getX() - 50, player.getY() - 300, Assets.texturePolice,
-            this.world, 1, 0, 3f, 0, 200, 100,
-            new String[]{"You got caught!"});
-        npcs.add(police2);
-        police2.setAction(Main::playerDied);
+        police1.setTexts(new String[]{"You got caught!"});
         police1.setAction(Main::playerDied);
     }
 }

@@ -139,11 +139,16 @@ public class Main extends ApplicationAdapter {
                     "I told you to hide the grass, not lose it.",
                     "Now you will regret this..."
                 });
-                boss.setAction(Main::playerDied);
+                boss.setAction(() -> {
+                    Main.playerDied();
+                    Assets.gunShot.play();
+                });
 
                 com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
                     @Override
                     public void run() {
+                        boss.setX(player.getX() - 100);
+                        boss.setY(player.getY());
                         uiManager.getDialogueManager().startForcedDialogue(boss);
                         uiManager.getDialogueUI().show();
                         player.setMovementLocked(true);
@@ -155,9 +160,7 @@ public class Main extends ApplicationAdapter {
 
         float delta = Gdx.graphics.getDeltaTime();
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
-            uiManager.toggleQuestTable();
-        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {uiManager.toggleQuestTable();}
 
         player.update(delta);
         itemManager.update(player);
@@ -171,8 +174,8 @@ public class Main extends ApplicationAdapter {
         }
 
         // === Камера слідкує за гравцем ===
-        float targetX = player.x + player.width / 2f;
-        float targetY = player.y + player.height / 2f;
+        float targetX = player.getX() + player.width / 2f;
+        float targetY = player.getY() + player.height / 2f;
         float cameraX = Math.max(camera.viewportWidth / 2f, Math.min(targetX, WORLD_WIDTH - camera.viewportWidth / 2f));
         float cameraY = Math.max(camera.viewportHeight / 2f, Math.min(targetY, WORLD_HEIGHT - camera.viewportHeight / 2f));
         camera.position.set(cameraX, cameraY, 0);
@@ -186,7 +189,7 @@ public class Main extends ApplicationAdapter {
 
 
         if (QuestManager.hasQuest("Big delivery") && itemManager.getBush().isPlayerNear(player)) {
-            font.draw(batch, "Press E to hide your kg", itemManager.getBush().x, itemManager.getBush().y);
+            font.draw(batch, "Press E to hide your kg", itemManager.getBush().getY(), itemManager.getBush().getY());
             if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
                 player.getInventory().removeItem("grass", 1000);
                 QuestManager.removeQuest("Big delivery");
@@ -222,8 +225,8 @@ public class Main extends ApplicationAdapter {
     }
 
     public void renderDeath(){
-        Gdx.gl.glClearColor(0, 0, 0, 1); // Black background
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+//        Gdx.gl.glClearColor(0, 0, 0, 1); // Black background
+//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         uiManager.render();
     }
 

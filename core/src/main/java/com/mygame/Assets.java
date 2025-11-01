@@ -31,6 +31,7 @@ public class Assets {
     public static Sound kosyakSound;
     public static Sound lighterSound;
     public static Sound bushSound;
+    public static Sound gunShot;
 
     // Music
     public static Music startMusic;
@@ -68,6 +69,7 @@ public class Assets {
         kosyakSound = Gdx.audio.newSound(Gdx.files.internal("sound/kosyak.wav"));
         lighterSound = Gdx.audio.newSound(Gdx.files.internal("sound/lighter.ogg"));
         bushSound = Gdx.audio.newSound(Gdx.files.internal("sound/bush.ogg"));
+        gunShot = Gdx.audio.newSound(Gdx.files.internal("sound/gunshots.ogg"));
 
         // Фонова музика
         startMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/start.ogg"));
@@ -102,6 +104,8 @@ public class Assets {
         kosyakSound.dispose();
         lighterSound.dispose();
         bushSound.dispose();
+        gunShot.dispose();
+
         // Музика
         startMusic.dispose();
         backMusic1.dispose();

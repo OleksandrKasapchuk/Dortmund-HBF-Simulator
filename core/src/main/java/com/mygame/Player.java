@@ -25,8 +25,8 @@ public class Player extends Entity {
     public void update(float delta) {
         if (!isMovementLocked) {
 
-            float newX = x;
-            float newY = y;
+            float newX = getX();
+            float newY = getY();
 
             // === Керування ===
             if (Gdx.app.getType() != Application.ApplicationType.Android) {
@@ -47,29 +47,24 @@ public class Player extends Entity {
 
             // === Спочатку перевірка по X ===
             boolean collideX =
-                world.isSolid(newX, y - this.height - 20) ||
-                    world.isSolid(newX + this.width, y - this.height - 20) ||
-                    world.isSolid(newX, y - 20) ||
-                    world.isSolid(newX + this.width, y - 20);
+                world.isSolid(newX, this.getY() - this.height - 20) ||
+                    world.isSolid(newX + this.width, this.getY() - this.height - 20) ||
+                    world.isSolid(newX, this.getY() - 20) ||
+                    world.isSolid(newX + this.width, this.getY() - 20);
 
-            if (!collideX) {
-                x = newX;
-            }
+            if (!collideX) {this.setX(newX);}
 
             // === Потім перевірка по Y ===
             boolean collideY =
-                world.isSolid(x, newY - this.height - 20) ||
-                    world.isSolid(x + this.width, newY - this.height - 20) ||
-                    world.isSolid(x, newY - 20) ||
-                    world.isSolid(x + this.width, newY - 20);
+                world.isSolid(this.getX(), newY - this.height - 20) ||
+                    world.isSolid(this.getX() + this.width, newY - this.height - 20) ||
+                    world.isSolid(this.getX(), newY - 20) ||
+                    world.isSolid(this.getX() + this.width, newY - 20);
 
-            if (!collideY) {
-                y = newY;
-            }
+            if (!collideY) {this.setY(newY);}
         }
     }
     public int getMoney(){return inventory.getAmount("money");}
     public InventoryManager getInventory(){return inventory;}
-    public float getX(){return x;}
-    public float getY(){return y;}
+
 }

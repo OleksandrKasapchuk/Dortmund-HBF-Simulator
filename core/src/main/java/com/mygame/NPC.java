@@ -33,23 +33,18 @@ public class NPC extends Entity {
     public boolean followPlayer(Player player, float offsetX, float offsetY) {
         float delta = Gdx.graphics.getDeltaTime();
 
-        float targetX = player.x + offsetX;
-        float targetY = player.y + offsetY;
+        float targetX = player.getX() + offsetX;
+        float targetY = player.getY() + offsetY;
 
-        if (x > targetX) x -= speed * delta;
-        else if (x < targetX) x += speed * delta;
+        if (this.getX() > targetX) this.setX(this.getX() - speed * delta);
+        else if (this.getX() < targetX) this.setX(this.getX() + speed * delta);
 
-        if (y > targetY) y -= speed * delta;
-        else if (y < targetY) y += speed * delta;
+        if (this.getY() > targetY) this.setY(this.getY() - speed * delta);
+        else if (this.getY() < targetY) this.setY(this.getY() + speed * delta);
 
-        return Math.sqrt(Math.pow(player.x - this.x, 2) + Math.pow(player.y - this.y, 2)) < 1400;
+        return Math.sqrt(Math.pow(player.getX() - this.getX(), 2) + Math.pow(player.getY() - this.getY(), 2)) < 1400;
     }
-//    public boolean collidesWith(float px, float py, float pWidth, float pHeight) {
-//        return px < x + width &&
-//            px + pWidth > x &&
-//            py < y + height &&
-//            py + pHeight > y;
-//    }
+
     @Override
     public void update(float delta) {
         if (moveTime != 0 && speed != 0) {
@@ -63,27 +58,25 @@ public class NPC extends Entity {
                     directionY *= -1;
                 }
             } else {
-                float newX = x + directionX * speed * delta;
-                float newY = y + directionY * speed * delta;
+                float newX = this.getX() + directionX * speed * delta;
+                float newY = this.getY() + directionY * speed * delta;
 
                 boolean collideX =
-                    world.isSolid(newX, y - this.height - 20) ||
-                    world.isSolid(newX + this.width, y - this.height - 20) ||
-                    world.isSolid(newX, y - 20) ||
-                    world.isSolid(newX + this.width, y - 20);
+                    world.isSolid(newX, this.getY() - this.height - 20) ||
+                    world.isSolid(newX + this.width, this.getY() - this.height - 20) ||
+                    world.isSolid(newX, this.getY()  - 20) ||
+                    world.isSolid(newX + this.width, this.getY()  - 20);
 
-                if (!collideX) {
-                    x = newX;
-                }
+                if (!collideX) {this.setX(newX);}
+
                 boolean collideY =
-                    world.isSolid(x, newY - this.height - 20) ||
-                    world.isSolid(x + this.width, newY - this.height - 20) ||
-                    world.isSolid(x, newY - 20) ||
-                    world.isSolid(x + this.width, newY - 20);
+                    world.isSolid(this.getX(), newY - this.height - 20) ||
+                    world.isSolid(this.getX() + this.width, newY - this.height - 20) ||
+                    world.isSolid(this.getX(), newY - 20) ||
+                    world.isSolid(this.getX() + this.width, newY - 20);
 
-                if (!collideY) {
-                    y = newY;
-                }
+                if (!collideY) {this.setY(newY);}
+
                 if (timer > moveTime){
                     isPaused = true;
                     timer = 0f;
@@ -99,7 +92,7 @@ public class NPC extends Entity {
         return texts[count];
     }
 
-    public boolean isPlayerNear(Player player) {return Math.sqrt(Math.pow(player.x - this.x, 2) + Math.pow(player.y - this.y, 2)) < this.distance;}
+    public boolean isPlayerNear(Player player) {return Math.sqrt(Math.pow(player.getX() - this.getX(), 2) + Math.pow(player.getY() - this.getY(), 2)) < this.distance;}
     public void advanceDialogue(){count++;}
     public boolean isDialogueFinished(){return count >= texts.length;}
     public void resetDialogue(){this.count = 0;}

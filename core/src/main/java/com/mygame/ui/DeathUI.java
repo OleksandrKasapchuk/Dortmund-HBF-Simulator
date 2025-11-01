@@ -4,18 +4,25 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.mygame.Assets;
 import com.mygame.Main;
 
 public class DeathUI {
     private Stage stage;
+    private final Image backgroundImage;
 
     public DeathUI(Skin skin) {
         stage = new Stage(new FitViewport(2000, 1000));
+
+        backgroundImage = new Image(Assets.deathBack);
+        backgroundImage.setFillParent(true);
+        stage.addActor(backgroundImage);
 
         Table table = new Table();
         table.setFillParent(true);
