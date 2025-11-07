@@ -148,7 +148,7 @@ public class Main extends ApplicationAdapter {
                 });
                 boss.setAction(() -> {
                     Main.playerDied();
-                    Assets.gunShot.play();
+                    SoundManager.playSound(Assets.gunShot);
                 });
 
                 com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
@@ -196,7 +196,7 @@ public class Main extends ApplicationAdapter {
             if (uiManager.isInteractPressed()) {
                 player.getInventory().removeItem("grass", 1000);
                 QuestManager.removeQuest("Big delivery");
-                Assets.bushSound.play();
+                SoundManager.playSound(Assets.bushSound);
                 player.setMovementLocked(true);
                 com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
                     @Override
@@ -225,11 +225,11 @@ public class Main extends ApplicationAdapter {
 
             if (uiManager.isInteractPressed() && itemManager.getPfandAutomat().canInteract()) {
                 if(player.getInventory().removeItem("pfand",1)){
-                    Assets.pfandAutomatSound.play();
+                    SoundManager.playSound(Assets.pfandAutomatSound);
                     com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
                         @Override
                         public void run() {
-                            Assets.moneySound.play();
+                            SoundManager.playSound(Assets.moneySound);
                             uiManager.getGameUI().showInfoMessage("You got 1 money for pfand",1f);
                             player.getInventory().addItem("money",1);
                         }
@@ -257,7 +257,7 @@ public class Main extends ApplicationAdapter {
     }
 
     public void renderSettings() {
-        Gdx.gl.glClearColor(0.3f, 0.3f, 0.3f, 0.5f);
+        Gdx.gl.glClearColor(0.4f, 0.5f, 0.7f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
             toggleSettings();

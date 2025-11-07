@@ -38,7 +38,7 @@ public class NpcManager {
                     QuestManager.removeQuest("Igo");
                     igo.nextDialogueCount();
                     igo.setTexts(new String[]{"Thanks bro!"});
-                    Assets.lighterSound.play();
+                    SoundManager.playSound(Assets.lighterSound);
 
                     // Відкладена зміна текстури через Timer
                     float soundDuration = 5f; // тривалість в секундах
@@ -64,7 +64,7 @@ public class NpcManager {
         ryzhyi.setAction(() -> {
             if (ryzhyi.getDialogueCount() == 1) {
                 player.getInventory().addItem("money", 20);
-                Assets.moneySound.play(0.8f);
+                SoundManager.playSound(Assets.moneySound);
                 uiManager.getGameUI().showInfoMessage("You got 20 euro",1.5f);
                 ryzhyi.nextDialogueCount();
                 ryzhyi.setTexts(new String[]{"I gave 20 euro why do I still see you "});
@@ -100,7 +100,7 @@ public class NpcManager {
                 player.getInventory().removeItem("grass",1);
                 player.getInventory().removeItem("pape",1);
                 player.setMovementLocked(true);
-                Assets.kosyakSound.play(2f);
+                SoundManager.playSound(Assets.kosyakSound);
                 com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
                     @Override
                     public void run() {
