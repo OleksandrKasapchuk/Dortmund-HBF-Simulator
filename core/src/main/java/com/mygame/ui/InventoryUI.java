@@ -65,7 +65,7 @@ public class InventoryUI {
             inventoryTable.add(countLabel).left().row();
         }
     }
-
+    public boolean isVisible() {return visible;}
     public void dispose() {
         inventoryBgTexture.dispose();
     }

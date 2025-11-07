@@ -20,8 +20,10 @@ public class TouchControlsUI {
     private TextButton startButton;
 
     private boolean actButtonJustPressed = false;
+    private boolean invButtonJustPressed = false;
+    private boolean questButtonJustPressed = false;
 
-    public TouchControlsUI(Skin skin, Stage menuStage,Stage gameStage,Stage pauseStage, Player player, InventoryUI inventoryUI, QuestUI questUI) {
+    public TouchControlsUI(Skin skin, Stage menuStage,Stage gameStage,Stage pauseStage, Player player) {
         Pixmap knobPixmap = new Pixmap(50, 50, Pixmap.Format.RGBA8888);
         knobPixmap.setColor(Color.WHITE);
         knobPixmap.fillCircle(25, 25, 25);
@@ -65,7 +67,7 @@ public class TouchControlsUI {
         inventoryButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                inventoryUI.toggle(player);  // Тепер безпосередньо через InventoryUI
+                invButtonJustPressed = true;
                 return true;
             }
         });
@@ -80,7 +82,7 @@ public class TouchControlsUI {
         questButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                questUI.toggle();
+                questButtonJustPressed = true;
                 return true;
             }
         });
@@ -137,7 +139,20 @@ public class TouchControlsUI {
         }
         return false;
     }
-
+    public boolean isInvButtonJustPressed() {
+        if (invButtonJustPressed) {
+            invButtonJustPressed = false;
+            return true;
+        }
+        return false;
+    }
+    public boolean isQuestButtonJustPressed() {
+        if (questButtonJustPressed) {
+            questButtonJustPressed = false;
+            return true;
+        }
+        return false;
+    }
     public void dispose() {
         if (knobTexture != null) knobTexture.dispose();
         if (bgTexture != null) bgTexture.dispose();

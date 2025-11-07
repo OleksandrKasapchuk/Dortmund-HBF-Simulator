@@ -2,6 +2,7 @@ package com.mygame.ui;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygame.DialogueManager;
@@ -44,7 +45,7 @@ public class UIManager {
         dialogueManager = new DialogueManager(dialogueUI);
 
 
-        if (Gdx.app.getType() == Application.ApplicationType.Android) {touchControlsUI = new TouchControlsUI(skin, menuUI.getStage(), gameUI.getStage(), pauseUI.getStage(), player, inventoryUI, questUI);}
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {touchControlsUI = new TouchControlsUI(skin, menuUI.getStage(), gameUI.getStage(), pauseUI.getStage(), player);}
     }
 
     public void setCurrentStage(String stageName) {
@@ -62,7 +63,8 @@ public class UIManager {
             gameUI.update(delta);
             gameUI.updateMoney(player.getMoney());
 
-            if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.TAB)) {inventoryUI.toggle(player);}
+            if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.TAB) || (touchControlsUI != null && touchControlsUI.isInvButtonJustPressed())) {toggleInventoryTable(player);}
+            if (Gdx.input.isKeyJustPressed(Input.Keys.Q) || (touchControlsUI != null && touchControlsUI.isQuestButtonJustPressed())) {toggleQuestTable(player);}
 
             dialogueManager.update(delta, npcs, player, isInteractPressed());
 
@@ -91,7 +93,14 @@ public class UIManager {
         if (touchControlsUI != null) touchControlsUI.dispose();
     }
 
-    public void toggleQuestTable() { questUI.toggle(); }
+    public void toggleQuestTable(Player player) {
+        if (inventoryUI.isVisible()) inventoryUI.toggle(player);
+        questUI.toggle();
+    }
+    public void toggleInventoryTable(Player player) {
+        if (questUI.isVisible()) questUI.toggle();
+        inventoryUI.toggle(player);
+    }
 
     public DialogueManager getDialogueManager() { return dialogueManager; }
     public DialogueUI getDialogueUI() { return dialogueUI; }

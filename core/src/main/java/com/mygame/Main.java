@@ -157,8 +157,6 @@ public class Main extends ApplicationAdapter {
 
         float delta = Gdx.graphics.getDeltaTime();
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {uiManager.toggleQuestTable();}
-
         player.update(delta);
         itemManager.update(player);
 
@@ -187,7 +185,7 @@ public class Main extends ApplicationAdapter {
 
         if (QuestManager.hasQuest("Big delivery") && itemManager.getBush().isPlayerNear(player)) {
             font.draw(batch, "Press E to hide your kg", itemManager.getBush().getX(), itemManager.getBush().getY());
-            if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            if (uiManager.isInteractPressed()) {
                 player.getInventory().removeItem("grass", 1000);
                 QuestManager.removeQuest("Big delivery");
                 Assets.bushSound.play();
@@ -206,9 +204,6 @@ public class Main extends ApplicationAdapter {
                         });
                     }
                 }, 2f);
-
-
-
             }
         }
 

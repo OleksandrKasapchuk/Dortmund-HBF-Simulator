@@ -16,7 +16,7 @@ public class QuestUI {
     private final Table questTable;
     private final Skin skin;
     private boolean visible = false;
-    private final Texture bgTexture; // Додано поле для текстури
+    private final Texture bgTexture;
 
     public QuestUI(Skin skin, Stage stage, float width, float height) {
         this.skin = skin;
@@ -63,6 +63,7 @@ public class QuestUI {
         questTable.setVisible(visible);
         if (visible) update();
     }
+    public boolean isVisible() {return visible;}
 
     // Метод для звільнення пам'яті
     public void dispose() {

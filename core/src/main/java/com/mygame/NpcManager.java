@@ -92,7 +92,7 @@ public class NpcManager {
 
         NPC chikita = new NPC("Chikita",90, 90, 1500, 600, Assets.textureChikita,
             world, 0, 1, 3f, 0f, 0,150,
-            new String[]{"Give me grass und pape and I make you a joint"});
+            new String[]{"Give me grass and pape and I make you a joint"});
         npcs.add(chikita);
 
         chikita.setAction(() -> {
@@ -166,10 +166,13 @@ public class NpcManager {
         npcs.add(boss);
 
         boss.setAction(() -> {
-            QuestManager.addQuest(new QuestManager.Quest("Big delivery","Hide 1kg in the bush"));
-            uiManager.getGameUI().showInfoMessage("You got 1kg grass", 1.5f);
-            player.getInventory().addItem("grass", 1000);
-            boss.setTexts(new String[] {"You know what to do", "So go ahead, I don't wanna wait too much"});
+            if (boss.getDialogueCount() == 1) {
+                QuestManager.addQuest(new QuestManager.Quest("Big delivery", "Hide 1kg in the bush"));
+                uiManager.getGameUI().showInfoMessage("You got 1kg grass", 1.5f);
+                player.getInventory().addItem("grass", 1000);
+                boss.setTexts(new String[]{"You know what to do", "So go ahead, I don't wanna wait too much"});
+                boss.nextDialogueCount();
+            }
         });
 
         NPC kamil = new NPC("Kamil",90, 90, 500, 100, Assets.textureKamil,

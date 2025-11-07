@@ -111,5 +111,4 @@ public class NPC extends Entity {
 
     public void setTexture(Texture texture) {this.texture = texture;}
     public void setFollowing(boolean isFollowing) {this.isFollowing = isFollowing;}
-    public boolean isFollowing() {return this.isFollowing;}
 }
