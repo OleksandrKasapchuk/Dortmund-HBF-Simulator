@@ -45,7 +45,7 @@ public class TouchControlsUI {
         gameStage.addActor(touchpad);
         player.touchpad = touchpad;
 
-        // Кнопка взаємодії
+
         TextButton actButton = new TextButton("ACT", skin);
         actButton.setSize(150, 150);
         actButton.setPosition(1800, 150);
@@ -132,27 +132,11 @@ public class TouchControlsUI {
     }
 
 
-    public boolean isActButtonJustPressed() {
-        if (actButtonJustPressed) {
-            actButtonJustPressed = false;
-            return true;
-        }
-        return false;
-    }
-    public boolean isInvButtonJustPressed() {
-        if (invButtonJustPressed) {
-            invButtonJustPressed = false;
-            return true;
-        }
-        return false;
-    }
-    public boolean isQuestButtonJustPressed() {
-        if (questButtonJustPressed) {
-            questButtonJustPressed = false;
-            return true;
-        }
-        return false;
-    }
+    public boolean isActButtonJustPressed() {return actButtonJustPressed;}
+    public boolean isInvButtonJustPressed() {return invButtonJustPressed;}
+    public boolean isQuestButtonJustPressed() {return questButtonJustPressed;}
+    public void resetButtons() {actButtonJustPressed = false;invButtonJustPressed = false;questButtonJustPressed = false;}
+
     public void dispose() {
         if (knobTexture != null) knobTexture.dispose();
         if (bgTexture != null) bgTexture.dispose();

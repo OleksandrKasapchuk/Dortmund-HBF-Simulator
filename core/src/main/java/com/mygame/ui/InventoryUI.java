@@ -26,8 +26,7 @@ public class InventoryUI {
 
         inventoryTable = new Table();
         inventoryTable.setSize(1600, 800);
-        inventoryTable.setPosition(stage.getViewport().getWorldWidth()/2f - 800,
-            stage.getViewport().getWorldHeight()/2f - 400);
+        inventoryTable.setPosition(stage.getViewport().getWorldWidth()/2f - 800, stage.getViewport().getWorldHeight()/2f - 400);
         inventoryTable.align(Align.topLeft).pad(20);
 
         Pixmap pixmap = new Pixmap(1600, 800, Pixmap.Format.RGBA8888);
@@ -44,9 +43,7 @@ public class InventoryUI {
     public void toggle(Player player) {
         visible = !visible;
         inventoryTable.setVisible(visible);
-        if (visible) {
-            update(player);
-        }
+        if (visible) {update(player);}
     }
 
     public void update(Player player) {

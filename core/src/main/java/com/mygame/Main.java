@@ -65,7 +65,7 @@ public class Main extends ApplicationAdapter {
         state = GameState.MENU;
         uiManager.setCurrentStage("MENU");
         MusicManager.playMusic(Assets.startMusic, 0.4f);
-        for(int i=0; i<10; i++){
+        for(int i=0; i<4; i++){
             pfandManager.spawnRandomPfand(world);
         }
     }
@@ -213,6 +213,7 @@ public class Main extends ApplicationAdapter {
         pfandManager.draw(batch);
         batch.end();
         uiManager.render();
+        uiManager.resetButtons();
     }
 
     public void renderPaused() {

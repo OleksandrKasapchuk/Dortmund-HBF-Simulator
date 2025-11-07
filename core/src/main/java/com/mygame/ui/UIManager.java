@@ -38,12 +38,10 @@ public class UIManager {
         currentStage = menuUI.getStage();
         Gdx.input.setInputProcessor(currentStage);
 
-
         questUI = new QuestUI(skin, gameUI.getStage(), 1200, 800);
         inventoryUI = new InventoryUI(gameUI.getStage(), skin);
         dialogueUI = new DialogueUI(skin, gameUI.getStage(), 1950, 180, 25f, 30f);
         dialogueManager = new DialogueManager(dialogueUI);
-
 
         if (Gdx.app.getType() == Application.ApplicationType.Android) {touchControlsUI = new TouchControlsUI(skin, menuUI.getStage(), gameUI.getStage(), pauseUI.getStage(), player);}
     }
@@ -67,7 +65,6 @@ public class UIManager {
             if (Gdx.input.isKeyJustPressed(Input.Keys.Q) || (touchControlsUI != null && touchControlsUI.isQuestButtonJustPressed())) {toggleQuestTable(player);}
 
             dialogueManager.update(delta, npcs, player, isInteractPressed());
-
         }
         currentStage.act(delta);
     }
@@ -101,7 +98,7 @@ public class UIManager {
         if (questUI.isVisible()) questUI.toggle();
         inventoryUI.toggle(player);
     }
-
+    public void resetButtons(){touchControlsUI.resetButtons();}
     public DialogueManager getDialogueManager() { return dialogueManager; }
     public DialogueUI getDialogueUI() { return dialogueUI; }
     public GameUI getGameUI() { return gameUI; }
