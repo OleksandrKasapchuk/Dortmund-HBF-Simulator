@@ -52,23 +52,20 @@ public class Main extends ApplicationAdapter {
         QuestManager.reset();
 
         world = new World();
-        player = new Player(500, 80, 80, 200, 200, Assets.textureZoe, world);
-
+        itemManager = new ItemManager(world);
+        player = new Player(500, 80, 80, 200, 200, Assets.textureZoe, world, itemManager);
         if (uiManager != null) uiManager.dispose();
         uiManager = new UIManager(player);
 
         npcManager = new NpcManager(batch, player, world, uiManager, font);
         pfandManager = new PfandManager();
-        itemManager = new ItemManager(world);
 
         state = GameState.MENU;
         uiManager.setCurrentStage("MENU");
         MusicManager.playMusic(Assets.startMusic, 0.4f);
     }
 
-    public static void restartGame() {
-        instance.initGame();
-    }
+    public static void restartGame() {instance.initGame();}
 
     public static void startGame() {
         state = GameState.PLAYING;
@@ -200,8 +197,31 @@ public class Main extends ApplicationAdapter {
                 }, 2f);
             }
         }
-
         itemManager.draw(batch);
+
+        itemManager.getPfandAutomat().updateCooldown(Gdx.graphics.getDeltaTime());
+
+        if (itemManager.getPfandAutomat().isPlayerNear(player)) {
+            font.draw(batch,"Press E to change your pfand for money",
+                itemManager.getPfandAutomat().getX(),
+                itemManager.getPfandAutomat().getY() + 150);
+
+            if (uiManager.isInteractPressed() && itemManager.getPfandAutomat().canInteract()) {
+                if(player.getInventory().removeItem("pfand",1)){
+                    Assets.pfandAutomatSound.play();
+                    com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                        @Override
+                        public void run() {
+                            Assets.moneySound.play();
+                            uiManager.getGameUI().showInfoMessage("You got 1 money for pfand",1f);
+                            player.getInventory().addItem("money",1);
+                        }
+                    }, 1.9f);
+
+                    itemManager.getPfandAutomat().startCooldown(2f);
+                }
+            }
+        }
         player.draw(batch);
         npcManager.render();
         pfandManager.draw(batch);

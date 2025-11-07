@@ -12,13 +12,15 @@ public class Player extends Entity {
     public Touchpad touchpad;
     private final InventoryManager inventory = new InventoryManager();
     private boolean isMovementLocked = false;
+    private ItemManager itemManager;
 
 
     public void setMovementLocked(boolean locked) {this.isMovementLocked = locked;}
 
-    public Player(int speed, int width, int height, float x, float y, Texture texture, World world){
+    public Player(int speed, int width, int height, float x, float y, Texture texture, World world,ItemManager itemManager){
         super(width, height, x, y, texture, world);
         this.speed = speed;
+        this.itemManager = itemManager;
     }
 
     @Override
@@ -45,25 +47,45 @@ public class Player extends Entity {
                 newY += dy * speed * delta;
             }
 
-            // === Спочатку перевірка по X ===
-            boolean collideX =
-                world.isSolid(newX, this.getY() - this.height - 20) ||
-                    world.isSolid(newX + this.width, this.getY() - this.height - 20) ||
-                    world.isSolid(newX, this.getY() - 20) ||
-                    world.isSolid(newX + this.width, this.getY() - 20);
+            // === Перевірка колізій по X ===
+            if (!isColliding(newX, getY(), itemManager)) {
+                setX(newX);
+            }
 
-            if (!collideX) {this.setX(newX);}
-
-            // === Потім перевірка по Y ===
-            boolean collideY =
-                world.isSolid(this.getX(), newY - this.height - 20) ||
-                    world.isSolid(this.getX() + this.width, newY - this.height - 20) ||
-                    world.isSolid(this.getX(), newY - 20) ||
-                    world.isSolid(this.getX() + this.width, newY - 20);
-
-            if (!collideY) {this.setY(newY);}
+            // === Перевірка колізій по Y ===
+            if (!isColliding(getX(), newY, itemManager)) {
+                setY(newY);
+            }
         }
     }
+
+    // Метод перевірки колізії з блоками та солідними айтемами
+    private boolean isColliding(float checkX, float checkY, ItemManager itemManager) {
+        // Перевірка по блоках
+        if (world.isSolid(checkX, checkY - height - 20) ||
+            world.isSolid(checkX + width, checkY - height - 20) ||
+            world.isSolid(checkX, checkY - 20) ||
+            world.isSolid(checkX + width, checkY - 20)) {
+            return true;
+        }
+
+        // Перевірка по айтемах
+        for (Item item : itemManager.getItems()) { // потрібно, щоб World міг повертати ItemManager
+            if (item.isSolid() && intersects(checkX, checkY, item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Проста AABB колізія
+    private boolean intersects(float px, float py, Item item) {
+        return px < item.getX() + item.width &&
+            px + width > item.getX() &&
+            py < item.getY() + item.height &&
+            py + height > item.getY();
+    }
+
     public int getMoney(){return inventory.getAmount("money");}
     public InventoryManager getInventory(){return inventory;}
 

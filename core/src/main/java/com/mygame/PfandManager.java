@@ -11,8 +11,8 @@ public class PfandManager {
     private final Random random = new Random();
     private float spawnTimer = 0f;
 
-    private static final float SPAWN_INTERVAL = 10f;
-    private static final int MAX_PFANDS = 10;
+    private static final float SPAWN_INTERVAL = 7f;
+    private static final int MAX_PFANDS = 15;
 
     public void update(float delta, Player player, World world) {
         spawnTimer += delta;
@@ -47,12 +47,11 @@ public class PfandManager {
 
             if (isInCameraView(x, y, cam)) continue;
 
-            // 🔹 Перевіряємо чи немає блоків під усім хітбоксом предмета
             if (isCollidingWithAnyBlock(world, x, y, itemWidth, itemHeight)) continue;
 
             if (isTooCloseToOtherPfands(x, y)) continue;
 
-            pfands.add(new Item("pfand", itemWidth, itemHeight, x, y, Assets.pfand, world, true));
+            pfands.add(new Item("pfand", itemWidth, itemHeight, x, y,75, Assets.pfand, world, true, false));
             break;
         }
     }

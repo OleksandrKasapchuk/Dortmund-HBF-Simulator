@@ -24,6 +24,7 @@ public class Assets {
     public static Texture brick;
     public static Texture bush;
     public static Texture pfand;
+    public static Texture pfandAutomat;
     public static Texture deathBack;
 
     // === Звуки ===
@@ -32,6 +33,7 @@ public class Assets {
     public static Sound lighterSound;
     public static Sound bushSound;
     public static Sound gunShot;
+    public static Sound pfandAutomatSound;
 
     // Music
     public static Music startMusic;
@@ -63,6 +65,7 @@ public class Assets {
         brick = new Texture(Gdx.files.internal("images/brick.png"));
         bush = new Texture(Gdx.files.internal("images/bush.png"));
         pfand= new Texture(Gdx.files.internal("images/pfand.png"));
+        pfandAutomat = new Texture(Gdx.files.internal("images/pfand_automat.png"));
 
         // Звуки
         moneySound = Gdx.audio.newSound(Gdx.files.internal("sound/money.ogg"));
@@ -70,6 +73,7 @@ public class Assets {
         lighterSound = Gdx.audio.newSound(Gdx.files.internal("sound/lighter.ogg"));
         bushSound = Gdx.audio.newSound(Gdx.files.internal("sound/bush.ogg"));
         gunShot = Gdx.audio.newSound(Gdx.files.internal("sound/gunshots.ogg"));
+        pfandAutomatSound = Gdx.audio.newSound(Gdx.files.internal("sound/pfand_automat.ogg"));
 
         // Фонова музика
         startMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/start.ogg"));
@@ -103,6 +107,7 @@ public class Assets {
         lighterSound.dispose();
         bushSound.dispose();
         gunShot.dispose();
+        pfandAutomatSound.dispose();
 
         // Музика
         startMusic.dispose();
