@@ -23,7 +23,6 @@ public class GameUI {
         moneyLabel.setFontScale(3f);
         stage.addActor(moneyLabel);
 
-        // --- Інфо ---
         infoLabel = new Label("", skin);
         infoLabel.setColor(Color.GOLD);
         infoLabel.setAlignment(Align.center);
@@ -34,9 +33,7 @@ public class GameUI {
     }
     public Stage getStage() { return stage; }
 
-    public void updateMoney(int money) {
-        moneyLabel.setText("Money: " + money);
-    }
+    public void updateMoney(int money) {moneyLabel.setText("Money: " + money);}
 
     public void showInfoMessage(String message, float duration) {
         infoLabel.setText(message);

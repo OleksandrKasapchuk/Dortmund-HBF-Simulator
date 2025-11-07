@@ -23,7 +23,7 @@ public class TouchControlsUI {
     private boolean invButtonJustPressed = false;
     private boolean questButtonJustPressed = false;
 
-    public TouchControlsUI(Skin skin, Stage menuStage,Stage gameStage,Stage pauseStage, Player player) {
+    public TouchControlsUI(Skin skin, Stage menuStage,Stage gameStage,Stage pauseStage,Stage settingsStage, Player player) {
         Pixmap knobPixmap = new Pixmap(50, 50, Pixmap.Format.RGBA8888);
         knobPixmap.setColor(Color.WHITE);
         knobPixmap.fillCircle(25, 25, 25);
@@ -45,7 +45,6 @@ public class TouchControlsUI {
         gameStage.addActor(touchpad);
         player.touchpad = touchpad;
 
-
         TextButton actButton = new TextButton("ACT", skin);
         actButton.setSize(150, 150);
         actButton.setPosition(1800, 150);
@@ -59,7 +58,6 @@ public class TouchControlsUI {
         });
         gameStage.addActor(actButton);
 
-        // Кнопка інвентаря
         TextButton inventoryButton = new TextButton("INV", skin);
         inventoryButton.setSize(150, 150);
         inventoryButton.setPosition(1800, 325);
@@ -76,7 +74,7 @@ public class TouchControlsUI {
 
         TextButton questButton = new TextButton("QUESTS", skin);
         questButton.setSize(200, 100); // ширина, висота
-        questButton.setPosition(20, gameStage.getViewport().getWorldHeight() - 120); // лівий верхній кут
+        questButton.setPosition(20, gameStage.getViewport().getWorldHeight() - 300);
         questButton.getLabel().setFontScale(2f);
 
         questButton.addListener(new InputListener() {
@@ -129,6 +127,34 @@ public class TouchControlsUI {
             }
         });
         pauseStage.addActor(resumeButton);
+
+        TextButton settingsButton = new TextButton("SETTINGS", skin);
+        settingsButton.setSize(200, 100);
+        settingsButton.setPosition(20,850);
+        settingsButton.getLabel().setFontScale(3f);
+        settingsButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Main.toggleSettings();
+                return true;
+            }
+        });
+        gameStage.addActor(settingsButton);
+
+        TextButton backButton = new TextButton("BACK", skin);
+        backButton.setSize(200, 100);
+        backButton.setPosition(20,850);
+        backButton.getLabel().setFontScale(3f);
+        backButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Main.toggleSettings();
+                return true;
+            }
+        });
+        settingsStage.addActor(backButton);
+
+
     }
 
 

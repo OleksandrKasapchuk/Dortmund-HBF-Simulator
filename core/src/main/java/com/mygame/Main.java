@@ -30,7 +30,7 @@ public class Main extends ApplicationAdapter {
     private static final int WORLD_WIDTH = 4000;
     private static final int WORLD_HEIGHT = 2000;
 
-    public enum GameState { MENU, PLAYING, PAUSED, DEATH}
+    public enum GameState { MENU, PLAYING, PAUSED, SETTINGS, DEATH}
     private static GameState state = GameState.MENU;
 
     @Override
@@ -92,6 +92,16 @@ public class Main extends ApplicationAdapter {
         }
     }
 
+    public static void toggleSettings() {
+        if (state == GameState.PLAYING) {
+            state = GameState.SETTINGS;
+            uiManager.setCurrentStage("SETTINGS");
+        } else if (state == GameState.SETTINGS) {
+            state = GameState.PLAYING;
+            uiManager.setCurrentStage("GAME");
+        }
+    }
+
     @Override
     public void render() {
         float delta = Gdx.graphics.getDeltaTime();
@@ -102,6 +112,7 @@ public class Main extends ApplicationAdapter {
             case MENU: renderMenu(); break;
             case PAUSED: renderPaused(); break;
             case PLAYING: renderGame(); break;
+            case SETTINGS: renderSettings(); break;
             case DEATH: renderDeath(); break;
         }
 
@@ -120,6 +131,12 @@ public class Main extends ApplicationAdapter {
             togglePause();
             return;
         }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
+            toggleSettings();
+            return;
+        }
+
         if (QuestManager.hasQuest("Big delivery") && player.getInventory().getAmount("grass") < 1000) {
             NPC boss = npcManager.getBoss();
 
@@ -233,6 +250,17 @@ public class Main extends ApplicationAdapter {
     public void renderPaused() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
             togglePause();
+            return;
+        }
+        uiManager.update(Gdx.graphics.getDeltaTime(), player, npcManager.getNpcs());
+        uiManager.render();
+    }
+
+    public void renderSettings() {
+        Gdx.gl.glClearColor(0.3f, 0.3f, 0.3f, 0.5f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
+            toggleSettings();
             return;
         }
         uiManager.update(Gdx.graphics.getDeltaTime(), player, npcManager.getNpcs());

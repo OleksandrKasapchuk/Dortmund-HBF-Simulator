@@ -23,6 +23,7 @@ public class UIManager {
     private GameUI gameUI;
     private MenuUI menuUI;
     private PauseUI pauseUI;
+    private SettingsUI settingsUI;
     private DeathUI deathUI;
 
     private Stage currentStage;
@@ -33,6 +34,7 @@ public class UIManager {
         gameUI = new GameUI(skin, player);
         menuUI = new MenuUI(skin);
         pauseUI = new PauseUI(skin);
+        settingsUI = new SettingsUI(skin);
         deathUI = new DeathUI(skin);
 
         currentStage = menuUI.getStage();
@@ -43,7 +45,7 @@ public class UIManager {
         dialogueUI = new DialogueUI(skin, gameUI.getStage(), 1950, 180, 25f, 30f);
         dialogueManager = new DialogueManager(dialogueUI);
 
-        if (Gdx.app.getType() == Application.ApplicationType.Android) {touchControlsUI = new TouchControlsUI(skin, menuUI.getStage(), gameUI.getStage(), pauseUI.getStage(), player);}
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {touchControlsUI = new TouchControlsUI(skin, menuUI.getStage(), gameUI.getStage(), pauseUI.getStage(), settingsUI.getStage(), player);}
     }
 
     public void setCurrentStage(String stageName) {
@@ -51,6 +53,7 @@ public class UIManager {
             case "MENU": currentStage = menuUI.getStage(); break;
             case "GAME": currentStage = gameUI.getStage(); break;
             case "PAUSE": currentStage = pauseUI.getStage(); break;
+            case "SETTINGS": currentStage = settingsUI.getStage(); break;
             case "DEATH": currentStage = deathUI.getStage(); break;
         }
         Gdx.input.setInputProcessor(currentStage);
@@ -76,6 +79,7 @@ public class UIManager {
         gameUI.getStage().getViewport().update(width, height, true);
         pauseUI.getStage().getViewport().update(width, height, true);
         deathUI.getStage().getViewport().update(width, height, true);
+        settingsUI.getStage().getViewport().update(width, height, true);
     }
 
     public void dispose() {
@@ -83,6 +87,7 @@ public class UIManager {
         gameUI.dispose();
         pauseUI.dispose();
         deathUI.dispose();
+        settingsUI.dispose();
         skin.dispose();
         dialogueUI.dispose();
         inventoryUI.dispose();

@@ -12,7 +12,6 @@ public class MusicManager {
     public static void playMusic(Music newMusic, float volume) {
         if (currentMusic == newMusic && !isPaused) return;
 
-        // Якщо зараз грає інший трек — зупиняємо його
         if (currentMusic != null && currentMusic != newMusic) {
             currentMusic.stop();
         }
@@ -28,14 +27,30 @@ public class MusicManager {
     }
 
     public static void update(float delta) {
-        // Плавне збільшення гучності (fade-in)
         if (currentMusic != null && !isPaused) {
             if (currentVolume < targetVolume) {
                 currentVolume += fadeSpeed * delta;
                 if (currentVolume > targetVolume) currentVolume = targetVolume;
                 currentMusic.setVolume(currentVolume);
+            } else if (currentVolume > targetVolume) {
+                currentVolume -= fadeSpeed * delta;
+                if (currentVolume < targetVolume) currentVolume = targetVolume;
+                currentMusic.setVolume(currentVolume);
             }
         }
+    }
+
+    public static void setVolume(float volume) {
+        targetVolume = volume;
+        // Ensure the volume changes right away if the music is already playing
+        if (currentMusic != null && !isPaused) {
+            currentVolume = volume;
+            currentMusic.setVolume(currentVolume);
+        }
+    }
+
+    public static float getVolume() {
+        return targetVolume;
     }
 
     public static void pauseMusic() {
@@ -47,7 +62,7 @@ public class MusicManager {
 
     public static void resumeMusic() {
         if (currentMusic != null && isPaused) {
-            currentMusic.play(); // продовжує з місця паузи
+            currentMusic.play();
             isPaused = false;
         }
     }
