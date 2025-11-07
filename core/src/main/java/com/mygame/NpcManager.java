@@ -122,9 +122,9 @@ public class NpcManager {
         npcs.add(police);
 
         police.setAction(() -> {
-            if (player.getInventory().removeItem("grass", 100) |
-                player.getInventory().removeItem("joint", 100) |
-                player.getInventory().removeItem("vape", 100)) {
+            if (player.getInventory().removeItem("grass", 10000) |
+                player.getInventory().removeItem("joint", 10000) |
+                player.getInventory().removeItem("vape", 10000)) {
 
                 uiManager.getGameUI().showInfoMessage("You lost your stuff", 1.5f);
             } else {

@@ -22,7 +22,6 @@ public class Main extends ApplicationAdapter {
     private PfandManager pfandManager;
     private ItemManager itemManager;
 
-
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -65,9 +64,6 @@ public class Main extends ApplicationAdapter {
         state = GameState.MENU;
         uiManager.setCurrentStage("MENU");
         MusicManager.playMusic(Assets.startMusic, 0.4f);
-        for(int i=0; i<4; i++){
-            pfandManager.spawnRandomPfand(world);
-        }
     }
 
     public static void restartGame() {
@@ -168,7 +164,6 @@ public class Main extends ApplicationAdapter {
             uiManager.getGameUI().showInfoMessage("You ran away from the police", 1.5f);
         }
 
-        // === Камера слідкує за гравцем ===
         float targetX = player.getX() + player.width / 2f;
         float targetY = player.getY() + player.height / 2f;
         float cameraX = Math.max(camera.viewportWidth / 2f, Math.min(targetX, WORLD_WIDTH - camera.viewportWidth / 2f));
@@ -181,7 +176,6 @@ public class Main extends ApplicationAdapter {
 
         batch.begin();
         world.draw(batch);
-
 
         if (QuestManager.hasQuest("Big delivery") && itemManager.getBush().isPlayerNear(player)) {
             font.draw(batch, "Press E to hide your kg", itemManager.getBush().getX(), itemManager.getBush().getY());
@@ -240,5 +234,12 @@ public class Main extends ApplicationAdapter {
         if (font != null) font.dispose();
         if (uiManager != null) uiManager.dispose();
         MusicManager.stopAll();
+    }
+    public static Main getInstance() {
+        return instance;
+    }
+
+    public OrthographicCamera getCamera() {
+        return camera;
     }
 }

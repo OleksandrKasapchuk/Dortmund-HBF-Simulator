@@ -98,7 +98,7 @@ public class UIManager {
         if (questUI.isVisible()) questUI.toggle();
         inventoryUI.toggle(player);
     }
-    public void resetButtons(){touchControlsUI.resetButtons();}
+    public void resetButtons(){if(touchControlsUI != null)touchControlsUI.resetButtons();}
     public DialogueManager getDialogueManager() { return dialogueManager; }
     public DialogueUI getDialogueUI() { return dialogueUI; }
     public GameUI getGameUI() { return gameUI; }
