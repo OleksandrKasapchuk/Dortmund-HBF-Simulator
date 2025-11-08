@@ -2,6 +2,7 @@ package com.mygame.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
@@ -17,6 +18,9 @@ public class SettingsUI {
     private Label musicVolumeLabel;
     private Slider soundVolumeSlider;
     private Label soundVolumeLabel;
+    private CheckBox muteAllCheckbox;
+    private float lastMusicVolume;
+    private float lastSoundVolume;
 
     public SettingsUI(Skin skin){
         stage = new Stage(new FitViewport(2000, 1000));
@@ -58,6 +62,26 @@ public class SettingsUI {
             }
         });
         stage.addActor(soundVolumeSlider);
+
+        muteAllCheckbox = new CheckBox(" Mute All", skin);
+        muteAllCheckbox.setPosition(50, 425);
+        muteAllCheckbox.getLabel().setFontScale(4f);
+        muteAllCheckbox.getImageCell().size(80, 80); // Збільшуємо розмір боксу
+        muteAllCheckbox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (muteAllCheckbox.isChecked()) {
+                    lastMusicVolume = musicVolumeSlider.getValue();
+                    lastSoundVolume = soundVolumeSlider.getValue();
+                    musicVolumeSlider.setValue(0f);
+                    soundVolumeSlider.setValue(0f);
+                } else {
+                    musicVolumeSlider.setValue(lastMusicVolume);
+                    soundVolumeSlider.setValue(lastSoundVolume);
+                }
+            }
+        });
+        stage.addActor(muteAllCheckbox);
     }
 
     public Stage getStage() { return stage; }
