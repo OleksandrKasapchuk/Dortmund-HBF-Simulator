@@ -9,15 +9,11 @@ public class MusicManager {
     private static float fadeSpeed = 1.2f;
     private static boolean isPaused = false;
 
-    public static void playMusic(Music newMusic, float volume) {
+    public static void playMusic(Music newMusic) {
         if (currentMusic == newMusic && !isPaused) return;
-
-        if (currentMusic != null && currentMusic != newMusic) {
-            currentMusic.stop();
-        }
+        if (currentMusic != null && currentMusic != newMusic) {currentMusic.stop();}
 
         currentMusic = newMusic;
-        targetVolume = volume;
         currentVolume = 0f;
         isPaused = false;
 
@@ -42,16 +38,13 @@ public class MusicManager {
 
     public static void setVolume(float volume) {
         targetVolume = volume;
-        // Ensure the volume changes right away if the music is already playing
         if (currentMusic != null && !isPaused) {
             currentVolume = volume;
             currentMusic.setVolume(currentVolume);
         }
     }
 
-    public static float getVolume() {
-        return targetVolume;
-    }
+    public static float getVolume() {return targetVolume;}
 
     public static void pauseMusic() {
         if (currentMusic != null && currentMusic.isPlaying()) {

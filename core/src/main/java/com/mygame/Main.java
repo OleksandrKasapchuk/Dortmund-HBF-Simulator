@@ -62,21 +62,21 @@ public class Main extends ApplicationAdapter {
 
         state = GameState.MENU;
         uiManager.setCurrentStage("MENU");
-        MusicManager.playMusic(Assets.startMusic, 0.4f);
+        MusicManager.playMusic(Assets.startMusic);
     }
 
     public static void restartGame() {instance.initGame();}
 
     public static void startGame() {
         state = GameState.PLAYING;
-        MusicManager.playMusic(Assets.backMusic1, 0.2f);
+        MusicManager.playMusic(Assets.backMusic1);
         uiManager.setCurrentStage("GAME");
     }
 
     public static void playerDied() {
         state = GameState.DEATH;
         MusicManager.stopAll();
-        MusicManager.playMusic(Assets.backMusic4, 2f);
+        MusicManager.playMusic(Assets.backMusic4);
         uiManager.setCurrentStage("DEATH");
     }
 
@@ -115,7 +115,6 @@ public class Main extends ApplicationAdapter {
             case SETTINGS: renderSettings(); break;
             case DEATH: renderDeath(); break;
         }
-
     }
 
     public void renderMenu() {
@@ -174,8 +173,16 @@ public class Main extends ApplicationAdapter {
         pfandManager.update(delta, player, world);
 
         if(npcManager.updatePolice()){
-            MusicManager.playMusic(Assets.backMusic4, 0.3f);
+            MusicManager.playMusic(Assets.backMusic1);
             uiManager.getGameUI().showInfoMessage("You ran away from the police", 1.5f);
+            npcManager.getBoss().setTexts(new String[]{
+                "Oh, you've managed this",
+                "Well done",
+            });
+            npcManager.getBoss().setAction(()->{
+                player.getInventory().addItem("money", 50);
+                uiManager.getGameUI().showInfoMessage("You got 50 money", 1.5f);
+            });
         }
 
         float targetX = player.getX() + player.width / 2f;
@@ -206,7 +213,7 @@ public class Main extends ApplicationAdapter {
                         npcManager.getPolice1().setAction(() -> {
                             npcManager.getPolice1().setFollowing(true);
                             uiManager.getGameUI().showInfoMessage("RUN", 2f);
-                            MusicManager.playMusic(Assets.backMusic4, 1.5f);
+                            MusicManager.playMusic(Assets.backMusic4);
                             npcManager.getPolice1().setTexts(new String[]{"You got caught!"});
                             npcManager.getPolice1().setAction(Main::playerDied);
                         });
@@ -236,6 +243,8 @@ public class Main extends ApplicationAdapter {
                     }, 1.9f);
 
                     itemManager.getPfandAutomat().startCooldown(2f);
+                } else {
+                    uiManager.getGameUI().showInfoMessage("You don't have enough pfand",1f);
                 }
             }
         }
