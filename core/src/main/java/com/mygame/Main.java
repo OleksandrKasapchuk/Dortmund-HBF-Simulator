@@ -131,9 +131,22 @@ public class Main extends ApplicationAdapter {
             return;
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             toggleSettings();
             return;
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.J)){
+            if (player.getInventory().removeItem("joint", 1)){
+                SoundManager.playSound(Assets.lighterSound);
+
+                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                    @Override
+                    public void run() {
+                        MusicManager.playMusic(Assets.kaifMusic);
+                        uiManager.getGameUI().showInfoMessage("You got stoned",1.5f);
+                    }
+                }, 4f);
+            }
         }
 
         if (QuestManager.hasQuest("Big delivery") && player.getInventory().getAmount("grass") < 1000) {
@@ -266,9 +279,7 @@ public class Main extends ApplicationAdapter {
     }
 
     public void renderSettings() {
-        Gdx.gl.glClearColor(0.4f, 0.5f, 0.7f, 1f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             toggleSettings();
             return;
         }

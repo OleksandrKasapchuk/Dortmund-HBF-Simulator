@@ -3,11 +3,13 @@ package com.mygame.ui;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.mygame.Assets;
 import com.mygame.MusicManager;
 import com.mygame.SoundManager;
 
@@ -21,9 +23,16 @@ public class SettingsUI {
     private CheckBox muteAllCheckbox;
     private float lastMusicVolume;
     private float lastSoundVolume;
+    private Image backgroundImage;
 
     public SettingsUI(Skin skin){
         stage = new Stage(new FitViewport(2000, 1000));
+
+        backgroundImage = new Image(Assets.menuBlurBack);
+        backgroundImage.setFillParent(true);
+
+        stage.addActor(backgroundImage);
+
         settingsLabel1 = new Label("SETTINGS", skin);
         settingsLabel1.setPosition(800, 800);
         settingsLabel1.setFontScale(5f);

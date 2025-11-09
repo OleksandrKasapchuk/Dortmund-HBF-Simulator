@@ -26,6 +26,8 @@ public class Assets {
     public static Texture pfand;
     public static Texture pfandAutomat;
     public static Texture deathBack;
+    public static Texture menuBack;
+    public static Texture menuBlurBack;
 
     // === Звуки ===
     public static Sound moneySound;
@@ -39,8 +41,8 @@ public class Assets {
     public static Music startMusic;
     public static Music backMusic1;
     public static Music backMusic2;
-    public static Music backMusic3;
     public static Music backMusic4;
+    public static Music kaifMusic;
 
     // === Завантаження ===
     public static void load() {
@@ -60,6 +62,8 @@ public class Assets {
 
 
         deathBack = new Texture(Gdx.files.internal("images/deathScreen.jpg"));
+        menuBack = new Texture("images/menu.jpg");
+        menuBlurBack = new Texture("images/menublur.jpg");
 
         textureSpoon = new Texture(Gdx.files.internal("images/spoon.png"));
         brick = new Texture(Gdx.files.internal("images/brick.png"));
@@ -76,11 +80,11 @@ public class Assets {
         pfandAutomatSound = Gdx.audio.newSound(Gdx.files.internal("sound/pfand_automat.ogg"));
 
         // Фонова музика
-        startMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/start.ogg"));
+        startMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/menu.ogg"));
         backMusic1 = Gdx.audio.newMusic(Gdx.files.internal("sound/epic_back1.ogg"));
         backMusic2 = Gdx.audio.newMusic(Gdx.files.internal("sound/epic_back2.ogg"));
-        backMusic3 = Gdx.audio.newMusic(Gdx.files.internal("sound/minigame.ogg"));
         backMusic4 = Gdx.audio.newMusic(Gdx.files.internal("sound/norm.ogg"));
+        kaifMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/kaif.ogg"));
     }
 
     public static void dispose() {
@@ -100,6 +104,8 @@ public class Assets {
         bush.dispose();
         pfand.dispose();
         deathBack.dispose();
+        menuBack.dispose();
+        menuBlurBack.dispose();
 
         // Звуки
         moneySound.dispose();
@@ -113,7 +119,7 @@ public class Assets {
         startMusic.dispose();
         backMusic1.dispose();
         backMusic2.dispose();
-        backMusic3.dispose();
         backMusic4.dispose();
+        kaifMusic.dispose();
     }
 }
