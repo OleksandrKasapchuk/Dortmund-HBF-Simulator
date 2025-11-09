@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.mygame.Player;
@@ -54,16 +55,35 @@ public class InventoryUI {
         inventoryTable.add(titleLabel).padBottom(20).colspan(2).row();
 
         for (Map.Entry<String, Integer> entry : player.getInventory().getItems().entrySet()) {
-            Label itemLabel = new Label(entry.getKey() + ": ", skin);
-            itemLabel.setFontScale(4f);
-            Label countLabel = new Label(String.valueOf(entry.getValue()), skin);
-            countLabel.setFontScale(4f);
-            inventoryTable.add(itemLabel).left();
-            inventoryTable.add(countLabel).left().row();
+            String itemName = entry.getKey();
+            int amount = entry.getValue();
+
+            Label itemLabel = new Label(itemName + ": ", skin);
+            itemLabel.setFontScale(3f);
+            Label countLabel = new Label(String.valueOf(amount), skin);
+            countLabel.setFontScale(3f);
+            inventoryTable.add(itemLabel).left().pad(5);
+            inventoryTable.add(countLabel).left().pad(5);
+
+            if (player.getInventory().isUsable(itemName)) {
+                TextButton useButton = new TextButton("USE", skin);
+                useButton.getLabel().setFontScale(2.5f);
+                useButton.addListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
+                    @Override
+                    public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event,
+                                             float x, float y, int pointer, int button) {
+                        player.useItem(itemName);
+                        update(player);
+                        return true;
+                    }
+                });
+                inventoryTable.add(useButton).pad(5);
+            } else {
+                inventoryTable.add().pad(5);
+            }
+            inventoryTable.row();
         }
     }
     public boolean isVisible() {return visible;}
-    public void dispose() {
-        inventoryBgTexture.dispose();
-    }
+    public void dispose() {inventoryBgTexture.dispose();}
 }

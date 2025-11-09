@@ -87,7 +87,6 @@ public class TouchControlsUI {
 
         gameStage.addActor(questButton);
 
-        // Кнопка паузи
         TextButton pauseButton = new TextButton("PAUSE", skin);
         pauseButton.setSize(150, 75);
         pauseButton.setPosition(1750,800);
@@ -103,7 +102,7 @@ public class TouchControlsUI {
 
         startButton = new TextButton("START", skin);
         startButton.setSize(300, 150);
-        startButton.setPosition(800,250);
+        startButton.setPosition(800,100);
         startButton.getLabel().setFontScale(3f);
         startButton.addListener(new InputListener() {
             @Override
@@ -113,7 +112,6 @@ public class TouchControlsUI {
             }
         });
         menuStage.addActor(startButton);
-
 
         TextButton resumeButton = new TextButton("RESUME", skin);
         resumeButton.setSize(300, 150);

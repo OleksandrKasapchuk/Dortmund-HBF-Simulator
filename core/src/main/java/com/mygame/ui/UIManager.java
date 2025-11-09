@@ -107,4 +107,5 @@ public class UIManager {
     public DialogueManager getDialogueManager() { return dialogueManager; }
     public DialogueUI getDialogueUI() { return dialogueUI; }
     public GameUI getGameUI() { return gameUI; }
+    public InventoryUI getInventoryUI(){return inventoryUI;}
 }

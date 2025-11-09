@@ -59,7 +59,6 @@ public class Player extends Entity {
         }
     }
 
-    // Метод перевірки колізії з блоками та солідними айтемами
     private boolean isColliding(float checkX, float checkY, ItemManager itemManager) {
         // Перевірка по блоках
         if (world.isSolid(checkX, checkY - height - 20) ||
@@ -69,7 +68,6 @@ public class Player extends Entity {
             return true;
         }
 
-        // Перевірка по айтемах
         for (Item item : itemManager.getItems()) { // потрібно, щоб World міг повертати ItemManager
             if (item.isSolid() && intersects(checkX, checkY, item)) {
                 return true;
@@ -78,7 +76,6 @@ public class Player extends Entity {
         return false;
     }
 
-    // Проста AABB колізія
     private boolean intersects(float px, float py, Item item) {
         return px < item.getX() + item.width &&
             px + width > item.getX() &&
@@ -89,4 +86,11 @@ public class Player extends Entity {
     public int getMoney(){return inventory.getAmount("money");}
     public InventoryManager getInventory(){return inventory;}
 
+    public void useItem(String itemName) {
+        if (inventory.isUsable(itemName) && inventory.hasItem(itemName)) {
+            inventory.applyEffect(itemName);
+            inventory.removeItem(itemName, 1);
+            System.out.println("Used " + itemName);
+        }
+    }
 }

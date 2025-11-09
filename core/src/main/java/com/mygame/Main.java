@@ -46,6 +46,22 @@ public class Main extends ApplicationAdapter {
         Assets.load();
 
         initGame();
+        player.getInventory().registerEffect("joint", () -> {
+            SoundManager.playSound(Assets.lighterSound);
+
+            com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                @Override
+                public void run() {
+                    MusicManager.playMusic(Assets.kaifMusic);
+                    uiManager.getGameUI().showInfoMessage("You got stoned",1.5f);
+                }
+            }, 4f);
+        });
+        player.getInventory().setOnInventoryChanged(() -> {
+            if (uiManager.getInventoryUI().isVisible()) {
+                uiManager.getInventoryUI().update(player);
+            }
+        });
     }
     private void initGame() {
         MusicManager.stopAll();
@@ -130,23 +146,9 @@ public class Main extends ApplicationAdapter {
             togglePause();
             return;
         }
-
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             toggleSettings();
             return;
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.J)){
-            if (player.getInventory().removeItem("joint", 1)){
-                SoundManager.playSound(Assets.lighterSound);
-
-                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-                    @Override
-                    public void run() {
-                        MusicManager.playMusic(Assets.kaifMusic);
-                        uiManager.getGameUI().showInfoMessage("You got stoned",1.5f);
-                    }
-                }, 4f);
-            }
         }
 
         if (QuestManager.hasQuest("Big delivery") && player.getInventory().getAmount("grass") < 1000) {
@@ -279,10 +281,7 @@ public class Main extends ApplicationAdapter {
     }
 
     public void renderSettings() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            toggleSettings();
-            return;
-        }
+
         uiManager.update(Gdx.graphics.getDeltaTime(), player, npcManager.getNpcs());
         uiManager.render();
     }
@@ -298,9 +297,9 @@ public class Main extends ApplicationAdapter {
     @Override
     public void dispose() {
         Assets.dispose();
-        if (batch != null) batch.dispose();
-        if (font != null) font.dispose();
-        if (uiManager != null) uiManager.dispose();
+        batch.dispose();
+        font.dispose();
+        uiManager.dispose();
         MusicManager.stopAll();
     }
     public static Main getInstance() {
