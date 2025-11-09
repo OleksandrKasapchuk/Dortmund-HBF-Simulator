@@ -1,6 +1,7 @@
-package com.mygame;
+package com.mygame.entity;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.mygame.world.World;
 
 public class Item extends Entity {
     private String name;
@@ -34,7 +35,6 @@ public class Item extends Entity {
     public boolean canInteract() {
         return cooldownTimer <= 0;
     }
-
     public void startCooldown(float seconds) {
         cooldownTimer = seconds;
     }

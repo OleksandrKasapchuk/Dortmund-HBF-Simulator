@@ -1,4 +1,4 @@
-package com.mygame.ui;
+package com.mygame.ui.screenUI;
 
 
 import com.badlogic.gdx.graphics.Color;
@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.mygame.Player;
+import com.mygame.entity.Player;
 
 public class GameUI {
     private Stage stage;

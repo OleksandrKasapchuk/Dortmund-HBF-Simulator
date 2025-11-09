@@ -1,11 +1,12 @@
-package com.mygame;
+package com.mygame.entity;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygame.world.World;
 
 public abstract class Entity {
-    protected int width;
-    protected int height;
+    private int width;
+    private int height;
     protected Texture texture;
     protected World world;
     private float x;
@@ -22,6 +23,8 @@ public abstract class Entity {
     public void draw(SpriteBatch batch){batch.draw(this.texture, x, y, width, height);}
     public float getX(){return x;}
     public float getY(){return y;}
+    public int getWidth(){return width;}
+    public int getHeight() {return height;}
     public void setX(float x){this.x = x;}
     public void setY(float y){this.y = y;}
 }

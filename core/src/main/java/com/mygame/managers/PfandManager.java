@@ -1,7 +1,13 @@
-package com.mygame;
+package com.mygame.managers;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygame.Assets;
+import com.mygame.Main;
+import com.mygame.entity.Item;
+import com.mygame.world.World;
+import com.mygame.entity.Player;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
@@ -63,8 +69,8 @@ public class PfandManager {
         int endY = (int)((y + height) / world.tileSize);
 
         // Перетворюємо у перевернуту систему
-        startY = world.blocks.length - 1 - startY;
-        endY = world.blocks.length - 1 - endY;
+        startY = world.getBlocks().length - 1 - startY;
+        endY = world.getBlocks().length - 1 - endY;
 
         // Міняємо місцями, якщо потрібно
         if (startY > endY) {
@@ -75,9 +81,9 @@ public class PfandManager {
 
         for (int ty = startY; ty <= endY; ty++) {
             for (int tx = startX; tx <= endX; tx++) {
-                if (ty < 0 || ty >= world.blocks.length || tx < 0 || tx >= world.blocks[0].length)
+                if (ty < 0 || ty >= world.getBlocks().length || tx < 0 || tx >= world.getBlocks()[0].length)
                     return true; // поза картою
-                if (world.blocks[ty][tx] != null) return true;
+                if (world.getBlocks()[ty][tx] != null) return true;
             }
         }
         return false;

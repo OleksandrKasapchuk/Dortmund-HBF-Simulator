@@ -1,4 +1,4 @@
-package com.mygame.ui;
+package com.mygame.ui.screenUI;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;

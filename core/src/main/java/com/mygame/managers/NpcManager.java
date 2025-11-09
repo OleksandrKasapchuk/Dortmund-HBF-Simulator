@@ -1,8 +1,13 @@
-package com.mygame;
+package com.mygame.managers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygame.Assets;
+import com.mygame.entity.NPC;
+import com.mygame.entity.Player;
+import com.mygame.world.World;
+import com.mygame.managers.audio.SoundManager;
 import com.mygame.ui.UIManager;
 
 import java.util.ArrayList;
@@ -187,7 +192,7 @@ public class NpcManager {
         for (NPC npc : npcs) {
             npc.draw(batch);
             if (npc.isPlayerNear(player)) {
-                font.draw(batch, "Press E / ACT to interact", npc.getX() - 100, npc.getY() + npc.height + 40);
+                font.draw(batch, "Press E / ACT to interact", npc.getX() - 100, npc.getY() + npc.getHeight() + 40);
             }
         }
     }
@@ -203,6 +208,7 @@ public class NpcManager {
     public ArrayList<NPC> getNpcs() {return npcs;}
     public NPC getBoss() {return boss;}
     public NPC getPolice1(){return police1;}
+    public NPC getPolice(){return police;}
 
     public void callPolice(){
         police1 = new NPC("Police",100, 100, player.getX(), player.getY() - 300, Assets.texturePolice,

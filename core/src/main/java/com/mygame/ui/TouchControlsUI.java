@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.mygame.Main;
-import com.mygame.Player;
+import com.mygame.entity.Player;
 
 public class TouchControlsUI {
     private Texture knobTexture;

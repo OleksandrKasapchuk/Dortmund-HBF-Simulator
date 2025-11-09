@@ -9,7 +9,16 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygame.managers.audio.MusicManager;
+import com.mygame.managers.audio.SoundManager;
+import com.mygame.entity.NPC;
+import com.mygame.managers.NpcManager;
+import com.mygame.entity.Player;
+import com.mygame.managers.ItemManager;
+import com.mygame.managers.PfandManager;
+import com.mygame.managers.QuestManager;
 import com.mygame.ui.UIManager;
+import com.mygame.world.World;
 
 public class Main extends ApplicationAdapter {
     private static Main instance;
@@ -52,6 +61,7 @@ public class Main extends ApplicationAdapter {
             com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
                 @Override
                 public void run() {
+                    player.setStone();
                     MusicManager.playMusic(Assets.kaifMusic);
                     uiManager.getGameUI().showInfoMessage("You got stoned",1.5f);
                 }
@@ -136,9 +146,7 @@ public class Main extends ApplicationAdapter {
     public void renderMenu() {
         uiManager.update(Gdx.graphics.getDeltaTime(), player, npcManager.getNpcs());
         uiManager.render();
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            startGame();
-        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {startGame();}
     }
 
     public void renderGame(){
@@ -187,6 +195,14 @@ public class Main extends ApplicationAdapter {
         uiManager.update(delta, player, npcManager.getNpcs());
         pfandManager.update(delta, player, world);
 
+        if (player.getState() == Player.State.STONED){
+            npcManager.getPolice().setAction(Main::playerDied);
+            npcManager.getPolice().setTexts(new String[]{
+                "Are you stoned?",
+                "You are caught"
+            });
+        }
+
         if(npcManager.updatePolice()){
             MusicManager.playMusic(Assets.backMusic1);
             uiManager.getGameUI().showInfoMessage("You ran away from the police", 1.5f);
@@ -200,8 +216,8 @@ public class Main extends ApplicationAdapter {
             });
         }
 
-        float targetX = player.getX() + player.width / 2f;
-        float targetY = player.getY() + player.height / 2f;
+        float targetX = player.getX() + player.getWidth() / 2f;
+        float targetY = player.getY() + player.getHeight() / 2f;
         float cameraX = Math.max(camera.viewportWidth / 2f, Math.min(targetX, WORLD_WIDTH - camera.viewportWidth / 2f));
         float cameraY = Math.max(camera.viewportHeight / 2f, Math.min(targetY, WORLD_HEIGHT - camera.viewportHeight / 2f));
         camera.position.set(cameraX, cameraY, 0);
@@ -281,7 +297,10 @@ public class Main extends ApplicationAdapter {
     }
 
     public void renderSettings() {
-
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            toggleSettings();
+            return;
+        }
         uiManager.update(Gdx.graphics.getDeltaTime(), player, npcManager.getNpcs());
         uiManager.render();
     }

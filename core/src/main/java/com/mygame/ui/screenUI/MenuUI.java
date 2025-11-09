@@ -1,4 +1,4 @@
-package com.mygame.ui;
+package com.mygame.ui.screenUI;
 
 
 import com.badlogic.gdx.Application;

@@ -1,4 +1,4 @@
-package com.mygame.ui;
+package com.mygame.ui.screenUI;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -10,8 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygame.Assets;
-import com.mygame.MusicManager;
-import com.mygame.SoundManager;
+import com.mygame.managers.audio.MusicManager;
+import com.mygame.managers.audio.SoundManager;
 
 public class SettingsUI {
     private Stage stage;

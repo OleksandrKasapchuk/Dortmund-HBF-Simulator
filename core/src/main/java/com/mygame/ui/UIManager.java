@@ -5,9 +5,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.mygame.DialogueManager;
-import com.mygame.NPC;
-import com.mygame.Player;
+import com.mygame.managers.DialogueManager;
+import com.mygame.entity.NPC;
+import com.mygame.entity.Player;
+import com.mygame.ui.screenUI.DeathUI;
+import com.mygame.ui.screenUI.GameUI;
+import com.mygame.ui.screenUI.MenuUI;
+import com.mygame.ui.screenUI.PauseUI;
+import com.mygame.ui.screenUI.SettingsUI;
 
 import java.util.ArrayList;
 

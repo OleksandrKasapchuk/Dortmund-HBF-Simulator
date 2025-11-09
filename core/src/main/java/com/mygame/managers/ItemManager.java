@@ -1,6 +1,11 @@
-package com.mygame;
+package com.mygame.managers;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygame.Assets;
+import com.mygame.entity.Item;
+import com.mygame.world.World;
+import com.mygame.entity.Player;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 

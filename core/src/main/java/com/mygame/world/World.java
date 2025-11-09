@@ -1,12 +1,13 @@
-package com.mygame;
+package com.mygame.world;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygame.Assets;
 
 public class World {
 
-    int tileSize = 100;
+    public int tileSize = 100;
 
-    Block[][] blocks;
+    private Block[][] blocks;
 
     int [][] map = new int[][] {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -38,7 +39,7 @@ public class World {
         for (int y = 0; y < map.length; y++) {
             for (int x = 0; x < map[y].length; x++) {
                 if (map[y][x] == 1){
-                    blocks[y][x] = new Block(true,Assets.brick);
+                    blocks[y][x] = new Block(true, Assets.brick);
                 } else if (map[y][x] == 2) {
                     blocks[y][x] = new Block(false,Assets.bush);
                 }
@@ -67,4 +68,5 @@ public class World {
             }
         }
     }
+    public Block[][] getBlocks() {return blocks;}
 }

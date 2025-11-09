@@ -1,5 +1,7 @@
-package com.mygame;
+package com.mygame.managers;
 
+import com.mygame.entity.NPC;
+import com.mygame.entity.Player;
 import com.mygame.ui.DialogueUI;
 
 import java.util.ArrayList;

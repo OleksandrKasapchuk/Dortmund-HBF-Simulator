@@ -1,10 +1,13 @@
-package com.mygame;
+package com.mygame.entity;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.mygame.managers.InventoryManager;
+import com.mygame.managers.ItemManager;
+import com.mygame.world.World;
 
 
 public class Player extends Entity {
@@ -13,11 +16,13 @@ public class Player extends Entity {
     private final InventoryManager inventory = new InventoryManager();
     private boolean isMovementLocked = false;
     private ItemManager itemManager;
+    public enum State {NORMAL, STONED}
+    private State currentState = State.NORMAL;
 
 
     public void setMovementLocked(boolean locked) {this.isMovementLocked = locked;}
 
-    public Player(int speed, int width, int height, float x, float y, Texture texture, World world,ItemManager itemManager){
+    public Player(int speed, int width, int height, float x, float y, Texture texture, World world, ItemManager itemManager){
         super(width, height, x, y, texture, world);
         this.speed = speed;
         this.itemManager = itemManager;
@@ -25,6 +30,8 @@ public class Player extends Entity {
 
     @Override
     public void update(float delta) {
+        if (State.STONED == currentState){speed = 150;}
+
         if (!isMovementLocked) {
 
             float newX = getX();
@@ -61,14 +68,14 @@ public class Player extends Entity {
 
     private boolean isColliding(float checkX, float checkY, ItemManager itemManager) {
         // Перевірка по блоках
-        if (world.isSolid(checkX, checkY - height - 20) ||
-            world.isSolid(checkX + width, checkY - height - 20) ||
+        if (world.isSolid(checkX, checkY - getHeight() - 20) ||
+            world.isSolid(checkX + getWidth(), checkY - getHeight() - 20) ||
             world.isSolid(checkX, checkY - 20) ||
-            world.isSolid(checkX + width, checkY - 20)) {
+            world.isSolid(checkX + getWidth(), checkY - 20)) {
             return true;
         }
 
-        for (Item item : itemManager.getItems()) { // потрібно, щоб World міг повертати ItemManager
+        for (Item item : itemManager.getItems()) {
             if (item.isSolid() && intersects(checkX, checkY, item)) {
                 return true;
             }
@@ -77,10 +84,10 @@ public class Player extends Entity {
     }
 
     private boolean intersects(float px, float py, Item item) {
-        return px < item.getX() + item.width &&
-            px + width > item.getX() &&
-            py < item.getY() + item.height &&
-            py + height > item.getY();
+        return px < item.getX() + item.getWidth() &&
+            px + getWidth() > item.getX() &&
+            py < item.getY() + item.getHeight() &&
+            py + getHeight() > item.getY();
     }
 
     public int getMoney(){return inventory.getAmount("money");}
@@ -93,4 +100,7 @@ public class Player extends Entity {
             System.out.println("Used " + itemName);
         }
     }
+    public void setStone(){currentState = State.STONED;}
+    public void setNormal() {currentState = State.NORMAL;}
+    public State getState(){return currentState;}
 }

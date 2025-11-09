@@ -1,4 +1,4 @@
-package com.mygame;
+package com.mygame.managers;
 
 import java.util.ArrayList;
 

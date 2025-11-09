@@ -1,4 +1,4 @@
-package com.mygame;
+package com.mygame.managers;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,7 +25,7 @@ public class InventoryManager {
 
     public void addItem(String itemName, int amount) {
         items.put(itemName, items.getOrDefault(itemName, 0) + amount);
-        notifyChange(); // 🔹 оновлення UI
+        notifyChange();
     }
 
     public boolean removeItem(String itemName, int count) {
@@ -33,7 +33,7 @@ public class InventoryManager {
         int current = items.get(itemName);
         if (current <= count) items.remove(itemName);
         else items.put(itemName, current - count);
-        notifyChange(); // 🔹 оновлення UI
+        notifyChange();
         return true;
     }
 
