@@ -1,5 +1,7 @@
 package com.mygame.managers;
 
+import com.mygame.Dialogue;
+import com.mygame.DialogueNode;
 import com.mygame.entity.NPC;
 import com.mygame.entity.Player;
 import com.mygame.ui.DialogueUI;
@@ -7,102 +9,172 @@ import com.mygame.ui.DialogueUI;
 import java.util.ArrayList;
 
 public class DialogueManager {
+    private final DialogueUI dialogueUI;
+    private final Player player;
+
+    private NPC activeNpc = null;
+    private Dialogue activeDialogue = null;
+    private NPC recentlyFinishedForcedNpc = null;
+
     private float textTimer = 0f;
     private final float textSpeed = 0.05f;
-    private NPC activeNpc = null;
-    private NPC recentlyFinishedForcedNpc = null;
-    private boolean forcedDialogue = false;
+    private boolean isForcedDialogue = false;
+    private boolean nodeActionExecuted = false;
+    private boolean textCompleted = false;
 
-    private final DialogueUI dialogueUI;
+    private int currentTextIndex = 0;
 
-    public DialogueManager(DialogueUI dialogueUI) {
+    private float interactCooldown = 0f;
+    private final float INTERACT_COOLDOWN_TIME = 0.04f;
+
+    private final DialogueUI.ChoiceListener choiceListener = choice -> {
+        if (activeDialogue == null) return;
+        if (choice.action != null) choice.action.run();
+
+        if (choice.nextNode != null) {
+            activeDialogue.choose(choice);
+            displayCurrentNode();
+        } else {
+            endDialogue();
+        }
+    };
+
+    public DialogueManager(DialogueUI dialogueUI, Player player) {
         this.dialogueUI = dialogueUI;
-    }
-
-    public void startForcedDialogue(NPC npc) {
-        activeNpc = npc;
-        textTimer = 0f;
-        forcedDialogue = true;
+        this.player = player;
     }
 
     public boolean isDialogueActive() {
-        return activeNpc != null;
+        return activeDialogue != null;
     }
 
-    public void forceAdvance() {
-        if (activeNpc != null) {
-            textTimer = activeNpc.getCurrentPhrase().length() * textSpeed;
-        }
+    public void startDialogue(NPC npc) {
+        if (isDialogueActive() || !npc.isPlayerNear(player)) return;
+        isForcedDialogue = false;
+        commonStartDialogue(npc);
     }
-    public void update(float delta, ArrayList<NPC> npcs, Player player, boolean interactPressed) {
-        if (recentlyFinishedForcedNpc != null && !recentlyFinishedForcedNpc.isPlayerNear(player)) {
-            recentlyFinishedForcedNpc = null;
+
+    public void startForcedDialogue(NPC npc) {
+        if (isDialogueActive()) endDialogue();
+        isForcedDialogue = true;
+        commonStartDialogue(npc);
+    }
+
+    private void commonStartDialogue(NPC npc) {
+        activeNpc = npc;
+        activeDialogue = npc.getDialogue();
+        if (activeDialogue == null) return;
+        activeDialogue.reset();
+        if (isForcedDialogue || "Police".equals(npc.getName())) {
+            player.setMovementLocked(true);
+        }
+        displayCurrentNode();
+    }
+
+    private void displayCurrentNode() {
+        currentTextIndex = 0;
+        resetTimersAndFlags();
+        DialogueNode currentNode = activeDialogue.getCurrentNode();
+        dialogueUI.show(activeNpc.getName(), currentNode, choiceListener);
+        displayText();
+    }
+
+    private void displayText() {
+        resetTimersAndFlags();
+        dialogueUI.updateText(""); // Clear previous text
+    }
+
+    private void resetTimersAndFlags() {
+        textTimer = 0f;
+        nodeActionExecuted = false;
+        textCompleted = false;
+        interactCooldown = INTERACT_COOLDOWN_TIME;
+    }
+
+    public void endDialogue() {
+        if (!isDialogueActive()) return;
+        DialogueNode currentNode = activeDialogue.getCurrentNode();
+        // The action for a terminal node is now EXCLUSIVELY called here.
+        if (currentNode != null && currentNode.getChoices().isEmpty() && currentNode.getAction() != null && !nodeActionExecuted) {
+            currentNode.getAction().run();
+            nodeActionExecuted = true; // Mark as executed
         }
 
-        if (activeNpc == null) {
+        if (isForcedDialogue || (activeNpc != null && "Police".equals(activeNpc.getName()))) {
+            recentlyFinishedForcedNpc = activeNpc;
+            if (this.player != null) this.player.setMovementLocked(false);
+        }
+        isForcedDialogue = false;
+        if(activeDialogue != null) activeDialogue.reset();
+        dialogueUI.hide();
+        activeNpc = null;
+        activeDialogue = null;
+    }
+
+    public void update(float delta, boolean interactPressed, ArrayList<NPC> npcs) {
+        if (interactCooldown > 0) {
+            interactCooldown -= delta;
+        }
+
+        if (!isDialogueActive()) {
+            // Start dialogue logic (cleaned up)
+            if (player == null) return;
+            if (recentlyFinishedForcedNpc != null && !recentlyFinishedForcedNpc.isPlayerNear(player)) recentlyFinishedForcedNpc = null;
             for (NPC npc : npcs) {
-                if (npc.getName().equals("Police") && npc.isPlayerNear(player) && npc != recentlyFinishedForcedNpc) {
-                    activeNpc = npc;
-                    textTimer = 0f;
-                    break;
+                if ("Police".equals(npc.getName()) && npc.isPlayerNear(player) && npc != recentlyFinishedForcedNpc) {
+                    startForcedDialogue(npc); return;
                 }
             }
-        }
-
-        if (interactPressed) {
-            if (activeNpc != null) {
-                String fullText = activeNpc.getCurrentPhrase();
-                int lettersToShow = (int) (textTimer / textSpeed);
-
-                if (lettersToShow < fullText.length()) {
-                    textTimer = fullText.length() * textSpeed;
-                } else {
-                    activeNpc.advanceDialogue();
-                    textTimer = 0f;
-                }
-            } else {
+            if (interactPressed && interactCooldown <= 0) {
                 for (NPC npc : npcs) {
                     if (npc.isPlayerNear(player)) {
-                        activeNpc = npc;
-                        textTimer = 0f;
-                        break;
+                        startDialogue(npc); return;
                     }
                 }
             }
+            return;
         }
 
-        if (activeNpc != null && !forcedDialogue && !activeNpc.isPlayerNear(player)) {
-            activeNpc.resetDialogue();
-            activeNpc = null;
+        if (!activeNpc.isPlayerNear(player) && !isForcedDialogue) {
+            endDialogue(); return;
         }
 
-        if (activeNpc != null) {
-            if (!activeNpc.isDialogueFinished()) {
-                if (activeNpc.getName().equals("Police")) {
-                    player.setMovementLocked(true);
-                }
-                dialogueUI.show(activeNpc.getName(), activeNpc.getCurrentPhrase().substring(0,
-                    Math.min(activeNpc.getCurrentPhrase().length(), (int)(textTimer / textSpeed))));
-                textTimer += delta;
+        DialogueNode currentNode = activeDialogue.getCurrentNode();
+        String currentPhrase = currentNode.getTexts().get(currentTextIndex);
+
+        // Typing Effect
+        if (!textCompleted) {
+            textTimer += delta;
+            int lettersToShow = (int) (textTimer / textSpeed);
+            if (lettersToShow >= currentPhrase.length()) {
+                textCompleted = true;
+                dialogueUI.updateText(currentPhrase);
             } else {
-                activeNpc.runAction();
-                activeNpc.resetDialogue();
-                if (activeNpc.getName().equals("Police")) {
-                    recentlyFinishedForcedNpc = activeNpc;
-                    player.setMovementLocked(false);
-                }
-
-                // Якщо це forced NPC — відмічаємо як recentlyFinishedForcedNpc
-                if (forcedDialogue) {
-                    recentlyFinishedForcedNpc = activeNpc;
-                    forcedDialogue = false;
-                    player.setMovementLocked(false);
-                }
-                activeNpc = null;
-                dialogueUI.hide();
+                dialogueUI.updateText(currentPhrase.substring(0, lettersToShow));
             }
-        } else {
-            dialogueUI.hide();
         }
+
+        // Interaction Logic
+        if (interactPressed && interactCooldown <= 0) {
+            if (!textCompleted) {
+                textCompleted = true;
+                dialogueUI.updateText(currentPhrase);
+            } else {
+                boolean isLastPhrase = currentTextIndex >= currentNode.getTexts().size() - 1;
+                if (isLastPhrase) {
+                    if (currentNode.getChoices().isEmpty()) {
+                        endDialogue();
+                    }
+                } else {
+                    currentTextIndex++;
+                    displayText();
+                }
+            }
+            interactCooldown = INTERACT_COOLDOWN_TIME;
+        }
+
+        // UI State Logic
+        boolean isLastPhrase = currentTextIndex >= currentNode.getTexts().size() - 1;
+        dialogueUI.showChoices(textCompleted && isLastPhrase && !currentNode.getChoices().isEmpty());
     }
 }

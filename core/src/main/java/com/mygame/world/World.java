@@ -52,10 +52,10 @@ public class World {
         int tileY = (int) ((blocks.length - 1) - (y / tileSize));
 
         if (tileY < 0 || tileY >= blocks.length || tileX < 0 || tileX >= blocks[0].length)
-            return true; // поза картою вважаємо стіною
+            return true;
 
         Block block = blocks[tileY][tileX];
-        return block != null && block.issolid; // true якщо блок існує і твердий
+        return block != null && block.issolid;
     }
 
     public void draw(SpriteBatch batch) {

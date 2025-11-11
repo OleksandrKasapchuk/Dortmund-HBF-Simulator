@@ -7,7 +7,6 @@ public class InventoryManager {
     private Map<String, Integer> items;
     private Map<String, Runnable> itemEffects;
 
-    // 🔹 Слухач змін у інвентарі
     private Runnable onInventoryChanged;
 
     public InventoryManager() {
@@ -45,7 +44,7 @@ public class InventoryManager {
     public void applyEffect(String itemName) {
         if (itemEffects.containsKey(itemName)) {
             itemEffects.get(itemName).run();
-            notifyChange(); // 🔹 ефект може змінити інвентар (наприклад, прибрати предмет)
+            notifyChange();
         }
     }
 

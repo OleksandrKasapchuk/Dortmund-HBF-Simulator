@@ -23,13 +23,11 @@ public class PfandManager {
     public void update(float delta, Player player, World world) {
         spawnTimer += delta;
 
-        // Спавнимо, якщо настав час і ще не перевищено ліміт
         if (spawnTimer >= SPAWN_INTERVAL && pfands.size() < MAX_PFANDS) {
             spawnRandomPfand(world);
             spawnTimer = 0f;
         }
 
-        // Перевірка взаємодії
         for (Iterator<Item> it = pfands.iterator(); it.hasNext();) {
             Item p = it.next();
             if (p.isPlayerNear(player)) {
