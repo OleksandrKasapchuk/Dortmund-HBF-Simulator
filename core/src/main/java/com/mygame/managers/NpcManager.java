@@ -34,11 +34,14 @@ public class NpcManager {
     }
 
     private void createNpcs(UIManager uiManager, World world) {
+
         // === IGO ===
         DialogueNode igoNode_start = new DialogueNode("Hi bro! Give me some joint");
         DialogueNode igoNode_thanks = new DialogueNode("Thanks bro!");
-        DialogueNode igoNode_bye = new DialogueNode("See ya!");
+        DialogueNode igoNode_bye = new DialogueNode(() -> {
+            if (!QuestManager.hasQuest("Igo")) {QuestManager.addQuest(new QuestManager.Quest("Igo", "Get some joint for igo"));}},"See ya!");
         Runnable igoAction = () -> {
+            if (!QuestManager.hasQuest("Igo")) {QuestManager.addQuest(new QuestManager.Quest("Igo", "Get some joint for igo"));}
             if (player.getInventory().removeItem("joint", 1)) {
                 player.getInventory().addItem("vape", 1);
                 uiManager.getGameUI().showInfoMessage("You got 1 vape", 1.5f);
@@ -53,14 +56,12 @@ public class NpcManager {
                 }
             } else {
                 uiManager.getGameUI().showInfoMessage("Not enough joint", 1.5f);
-                if (!QuestManager.hasQuest("Igo")) {
-                    QuestManager.addQuest(new QuestManager.Quest("Igo", "Get some joint for igo"));
-                }
             }
         };
         igoNode_start.addChoice("Give joint", igoAction);
         igoNode_start.addChoice("Leave", igoNode_bye);
-        NPC igo = new NPC("Igo", 90, 90, 500, 300, Assets.textureIgo, world, 1, 0, 3f, 0f, 0, 150, new Dialogue(igoNode_start));
+        NPC igo = new NPC("Igo", 90, 90, 500, 300, Assets.textureIgo, world, 1, 0, 3f, 0f, 0, 150,
+            new Dialogue(igoNode_start));
         npcs.add(igo);
 
         // === RYZHYI ===
@@ -93,7 +94,7 @@ public class NpcManager {
                 uiManager.getGameUI().showInfoMessage("Not enough money", 1.5f);
             }
         });
-        barygaNode.addChoice("Nothing", new DialogueNode("Come back if you need something."));
+        barygaNode.addChoice("Leave", new DialogueNode("Come back if you need something."));
         NPC baryga = new NPC("Baryga", 90, 90, 1000, 200, Assets.textureBaryga, world, 0, 1, 3f, 0f, 0, 150, new Dialogue(barygaNode));
         npcs.add(baryga);
 
@@ -117,12 +118,12 @@ public class NpcManager {
                 uiManager.getGameUI().showInfoMessage("Not enough grass or pape", 1.5f);
             }
         });
+        chikitaNode.addChoice("Leave", () -> {});
         NPC chikita = new NPC("Chikita", 90, 90, 1500, 600, Assets.textureChikita, world, 0, 1, 3f, 0f, 0, 150, new Dialogue(chikitaNode));
         npcs.add(chikita);
 
         // === POLICE ===
-        DialogueNode policeNode = new DialogueNode("Police check, do you have some forbidden stuff?");
-        policeNode.addChoice("OK", () -> {
+        DialogueNode policeNode = new DialogueNode(() -> {
             if (player.getInventory().removeItem("grass", 10000) ||
                 player.getInventory().removeItem("joint", 10000) ||
                 player.getInventory().removeItem("vape", 10000)) {
@@ -130,7 +131,7 @@ public class NpcManager {
             } else {
                 uiManager.getGameUI().showInfoMessage("You passed the police check", 1.5f);
             }
-        });
+        },"Police check, do you have some forbidden stuff?");
         police = new NPC("Police", 100, 100, 400, 600, Assets.texturePolice, world, 1, 0, 3f, 0, 75, 100, new Dialogue(policeNode));
         npcs.add(police);
 
@@ -153,28 +154,33 @@ public class NpcManager {
                 uiManager.getGameUI().showInfoMessage("Not enough money", 1.5f);
             }
         });
-        kioskNode_start.addChoice("Bye", new DialogueNode("Okay bye!"));
+        kioskNode_start.addChoice("Leave", new DialogueNode("Okay bye!"));
         NPC kioskman = new NPC("Mohammed", 90, 90, 1575, 350, Assets.textureKioskMan, world, 1, 0, 3f, 0, 75, 100, new Dialogue(kioskNode_start));
         npcs.add(kioskman);
 
         // === JUNKY ===
         DialogueNode junkyNode = new DialogueNode("Do you have a spoon?");
         junkyNode.addChoice("Give a spoon", () -> {
+            if (!QuestManager.hasQuest("Spoon")) {QuestManager.addQuest(new QuestManager.Quest("Spoon", "Find a spoon for junky"));}
+
             if (player.getInventory().removeItem("spoon", 1)) {
                 uiManager.getGameUI().showInfoMessage("You got respect from junky", 1.5f);
                 QuestManager.removeQuest("Spoon");
             } else {
-                QuestManager.addQuest(new QuestManager.Quest("Spoon", "Find a spoon for junky"));
                 uiManager.getGameUI().showInfoMessage("You do not have a spoon", 1.5f);
             }
+        });
+        junkyNode.addChoice("Leave", () -> {
+            if (!QuestManager.hasQuest("Spoon")) {QuestManager.addQuest(new QuestManager.Quest("Spoon", "Find a spoon for junky"));}
         });
         NPC junky = new NPC("Junky", 100, 100, 200, 300, Assets.textureJunky, world, 1, 0, 3f, 0, 75, 100, new Dialogue(junkyNode));
         npcs.add(junky);
 
+
         // === BOSS ===
         DialogueNode bossNode_start = new DialogueNode("Do you wanna get some money?", "I have a task for you.", "You have to hide 1kg in the bush behind your house.", "But remember! I'll see if you aren't doing what i asked for");
         DialogueNode bossNode_after = new DialogueNode("You know what to do.", "So go ahead, I don't wanna wait too much");
-        bossNode_start.addChoice("OK", () -> {
+        bossNode_start.addChoice("Let's go", () -> {
             QuestManager.addQuest(new QuestManager.Quest("Big delivery", "Hide 1kg in the bush"));
             uiManager.getGameUI().showInfoMessage("You got 1kg grass", 1.5f);
             player.getInventory().addItem("grass", 1000);
@@ -183,7 +189,7 @@ public class NpcManager {
                 boss.setDialogue(new Dialogue(bossNode_after));
             }
         });
-        bossNode_start.addChoice("NO", () -> {
+        bossNode_start.addChoice("Leave", () -> {
 
         });
         boss = new NPC("???", 100, 100, 700, 100, Assets.textureBoss, world, 1, 0, 3f, 0, 75, 100, new Dialogue(bossNode_start));
