@@ -10,17 +10,20 @@ public class DialogueNode {
         public final DialogueNode nextNode;
         public final Runnable action;
 
-        // Конструктор для вибору, що веде до іншої фрази
-        public Choice(String name, DialogueNode nextNode) {
-            this.text = name;
-            this.nextNode = nextNode;
-            this.action = null;
+        // Вибір, що веде до іншого вузла
+        public Choice(String text, DialogueNode nextNode) {
+            this(text, nextNode, null);
         }
 
-        // Конструктор для вибору, що ОДРАЗУ виконує дію
+        // Вибір, що виконує дію і завершує діалог
         public Choice(String text, Runnable action) {
+            this(text, null, action);
+        }
+
+        // Вибір, що виконує дію І веде до іншого вузла
+        public Choice(String text, DialogueNode nextNode, Runnable action) {
             this.text = text;
-            this.nextNode = null;
+            this.nextNode = nextNode;
             this.action = action;
         }
     }
@@ -41,9 +44,14 @@ public class DialogueNode {
         this.choices.add(new Choice(choiceText, action));
     }
 
+    public void addChoice(String choiceText, DialogueNode nextNode, Runnable action) {
+        this.choices.add(new Choice(choiceText, nextNode, action));
+    }
+
     public String getText() {
         return text;
     }
+
     public List<Choice> getChoices() {
         return choices;
     }

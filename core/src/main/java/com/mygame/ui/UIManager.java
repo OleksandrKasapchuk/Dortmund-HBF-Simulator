@@ -63,23 +63,37 @@ public class UIManager {
         }
         Gdx.input.setInputProcessor(currentStage);
     }
-
     public void update(float delta, Player player, ArrayList<NPC> npcs) {
+
         if (currentStage == gameUI.getStage()) {
             gameUI.update(delta);
             gameUI.updateMoney(player.getMoney());
-
+            if (isInteractPressed() && !dialogueManager.isDialogueActive()) {
+                for (NPC npc : npcs) {
+                    if (npc.isPlayerNear(player)) {
+                        dialogueManager.startDialogue(npc);
+                        break;
+                    }
+                }
+            }
             if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.TAB) || (touchControlsUI != null && touchControlsUI.isInvButtonJustPressed())) {toggleInventoryTable(player);}
             if (Gdx.input.isKeyJustPressed(Input.Keys.Q) || (touchControlsUI != null && touchControlsUI.isQuestButtonJustPressed())) {toggleQuestTable(player);}
-
-            dialogueManager.update(npcs, player, isInteractPressed());
         }
+        dialogueManager.update(delta, isInteractPressed());
+//        dialogueManager.update(delta, npcs, player, isInteractPressed());
         currentStage.act(delta);
     }
+
     public boolean isInteractPressed() {return Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.E) || (touchControlsUI != null && touchControlsUI.isActButtonJustPressed());}
     public void render() {currentStage.draw();}
 
-    public void resize(int width, int height) {currentStage.getViewport().update(width, height, true);}
+    public void resize(int width, int height) {
+        menuUI.getStage().getViewport().update(width, height, true);
+        gameUI.getStage().getViewport().update(width, height, true);
+        pauseUI.getStage().getViewport().update(width, height, true);
+        deathUI.getStage().getViewport().update(width, height, true);
+        settingsUI.getStage().getViewport().update(width, height, true);
+    }
 
     public void dispose() {
         menuUI.dispose();
@@ -94,11 +108,15 @@ public class UIManager {
         if (touchControlsUI != null) touchControlsUI.dispose();
     }
 
-    public void toggleQuestTable(Player player) {if ( inventoryUI.isVisible() ) inventoryUI.toggle(player); questUI.toggle();}
-    public void toggleInventoryTable(Player player) {if ( questUI.isVisible() ) questUI.toggle(); inventoryUI.toggle(player);}
-
+    public void toggleQuestTable(Player player) {
+        if (inventoryUI.isVisible()) inventoryUI.toggle(player);
+        questUI.toggle();
+    }
+    public void toggleInventoryTable(Player player) {
+        if (questUI.isVisible()) questUI.toggle();
+        inventoryUI.toggle(player);
+    }
     public void resetButtons(){if(touchControlsUI != null)touchControlsUI.resetButtons();}
-
     public DialogueManager getDialogueManager() { return dialogueManager; }
     public DialogueUI getDialogueUI() { return dialogueUI; }
     public GameUI getGameUI() { return gameUI; }
