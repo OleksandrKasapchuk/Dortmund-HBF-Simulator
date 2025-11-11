@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygame.Assets;
+import com.mygame.Dialogue;
+import com.mygame.DialogueNode;
 import com.mygame.entity.NPC;
 import com.mygame.entity.Player;
 import com.mygame.world.World;
@@ -30,23 +32,23 @@ public class NpcManager {
         this.font = font;
         this.world = world;
 
+        DialogueNode igoNode = new DialogueNode("Hi bro! Give me some joint");
+
         NPC igo = new NPC("Igo",90, 90, 500, 300, Assets.textureIgo, world,
             1, 0, 3f, 0f,0,150,
-            new String[]{"Hi bro!", "Give me some joint"});
+            new Dialogue(igoNode));
         npcs.add(igo);
-
-        igo.setAction(() -> {
+        Runnable igoAction = () -> {
             if (igo.getDialogueCount() == 1)
                 if(player.getInventory().removeItem("joint", 1)) {
                     player.getInventory().addItem("vape", 1);
                     uiManager.getGameUI().showInfoMessage("You got 1 vape", 1.5f);
                     QuestManager.removeQuest("Igo");
                     igo.nextDialogueCount();
-                    igo.setTexts(new String[]{"Thanks bro!"});
+                    igo.setDialogue(new Dialogue(new DialogueNode("Thanks bro!")));
                     SoundManager.playSound(Assets.lighterSound);
 
-                    // Відкладена зміна текстури через Timer
-                    float soundDuration = 5f; // тривалість в секундах
+                    float soundDuration = 5f;
                     com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
                         @Override
                         public void run() {
@@ -59,48 +61,54 @@ public class NpcManager {
                     if (!QuestManager.hasQuest("Igo"))
                         QuestManager.addQuest(new QuestManager.Quest("Igo","Get some joint for igo"));
                 }
-        });
+        };
+        igo.getDialogue().getCurrentNode().addChoice("Give joint", igoAction);
+        igo.getDialogue().getCurrentNode().addChoice("Leave", new DialogueNode("See ya!"));
 
+
+        DialogueNode ryzhyiNode = new DialogueNode("Please take 20 euro but fuck off");
         NPC ryzhyi = new NPC("Ryzhyi",90, 90, 1100, 500, Assets.textureRyzhyi,
             world, 0, 1, 1f, 2f,200, 150,
-            new String[]{"Please take 20 euro but fuck off"});
+            new Dialogue(ryzhyiNode));
         npcs.add(ryzhyi);
 
-        ryzhyi.setAction(() -> {
+        Runnable ryzhyiAction = () -> {
             if (ryzhyi.getDialogueCount() == 1) {
                 player.getInventory().addItem("money", 20);
                 SoundManager.playSound(Assets.moneySound);
                 uiManager.getGameUI().showInfoMessage("You got 20 euro",1.5f);
                 ryzhyi.nextDialogueCount();
-                ryzhyi.setTexts(new String[]{"I gave 20 euro why do I still see you "});
+                ryzhyi.setDialogue(new Dialogue(new DialogueNode("I gave 20 euro why do I still see you ")));
             }
-        });
+        };
+        ryzhyiNode.addChoice("Take 20 euro", ryzhyiAction);
 
         NPC denys = new NPC("Denys",90, 90, 700, 700, Assets.textureDenys,
             world, 1, 1,2f, 1f, 100, 150,
-            new String[]{"Hello!", "I'm not in mood to talk"});
+            new Dialogue(new DialogueNode("Hello! I'm not in mood to talk")));
         npcs.add(denys);
 
+        DialogueNode barygaNode = new DialogueNode("What do you need? Grass 10 euro");
         NPC baryga = new NPC("Baryga",90, 90, 1000, 200, Assets.textureBaryga,
             world, 0, 1, 3f, 0f, 0,150,
-            new String[]{"What do you need?", "Grass 10 euro"});
+            new Dialogue(barygaNode));
         npcs.add(baryga);
-
-        baryga.setAction(() -> {
+        Runnable barygaAction = () -> {
             if (player.getInventory().removeItem("money",10)) {
                 player.getInventory().addItem("grass", 1);
                 uiManager.getGameUI().showInfoMessage("You got 1g grass for 10 euro", 1.5f);
             } else {
                 uiManager.getGameUI().showInfoMessage("Not enough money", 1.5f);
             }
-        });
+        };
+        barygaNode.addChoice("Buy grass", barygaAction);
 
+        DialogueNode chikitaNode = new DialogueNode("Give me grass and pape and I make you a joint");
         NPC chikita = new NPC("Chikita",90, 90, 1500, 600, Assets.textureChikita,
             world, 0, 1, 3f, 0f, 0,150,
-            new String[]{"Give me grass and pape and I make you a joint"});
+            new Dialogue(chikitaNode));
         npcs.add(chikita);
-
-        chikita.setAction(() -> {
+        Runnable chikitaAction = () -> {
             if (player.getInventory().hasItem("grass") &&  player.getInventory().hasItem("pape")) {
                 player.getInventory().removeItem("grass",1);
                 player.getInventory().removeItem("pape",1);
@@ -119,14 +127,15 @@ public class NpcManager {
             } else {
                 uiManager.getGameUI().showInfoMessage("Not enough grass or pape", 1.5f);
             }
-        });
+        };
+        chikitaNode.addChoice("give grass and pape",chikitaAction);
 
+        DialogueNode policeNode = new DialogueNode("Police check, do you have some forbidden stuff?");
         police = new NPC("Police",100, 100, 400, 600, Assets.texturePolice,
             world, 1, 0, 3f, 0, 75, 100,
-            new String[]{"Police check, do you have some forbidden stuff?"});
+            new Dialogue(policeNode));
         npcs.add(police);
-
-        police.setAction(() -> {
+        Runnable policeAction = () -> {
             if (player.getInventory().removeItem("grass", 10000) |
                 player.getInventory().removeItem("joint", 10000) |
                 player.getInventory().removeItem("vape", 10000)) {
@@ -135,27 +144,34 @@ public class NpcManager {
             } else {
                 uiManager.getGameUI().showInfoMessage("You passed the police check", 1.5f);
             }
-        });
+        };
+        policeNode.addChoice("OK", policeAction);
 
-        NPC kioskman = new NPC("Mohammed",90, 90, 1575, 350, Assets.textureKioskMan,
-            world, 1, 0, 3f, 0, 75, 100,
-            new String[]{"Hi! Pape 5 euro"});
-        npcs.add(kioskman);
 
-        kioskman.setAction(() -> {
+        Runnable kioskAction = () -> {
             if (player.getInventory().removeItem("money", 5)) {
                 player.getInventory().addItem("pape", 1);
                 uiManager.getGameUI().showInfoMessage("You got 1 pape", 1.5f);
             } else {
                 uiManager.getGameUI().showInfoMessage("Not enough money", 1.5f);
             }
-        });
+        };
+
+        DialogueNode kioskNode = new DialogueNode("Hi! What do you need?");
+        NPC kioskman = new NPC("Mohammed",90, 90, 1575, 350, Assets.textureKioskMan,
+            world, 1, 0, 3f, 0, 75, 100,
+            new Dialogue(kioskNode));
+        npcs.add(kioskman);
+        kioskNode.addChoice("Pape 5 euro",kioskAction);
+        kioskNode.addChoice("Nothing, bye", new DialogueNode("Okay bye!"));
+
+
+        DialogueNode junkyNode = new DialogueNode("Do you have a spoon?");
         NPC junky = new NPC("Junky",100, 100, 200, 300, Assets.textureJunky,
             world, 1, 0, 3f, 0, 75, 100,
-            new String[]{"Do you have a spoon?"});
+            new Dialogue(junkyNode));
         npcs.add(junky);
-
-        junky.setAction(() -> {
+        Runnable junkyAction = () -> {
             if (player.getInventory().removeItem("spoon", 1)) {
                 uiManager.getGameUI().showInfoMessage("You got respect from junky", 1.5f);
                 QuestManager.removeQuest("Spoon");
@@ -163,26 +179,33 @@ public class NpcManager {
                 QuestManager.addQuest(new QuestManager.Quest("Spoon","Find a spoon for junky"));
                 uiManager.getGameUI().showInfoMessage("You do not have a spoon", 1.5f);
             }
-        });
+        };
+        junkyNode.addChoice("Give a spoon", junkyAction);
 
+
+        DialogueNode bossNode = new DialogueNode("Do you wanna get some money? " +
+            "I have a task for you, You have to hide 1kg in the bush behind your house." +
+            " But remember! I'll see if you aren't doing what i asked for");
         boss = new NPC("???",100, 100, 700, 100, Assets.textureBoss,
             world, 1, 0, 3f, 0, 75, 100,
-            new String[]{"Do you wanna get some money?", "I have a task for you", "You have to hide 1kg in the bush behind your house", "But remember! I'll see if you aren't doing what i asked for"});
+            new Dialogue(bossNode));
         npcs.add(boss);
 
-        boss.setAction(() -> {
+        Runnable bossAction = () -> {
             if (boss.getDialogueCount() == 1) {
                 QuestManager.addQuest(new QuestManager.Quest("Big delivery", "Hide 1kg in the bush"));
                 uiManager.getGameUI().showInfoMessage("You got 1kg grass", 1.5f);
                 player.getInventory().addItem("grass", 1000);
-                boss.setTexts(new String[]{"You know what to do", "So go ahead, I don't wanna wait too much"});
+                boss.setDialogue(new Dialogue(new DialogueNode("You know what to do. So go ahead, I don't wanna wait too much")));
                 boss.nextDialogueCount();
             }
-        });
+        };
+        bossNode.addChoice("OK", bossAction);
+
 
         NPC kamil = new NPC("Kamil",90, 90, 500, 100, Assets.textureKamil,
             world, 1, 0, 3f, 0, 75, 100,
-            new String[]{"Hello kurwa"});
+            new Dialogue(new DialogueNode("Hello kurwa")));
         npcs.add(kamil);
     }
 
@@ -213,7 +236,7 @@ public class NpcManager {
     public void callPolice(){
         police1 = new NPC("Police",100, 100, player.getX(), player.getY() - 300, Assets.texturePolice,
             world, 1, 0, 3f, 0, 200, 100,
-            new String[]{"What are you doing?", "Stop right there!"});
+            new Dialogue(new DialogueNode("What are you doing? Stop right there!")));
         npcs.add(police1);
     }
 }

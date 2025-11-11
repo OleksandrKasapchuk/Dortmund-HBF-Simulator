@@ -2,6 +2,8 @@ package com.mygame.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.mygame.Dialogue;
+import com.mygame.DialogueNode;
 import com.mygame.world.World;
 
 public class NPC extends Entity {
@@ -9,22 +11,21 @@ public class NPC extends Entity {
     private boolean isPaused = false;
     private int directionX;
     private int directionY;
-    private  String[] texts;
-    private int count = 0;
+    private Dialogue dialogue;
+
     private String name;
     private float pauseTime;
     private float moveTime;
     private int speed;
-    private Runnable action = null;
     private int dialogueCount = 1;
     private int distance;
     private boolean isFollowing = false;
 
 
-    public NPC(String name, int width, int height, float x, float y, Texture texture, World world, int directionX, int directionY, float pauseTime, float moveTime, int speed, int distance, String[] texts){
+    public NPC(String name, int width, int height, float x, float y, Texture texture, World world, int directionX, int directionY, float pauseTime, float moveTime, int speed, int distance, Dialogue dialogue){
         super(width, height, x, y, texture, world);
         this.name = name;
-        this.texts = texts;
+        this.dialogue = dialogue;
         this.directionX = directionX;
         this.directionY = directionY;
         this.pauseTime = pauseTime;
@@ -89,27 +90,15 @@ public class NPC extends Entity {
         }
     }
 
-    public String getCurrentPhrase() {
-        if (texts == null || texts.length == 0) {
-            return "";
-        }
-        return texts[count];
-    }
+    public Dialogue getDialogue() {return dialogue;}
+
+    public void setDialogue(Dialogue dialogue) {this.dialogue = dialogue;}
 
     public boolean isPlayerNear(Player player) {return Math.sqrt(Math.pow(player.getX() - this.getX(), 2) + Math.pow(player.getY() - this.getY(), 2)) < this.distance;}
-    public void advanceDialogue(){count++;}
-    public boolean isDialogueFinished(){return count >= texts.length;}
-    public void resetDialogue(){this.count = 0;}
     public String getName(){return this.name;}
-
-    public void setAction(Runnable action){this.action = action;}
-    public void runAction(){if (action != null) action.run();}
-
-    public void setTexts(String[] texts) {this.texts = texts;}
 
     public void nextDialogueCount(){this.dialogueCount++;}
     public int getDialogueCount(){return this.dialogueCount;}
 
     public void setTexture(Texture texture) {this.texture = texture;}
-    public void setFollowing(boolean isFollowing) {this.isFollowing = isFollowing;}
 }

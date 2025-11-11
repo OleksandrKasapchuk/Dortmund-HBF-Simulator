@@ -31,7 +31,6 @@ public class Item extends Entity {
             if (cooldownTimer < 0) cooldownTimer = 0;
         }
     }
-
     public boolean canInteract() {
         return cooldownTimer <= 0;
     }
