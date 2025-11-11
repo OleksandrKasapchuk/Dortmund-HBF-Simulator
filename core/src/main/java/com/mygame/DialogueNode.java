@@ -1,6 +1,7 @@
 package com.mygame;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DialogueNode {
@@ -10,17 +11,14 @@ public class DialogueNode {
         public final DialogueNode nextNode;
         public final Runnable action;
 
-        // Вибір, що веде до іншого вузла
         public Choice(String text, DialogueNode nextNode) {
             this(text, nextNode, null);
         }
 
-        // Вибір, що виконує дію і завершує діалог
         public Choice(String text, Runnable action) {
             this(text, null, action);
         }
 
-        // Вибір, що виконує дію І веде до іншого вузла
         public Choice(String text, DialogueNode nextNode, Runnable action) {
             this.text = text;
             this.nextNode = nextNode;
@@ -28,12 +26,24 @@ public class DialogueNode {
         }
     }
 
-    private final String text;
+    private final List<String> texts;
     private final List<Choice> choices;
+    private final Runnable action; // Action for nodes without choices
 
-    public DialogueNode(String text) {
-        this.text = text;
+
+    private DialogueNode(Runnable action, List<String> texts) {
+        this.texts = (texts == null || texts.isEmpty()) ? List.of("") : texts;
         this.choices = new ArrayList<>();
+        this.action = action;
+    }
+
+    public DialogueNode(String... texts) {
+        this(null, Arrays.asList(texts));
+    }
+
+    // For nodes with multiple texts and a final action
+    public DialogueNode(Runnable action, String... texts) {
+        this(action, Arrays.asList(texts));
     }
 
     public void addChoice(String choiceText, DialogueNode nextNode) {
@@ -44,15 +54,19 @@ public class DialogueNode {
         this.choices.add(new Choice(choiceText, action));
     }
 
-    public void addChoice(String choiceText, DialogueNode nextNode, Runnable action) {
-        this.choices.add(new Choice(choiceText, nextNode, action));
-    }
+//    public void addChoice(String choiceText, DialogueNode nextNode, Runnable action) {
+//        this.choices.add(new Choice(choiceText, nextNode, action));
+//    }
 
-    public String getText() {
-        return text;
+    public List<String> getTexts() {
+        return texts;
     }
 
     public List<Choice> getChoices() {
         return choices;
+    }
+
+    public Runnable getAction() {
+        return action;
     }
 }

@@ -80,11 +80,11 @@ public class NpcManager {
         npcs.add(ryzhyi);
 
         // === DENYS ===
-        NPC denys = new NPC("Denys", 90, 90, 700, 700, Assets.textureDenys, world, 1, 1, 2f, 1f, 100, 150, new Dialogue(new DialogueNode("Hello! I'm not in mood to talk")));
+        NPC denys = new NPC("Denys", 90, 90, 700, 700, Assets.textureDenys, world, 1, 1, 2f, 1f, 100, 150, new Dialogue(new DialogueNode("Hello!", "I'm not in mood to talk")));
         npcs.add(denys);
 
         // === BARYGA ===
-        DialogueNode barygaNode = new DialogueNode("What do you need? Grass 10 euro");
+        DialogueNode barygaNode = new DialogueNode("What do you need?", "Grass 10 euro");
         barygaNode.addChoice("Buy grass (10 euro)", () -> {
             if (player.getInventory().removeItem("money", 10)) {
                 player.getInventory().addItem("grass", 1);
@@ -144,6 +144,15 @@ public class NpcManager {
                 uiManager.getGameUI().showInfoMessage("Not enough money", 1.5f);
             }
         });
+        kioskNode_start.addChoice("Buy Ice Tee (10 euro)", () -> {
+            if (player.getInventory().getAmount("money") >= 10) {
+                player.getInventory().removeItem("money", 10);
+                player.getInventory().addItem("ice tee", 1);
+                uiManager.getGameUI().showInfoMessage("You got 1 ice tee", 1.5f);
+            } else {
+                uiManager.getGameUI().showInfoMessage("Not enough money", 1.5f);
+            }
+        });
         kioskNode_start.addChoice("Bye", new DialogueNode("Okay bye!"));
         NPC kioskman = new NPC("Mohammed", 90, 90, 1575, 350, Assets.textureKioskMan, world, 1, 0, 3f, 0, 75, 100, new Dialogue(kioskNode_start));
         npcs.add(kioskman);
@@ -163,8 +172,8 @@ public class NpcManager {
         npcs.add(junky);
 
         // === BOSS ===
-        DialogueNode bossNode_start = new DialogueNode("Do you wanna get some money? I have a task for you. You have to hide 1kg in the bush behind your house. But remember! I'll see if you aren't doing what i asked for");
-        DialogueNode bossNode_after = new DialogueNode("You know what to do. So go ahead, I don't wanna wait too much");
+        DialogueNode bossNode_start = new DialogueNode("Do you wanna get some money?", "I have a task for you.", "You have to hide 1kg in the bush behind your house.", "But remember! I'll see if you aren't doing what i asked for");
+        DialogueNode bossNode_after = new DialogueNode("You know what to do.", "So go ahead, I don't wanna wait too much");
         bossNode_start.addChoice("OK", () -> {
             QuestManager.addQuest(new QuestManager.Quest("Big delivery", "Hide 1kg in the bush"));
             uiManager.getGameUI().showInfoMessage("You got 1kg grass", 1.5f);
@@ -173,6 +182,9 @@ public class NpcManager {
             if (boss != null) {
                 boss.setDialogue(new Dialogue(bossNode_after));
             }
+        });
+        bossNode_start.addChoice("NO", () -> {
+
         });
         boss = new NPC("???", 100, 100, 700, 100, Assets.textureBoss, world, 1, 0, 3f, 0, 75, 100, new Dialogue(bossNode_start));
         npcs.add(boss);

@@ -101,4 +101,5 @@ public class NPC extends Entity {
     public int getDialogueCount(){return this.dialogueCount;}
 
     public void setTexture(Texture texture) {this.texture = texture;}
+    public void setFollowing(boolean following) { isFollowing = following; }
 }

@@ -42,6 +42,9 @@ public class Main extends ApplicationAdapter {
     public enum GameState { MENU, PLAYING, PAUSED, SETTINGS, DEATH}
     private static GameState state = GameState.MENU;
 
+    // Flag to prevent the boss failure dialogue from looping
+    private boolean bossFailureTriggered = false;
+
     @Override
     public void create() {
         instance = this;
@@ -76,6 +79,8 @@ public class Main extends ApplicationAdapter {
     private void initGame() {
         MusicManager.stopAll();
         QuestManager.reset();
+
+        bossFailureTriggered = false;
 
         world = new World();
         itemManager = new ItemManager(world);
@@ -158,31 +163,27 @@ public class Main extends ApplicationAdapter {
             toggleSettings();
             return;
         }
-//
-//        if (QuestManager.hasQuest("Big delivery") && player.getInventory().getAmount("grass") < 1000) {
-//            NPC boss = npcManager.getBoss();
-//
-//            if (boss != null && !uiManager.getDialogueManager().isDialogueActive()) {
-//                boss.setCurrentNode(new DialogueNode("You are not doing the task! I told you to hide the grass, not lose it. Now you will regret this..."));
-//                boss.getCurrentNode().set
-//                boss.setAction(() -> {
-//                    Main.playerDied();
-//                    SoundManager.playSound(Assets.gunShot);
-//                });
-//
-//                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-//                    @Override
-//                    public void run() {
-//                        boss.setX(player.getX() - 100);
-//                        boss.setY(player.getY());
-//                        uiManager.getDialogueManager().startForcedDialogue(boss);
-//                        uiManager.getDialogueUI().show();
-//                        player.setMovementLocked(true);
-//                        uiManager.getDialogueManager().forceAdvance();
-//                    }
-//                }, 2f);
-//            }
-//        }
+
+        if (QuestManager.hasQuest("Big delivery") && player.getInventory().getAmount("grass") < 1000 && !bossFailureTriggered) {
+            bossFailureTriggered = true;
+            NPC boss = npcManager.getBoss();
+            if (boss != null) {
+                DialogueNode failureNode = new DialogueNode(() -> {
+                    Main.playerDied();
+                    SoundManager.playSound(Assets.gunShot);
+                }, "You are not doing the task!", "I told you to hide the grass, not lose it.", "Now you will regret this...");
+                boss.setDialogue(new Dialogue(failureNode));
+
+                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                    @Override
+                    public void run() {
+                        boss.setX(player.getX() - 100);
+                        boss.setY(player.getY());
+                        uiManager.getDialogueManager().startForcedDialogue(boss);
+                    }
+                }, 2f);
+            }
+        }
 
         float delta = Gdx.graphics.getDeltaTime();
 
@@ -193,18 +194,17 @@ public class Main extends ApplicationAdapter {
         pfandManager.update(delta, player, world);
 
         if (player.getState() == Player.State.STONED){
-//            npcManager.getPolice().setAction(Main::playerDied);
-            npcManager.getPolice().setDialogue(new Dialogue(new DialogueNode("Are you stoned? You are caught")));
+            npcManager.getPolice().setDialogue(new Dialogue(new DialogueNode(Main::playerDied, "Are you stoned?", "You are caught")));
         }
 
         if(npcManager.updatePolice()){
             MusicManager.playMusic(Assets.backMusic1);
             uiManager.getGameUI().showInfoMessage("You ran away from the police", 1.5f);
-            npcManager.getBoss().setDialogue(new Dialogue(new DialogueNode("Oh, you've managed this. Well done!")));
-//            npcManager.getBoss().setAction(()->{
-//                player.getInventory().addItem("money", 50);
-//                uiManager.getGameUI().showInfoMessage("You got 50 money", 1.5f);
-//            });
+            Runnable rewardAction = ()->{
+                player.getInventory().addItem("money", 50);
+                uiManager.getGameUI().showInfoMessage("You got 50 money", 1.5f);
+            };
+            npcManager.getBoss().setDialogue(new Dialogue(new DialogueNode(rewardAction, "Oh, you've managed this.", "Well done!")));
         }
 
         float targetX = player.getX() + player.getWidth() / 2f;
@@ -231,14 +231,18 @@ public class Main extends ApplicationAdapter {
                     @Override
                     public void run() {
                         npcManager.callPolice();
-//                        uiManager.getDialogueManager().startForcedDialogue(npcManager.getPolice1());
-//                        npcManager.getPolice1().setAction(() -> {
-//                            npcManager.getPolice1().setFollowing(true);
-//                            uiManager.getGameUI().showInfoMessage("RUN", 2f);
-//                            MusicManager.playMusic(Assets.backMusic4);
-//                            npcManager.getPolice1().setCurrentNode(new DialogueNode("You got caught!"));
-//                            npcManager.getPolice1().setAction(Main::playerDied);
-//                        });
+                        NPC police1 = npcManager.getPolice1();
+                        if (police1 != null) {
+                            DialogueNode caughtNode = new DialogueNode(Main::playerDied, "You got caught!");
+                            Runnable chaseAction = () -> {
+                                police1.setFollowing(true);
+                                uiManager.getGameUI().showInfoMessage("RUN", 2f);
+                                MusicManager.playMusic(Assets.backMusic4);
+                                police1.setDialogue(new Dialogue(caughtNode));
+                            };
+                            police1.setDialogue(new Dialogue(new DialogueNode(chaseAction, "What are you doing? Stop right there!")));
+                            uiManager.getDialogueManager().startForcedDialogue(police1);
+                        }
                     }
                 }, 2f);
             }
