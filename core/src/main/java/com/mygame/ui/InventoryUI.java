@@ -52,7 +52,11 @@ public class InventoryUI {
         Label titleLabel = new Label("INVENTORY", skin);
         titleLabel.setFontScale(3f);
         titleLabel.setColor(Color.GOLD);
-        inventoryTable.add(titleLabel).padBottom(20).colspan(2).row();
+        inventoryTable.add(titleLabel).padBottom(20).colspan(3).row();
+
+        Label statusLabel = new Label("Status: " + player.getState().toString(), skin);
+        statusLabel.setFontScale(3f);
+        inventoryTable.add(statusLabel).left().padBottom(40).colspan(3).row();
 
         for (Map.Entry<String, Integer> entry : player.getInventory().getItems().entrySet()) {
             String itemName = entry.getKey();
