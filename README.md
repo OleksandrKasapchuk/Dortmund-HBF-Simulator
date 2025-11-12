@@ -1,35 +1,41 @@
-# TravelToPast
+# Dortmund HBF Simulator
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+A 2D game built for Android and Desktop users.
+The game takes place at **Dortmund Central Station**, where the player can explore, talk to NPCs, make choices, and interact with the environment.
 
-This project was generated with a template including simple application launchers and an `ApplicationAdapter` extension that draws libGDX logo.
+---
 
-## Platforms
+## 🎮 Gameplay
 
-- `core`: Main module with the application logic shared by all platforms.
-- `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
-- `android`: Android mobile platform. Needs Android SDK.
+- Move freely around the area.  
+- Talk to NPCs with **dialogue trees** — some offer **choices**, ot just simple conversations
+- Buy things you need at the **shop**.  
+- Dynamic **dialogue system** with text typing effect and branching paths.  
+- Basic **inventory management**
+- Built with an **entity-based architecture** for flexibility and modding.
 
-## Gradle
+---
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
+## ⚙️ Technologies
 
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `android:lint`: performs Android project validation.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `idea`: generates IntelliJ project data.
-- `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
-- `lwjgl3:run`: starts the application.
-- `test`: runs unit tests (if any).
+- **Language:** Java  
+- **Framework:** LibGDX  
+- **Architecture:**
+  - Entity System: *Player*, *NPC*,*Item*
+  - Dialogues: *DialogueManager, DialogueUI*
+  - UI: *UIManager*
+  - World: *World, Block*
+---
 
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+## 🚀 How to play
+
+### 🖥️ Desktop
+1. Install **Java 17**
+2. Download **jar file**
+3. Open command line
+4. Enter java -jar **"PATH_TO_THE_FILE"**
+5. Play
+
+### 🤖 Android
+1. Install **apk file**
+2. Play
