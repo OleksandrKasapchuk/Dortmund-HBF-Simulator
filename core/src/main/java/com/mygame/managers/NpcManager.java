@@ -1,6 +1,5 @@
 package com.mygame.managers;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygame.Assets;
@@ -50,9 +49,7 @@ public class NpcManager {
                 NPC igo = findNpcByName("Igo");
                 if (igo != null) {
                     igo.setDialogue(new Dialogue(igoNode_thanks));
-                    com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-                        @Override public void run() { igo.setTexture(Assets.textureIgo2); }
-                    }, 5f);
+                    TimerManager.setAction(() -> igo.setTexture(Assets.textureIgo2), 5f);
                 }
             } else {
                 uiManager.getGameUI().showInfoMessage("Not enough joint", 1.5f);
@@ -108,13 +105,9 @@ public class NpcManager {
                 player.getInventory().removeItem("pape", 1);
                 player.setMovementLocked(true);
                 SoundManager.playSound(Assets.kosyakSound);
-                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-                    @Override
-                    public void run() {
-                        player.getInventory().addItem("joint", 1);
-                        uiManager.getGameUI().showInfoMessage("You got 1 joint", 1.5f);
-                        player.setMovementLocked(false);
-                    }
+                TimerManager.setAction(() -> {
+                    uiManager.getGameUI().showInfoMessage("You got 1 joint", 1.5f);
+                    player.setMovementLocked(false);
                 }, 1f);
             } else {
                 uiManager.getGameUI().showInfoMessage("Not enough grass or pape", 1.5f);
@@ -204,8 +197,7 @@ public class NpcManager {
         npcs.add(kamil);
     }
 
-    public void render() {
-        float delta = Gdx.graphics.getDeltaTime();
+    public void render(float delta) {
         for (NPC npc : npcs) {
             npc.update(delta);
             npc.draw(batch);

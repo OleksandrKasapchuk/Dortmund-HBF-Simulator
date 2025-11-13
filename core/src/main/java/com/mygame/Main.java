@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygame.managers.CameraManager;
 import com.mygame.managers.GameStateManager;
 import com.mygame.managers.PlayerEffectManager;
+import com.mygame.managers.TimerManager;
 import com.mygame.managers.audio.MusicManager;
 import com.mygame.managers.audio.SoundManager;
 import com.mygame.entity.NPC;
@@ -101,14 +102,12 @@ public class Main extends ApplicationAdapter {
             case DEATH: renderDeath(); break;
         }
     }
-
     private void handleInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) gameStateManager.togglePause();
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) gameStateManager.toggleSettings();
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && gameStateManager.getState() == GameStateManager.GameState.MENU)
             gameStateManager.startGame();
     }
-
     public void renderMenu(float delta) {
         uiManager.update(delta, player, npcManager.getNpcs());
         uiManager.render();
@@ -125,13 +124,10 @@ public class Main extends ApplicationAdapter {
                 }, "You are not doing the task!", "I told you to hide the grass, not lose it.", "Now you will regret this...");
                 boss.setDialogue(new Dialogue(failureNode));
 
-                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-                    @Override
-                    public void run() {
-                        boss.setX(player.getX() - 100);
-                        boss.setY(player.getY());
-                        uiManager.getDialogueManager().startForcedDialogue(boss);
-                    }
+                TimerManager.setAction(() -> {
+                    boss.setX(player.getX() - 100);
+                    boss.setY(player.getY());
+                    uiManager.getDialogueManager().startForcedDialogue(boss);
                 }, 2f);
             }
         }
@@ -165,23 +161,20 @@ public class Main extends ApplicationAdapter {
                 QuestManager.removeQuest("Big delivery");
                 SoundManager.playSound(Assets.bushSound);
                 player.setMovementLocked(true);
-                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-                    @Override
-                    public void run() {
-                        npcManager.callPolice();
-                        NPC police1 = npcManager.getPolice1();
-                        if (police1 != null) {
-                            DialogueNode caughtNode = new DialogueNode(Main.getGameStateManager()::playerDied, "You got caught!");
-                            Runnable chaseAction = () -> {
-                                police1.setFollowing(true);
-                                uiManager.getGameUI().showInfoMessage("RUN", 2f);
-                                MusicManager.playMusic(Assets.backMusic4);
-                                police1.setDialogue(new Dialogue(caughtNode));
-                            };
+                TimerManager.setAction(() -> {
+                    npcManager.callPolice();
+                    NPC police1 = npcManager.getPolice1();
+                    if (police1 != null) {
+                        DialogueNode caughtNode = new DialogueNode(Main.getGameStateManager()::playerDied, "You got caught!");
+                        Runnable chaseAction = () -> {
+                            police1.setFollowing(true);
+                            uiManager.getGameUI().showInfoMessage("RUN", 2f);
+                            MusicManager.playMusic(Assets.backMusic4);
+                            police1.setDialogue(new Dialogue(caughtNode));
+                        };
 
-                            police1.setDialogue(new Dialogue(new DialogueNode(chaseAction, "What are you doing?","Stop right there!")));
-                            uiManager.getDialogueManager().startForcedDialogue(police1);
-                        }
+                        police1.setDialogue(new Dialogue(new DialogueNode(chaseAction, "What are you doing?","Stop right there!")));
+                        uiManager.getDialogueManager().startForcedDialogue(police1);
                     }
                 }, 2f);
             }
@@ -198,23 +191,20 @@ public class Main extends ApplicationAdapter {
             if (uiManager.isInteractPressed() && itemManager.getPfandAutomat().canInteract()) {
                 if(player.getInventory().removeItem("pfand",1)){
                     SoundManager.playSound(Assets.pfandAutomatSound);
-                    com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-                        @Override
-                        public void run() {
-                            SoundManager.playSound(Assets.moneySound);
-                            uiManager.getGameUI().showInfoMessage("You got 1 money for pfand",1f);
-                            player.getInventory().addItem("money",1);
-                        }
+                    TimerManager.setAction(() -> {
+                        SoundManager.playSound(Assets.moneySound);
+                        uiManager.getGameUI().showInfoMessage("You got 1 money for pfand",1f);
+                        player.getInventory().addItem("money",1);
                     }, 1.9f);
 
-                    itemManager.getPfandAutomat().startCooldown(2f);
+                    itemManager.getPfandAutomat().startCooldown(1.9f);
                 } else {
                     uiManager.getGameUI().showInfoMessage("You don't have enough pfand",1f);
                 }
             }
         }
         player.draw(batch);
-        npcManager.render();
+        npcManager.render(delta);
         pfandManager.draw(batch);
         batch.end();
         uiManager.render();

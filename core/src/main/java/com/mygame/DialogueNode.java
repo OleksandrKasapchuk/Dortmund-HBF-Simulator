@@ -38,7 +38,6 @@ public class DialogueNode {
 
     public DialogueNode(String... texts) {this(null, Arrays.asList(texts));}
 
-    // For nodes with multiple texts and a final action
     public DialogueNode(Runnable action, String... texts) {
         this(action, Arrays.asList(texts));
     }
@@ -50,10 +49,6 @@ public class DialogueNode {
     public void addChoice(String choiceText, Runnable action) {
         this.choices.add(new Choice(choiceText, action));
     }
-
-//    public void addChoice(String choiceText, DialogueNode nextNode, Runnable action) {
-//        this.choices.add(new Choice(choiceText, nextNode, action));
-//    }
 
     public List<String> getTexts() {return texts;}
     public List<Choice> getChoices() {return choices;}
