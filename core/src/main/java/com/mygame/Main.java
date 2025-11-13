@@ -4,11 +4,10 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygame.managers.CameraManager;
+import com.mygame.managers.PlayerEffectManager;
 import com.mygame.managers.audio.MusicManager;
 import com.mygame.managers.audio.SoundManager;
 import com.mygame.entity.NPC;
@@ -30,14 +29,12 @@ public class Main extends ApplicationAdapter {
     private NpcManager npcManager;
     private PfandManager pfandManager;
     private ItemManager itemManager;
+    private PlayerEffectManager playerEffectManager;
+    private CameraManager cameraManager;
+
 
     private SpriteBatch batch;
-    private OrthographicCamera camera;
-    private Viewport viewport;
     private BitmapFont font;
-
-    private static final int WORLD_WIDTH = 4000;
-    private static final int WORLD_HEIGHT = 2000;
 
     public enum GameState { MENU, PLAYING, PAUSED, SETTINGS, DEATH}
     private static GameState state = GameState.MENU;
@@ -52,40 +49,10 @@ public class Main extends ApplicationAdapter {
         font = new BitmapFont();
         font.getData().setScale(2.5f);
         font.setUseIntegerPositions(false);
-        camera = new OrthographicCamera();
-        viewport = new FitViewport(2000, 1000, camera);
+
         Assets.load();
 
         initGame();
-        player.getInventory().registerEffect("joint", () -> {
-            SoundManager.playSound(Assets.lighterSound);
-
-            com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-                @Override
-                public void run() {
-                    if (player.getState() == Player.State.NORMAL)
-                        uiManager.getGameUI().showInfoMessage("You got stoned",1.5f);
-
-                    player.setStone();
-                    uiManager.getInventoryUI().update(player);
-                    MusicManager.playMusic(Assets.kaifMusic);
-                }
-            }, 4f);
-        });
-        player.getInventory().registerEffect("ice tee", () -> {
-//            SoundManager.playSound(Assets.lighterSound);
-
-            com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-                @Override
-                public void run() {
-                    if (player.getState() == Player.State.STONED)
-                        uiManager.getGameUI().showInfoMessage("You got normal",1.5f);
-                    player.setNormal();
-                    uiManager.getInventoryUI().update(player);
-                    MusicManager.playMusic(Assets.backMusic1);
-                }
-            }, 0.5f);
-        });
 
         player.getInventory().setOnInventoryChanged(() -> {
             if (uiManager.getInventoryUI().isVisible()) {
@@ -104,6 +71,11 @@ public class Main extends ApplicationAdapter {
         player = new Player(500, 80, 80, 200, 200, Assets.textureZoe, world, itemManager);
         if (uiManager != null) uiManager.dispose();
         uiManager = new UIManager(player);
+
+        playerEffectManager = new PlayerEffectManager(player, uiManager);
+        playerEffectManager.registerEffects();
+
+        cameraManager = new CameraManager(4000, 2000);
 
         npcManager = new NpcManager(batch, player, world, uiManager, font);
         pfandManager = new PfandManager();
@@ -218,15 +190,7 @@ public class Main extends ApplicationAdapter {
             npcManager.getBoss().setDialogue(new Dialogue(new DialogueNode(rewardAction, "Oh, you've managed this.", "Well done!")));
         }
 
-        float targetX = player.getX() + player.getWidth() / 2f;
-        float targetY = player.getY() + player.getHeight() / 2f;
-        float cameraX = Math.max(camera.viewportWidth / 2f, Math.min(targetX, WORLD_WIDTH - camera.viewportWidth / 2f));
-        float cameraY = Math.max(camera.viewportHeight / 2f, Math.min(targetY, WORLD_HEIGHT - camera.viewportHeight / 2f));
-        camera.position.set(cameraX, cameraY, 0);
-        camera.update();
-
-        viewport.apply();
-        batch.setProjectionMatrix(camera.combined);
+        cameraManager.update(player, batch);
 
         batch.begin();
         world.draw(batch);
@@ -251,7 +215,8 @@ public class Main extends ApplicationAdapter {
                                 MusicManager.playMusic(Assets.backMusic4);
                                 police1.setDialogue(new Dialogue(caughtNode));
                             };
-                            police1.setDialogue(new Dialogue(new DialogueNode(chaseAction, "What are you doing? Stop right there!")));
+
+                            police1.setDialogue(new Dialogue(new DialogueNode(chaseAction, "What are you doing?","Stop right there!")));
                             uiManager.getDialogueManager().startForcedDialogue(police1);
                         }
                     }
@@ -315,7 +280,7 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void resize(int width, int height) {
-        if (viewport != null) viewport.update(width, height, true);
+        cameraManager.resize(width, height);
         if (uiManager != null) uiManager.resize(width, height);
     }
 
@@ -327,11 +292,5 @@ public class Main extends ApplicationAdapter {
         uiManager.dispose();
         MusicManager.stopAll();
     }
-    public static Main getInstance() {
-        return instance;
-    }
-
-    public OrthographicCamera getCamera() {
-        return camera;
-    }
+    public static CameraManager getCameraManager() {return instance.cameraManager;}
 }

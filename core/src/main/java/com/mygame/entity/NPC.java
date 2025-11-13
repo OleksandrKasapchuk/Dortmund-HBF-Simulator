@@ -93,7 +93,6 @@ public class NPC extends Entity {
     public boolean isPlayerNear(Player player) {return Math.sqrt(Math.pow(player.getX() - this.getX(), 2) + Math.pow(player.getY() - this.getY(), 2)) < this.distance;}
     public String getName(){return this.name;}
 
-
     public void setTexture(Texture texture) {this.texture = texture;}
     public void setFollowing(boolean following) { isFollowing = following; }
 }

@@ -19,8 +19,8 @@ public class DialogueManager {
     private boolean isForcedDialogue = false;
     private boolean textCompleted = false;
 
-    private int currentTextIndex = 0;
-    private float textTimer = 0f;
+    private int currentTextIndex;
+    private float textTimer;
     private static final float TEXT_SPEED = 0.05f;
 
     private float interactCooldown = 0f;
@@ -90,7 +90,7 @@ public class DialogueManager {
         if (isForcedDialogue && activeNpc != null) {recentlyFinishedForcedNpc = activeNpc;}
 
         isForcedDialogue = false;
-
+        if (activeDialogue.getCurrentNode().getAction() != null) activeDialogue.getCurrentNode().getAction().run();
         if (activeDialogue != null) activeDialogue.reset();
 
         dialogueUI.hide();

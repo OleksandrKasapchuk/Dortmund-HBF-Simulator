@@ -28,7 +28,7 @@ public class DialogueNode {
 
     private final List<String> texts;
     private final List<Choice> choices;
-    private final Runnable action; // Action for nodes without choices
+    private final Runnable action;
 
     private DialogueNode(Runnable action, List<String> texts) {
         this.texts = (texts == null || texts.isEmpty()) ? List.of("") : texts;
