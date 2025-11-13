@@ -9,16 +9,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygame.Assets;
 import com.mygame.Main;
 
-public class DeathUI {
-    private Stage stage;
+public class DeathUI extends Screen {
     private final Image backgroundImage;
 
     public DeathUI(Skin skin) {
-        stage = new Stage(new FitViewport(2000, 1000));
+        Stage stage = getStage();
 
         backgroundImage = new Image(Assets.deathBack);
         backgroundImage.setFillParent(true);
@@ -44,13 +42,5 @@ public class DeathUI {
 
         table.add(deathLabel).padBottom(50).row();
         table.add(restartButton).width(300).height(100);
-    }
-
-    public Stage getStage() {
-        return stage;
-    }
-
-    public void dispose() {
-        stage.dispose();
     }
 }

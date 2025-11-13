@@ -30,16 +30,13 @@ public class DialogueNode {
     private final List<Choice> choices;
     private final Runnable action; // Action for nodes without choices
 
-
     private DialogueNode(Runnable action, List<String> texts) {
         this.texts = (texts == null || texts.isEmpty()) ? List.of("") : texts;
         this.choices = new ArrayList<>();
         this.action = action;
     }
 
-    public DialogueNode(String... texts) {
-        this(null, Arrays.asList(texts));
-    }
+    public DialogueNode(String... texts) {this(null, Arrays.asList(texts));}
 
     // For nodes with multiple texts and a final action
     public DialogueNode(Runnable action, String... texts) {
@@ -58,15 +55,7 @@ public class DialogueNode {
 //        this.choices.add(new Choice(choiceText, nextNode, action));
 //    }
 
-    public List<String> getTexts() {
-        return texts;
-    }
-
-    public List<Choice> getChoices() {
-        return choices;
-    }
-
-    public Runnable getAction() {
-        return action;
-    }
+    public List<String> getTexts() {return texts;}
+    public List<Choice> getChoices() {return choices;}
+    public Runnable getAction() {return action;}
 }

@@ -63,14 +63,12 @@ public class PfandManager {
     private boolean isCollidingWithAnyBlock(World world, float x, float y, float width, float height) {
         int startX = (int)(x / world.tileSize);
         int endX = (int)((x + width) / world.tileSize);
-        int startY = (int)((y) / world.tileSize); // прямо у координати blocks
+        int startY = (int)((y) / world.tileSize);
         int endY = (int)((y + height) / world.tileSize);
 
-        // Перетворюємо у перевернуту систему
         startY = world.getBlocks().length - 1 - startY;
         endY = world.getBlocks().length - 1 - endY;
 
-        // Міняємо місцями, якщо потрібно
         if (startY > endY) {
             int tmp = startY;
             startY = endY;

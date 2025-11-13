@@ -54,21 +54,12 @@ public class Player extends Entity {
                 newX += dx * speed * delta;
                 newY += dy * speed * delta;
             }
-
-            // === Перевірка колізій по X ===
-            if (!isColliding(newX, getY(), itemManager)) {
-                setX(newX);
-            }
-
-            // === Перевірка колізій по Y ===
-            if (!isColliding(getX(), newY, itemManager)) {
-                setY(newY);
-            }
+            if (!isColliding(newX, getY(), itemManager)) {setX(newX);}
+            if (!isColliding(getX(), newY, itemManager)) {setY(newY);}
         }
     }
 
     private boolean isColliding(float checkX, float checkY, ItemManager itemManager) {
-        // Перевірка по блоках
         if (world.isSolid(checkX, checkY - getHeight() - 20) ||
             world.isSolid(checkX + getWidth(), checkY - getHeight() - 20) ||
             world.isSolid(checkX, checkY - 20) ||
