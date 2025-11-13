@@ -68,7 +68,7 @@ public class NpcManager {
         DialogueNode ryzhyiNode_start = new DialogueNode("Please take 20 euro but fuck off");
         DialogueNode ryzhyiNode_after = new DialogueNode("I gave you 20 euro, why do I still see you?");
         Runnable ryzhyiAction = () -> {
-            player.getInventory().addItem("money", 20);
+            player.getInventory().addItem("money", 50);
             SoundManager.playSound(Assets.moneySound);
             uiManager.getGameUI().showInfoMessage("You got 20 euro", 1.5f);
             NPC ryzhyi = findNpcByName("Ryzhyi");

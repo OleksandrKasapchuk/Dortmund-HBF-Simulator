@@ -42,7 +42,6 @@ public class Main extends ApplicationAdapter {
     public enum GameState { MENU, PLAYING, PAUSED, SETTINGS, DEATH}
     private static GameState state = GameState.MENU;
 
-    // Flag to prevent the boss failure dialogue from looping
     private boolean bossFailureTriggered = false;
 
     @Override
@@ -64,12 +63,30 @@ public class Main extends ApplicationAdapter {
             com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
                 @Override
                 public void run() {
+                    if (player.getState() == Player.State.NORMAL)
+                        uiManager.getGameUI().showInfoMessage("You got stoned",1.5f);
+
                     player.setStone();
+                    uiManager.getInventoryUI().update(player);
                     MusicManager.playMusic(Assets.kaifMusic);
-                    uiManager.getGameUI().showInfoMessage("You got stoned",1.5f);
                 }
             }, 4f);
         });
+        player.getInventory().registerEffect("ice tee", () -> {
+//            SoundManager.playSound(Assets.lighterSound);
+
+            com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                @Override
+                public void run() {
+                    if (player.getState() == Player.State.STONED)
+                        uiManager.getGameUI().showInfoMessage("You got normal",1.5f);
+                    player.setNormal();
+                    uiManager.getInventoryUI().update(player);
+                    MusicManager.playMusic(Assets.backMusic1);
+                }
+            }, 0.5f);
+        });
+
         player.getInventory().setOnInventoryChanged(() -> {
             if (uiManager.getInventoryUI().isVisible()) {
                 uiManager.getInventoryUI().update(player);

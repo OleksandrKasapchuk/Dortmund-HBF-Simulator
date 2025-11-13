@@ -31,6 +31,7 @@ public class Player extends Entity {
     @Override
     public void update(float delta) {
         if (State.STONED == currentState){speed = 150;}
+        else {speed = 500;}
 
         if (!isMovementLocked) {
 
