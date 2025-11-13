@@ -7,17 +7,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygame.Assets;
 
-public class MenuUI {
-    private Stage stage;
-
+public class MenuUI extends Screen {
     private Image backgroundImage;
 
     public MenuUI(Skin skin){
-        stage = new Stage(new FitViewport(2000, 1000));
-
+        Stage stage = getStage();
         backgroundImage = new Image(Assets.menuBack);
         backgroundImage.setFillParent(true);
 
@@ -29,6 +25,4 @@ public class MenuUI {
             stage.addActor(menuLabel2);
         }
     }
-    public Stage getStage() { return stage; }
-    public void dispose() {stage.dispose();}
 }

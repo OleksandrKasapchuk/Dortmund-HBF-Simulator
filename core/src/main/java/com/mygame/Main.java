@@ -155,23 +155,22 @@ public class Main extends ApplicationAdapter {
         float delta = Gdx.graphics.getDeltaTime();
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.15f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        MusicManager.update(delta);
         switch (state) {
-            case MENU: renderMenu(); break;
-            case PAUSED: renderPaused(); break;
-            case PLAYING: renderGame(); break;
-            case SETTINGS: renderSettings(); break;
+            case MENU: renderMenu(delta); break;
+            case PAUSED: renderPaused(delta); break;
+            case PLAYING: renderGame(delta); break;
+            case SETTINGS: renderSettings(delta); break;
             case DEATH: renderDeath(); break;
         }
     }
 
-    public void renderMenu() {
-        uiManager.update(Gdx.graphics.getDeltaTime(), player, npcManager.getNpcs());
+    public void renderMenu(float delta) {
+        uiManager.update(delta, player, npcManager.getNpcs());
         uiManager.render();
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {startGame();}
     }
 
-    public void renderGame(){
+    public void renderGame(float delta){
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
             togglePause();
             return;
@@ -201,18 +200,13 @@ public class Main extends ApplicationAdapter {
                 }, 2f);
             }
         }
-
-        float delta = Gdx.graphics.getDeltaTime();
-
         player.update(delta);
         itemManager.update(player);
 
         uiManager.update(delta, player, npcManager.getNpcs());
         pfandManager.update(delta, player, world);
 
-        if (player.getState() == Player.State.STONED){
-            npcManager.getPolice().setDialogue(new Dialogue(new DialogueNode(Main::playerDied, "Are you stoned?", "You are caught")));
-        }
+        if (player.getState() == Player.State.STONED){npcManager.getPolice().setDialogue(new Dialogue(new DialogueNode(Main::playerDied, "Are you stoned?", "You are caught")));}
 
         if(npcManager.updatePolice()){
             MusicManager.playMusic(Assets.backMusic1);
@@ -266,7 +260,7 @@ public class Main extends ApplicationAdapter {
         }
         itemManager.draw(batch);
 
-        itemManager.getPfandAutomat().updateCooldown(Gdx.graphics.getDeltaTime());
+        itemManager.getPfandAutomat().updateCooldown(delta);
 
         if (itemManager.getPfandAutomat().isPlayerNear(player)) {
             font.draw(batch,"Press E to change your pfand for money",
@@ -299,21 +293,21 @@ public class Main extends ApplicationAdapter {
         uiManager.resetButtons();
     }
 
-    public void renderPaused() {
+    public void renderPaused(float delta) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
             togglePause();
             return;
         }
-        uiManager.update(Gdx.graphics.getDeltaTime(), player, npcManager.getNpcs());
+        uiManager.update(delta, player, npcManager.getNpcs());
         uiManager.render();
     }
 
-    public void renderSettings() {
+    public void renderSettings(float delta) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             toggleSettings();
             return;
         }
-        uiManager.update(Gdx.graphics.getDeltaTime(), player, npcManager.getNpcs());
+        uiManager.update(delta, player, npcManager.getNpcs());
         uiManager.render();
     }
 

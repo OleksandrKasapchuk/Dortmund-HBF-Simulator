@@ -10,14 +10,6 @@ public class SoundManager {
             sound.play(volume);
         }
     }
-
-    public static void setVolume(float newVolume) {
-        if (newVolume >= 0 && newVolume <= 1.0f) {
-            volume = newVolume;
-        }
-    }
-
-    public static float getVolume() {
-        return volume;
-    }
+    public static void setVolume(float newVolume) {volume = newVolume;}
+    public static float getVolume() {return volume;}
 }

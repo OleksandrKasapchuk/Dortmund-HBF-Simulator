@@ -21,9 +21,7 @@ public class DialogueUI {
     private final Skin skin;
     private final Texture dialogueBgTexture;
 
-    public interface ChoiceListener {
-        void onChoiceSelected(DialogueNode.Choice choice);
-    }
+    public interface ChoiceListener { void onChoiceSelected(DialogueNode.Choice choice);}
 
     public DialogueUI(Skin skin, Stage stage, int width, int height, float x, float y) {
         this.skin = skin;
@@ -79,10 +77,7 @@ public class DialogueUI {
     }
 
     public void updateText(String text) {dialogueLabel.setText(text);}
-
     public void showChoices(boolean show) {choiceTable.setVisible(show);}
-
     public void hide() {dialogueTable.setVisible(false);}
-
     public void dispose() {dialogueBgTexture.dispose();}
 }

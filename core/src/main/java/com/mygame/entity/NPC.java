@@ -3,7 +3,6 @@ package com.mygame.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygame.Dialogue;
-import com.mygame.DialogueNode;
 import com.mygame.world.World;
 
 public class NPC extends Entity {
@@ -17,10 +16,8 @@ public class NPC extends Entity {
     private float pauseTime;
     private float moveTime;
     private int speed;
-    private int dialogueCount = 1;
     private int distance;
     private boolean isFollowing = false;
-
 
     public NPC(String name, int width, int height, float x, float y, Texture texture, World world, int directionX, int directionY, float pauseTime, float moveTime, int speed, int distance, Dialogue dialogue){
         super(width, height, x, y, texture, world);
@@ -91,14 +88,11 @@ public class NPC extends Entity {
     }
 
     public Dialogue getDialogue() {return dialogue;}
-
     public void setDialogue(Dialogue dialogue) {this.dialogue = dialogue;}
 
     public boolean isPlayerNear(Player player) {return Math.sqrt(Math.pow(player.getX() - this.getX(), 2) + Math.pow(player.getY() - this.getY(), 2)) < this.distance;}
     public String getName(){return this.name;}
 
-    public void nextDialogueCount(){this.dialogueCount++;}
-    public int getDialogueCount(){return this.dialogueCount;}
 
     public void setTexture(Texture texture) {this.texture = texture;}
     public void setFollowing(boolean following) { isFollowing = following; }

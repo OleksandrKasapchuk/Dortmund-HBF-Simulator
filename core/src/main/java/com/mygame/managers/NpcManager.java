@@ -22,14 +22,13 @@ public class NpcManager {
     private final Player player;
     private final SpriteBatch batch;
     private final BitmapFont font;
-    private final World world; // Поле для доступу до світу
+    private final World world;
 
     public NpcManager(SpriteBatch batch, Player player, World world, UIManager uiManager, BitmapFont font) {
         this.batch = batch;
         this.player = player;
         this.font = font;
-        this.world = world; // Зберігаємо екземпляр світу
-
+        this.world = world;
         createNpcs(uiManager, world);
     }
 
@@ -38,8 +37,9 @@ public class NpcManager {
         // === IGO ===
         DialogueNode igoNode_start = new DialogueNode("Hi bro! Give me some joint");
         DialogueNode igoNode_thanks = new DialogueNode("Thanks bro!");
-        DialogueNode igoNode_bye = new DialogueNode(() -> {
-            if (!QuestManager.hasQuest("Igo")) {QuestManager.addQuest(new QuestManager.Quest("Igo", "Get some joint for igo"));}},"See ya!");
+        DialogueNode igoNode_bye = new DialogueNode(() ->
+        {if (!QuestManager.hasQuest("Igo")) {QuestManager.addQuest(new QuestManager.Quest("Igo", "Get some joint for igo"));}},"See ya!");
+
         Runnable igoAction = () -> {
             if (!QuestManager.hasQuest("Igo")) {QuestManager.addQuest(new QuestManager.Quest("Igo", "Get some joint for igo"));}
             if (player.getInventory().removeItem("joint", 1)) {
@@ -58,8 +58,10 @@ public class NpcManager {
                 uiManager.getGameUI().showInfoMessage("Not enough joint", 1.5f);
             }
         };
+
         igoNode_start.addChoice("Give joint", igoAction);
         igoNode_start.addChoice("Leave", igoNode_bye);
+
         NPC igo = new NPC("Igo", 90, 90, 500, 300, Assets.textureIgo, world, 1, 0, 3f, 0f, 0, 150,
             new Dialogue(igoNode_start));
         npcs.add(igo);
@@ -68,7 +70,7 @@ public class NpcManager {
         DialogueNode ryzhyiNode_start = new DialogueNode("Please take 20 euro but fuck off");
         DialogueNode ryzhyiNode_after = new DialogueNode("I gave you 20 euro, why do I still see you?");
         Runnable ryzhyiAction = () -> {
-            player.getInventory().addItem("money", 50);
+            player.getInventory().addItem("money", 20);
             SoundManager.playSound(Assets.moneySound);
             uiManager.getGameUI().showInfoMessage("You got 20 euro", 1.5f);
             NPC ryzhyi = findNpcByName("Ryzhyi");
@@ -137,6 +139,7 @@ public class NpcManager {
 
         // === KIOSKMAN ===
         DialogueNode kioskNode_start = new DialogueNode("Hi! Pape 5 euro");
+
         kioskNode_start.addChoice("Buy Pape (5 euro)", () -> {
             if (player.getInventory().removeItem("money", 5)) {
                 player.getInventory().addItem("pape", 1);
@@ -145,6 +148,7 @@ public class NpcManager {
                 uiManager.getGameUI().showInfoMessage("Not enough money", 1.5f);
             }
         });
+
         kioskNode_start.addChoice("Buy Ice Tee (10 euro)", () -> {
             if (player.getInventory().getAmount("money") >= 10) {
                 player.getInventory().removeItem("money", 10);
@@ -154,6 +158,7 @@ public class NpcManager {
                 uiManager.getGameUI().showInfoMessage("Not enough money", 1.5f);
             }
         });
+
         kioskNode_start.addChoice("Leave", new DialogueNode("Okay bye!"));
         NPC kioskman = new NPC("Mohammed", 90, 90, 1575, 350, Assets.textureKioskMan, world, 1, 0, 3f, 0, 75, 100, new Dialogue(kioskNode_start));
         npcs.add(kioskman);
@@ -170,6 +175,7 @@ public class NpcManager {
                 uiManager.getGameUI().showInfoMessage("You do not have a spoon", 1.5f);
             }
         });
+
         junkyNode.addChoice("Leave", () -> {
             if (!QuestManager.hasQuest("Spoon")) {QuestManager.addQuest(new QuestManager.Quest("Spoon", "Find a spoon for junky"));}
         });
@@ -189,9 +195,7 @@ public class NpcManager {
                 boss.setDialogue(new Dialogue(bossNode_after));
             }
         });
-        bossNode_start.addChoice("Leave", () -> {
-
-        });
+        bossNode_start.addChoice("Leave", () -> {});
         boss = new NPC("???", 100, 100, 700, 100, Assets.textureBoss, world, 1, 0, 3f, 0, 75, 100, new Dialogue(bossNode_start));
         npcs.add(boss);
 

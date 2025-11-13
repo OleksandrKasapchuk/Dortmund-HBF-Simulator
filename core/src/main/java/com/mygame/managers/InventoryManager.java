@@ -14,13 +14,9 @@ public class InventoryManager {
         itemEffects = new LinkedHashMap<>();
     }
 
-    public void setOnInventoryChanged(Runnable callback) {
-        this.onInventoryChanged = callback;
-    }
+    public void setOnInventoryChanged(Runnable callback) {this.onInventoryChanged = callback;}
 
-    private void notifyChange() {
-        if (onInventoryChanged != null) onInventoryChanged.run();
-    }
+    private void notifyChange() {if (onInventoryChanged != null) onInventoryChanged.run();}
 
     public void addItem(String itemName, int amount) {
         items.put(itemName, items.getOrDefault(itemName, 0) + amount);

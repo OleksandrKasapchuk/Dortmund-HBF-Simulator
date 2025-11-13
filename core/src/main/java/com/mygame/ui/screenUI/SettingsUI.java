@@ -8,13 +8,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygame.Assets;
 import com.mygame.managers.audio.MusicManager;
 import com.mygame.managers.audio.SoundManager;
 
-public class SettingsUI {
-    private Stage stage;
+public class SettingsUI extends Screen {
     private Label settingsLabel1;
     private Slider musicVolumeSlider;
     private Label musicVolumeLabel;
@@ -26,8 +24,7 @@ public class SettingsUI {
     private Image backgroundImage;
 
     public SettingsUI(Skin skin){
-        stage = new Stage(new FitViewport(2000, 1000));
-
+        Stage stage = getStage();
         backgroundImage = new Image(Assets.menuBlurBack);
         backgroundImage.setFillParent(true);
 
@@ -75,7 +72,7 @@ public class SettingsUI {
         muteAllCheckbox = new CheckBox(" Mute All", skin);
         muteAllCheckbox.setPosition(50, 425);
         muteAllCheckbox.getLabel().setFontScale(4f);
-        muteAllCheckbox.getImageCell().size(80, 80); // Збільшуємо розмір боксу
+        muteAllCheckbox.getImageCell().size(80, 80);
         muteAllCheckbox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -92,7 +89,4 @@ public class SettingsUI {
         });
         stage.addActor(muteAllCheckbox);
     }
-
-    public Stage getStage() { return stage; }
-    public void dispose() {stage.dispose();}
 }
