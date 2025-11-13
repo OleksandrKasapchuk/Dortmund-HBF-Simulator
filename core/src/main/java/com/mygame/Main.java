@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygame.managers.CameraManager;
+import com.mygame.managers.GameStateManager;
 import com.mygame.managers.PlayerEffectManager;
 import com.mygame.managers.audio.MusicManager;
 import com.mygame.managers.audio.SoundManager;
@@ -31,13 +32,11 @@ public class Main extends ApplicationAdapter {
     private ItemManager itemManager;
     private PlayerEffectManager playerEffectManager;
     private CameraManager cameraManager;
-
+    private static GameStateManager gameStateManager;
 
     private SpriteBatch batch;
     private BitmapFont font;
 
-    public enum GameState { MENU, PLAYING, PAUSED, SETTINGS, DEATH}
-    private static GameState state = GameState.MENU;
 
     private boolean bossFailureTriggered = false;
 
@@ -80,84 +79,48 @@ public class Main extends ApplicationAdapter {
         npcManager = new NpcManager(batch, player, world, uiManager, font);
         pfandManager = new PfandManager();
 
-        state = GameState.MENU;
+        gameStateManager = new GameStateManager(uiManager);
+
         uiManager.setCurrentStage("MENU");
         MusicManager.playMusic(Assets.startMusic);
     }
 
     public static void restartGame() {instance.initGame();}
 
-    public static void startGame() {
-        state = GameState.PLAYING;
-        MusicManager.playMusic(Assets.backMusic1);
-        uiManager.setCurrentStage("GAME");
-    }
-
-    public static void playerDied() {
-        state = GameState.DEATH;
-        MusicManager.stopAll();
-        MusicManager.playMusic(Assets.backMusic4);
-        uiManager.setCurrentStage("DEATH");
-    }
-
-    public static void togglePause() {
-        if (state == GameState.PLAYING) {
-            state = GameState.PAUSED;
-            MusicManager.pauseMusic();
-            uiManager.setCurrentStage("PAUSE");
-        } else if (state == GameState.PAUSED) {
-            state = GameState.PLAYING;
-            MusicManager.resumeMusic();
-            uiManager.setCurrentStage("GAME");
-        }
-    }
-
-    public static void toggleSettings() {
-        if (state == GameState.PLAYING) {
-            state = GameState.SETTINGS;
-            uiManager.setCurrentStage("SETTINGS");
-        } else if (state == GameState.SETTINGS) {
-            state = GameState.PLAYING;
-            uiManager.setCurrentStage("GAME");
-        }
-    }
-
     @Override
     public void render() {
         float delta = Gdx.graphics.getDeltaTime();
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.15f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        switch (state) {
+        handleInput();
+        switch (gameStateManager.getState()) {
             case MENU: renderMenu(delta); break;
-            case PAUSED: renderPaused(delta); break;
             case PLAYING: renderGame(delta); break;
+            case PAUSED: renderPaused(delta); break;
             case SETTINGS: renderSettings(delta); break;
             case DEATH: renderDeath(); break;
         }
     }
 
+    private void handleInput() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) gameStateManager.togglePause();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) gameStateManager.toggleSettings();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && gameStateManager.getState() == GameStateManager.GameState.MENU)
+            gameStateManager.startGame();
+    }
+
     public void renderMenu(float delta) {
         uiManager.update(delta, player, npcManager.getNpcs());
         uiManager.render();
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {startGame();}
     }
 
     public void renderGame(float delta){
-        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-            togglePause();
-            return;
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            toggleSettings();
-            return;
-        }
-
         if (QuestManager.hasQuest("Big delivery") && player.getInventory().getAmount("grass") < 1000 && !bossFailureTriggered) {
             bossFailureTriggered = true;
             NPC boss = npcManager.getBoss();
             if (boss != null) {
                 DialogueNode failureNode = new DialogueNode(() -> {
-                    Main.playerDied();
+                    Main.getGameStateManager().playerDied();
                     SoundManager.playSound(Assets.gunShot);
                 }, "You are not doing the task!", "I told you to hide the grass, not lose it.", "Now you will regret this...");
                 boss.setDialogue(new Dialogue(failureNode));
@@ -178,7 +141,7 @@ public class Main extends ApplicationAdapter {
         uiManager.update(delta, player, npcManager.getNpcs());
         pfandManager.update(delta, player, world);
 
-        if (player.getState() == Player.State.STONED){npcManager.getPolice().setDialogue(new Dialogue(new DialogueNode(Main::playerDied, "Are you stoned?", "You are caught")));}
+        if (player.getState() == Player.State.STONED){npcManager.getPolice().setDialogue(new Dialogue(new DialogueNode(Main.getGameStateManager()::playerDied, "Are you stoned?", "You are caught")));}
 
         if(npcManager.updatePolice()){
             MusicManager.playMusic(Assets.backMusic1);
@@ -208,7 +171,7 @@ public class Main extends ApplicationAdapter {
                         npcManager.callPolice();
                         NPC police1 = npcManager.getPolice1();
                         if (police1 != null) {
-                            DialogueNode caughtNode = new DialogueNode(Main::playerDied, "You got caught!");
+                            DialogueNode caughtNode = new DialogueNode(Main.getGameStateManager()::playerDied, "You got caught!");
                             Runnable chaseAction = () -> {
                                 police1.setFollowing(true);
                                 uiManager.getGameUI().showInfoMessage("RUN", 2f);
@@ -258,25 +221,17 @@ public class Main extends ApplicationAdapter {
         uiManager.resetButtons();
     }
 
-    public void renderPaused(float delta) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-            togglePause();
-            return;
-        }
+    private void renderPaused(float delta) {
         uiManager.update(delta, player, npcManager.getNpcs());
         uiManager.render();
     }
 
-    public void renderSettings(float delta) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            toggleSettings();
-            return;
-        }
+    private void renderSettings(float delta) {
         uiManager.update(delta, player, npcManager.getNpcs());
         uiManager.render();
     }
 
-    public void renderDeath(){uiManager.render();}
+    private void renderDeath() {uiManager.render();}
 
     @Override
     public void resize(int width, int height) {
@@ -293,4 +248,5 @@ public class Main extends ApplicationAdapter {
         MusicManager.stopAll();
     }
     public static CameraManager getCameraManager() {return instance.cameraManager;}
+    public static GameStateManager getGameStateManager() {return gameStateManager;}
 }
