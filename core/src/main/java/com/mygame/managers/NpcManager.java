@@ -7,6 +7,7 @@ import com.mygame.Dialogue;
 import com.mygame.DialogueNode;
 import com.mygame.entity.NPC;
 import com.mygame.entity.Player;
+import com.mygame.entity.Police;
 import com.mygame.managers.audio.SoundManager;
 import com.mygame.ui.UIManager;
 import com.mygame.world.World;
@@ -14,9 +15,9 @@ import java.util.ArrayList;
 
 public class NpcManager {
     private final ArrayList<NPC> npcs = new ArrayList<>();
-    private NPC police;
+    private Police police;
     private NPC boss;
-    private NPC police1;
+    private Police police1;
 
     private final Player player;
     private final SpriteBatch batch;
@@ -127,7 +128,7 @@ public class NpcManager {
                 uiManager.getGameUI().showInfoMessage("You passed the police check", 1.5f);
             }
         },"Police check, do you have some forbidden stuff?");
-        police = new NPC("Police", 100, 100, 400, 600, Assets.texturePolice, world, 1, 0, 3f, 0, 75, 100, new Dialogue(policeNode));
+        police = new Police("Police", 100, 100, 400, 600, Assets.texturePolice, world, 0, 100, new Dialogue(policeNode));
         npcs.add(police);
 
         // === KIOSKMAN ===
@@ -216,22 +217,19 @@ public class NpcManager {
         return null;
     }
 
-    public boolean updatePolice() {
-        if (police1 != null && !police1.followPlayer(player)) {
-            npcs.remove(police1);
-            police1 = null;
-            return true;
-        }
-        return false;
-    }
-
     public ArrayList<NPC> getNpcs() { return npcs; }
     public NPC getBoss() { return boss; }
-    public NPC getPolice1() { return police1; }
-    public NPC getPolice() { return police; }
+    public Police getPolice1() { return police1; }
+    public void kill(NPC npc) {
+        npcs.remove(npc);
+        if (npc == police1) police1 = null;
+        if (npc == police) police = null;
+        if (npc == boss) boss = null;
+    }
+    public Police getPolice() { return police; }
 
     public void callPolice() {
-        police1 = new NPC("Police", 100, 100, player.getX(), player.getY() - 300, Assets.texturePolice, this.world, 1, 0, 3f, 0, 200, 100, new Dialogue(new DialogueNode("What are you doing? Stop right there!")));
+        police1 = new Police("Police", 100, 100, player.getX(), player.getY() - 300, Assets.texturePolice, this.world, 200, 100, new Dialogue(new DialogueNode("What are you doing? Stop right there!")));
         npcs.add(police1);
     }
 }

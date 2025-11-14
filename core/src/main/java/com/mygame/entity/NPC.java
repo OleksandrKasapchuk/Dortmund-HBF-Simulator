@@ -1,6 +1,5 @@
 package com.mygame.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygame.Dialogue;
 import com.mygame.world.World;
@@ -17,7 +16,7 @@ public class NPC extends Entity {
     private float moveTime;
     private int speed;
     private int distance;
-    private boolean isFollowing = false;
+
 
     public NPC(String name, int width, int height, float x, float y, Texture texture, World world, int directionX, int directionY, float pauseTime, float moveTime, int speed, int distance, Dialogue dialogue){
         super(width, height, x, y, texture, world);
@@ -29,22 +28,6 @@ public class NPC extends Entity {
         this.moveTime = moveTime;
         this.speed = speed;
         this.distance = distance;
-    }
-    public boolean followPlayer(Player player) {
-        if (isFollowing) {
-            float delta = Gdx.graphics.getDeltaTime();
-
-            float targetX = player.getX();
-            float targetY = player.getY();
-
-            if (this.getX() > targetX) this.setX(this.getX() - speed * delta);
-            else if (this.getX() < targetX) this.setX(this.getX() + speed * delta);
-
-            if (this.getY() > targetY) this.setY(this.getY() - speed * delta);
-            else if (this.getY() < targetY) this.setY(this.getY() + speed * delta);
-
-        }
-        return Math.sqrt(Math.pow(player.getX() - this.getX(), 2) + Math.pow(player.getY() - this.getY(), 2)) < 1400;
     }
 
     @Override
@@ -91,8 +74,9 @@ public class NPC extends Entity {
     public void setDialogue(Dialogue dialogue) {this.dialogue = dialogue;}
 
     public boolean isPlayerNear(Player player) {return Math.sqrt(Math.pow(player.getX() - this.getX(), 2) + Math.pow(player.getY() - this.getY(), 2)) < this.distance;}
+    public boolean isPlayerNear(Player player, int distance) {return Math.sqrt(Math.pow(player.getX() - this.getX(), 2) + Math.pow(player.getY() - this.getY(), 2)) < distance;}
     public String getName(){return this.name;}
 
     public void setTexture(Texture texture) {this.texture = texture;}
-    public void setFollowing(boolean following) { isFollowing = following; }
+    public int getSpeed(){return speed;}
 }
