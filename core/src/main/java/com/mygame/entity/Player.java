@@ -95,4 +95,5 @@ public class Player extends Entity {
     public void setStone(){currentState = State.STONED;}
     public void setNormal() {currentState = State.NORMAL;}
     public State getState(){return currentState;}
+    public void setItemManager(ItemManager itemManager) {this.itemManager = itemManager;}
 }

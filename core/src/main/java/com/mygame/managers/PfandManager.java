@@ -38,7 +38,7 @@ public class PfandManager {
     }
 
     private void spawnRandomPfand(World world) {
-        OrthographicCamera cam = Main.getCameraManager().getCamera();
+        OrthographicCamera cam = Main.getManagerRegistry().getCameraManager().getCamera();
         int attempts = 0;
         int itemWidth = 60;
         int itemHeight = 60;

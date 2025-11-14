@@ -94,7 +94,7 @@ public class TouchControlsUI {
         pauseButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Main.getGameStateManager().togglePause();
+                Main.getManagerRegistry().getGameStateManager().togglePause();
                 return true;
             }
         });
@@ -107,7 +107,7 @@ public class TouchControlsUI {
         startButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Main.getGameStateManager().startGame();
+                Main.getManagerRegistry().getGameStateManager().startGame();
                 return true;
             }
         });
@@ -120,7 +120,7 @@ public class TouchControlsUI {
         resumeButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Main.getGameStateManager().togglePause();
+                Main.getManagerRegistry().getGameStateManager().togglePause();
                 return true;
             }
         });
@@ -133,7 +133,7 @@ public class TouchControlsUI {
         settingsButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Main.getGameStateManager().toggleSettings();
+                Main.getManagerRegistry().getGameStateManager().toggleSettings();
                 return true;
             }
         });
@@ -146,7 +146,7 @@ public class TouchControlsUI {
         backButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Main.getGameStateManager().toggleSettings();
+                Main.getManagerRegistry().getGameStateManager().toggleSettings();
                 return true;
             }
         });

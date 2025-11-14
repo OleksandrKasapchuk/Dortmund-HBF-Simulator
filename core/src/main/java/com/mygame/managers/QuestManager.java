@@ -5,15 +5,9 @@ import java.util.ArrayList;
 public class QuestManager {
     private static ArrayList<Quest> quests = new ArrayList<>();
 
-    public static void addQuest(Quest quest) {
-        quests.add(quest);
-    }
-
+    public static void addQuest(Quest quest) {quests.add(quest);}
     public static void removeQuest(String title) {quests.removeIf(q -> q.getTitle().equals(title));}
-
-    public static ArrayList<Quest> getQuests() {
-        return quests;
-    }
+    public static ArrayList<Quest> getQuests() {return quests;}
     public static boolean hasQuest(String title){return quests.stream().anyMatch(q -> q.getTitle().equals(title));}
 
     public static void reset() {quests.clear();}

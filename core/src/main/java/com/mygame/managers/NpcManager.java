@@ -198,10 +198,11 @@ public class NpcManager {
         NPC kamil = new NPC("Kamil", 90, 90, 500, 100, Assets.textureKamil, world, 1, 0, 3f, 0, 75, 100, new Dialogue(new DialogueNode("Hello kurwa")));
         npcs.add(kamil);
     }
-
-    public void render(float delta) {
+    public void update(float delta) {
+        for (NPC npc : npcs) {npc.update(delta);}
+    }
+    public void render() {
         for (NPC npc : npcs) {
-            npc.update(delta);
             npc.draw(batch);
             if (npc.isPlayerNear(player)) {
                 font.draw(batch, "Press E to interact", npc.getX() - 100, npc.getY() + npc.getHeight() + 40);

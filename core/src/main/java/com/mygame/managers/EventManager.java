@@ -39,6 +39,19 @@ public class EventManager {
         handlePolice();
     }
 
+    public void render() {
+        if (QuestManager.hasQuest("Big delivery") && itemManager.getBush().isPlayerNear(player)) {
+            font.draw(batch, "Press E to hide your kg", itemManager.getBush().getX(), itemManager.getBush().getY());
+        }
+
+        Item pfandAutomat = itemManager.getPfandAutomat();
+        if (pfandAutomat.isPlayerNear(player)) {
+            font.draw(batch,"Press E to change your pfand for money",
+                pfandAutomat.getX(),
+                pfandAutomat.getY() + 150);
+        }
+    }
+
     private void handleBossFail() {
         if (!QuestManager.hasQuest("Big delivery")) return;
         if (bossFailureTriggered) return;
@@ -53,7 +66,7 @@ public class EventManager {
         if (boss == null) return;
 
         DialogueNode failureNode = new DialogueNode(() -> {
-            Main.getGameStateManager().playerDied();
+            Main.getManagerRegistry().getGameStateManager().playerDied();
             SoundManager.playSound(Assets.gunShot);
         },
             "You are not doing the task!",
@@ -74,8 +87,6 @@ public class EventManager {
 
         if (!itemManager.getBush().isPlayerNear(player)) return;
 
-        font.draw(batch, "Press E to hide your kg", itemManager.getBush().getX(), itemManager.getBush().getY());
-
         if (uiManager.isInteractPressed()) {triggerQuestSuccess();}
     }
 
@@ -90,7 +101,7 @@ public class EventManager {
             Police police = npcManager.getPolice1();
             if (police == null) return;
 
-            DialogueNode caughtNode = new DialogueNode(Main.getGameStateManager()::playerDied, "You got caught!");
+            DialogueNode caughtNode = new DialogueNode(Main.getManagerRegistry().getGameStateManager()::playerDied, "You got caught!");
 
             Runnable chaseAction = () -> {
                 police.startChase();
@@ -110,10 +121,6 @@ public class EventManager {
         pfandAutomat.updateCooldown(delta);
 
         if (pfandAutomat.isPlayerNear(player)) {
-            font.draw(batch,"Press E to change your pfand for money",
-                pfandAutomat.getX(),
-                pfandAutomat.getY() + 150);
-
             if (uiManager.isInteractPressed() && pfandAutomat.canInteract()) {
                 if(player.getInventory().removeItem("pfand",1)){
                     triggerPfandAutomat();
@@ -152,9 +159,9 @@ public class EventManager {
                     uiManager.getGameUI().showInfoMessage("You got 50 money", 1.5f);
                     npcManager.getBoss().setDialogue(new Dialogue(new DialogueNode("What do you want from me?")));
                 };
-                npcManager.getBoss().setDialogue(new Dialogue(new DialogueNode(rewardAction, "Oh, you've managed this.", "Well done!")));
+                npcManager.getBoss().setDialogue(new Dialogue(new DialogueNode(rewardAction, "Oh, you\'ve managed this.", "Well done!")));
             }
-            case CAUGHT -> Main.getGameStateManager().playerDied();
+            case CAUGHT -> Main.getManagerRegistry().getGameStateManager().playerDied();
         }
     }
 }
