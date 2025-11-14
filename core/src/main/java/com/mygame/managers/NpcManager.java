@@ -33,6 +33,7 @@ public class NpcManager {
     }
 
     private void createNpcs(UIManager uiManager, World world) {
+        npcs.clear();
 
         // === IGO ===
         DialogueNode igoNode_start = new DialogueNode("Hi bro! Give me some joint");

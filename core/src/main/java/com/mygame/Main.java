@@ -25,7 +25,7 @@ public class Main extends ApplicationAdapter {
     private Player player;
 
     private World world;
-    private static UIManager uiManager;
+    private UIManager uiManager;
     private NpcManager npcManager;
     private PfandManager pfandManager;
     private ItemManager itemManager;
@@ -40,25 +40,18 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         instance = this;
-
-        batch = new SpriteBatch();
-        font = new BitmapFont();
-        font.getData().setScale(2.5f);
-        font.setUseIntegerPositions(false);
-
-        Assets.load();
-
         initGame();
-
-        player.getInventory().setOnInventoryChanged(() -> {
-            if (uiManager.getInventoryUI().isVisible()) {
-                uiManager.getInventoryUI().update(player);
-            }
-        });
+        Assets.load();
     }
     private void initGame() {
         MusicManager.stopAll();
         QuestManager.reset();
+        if (batch!=null )batch.dispose();
+        if (font!=null) font.dispose();
+        batch = new SpriteBatch();
+        font = new BitmapFont();
+        font.getData().setScale(2.5f);
+        font.setUseIntegerPositions(false);
 
         world = new World();
         itemManager = new ItemManager(world);
@@ -79,6 +72,14 @@ public class Main extends ApplicationAdapter {
 
         uiManager.setCurrentStage("MENU");
         MusicManager.playMusic(Assets.startMusic);
+
+        player.getInventory().setOnInventoryChanged(() -> {
+            if (uiManager.getInventoryUI().isVisible()) {
+                uiManager.getInventoryUI().update(player);
+            }
+        });
+        cameraManager.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        if (uiManager != null) uiManager.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
     public static void restartGame() {instance.initGame();}

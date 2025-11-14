@@ -69,28 +69,16 @@ public class UIManager {
             gameUI.update(delta);
             gameUI.updateMoney(player.getMoney());
 
-            // DialogueManager now handles starting dialogues and all other logic internally
             dialogueManager.update(delta, isInteractPressed(), npcs);
 
-            if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.TAB) || (touchControlsUI != null && touchControlsUI.isInvButtonJustPressed())) {
-                toggleInventoryTable(player);
-            }
-            if (Gdx.input.isKeyJustPressed(Input.Keys.Q) || (touchControlsUI != null && touchControlsUI.isQuestButtonJustPressed())) {
-                toggleQuestTable(player);
-            }
+            if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.TAB) || (touchControlsUI != null && touchControlsUI.isInvButtonJustPressed())) {toggleInventoryTable(player);}
+            if (Gdx.input.isKeyJustPressed(Input.Keys.Q) || (touchControlsUI != null && touchControlsUI.isQuestButtonJustPressed())) {toggleQuestTable(player);}
         }
         currentStage.act(delta);
     }
 
     public void render() {currentStage.draw();}
-
-    public void resize(int width, int height) {
-        menuUI.getStage().getViewport().update(width, height, true);
-        gameUI.getStage().getViewport().update(width, height, true);
-        pauseUI.getStage().getViewport().update(width, height, true);
-        deathUI.getStage().getViewport().update(width, height, true);
-        settingsUI.getStage().getViewport().update(width, height, true);
-    }
+    public void resize(int width, int height) {currentStage.getViewport().update(width, height, true);}
 
     public void dispose() {
         menuUI.dispose();

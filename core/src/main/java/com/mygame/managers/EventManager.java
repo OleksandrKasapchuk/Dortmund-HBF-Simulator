@@ -146,7 +146,13 @@ public class EventManager {
                 MusicManager.playMusic(Assets.backMusic1);
                 uiManager.getGameUI().showInfoMessage("You ran away from the police", 1.5f);
                 npcManager.kill(police);
-                player.getInventory().addItem("money", 50);
+
+                Runnable rewardAction = () -> {
+                    player.getInventory().addItem("money", 50);
+                    uiManager.getGameUI().showInfoMessage("You got 50 money", 1.5f);
+                    npcManager.getBoss().setDialogue(new Dialogue(new DialogueNode("What do you want from me?")));
+                };
+                npcManager.getBoss().setDialogue(new Dialogue(new DialogueNode(rewardAction, "Oh, you've managed this.", "Well done!")));
             }
             case CAUGHT -> Main.getGameStateManager().playerDied();
         }

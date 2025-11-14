@@ -11,13 +11,9 @@ public class GameStateManager {
     private GameState state = GameState.MENU;
     private final UIManager uiManager;
 
-    public GameStateManager(UIManager uiManager) {
-        this.uiManager = uiManager;
-    }
+    public GameStateManager(UIManager uiManager) {this.uiManager = uiManager;}
 
-    public GameState getState() {
-        return state;
-    }
+    public GameState getState() {return state;}
 
     public void startGame() {
         state = GameState.PLAYING;
@@ -27,7 +23,6 @@ public class GameStateManager {
 
     public void playerDied() {
         state = GameState.DEATH;
-        MusicManager.stopAll();
         MusicManager.playMusic(Assets.backMusic4);
         uiManager.setCurrentStage("DEATH");
     }

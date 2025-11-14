@@ -9,8 +9,8 @@ import com.badlogic.gdx.utils.Align;
 import com.mygame.entity.Player;
 
 public class GameUI extends Screen {
-    private final Label moneyLabel;
-    private final Label infoLabel;
+    private Label moneyLabel;
+    private Label infoLabel;
     private float infoMessageTimer = 0f;
 
     public GameUI(Skin skin, Player player){
