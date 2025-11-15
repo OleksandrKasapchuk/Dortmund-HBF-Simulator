@@ -8,10 +8,21 @@ import com.mygame.ui.DialogueUI;
 
 import java.util.ArrayList;
 
+/**
+ * Controls all dialogue logic:
+ * - starting / ending dialogues
+ * - forced dialogues (Police)
+ * - typewriter text animation
+ * - switching lines & nodes
+ * - choice selection
+ * - cooldown to prevent spam-interaction
+ */
 public class DialogueManager {
+
     private final DialogueUI dialogueUI;
     private final Player player;
 
+    // Dialogue state
     private NPC activeNpc;
     private Dialogue activeDialogue;
     private NPC recentlyFinishedForcedNpc;
@@ -19,22 +30,29 @@ public class DialogueManager {
     private boolean isForcedDialogue = false;
     private boolean textCompleted = false;
 
+    // Typewriter animation
     private int currentTextIndex;
     private float textTimer;
     private static final float TEXT_SPEED = 0.05f;
 
+    // Prevents multiple interactions per frame
     private float interactCooldown = 0f;
     private static final float INTERACT_COOLDOWN_TIME = 0.04f;
 
+    /**
+     * Listener that gets triggered when the player selects a choice.
+     * Executes custom action + jumps to next dialogue node.
+     */
     private final DialogueUI.ChoiceListener choiceListener = choice -> {
         if (activeDialogue == null) return;
 
         if (choice.action != null) choice.action.run();
-
         if (choice.nextNode != null) {
             activeDialogue.choose(choice);
             displayCurrentNode();
-        } else { endDialogue(); }
+        } else {
+            endDialogue();
+        }
     };
 
     public DialogueManager(DialogueUI dialogueUI, Player player) {
@@ -42,37 +60,56 @@ public class DialogueManager {
         this.player = player;
     }
 
-    public boolean isDialogueActive() {return activeDialogue != null;}
+    public boolean isDialogueActive() {
+        return activeDialogue != null;
+    }
 
+    /**
+     * Starts a normal (non-forced) dialogue if player is close enough.
+     */
     public void startDialogue(NPC npc) {
         if (isDialogueActive() || !npc.isPlayerNear(player)) return;
         isForcedDialogue = false;
         beginDialogue(npc);
     }
 
+    /**
+     * Starts a forced dialogue (Police).
+     */
     public void startForcedDialogue(NPC npc) {
         if (isDialogueActive()) endDialogue();
         isForcedDialogue = true;
         beginDialogue(npc);
     }
 
+    /**
+     * Internal function that resets dialogue state and opens the UI.
+     */
     private void beginDialogue(NPC npc) {
         activeNpc = npc;
         activeDialogue = npc.getDialogue();
         if (activeDialogue == null) return;
 
         activeDialogue.reset();
+
+        // Forced dialogue or Police → player cannot move
         player.setMovementLocked(isForcedDialogue || "Police".equals(npc.getName()));
 
         displayCurrentNode();
     }
 
+    /**
+     * Displays the current node from the dialogue:
+     * resets animation + updates UI.
+     */
     private void displayCurrentNode() {
         currentTextIndex = 0;
         resetTimers();
-        DialogueNode node = activeDialogue.getCurrentNode();
 
+        DialogueNode node = activeDialogue.getCurrentNode();
         dialogueUI.show(activeNpc.getName(), node, choiceListener);
+
+        // Start with empty text for typewriter animation
         dialogueUI.updateText("");
     }
 
@@ -82,37 +119,67 @@ public class DialogueManager {
         interactCooldown = INTERACT_COOLDOWN_TIME;
     }
 
+    /**
+     * Ends current dialogue and unlocks movement.
+     */
     public void endDialogue() {
         if (!isDialogueActive()) return;
 
         if (player != null) player.setMovementLocked(false);
 
-        if (isForcedDialogue && activeNpc != null) {recentlyFinishedForcedNpc = activeNpc;}
+        // Used to prevent re-triggering Police forced dialogue
+        if (isForcedDialogue && activeNpc != null) {
+            recentlyFinishedForcedNpc = activeNpc;
+        }
 
-        isForcedDialogue = false;
-        if (activeDialogue.getCurrentNode().getAction() != null) activeDialogue.getCurrentNode().getAction().run();
-        if (activeDialogue != null) activeDialogue.reset();
+        // Run node exit action
+        if (activeDialogue.getCurrentNode().getAction() != null) {
+            activeDialogue.getCurrentNode().getAction().run();
+        }
 
+        activeDialogue.reset();
         dialogueUI.hide();
+
         activeNpc = null;
         activeDialogue = null;
+        isForcedDialogue = false;
     }
 
+    /**
+     * Called every frame — handles:
+     * - detecting new interactions
+     * - updating text animation
+     * - continuing dialogue on press
+     */
     public void update(float delta, boolean interactPressed, ArrayList<NPC> npcs) {
+
+        // Cooldown
         if (interactCooldown > 0) interactCooldown -= delta;
 
+        // ─────────────────────────────
+        // NO DIALOGUE ACTIVE
+        // ─────────────────────────────
         if (!isDialogueActive()) {
+
             if (player == null) return;
 
-            if (recentlyFinishedForcedNpc != null && !recentlyFinishedForcedNpc.isPlayerNear(player)) recentlyFinishedForcedNpc = null;
+            // Allow Police to trigger again after player walks away
+            if (recentlyFinishedForcedNpc != null &&
+                !recentlyFinishedForcedNpc.isPlayerNear(player)) {
+                recentlyFinishedForcedNpc = null;
+            }
 
+            // Police auto-dialog
             for (NPC npc : npcs) {
-                if ("Police".equals(npc.getName()) && npc.isPlayerNear(player) && npc != recentlyFinishedForcedNpc) {
+                if ("Police".equals(npc.getName())
+                    && npc.isPlayerNear(player)
+                    && npc != recentlyFinishedForcedNpc) {
                     startForcedDialogue(npc);
                     return;
                 }
             }
 
+            // Standard interaction
             if (interactPressed && interactCooldown <= 0) {
                 for (NPC npc : npcs) {
                     if (npc.isPlayerNear(player)) {
@@ -121,12 +188,22 @@ public class DialogueManager {
                     }
                 }
             }
+
             return;
         }
 
-        if (!activeNpc.isPlayerNear(player) && !isForcedDialogue) {endDialogue();return;}
+        // ─────────────────────────────
+        // DIALOGUE IS ACTIVE
+        // ─────────────────────────────
+
+        // If the player walks away → exit dialogue (unless forced)
+        if (!activeNpc.isPlayerNear(player) && !isForcedDialogue) {
+            endDialogue();
+            return;
+        }
 
         DialogueNode currentNode = activeDialogue.getCurrentNode();
+
         if (currentNode == null || currentNode.getTexts().isEmpty()) {
             dialogueUI.updateText("");
             dialogueUI.showChoices(true);
@@ -135,9 +212,11 @@ public class DialogueManager {
 
         String currentPhrase = currentNode.getTexts().get(currentTextIndex);
 
+        // Typewriter animation
         if (!textCompleted) {
             textTimer += delta;
             int lettersToShow = (int) (textTimer / TEXT_SPEED);
+
             if (lettersToShow >= currentPhrase.length()) {
                 textCompleted = true;
                 dialogueUI.updateText(currentPhrase);
@@ -146,12 +225,16 @@ public class DialogueManager {
             }
         }
 
+        // Interact to skip/continue
         if (interactPressed && interactCooldown <= 0) {
+
             if (!textCompleted) {
+                // Skip typewriter animation
                 textCompleted = true;
                 dialogueUI.updateText(currentPhrase);
             } else {
                 boolean lastPhrase = currentTextIndex >= currentNode.getTexts().size() - 1;
+
                 if (lastPhrase) {
                     if (currentNode.getChoices().isEmpty()) {
                         endDialogue();
@@ -161,10 +244,13 @@ public class DialogueManager {
                     resetTimers();
                 }
             }
+
             interactCooldown = INTERACT_COOLDOWN_TIME;
         }
 
         boolean lastPhrase = currentTextIndex >= currentNode.getTexts().size() - 1;
+
+        // Show choices only at the end of last phrase
         dialogueUI.showChoices(textCompleted && lastPhrase && !currentNode.getChoices().isEmpty());
     }
 }

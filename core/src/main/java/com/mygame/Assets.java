@@ -5,9 +5,17 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
+/**
+ * Static class that manages all game assets: textures, sounds, and music.
+ * Provides methods for loading and disposing resources to prevent memory leaks.
+
+ * Usage:
+ * - Call Assets.load() at the start of the game to load all assets.
+ * - Call Assets.dispose() when exiting the game to release resources.
+ */
 public class Assets {
 
-    // === Текстури ===
+    // === Textures ===
     public static Texture textureRyzhyi;
     public static Texture textureDenys;
     public static Texture textureIgo;
@@ -29,7 +37,7 @@ public class Assets {
     public static Texture menuBack;
     public static Texture menuBlurBack;
 
-    // === Звуки ===
+    // === Sounds ===
     public static Sound moneySound;
     public static Sound kosyakSound;
     public static Sound lighterSound;
@@ -37,16 +45,19 @@ public class Assets {
     public static Sound gunShot;
     public static Sound pfandAutomatSound;
 
-    // Music
+    // === Music ===
     public static Music startMusic;
     public static Music backMusic1;
     public static Music backMusic2;
     public static Music backMusic4;
     public static Music kaifMusic;
 
-    // === Завантаження ===
+    /**
+     * Loads all assets from the file system into memory.
+     * Should be called once at the start of the game.
+     */
     public static void load() {
-        // Текстури
+        // Textures
         textureRyzhyi = new Texture(Gdx.files.internal("images/ryzhyi.png"));
         textureDenys = new Texture(Gdx.files.internal("images/denys.png"));
         textureIgo = new Texture(Gdx.files.internal("images/igo.png"));
@@ -60,7 +71,6 @@ public class Assets {
         textureBoss = new Texture(Gdx.files.internal("images/boss.png"));
         textureKamil = new Texture(Gdx.files.internal("images/kamil.png"));
 
-
         deathBack = new Texture(Gdx.files.internal("images/deathScreen.jpg"));
         menuBack = new Texture("images/menu.jpg");
         menuBlurBack = new Texture("images/menublur.jpg");
@@ -68,10 +78,10 @@ public class Assets {
         textureSpoon = new Texture(Gdx.files.internal("images/spoon.png"));
         brick = new Texture(Gdx.files.internal("images/brick.png"));
         bush = new Texture(Gdx.files.internal("images/bush.png"));
-        pfand= new Texture(Gdx.files.internal("images/pfand.png"));
+        pfand = new Texture(Gdx.files.internal("images/pfand.png"));
         pfandAutomat = new Texture(Gdx.files.internal("images/pfand_automat.png"));
 
-        // Звуки
+        // Sounds
         moneySound = Gdx.audio.newSound(Gdx.files.internal("sound/money.ogg"));
         kosyakSound = Gdx.audio.newSound(Gdx.files.internal("sound/kosyak.wav"));
         lighterSound = Gdx.audio.newSound(Gdx.files.internal("sound/lighter.ogg"));
@@ -79,7 +89,7 @@ public class Assets {
         gunShot = Gdx.audio.newSound(Gdx.files.internal("sound/gunshots.ogg"));
         pfandAutomatSound = Gdx.audio.newSound(Gdx.files.internal("sound/pfand_automat.ogg"));
 
-        // Фонова музика
+        // Music
         startMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/menu.ogg"));
         backMusic1 = Gdx.audio.newMusic(Gdx.files.internal("sound/epic_back1.ogg"));
         backMusic2 = Gdx.audio.newMusic(Gdx.files.internal("sound/epic_back2.ogg"));
@@ -87,7 +97,12 @@ public class Assets {
         kaifMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/kaif.ogg"));
     }
 
+    /**
+     * Disposes all loaded assets from memory.
+     * Should be called when the game exits to free resources.
+     */
     public static void dispose() {
+        // Textures
         textureRyzhyi.dispose();
         textureDenys.dispose();
         textureIgo.dispose();
@@ -107,7 +122,7 @@ public class Assets {
         menuBack.dispose();
         menuBlurBack.dispose();
 
-        // Звуки
+        // Sounds
         moneySound.dispose();
         kosyakSound.dispose();
         lighterSound.dispose();
@@ -115,7 +130,7 @@ public class Assets {
         gunShot.dispose();
         pfandAutomatSound.dispose();
 
-        // Музика
+        // Music
         startMusic.dispose();
         backMusic1.dispose();
         backMusic2.dispose();

@@ -9,22 +9,36 @@ import com.mygame.entity.Player;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/**
+ * Manages all items in the game world, including special items like bushes and Pfand Automat.
+ * Handles item updates, drawing, and player pickups.
+ */
 public class ItemManager {
-    private ArrayList<Item> items = new ArrayList<>();
-    private Item bush;
-    private Item pfandAutomat;
 
+    private ArrayList<Item> items = new ArrayList<>(); // List of all items in the world
+    private Item bush;                                  // Special bush item
+    private Item pfandAutomat;                          // Special Pfand Automat item
+
+    // --- Constructor: initialize items and special items in the world ---
     public ItemManager(World world) {
-        bush = new Item("bush", 200, 100, 800, 1800,125, Assets.bush, world, false, false);
-        items.add(new Item("spoon", 60, 60, 500, 1800, 100,Assets.textureSpoon, world,true, false));
+        // Create bush
+        bush = new Item("bush", 200, 100, 800, 1800, 125, Assets.bush, world, false, false);
+
+        // Add a spoon and the bush to the items list
+        items.add(new Item("spoon", 60, 60, 500, 1800, 100, Assets.textureSpoon, world, true, false));
         items.add(bush);
-        pfandAutomat = new Item("pfandAutomat", 150,150,1900,100,200,Assets.pfandAutomat,world,false, true);
+
+        // Create Pfand Automat
+        pfandAutomat = new Item("pfandAutomat", 150, 150, 1900, 100, 200, Assets.pfandAutomat, world, false, true);
         items.add(pfandAutomat);
     }
 
+    // --- Update items: handle pickups by the player ---
     public void update(Player player) {
         for (Iterator<Item> it = items.iterator(); it.hasNext();) {
             Item item = it.next();
+
+            // If item can be picked up and player is near, add to inventory and remove from world
             if (item.canBePickedUp() && item.isPlayerNear(player)) {
                 player.getInventory().addItem(item.getName(), 1);
                 it.remove();
@@ -32,11 +46,22 @@ public class ItemManager {
         }
     }
 
+    // --- Draw all items in the world ---
     public void draw(SpriteBatch batch) {
         for (Item item : items)
             item.draw(batch);
     }
-    public Item getBush(){return bush;}
-    public ArrayList<Item> getItems(){return items;}
-    public Item getPfandAutomat(){return pfandAutomat;}
+
+    // --- Getters for special items ---
+    public Item getBush() {
+        return bush;
+    }
+
+    public ArrayList<Item> getItems() {
+        return items;
+    }
+
+    public Item getPfandAutomat() {
+        return pfandAutomat;
+    }
 }

@@ -3,14 +3,31 @@ package com.mygame.entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygame.world.World;
 
+/**
+ * Represents a world item (e.g., spoon, pfand).
+ * Can be interactable, solid, and have pickup radius + interaction cooldown.
+ */
 public class Item extends Entity {
+
+    // --- Item properties ---
     private String name;
     private boolean canBePickedUp;
     private boolean solid;
-    private int distance;
+    private int distance;           // distance at which player can interact/pick up
+
+    // --- Interaction cooldown ---
     private float cooldownTimer = 0f;
 
-    public Item(String name, int width, int height, float x, float y, int distance, Texture texture, World world, boolean canBePickedUp, boolean solid){
+    public Item(
+        String name,
+        int width, int height,
+        float x, float y,
+        int distance,
+        Texture texture,
+        World world,
+        boolean canBePickedUp,
+        boolean solid
+    ) {
         super(width, height, x, y, texture, world);
         this.name = name;
         this.canBePickedUp = canBePickedUp;
@@ -19,18 +36,44 @@ public class Item extends Entity {
     }
 
     @Override
-    public void update(float delta) {}
-    public boolean isPlayerNear(Player player) {return Math.sqrt(Math.pow(player.getX() - this.getX(), 2) + Math.pow(player.getY() - this.getY(), 2)) < this.distance;}
-    public String getName(){return name;}
-    public boolean canBePickedUp(){return canBePickedUp;}
-    public boolean isSolid(){return solid;}
+    public void update(float delta) {
+        // Items do not move or update by default.
+    }
 
+    // --- Player distance check ---
+    public boolean isPlayerNear(Player player) {
+        float dx = player.getX() - this.getX();
+        float dy = player.getY() - this.getY();
+        return Math.sqrt(dx * dx + dy * dy) < this.distance;
+    }
+
+    // --- Basic getters ---
+    public String getName() { return name; }
+    public boolean canBePickedUp() { return canBePickedUp; }
+    public boolean isSolid() { return solid; }
+
+    // --- Cooldown logic ---
+    /**
+     * Updates cooldown timer.
+     */
     public void updateCooldown(float delta) {
         if (cooldownTimer > 0) {
             cooldownTimer -= delta;
             if (cooldownTimer < 0) cooldownTimer = 0;
         }
     }
-    public boolean canInteract() {return cooldownTimer <= 0;}
-    public void startCooldown(float seconds) {cooldownTimer = seconds;}
+
+    /**
+     * @return true if item can currently be interacted with.
+     */
+    public boolean canInteract() {
+        return cooldownTimer <= 0;
+    }
+
+    /**
+     * Starts cooldown after interaction.
+     */
+    public void startCooldown(float seconds) {
+        cooldownTimer = seconds;
+    }
 }
