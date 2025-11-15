@@ -1,4 +1,4 @@
-package com.mygame;
+package com.mygame.dialogue;
 
 /**
  * Represents a dialogue sequence for NPCs or game events.

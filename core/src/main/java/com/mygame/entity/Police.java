@@ -2,7 +2,7 @@ package com.mygame.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.mygame.Dialogue;
+import com.mygame.dialogue.Dialogue;
 import com.mygame.world.World;
 
 /**

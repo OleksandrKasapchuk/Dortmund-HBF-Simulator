@@ -1,4 +1,4 @@
-package com.mygame.managers;
+package com.mygame.managers.nonglobal;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygame.Assets;

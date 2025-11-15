@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.mygame.DialogueNode;
+import com.mygame.dialogue.DialogueNode;
 
 /**
  * DialogueUI is responsible for displaying NPC dialogue in a styled window,

@@ -1,17 +1,19 @@
-package com.mygame.managers;
+package com.mygame.managers.nonglobal;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygame.Assets;
-import com.mygame.Dialogue;
-import com.mygame.DialogueNode;
+import com.mygame.dialogue.Dialogue;
+import com.mygame.dialogue.DialogueNode;
 import com.mygame.Main;
 import com.mygame.entity.Item;
 import com.mygame.entity.NPC;
 import com.mygame.entity.Player;
 import com.mygame.entity.Police;
-import com.mygame.managers.audio.MusicManager;
-import com.mygame.managers.audio.SoundManager;
+import com.mygame.managers.global.audio.MusicManager;
+import com.mygame.managers.global.audio.SoundManager;
+import com.mygame.managers.global.QuestManager;
+import com.mygame.managers.global.TimerManager;
 import com.mygame.ui.UIManager;
 
 /**

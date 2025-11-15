@@ -1,7 +1,7 @@
-package com.mygame.managers;
+package com.mygame.managers.nonglobal;
 
-import com.mygame.Dialogue;
-import com.mygame.DialogueNode;
+import com.mygame.dialogue.Dialogue;
+import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.NPC;
 import com.mygame.entity.Player;
 import com.mygame.ui.DialogueUI;

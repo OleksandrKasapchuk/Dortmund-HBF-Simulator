@@ -4,6 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygame.entity.Player;
+import com.mygame.managers.nonglobal.CameraManager;
+import com.mygame.managers.nonglobal.EventManager;
+import com.mygame.managers.nonglobal.GameStateManager;
+import com.mygame.managers.nonglobal.ItemManager;
+import com.mygame.managers.nonglobal.NpcManager;
+import com.mygame.managers.nonglobal.PfandManager;
+import com.mygame.managers.nonglobal.PlayerEffectManager;
 import com.mygame.ui.UIManager;
 import com.mygame.world.World;
 

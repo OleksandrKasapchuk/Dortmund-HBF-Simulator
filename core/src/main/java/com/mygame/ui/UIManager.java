@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.mygame.managers.DialogueManager;
+import com.mygame.managers.nonglobal.DialogueManager;
 import com.mygame.entity.NPC;
 import com.mygame.entity.Player;
 import com.mygame.ui.screenUI.DeathUI;

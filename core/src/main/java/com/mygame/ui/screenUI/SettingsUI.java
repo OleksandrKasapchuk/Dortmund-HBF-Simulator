@@ -9,8 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.mygame.Assets;
-import com.mygame.managers.audio.MusicManager;
-import com.mygame.managers.audio.SoundManager;
+import com.mygame.managers.global.audio.MusicManager;
+import com.mygame.managers.global.audio.SoundManager;
 
 /**
  * Settings UI screen for adjusting music and sound volumes and muting all audio.

@@ -1,4 +1,4 @@
-package com.mygame;
+package com.mygame.dialogue;
 
 import java.util.ArrayList;
 import java.util.Arrays;

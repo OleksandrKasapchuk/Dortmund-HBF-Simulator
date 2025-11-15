@@ -1,4 +1,4 @@
-package com.mygame.managers;
+package com.mygame.managers.nonglobal;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

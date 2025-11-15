@@ -5,8 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
-import com.mygame.managers.InventoryManager;
-import com.mygame.managers.ItemManager;
+import com.mygame.managers.nonglobal.InventoryManager;
+import com.mygame.managers.nonglobal.ItemManager;
 import com.mygame.world.World;
 
 // Player entity controlled by user
