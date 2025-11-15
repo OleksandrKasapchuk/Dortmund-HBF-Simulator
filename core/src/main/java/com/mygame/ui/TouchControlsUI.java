@@ -114,7 +114,7 @@ public class TouchControlsUI {
         pauseButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Main.getManagerRegistry().getGameStateManager().togglePause();
+                Main.getGameInitializer().getManagerRegistry().getGameStateManager().togglePause();
                 return true;
             }
         });
@@ -128,7 +128,7 @@ public class TouchControlsUI {
         startButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Main.getManagerRegistry().getGameStateManager().startGame();
+                Main.getGameInitializer().getManagerRegistry().getGameStateManager().startGame();
                 return true;
             }
         });
@@ -142,7 +142,7 @@ public class TouchControlsUI {
         resumeButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Main.getManagerRegistry().getGameStateManager().togglePause();
+                Main.getGameInitializer().getManagerRegistry().getGameStateManager().togglePause();
                 return true;
             }
         });
@@ -156,7 +156,7 @@ public class TouchControlsUI {
         settingsButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Main.getManagerRegistry().getGameStateManager().toggleSettings();
+                Main.getGameInitializer().getManagerRegistry().getGameStateManager().toggleSettings();
                 return true;
             }
         });
@@ -170,7 +170,7 @@ public class TouchControlsUI {
         backButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Main.getManagerRegistry().getGameStateManager().toggleSettings();
+                Main.getGameInitializer().getManagerRegistry().getGameStateManager().toggleSettings();
                 return true;
             }
         });

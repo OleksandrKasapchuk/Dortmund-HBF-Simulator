@@ -68,11 +68,11 @@ public class DialogueUI {
         dialogueLabel = new Label("", skin);
         dialogueLabel.setFontScale(3f);
         dialogueLabel.setWrap(true);
-        dialogueTable.add(dialogueLabel).expand().fillX().align(Align.left).padTop(20).row();
+        dialogueTable.add(dialogueLabel).expand().fillX().align(Align.left).row();
 
         // Table to hold choice buttons
         choiceTable = new Table();
-        dialogueTable.add(choiceTable).align(Align.left).padTop(20).padLeft(20);
+        dialogueTable.add(choiceTable).align(Align.left).padLeft(30);
 
         dialogueTable.setVisible(false);  // hide by default
         stage.addActor(dialogueTable);
@@ -102,7 +102,7 @@ public class DialogueUI {
                 }
                 return false;
             });
-            choiceTable.add(button).pad(10).align(Align.right).row();
+            choiceTable.add(button).padBottom(10).align(Align.right).row();
         }
         showChoices(false);       // initially hide choices
         dialogueTable.setVisible(true);

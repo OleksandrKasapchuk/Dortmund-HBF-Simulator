@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygame.Assets;
 import com.mygame.dialogue.Dialogue;
 import com.mygame.dialogue.DialogueNode;
-import com.mygame.Main;
 import com.mygame.entity.Item;
 import com.mygame.entity.NPC;
 import com.mygame.entity.Player;
@@ -31,14 +30,17 @@ public class EventManager {
 
     private boolean bossFailureTriggered = false; // Flag to ensure boss failure event triggers only once
 
+    private GameStateManager gameStateManager;
+
     // --- Constructor ---
-    public EventManager(Player player, NpcManager npcManager, UIManager uiManager, ItemManager itemManager, SpriteBatch batch, BitmapFont font) {
+    public EventManager(Player player, NpcManager npcManager, UIManager uiManager, ItemManager itemManager, SpriteBatch batch, BitmapFont font,GameStateManager gameStateManager) {
         this.player = player;
         this.npcManager = npcManager;
         this.uiManager = uiManager;
         this.itemManager = itemManager;
         this.batch = batch;
         this.font = font;
+        this.gameStateManager = gameStateManager;
     }
 
     // --- Main update method called each frame ---
@@ -81,7 +83,7 @@ public class EventManager {
 
         // Create boss failure dialogue
         DialogueNode failureNode = new DialogueNode(() -> {
-            Main.getManagerRegistry().getGameStateManager().playerDied(); // Kill player
+            gameStateManager.playerDied(); // Kill player
             SoundManager.playSound(Assets.gunShot); // Play gunshot sound
         },
             "You are not doing the task!",
@@ -122,7 +124,7 @@ public class EventManager {
             if (police == null) return;
 
             // Dialogue for being caught
-            DialogueNode caughtNode = new DialogueNode(Main.getManagerRegistry().getGameStateManager()::playerDied, "You got caught!");
+            DialogueNode caughtNode = new DialogueNode(gameStateManager::playerDied, "You got caught!");
 
             Runnable chaseAction = () -> {
                 police.startChase();                           // Start police chase
@@ -188,7 +190,7 @@ public class EventManager {
 
                 npcManager.getBoss().setDialogue(new Dialogue(new DialogueNode(rewardAction, "Oh, you've managed this.", "Well done!")));
             }
-            case CAUGHT -> Main.getManagerRegistry().getGameStateManager().playerDied(); // Player dies if caught
+            case CAUGHT -> gameStateManager.playerDied(); // Player dies if caught
         }
     }
 }

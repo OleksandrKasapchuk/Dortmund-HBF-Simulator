@@ -4,20 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygame.entity.Player;
-import com.mygame.managers.nonglobal.CameraManager;
-import com.mygame.managers.nonglobal.EventManager;
-import com.mygame.managers.nonglobal.GameStateManager;
-import com.mygame.managers.nonglobal.ItemManager;
-import com.mygame.managers.nonglobal.NpcManager;
-import com.mygame.managers.nonglobal.PfandManager;
-import com.mygame.managers.nonglobal.PlayerEffectManager;
+import com.mygame.managers.nonglobal.*;
 import com.mygame.ui.UIManager;
 import com.mygame.world.World;
 
-/**
- * Central registry to manage and update all game managers.
- * Handles creation, updates, rendering, resizing, and disposal.
- */
 public class ManagerRegistry {
 
     // --- Managers ---
@@ -27,7 +17,7 @@ public class ManagerRegistry {
     private ItemManager itemManager;
     private PlayerEffectManager playerEffectManager;
     private CameraManager cameraManager;
-    private static GameStateManager gameStateManager;
+    private GameStateManager gameStateManager;
     private EventManager eventManager;
 
     // --- Core game objects ---
@@ -35,50 +25,51 @@ public class ManagerRegistry {
     private Player player;
     private SpriteBatch batch;
 
-    /**
-     * Constructor initializes all managers and sets up their relationships.
-     */
     public ManagerRegistry(SpriteBatch batch, BitmapFont font, Player player, World world) {
         this.batch = batch;
         this.world = world;
         this.player = player;
 
-        // Initialize Item Manager and UI Manager
+        // 1️⃣ Базові менеджери без залежностей
+        cameraManager = new CameraManager(4000, 2000);
+        pfandManager = new PfandManager();
+
+        // 2️⃣ ItemManager і прив'язка до Player
         itemManager = new ItemManager(world);
+        player.setItemManager(itemManager);
+
+        // 3️⃣ UIManager (тепер Player має ItemManager)
         uiManager = new UIManager(player);
 
-        // Initialize Player Effects Manager
+        // 4️⃣ PlayerEffectManager
         playerEffectManager = new PlayerEffectManager(player, uiManager);
         playerEffectManager.registerEffects();
 
-        // Initialize Camera Manager with world size
-        cameraManager = new CameraManager(4000, 2000);
-
-        // Initialize NPC Manager and Pfand Manager
+        // 5️⃣ NPC Manager (залежить від UIManager, Player, World)
         npcManager = new NpcManager(batch, player, world, uiManager, font);
-        pfandManager = new PfandManager();
 
-        // Initialize Game State Manager and Event Manager
+        // 6️⃣ GameStateManager
         gameStateManager = new GameStateManager(uiManager);
-        eventManager = new EventManager(player, npcManager, uiManager, itemManager, batch, font);
 
-        // Set initial UI stage
+        // 7️⃣ EventManager (залежить від Player, NPC, UI, ItemManager)
+        eventManager = new EventManager(player, npcManager, uiManager, itemManager, batch, font, gameStateManager);
+
+        // 8️⃣ Inventory callback (теперь UIManager точно існує)
+        if (player.getInventory() != null) {
+            player.getInventory().setOnInventoryChanged(() -> {
+                if (uiManager.getInventoryUI() != null && uiManager.getInventoryUI().isVisible()) {
+                    uiManager.getInventoryUI().update(player);
+                }
+            });
+        }
+
+        // 9️⃣ Налаштування UI stage
         uiManager.setCurrentStage("MENU");
 
-        // Set inventory callback to update UI when inventory changes
-        player.getInventory().setOnInventoryChanged(() -> {
-            if (uiManager.getInventoryUI().isVisible()) {
-                uiManager.getInventoryUI().update(player);
-            }
-        });
-
-        // Apply initial resize to set camera and UI correctly
+        // 10️⃣ Apply initial resize
         resize();
     }
 
-    /**
-     * Update all managers each frame.
-     */
     public void update(float delta) {
         npcManager.update(delta);
         cameraManager.update(player, batch);
@@ -86,42 +77,29 @@ public class ManagerRegistry {
         uiManager.update(delta, player, npcManager.getNpcs());
         pfandManager.update(delta, player, world);
         eventManager.update(delta);
-        uiManager.resetButtons(); // Reset button states after input handling
+        uiManager.resetButtons();
     }
 
-    /**
-     * Render all game objects and UI hints.
-     * Order is important: world items → Pfand → NPC → event hints.
-     */
     public void render() {
-        // Draw world objects and items
         itemManager.draw(batch);
         pfandManager.draw(batch);
-
-        // Draw NPCs and event hints on top
         npcManager.render();
         eventManager.render();
     }
 
-    // --- Getters for managers ---
-    public UIManager getUiManager() { return uiManager; }
-    public GameStateManager getGameStateManager() { return gameStateManager; }
-    public ItemManager getItemManager() { return itemManager; }
-    public NpcManager getNpcManager() { return npcManager; }
-    public CameraManager getCameraManager() { return cameraManager; }
-
-    /**
-     * Resize camera and UI according to screen dimensions.
-     */
     public void resize() {
         cameraManager.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         if (uiManager != null) uiManager.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
-    /**
-     * Dispose UI resources when shutting down the game.
-     */
     public void dispose() {
-        uiManager.dispose();
+        if (uiManager != null) uiManager.dispose();
     }
+
+    // --- Getters ---
+    public UIManager getUiManager() { return uiManager; }
+    public GameStateManager getGameStateManager() { return gameStateManager; }
+    public ItemManager getItemManager() { return itemManager; }
+    public NpcManager getNpcManager() { return npcManager; }
+    public CameraManager getCameraManager() { return cameraManager; }
 }

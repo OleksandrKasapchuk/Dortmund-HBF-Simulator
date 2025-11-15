@@ -55,7 +55,7 @@ public class PfandManager {
      * Ensures it is outside camera view, not colliding with blocks, and not too close to other pfands.
      */
     private void spawnRandomPfand(World world) {
-        OrthographicCamera cam = Main.getManagerRegistry().getCameraManager().getCamera();
+        OrthographicCamera cam = Main.getGameInitializer().getManagerRegistry().getCameraManager().getCamera();
         int attempts = 0;
         int itemWidth = 60;
         int itemHeight = 60;

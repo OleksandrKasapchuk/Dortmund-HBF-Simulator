@@ -125,6 +125,7 @@ public class NpcManager {
             if (player.getInventory().hasItem("grass") && player.getInventory().hasItem("pape")) {
                 player.getInventory().removeItem("grass", 1);
                 player.getInventory().removeItem("pape", 1);
+                player.getInventory().addItem("joint",1);
                 player.setMovementLocked(true);
                 SoundManager.playSound(Assets.kosyakSound);
                 TimerManager.setAction(() -> {

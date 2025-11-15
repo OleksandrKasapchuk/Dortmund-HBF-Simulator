@@ -67,7 +67,7 @@ public class UIManager {
         // Initialize in-game UI elements
         questUI = new QuestUI(skin, gameUI.getStage(), 1200, 800);
         inventoryUI = new InventoryUI(gameUI.getStage(), skin);
-        dialogueUI = new DialogueUI(skin, gameUI.getStage(), 1950, 180, 25f, 30f);
+        dialogueUI = new DialogueUI(skin, gameUI.getStage(), 1950, 250, 25f, 10f);
         dialogueManager = new DialogueManager(dialogueUI, player);
 
         // Initialize touch controls only on Android
@@ -170,9 +170,7 @@ public class UIManager {
     }
 
     /** Resets the "just pressed" flags of touch buttons */
-    public void resetButtons() {
-        if (touchControlsUI != null) touchControlsUI.resetButtons();
-    }
+    public void resetButtons() {if (touchControlsUI != null) touchControlsUI.resetButtons();}
 
     // Getter methods for accessing UI components
     public DialogueManager getDialogueManager() { return dialogueManager; }
