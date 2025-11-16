@@ -15,6 +15,9 @@ public class InventoryManager {
     // --- Stores item effects (Runnable) ---
     private Map<String, Runnable> itemEffects;
 
+    // --- Stores item descriptions ---
+    private Map<String, String> itemDescriptions;
+
     // --- Callback to notify UI or other systems about inventory changes ---
     private Runnable onInventoryChanged;
 
@@ -22,6 +25,7 @@ public class InventoryManager {
     public InventoryManager() {
         items = new LinkedHashMap<>();       // Preserve insertion order
         itemEffects = new LinkedHashMap<>();
+        itemDescriptions = new LinkedHashMap<>();
     }
 
     // --- Set callback to be called when inventory changes ---
@@ -70,6 +74,16 @@ public class InventoryManager {
         itemEffects.put(itemName, effect);
     }
 
+    // --- Register a description for an item ---
+    public void registerDescription(String itemName, String description) {
+        itemDescriptions.put(itemName, description);
+    }
+
+    // --- Get the description of a specific item ---
+    public String getDescription(String itemName) {
+        return itemDescriptions.getOrDefault(itemName, "Опис відсутній.");
+    }
+
     // --- Apply the effect of an item if it has one ---
     public void applyEffect(String itemName) {
         if (itemEffects.containsKey(itemName)) {
@@ -82,4 +96,5 @@ public class InventoryManager {
     public boolean isUsable(String itemName) {
         return itemEffects.containsKey(itemName);
     }
+
 }

@@ -35,7 +35,7 @@ public class ManagerRegistry {
         pfandManager = new PfandManager();
 
         // 2️⃣ ItemManager і прив'язка до Player
-        itemManager = new ItemManager(world);
+        itemManager = new ItemManager(world, player.getInventory());
         player.setItemManager(itemManager);
 
         // 3️⃣ UIManager (тепер Player має ItemManager)

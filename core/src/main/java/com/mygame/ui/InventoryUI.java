@@ -79,12 +79,12 @@ public class InventoryUI {
         Label titleLabel = new Label("INVENTORY", skin);
         titleLabel.setFontScale(3f);
         titleLabel.setColor(Color.GOLD);
-        inventoryTable.add(titleLabel).padBottom(20).colspan(3).row();
+        inventoryTable.add(titleLabel).padBottom(20).colspan(4).row();
 
         // Player status
         Label statusLabel = new Label("Status: " + player.getState().toString(), skin);
         statusLabel.setFontScale(3f);
-        inventoryTable.add(statusLabel).left().padBottom(40).colspan(3).row();
+        inventoryTable.add(statusLabel).left().padBottom(40).colspan(4).row();
 
         // Iterate through all items
         for (Map.Entry<String, Integer> entry : player.getInventory().getItems().entrySet()) {
@@ -96,8 +96,9 @@ public class InventoryUI {
             Label countLabel = new Label(String.valueOf(amount), skin);
             countLabel.setFontScale(3f);
 
-            inventoryTable.add(itemLabel).left().pad(5);
-            inventoryTable.add(countLabel).left().pad(5);
+            inventoryTable.add(itemLabel).left();
+            inventoryTable.add(countLabel).left().padRight(20);
+
 
             // Add USE button if item is usable
             if (player.getInventory().isUsable(itemName)) {
@@ -112,11 +113,18 @@ public class InventoryUI {
                         return true;
                     }
                 });
-                inventoryTable.add(useButton).pad(5);
+                inventoryTable.add(useButton).left();
             } else {
-                inventoryTable.add().pad(5); // empty cell for non-usable items
+                inventoryTable.add(); // IMPORTANT: Add empty cell to keep alignment
             }
-            inventoryTable.row();
+
+            // --- Description ---
+            String description = player.getInventory().getDescription(itemName);
+            Label descriptionLabel = new Label(description, skin);
+            descriptionLabel.setFontScale(2f); // Smaller font for description
+            inventoryTable.add(descriptionLabel).expandX().right().padRight(20);
+
+            inventoryTable.row().padBottom(20);
         }
     }
 

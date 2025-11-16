@@ -20,7 +20,7 @@ public class ItemManager {
     private Item pfandAutomat;                          // Special Pfand Automat item
 
     // --- Constructor: initialize items and special items in the world ---
-    public ItemManager(World world) {
+    public ItemManager(World world, InventoryManager inventoryManager) {
         // Create bush
         bush = new Item("bush", 200, 100, 800, 1800, 125, Assets.bush, world, false, false);
 
@@ -31,6 +31,23 @@ public class ItemManager {
         // Create Pfand Automat
         pfandAutomat = new Item("pfandAutomat", 150, 150, 1900, 100, 200, Assets.pfandAutomat, world, false, true);
         items.add(pfandAutomat);
+        registerItemProperties(inventoryManager);
+    }
+
+    /**
+     * Registers properties like descriptions and effects for all items.
+     * This should be called once at game start.
+     * @param inventoryManager The player's inventory manager to register properties with.
+     */
+    public void registerItemProperties(InventoryManager inventoryManager) {
+        // Register Descriptions
+        inventoryManager.registerDescription("joint", "Very useful thing, makes you stoned");
+        inventoryManager.registerDescription("spoon", "Junky needs it");
+        inventoryManager.registerDescription("ice tea", "Nice and tasty tea, sets your status back to normal while stoned");
+        inventoryManager.registerDescription("pfand", "Just a bottle, you can get money for it at pfand automat.");
+        inventoryManager.registerDescription("grass", "The most needed thing in this world");
+        inventoryManager.registerDescription("money", "With this you can buy everything");
+        inventoryManager.registerDescription("pape", "Is needed for making a joint");
     }
 
     // --- Update items: handle pickups by the player ---
