@@ -5,6 +5,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.mygame.entity.item.Item;
+import com.mygame.entity.item.ItemRegistry;
+import com.mygame.entity.item.ItemType;
 import com.mygame.managers.nonglobal.InventoryManager;
 import com.mygame.managers.nonglobal.ItemManager;
 import com.mygame.world.World;
@@ -118,7 +121,7 @@ public class Player extends Entity {
 
     // Money getter
     public int getMoney() {
-        return inventory.getAmount("money");
+        return inventory.getAmount(ItemRegistry.get("money"));
     }
 
     public InventoryManager getInventory() {
@@ -126,11 +129,11 @@ public class Player extends Entity {
     }
 
     // Use items (food, drugs, boosters etc.)
-    public void useItem(String itemName) {
-        if (inventory.isUsable(itemName) && inventory.hasItem(itemName)) {
-            inventory.applyEffect(itemName);
-            inventory.removeItem(itemName, 1);
-            System.out.println("Used " + itemName);
+    public void useItem(ItemType item) {
+        if (inventory.isUsable(item) && inventory.hasItem(item)) {
+            item.apply();
+            inventory.removeItem(item, 1);
+            System.out.println("Used " + item.getName());
         }
     }
 

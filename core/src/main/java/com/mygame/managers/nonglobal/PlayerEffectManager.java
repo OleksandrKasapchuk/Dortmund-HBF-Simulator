@@ -24,14 +24,6 @@ public class PlayerEffectManager {
         this.uiManager = uiManager;
     }
 
-    /**
-     * Registers item effects to the player's inventory.
-     * Each item can trigger a specific effect when used.
-     */
-    public void registerEffects() {
-        player.getInventory().registerEffect("joint", this::applyJointEffect);
-        player.getInventory().registerEffect("ice tee", this::applyIceTeeEffect);
-    }
 
     /**
      * Effect triggered by using a "joint".
@@ -42,7 +34,7 @@ public class PlayerEffectManager {
      *      - Shows an info message
      *      - Plays special "kaif" music
      */
-    private void applyJointEffect() {
+    public void applyJointEffect() {
         SoundManager.playSound(Assets.lighterSound);
         TimerManager.setAction(() -> {
             if (player.getState() == Player.State.NORMAL)
@@ -62,7 +54,7 @@ public class PlayerEffectManager {
      *      - Shows an info message
      *      - Plays background music
      */
-    private void applyIceTeeEffect() {
+    public void applyIceTeaEffect() {
         TimerManager.setAction(() -> {
             if (player.getState() == Player.State.STONED)
                 uiManager.getGameUI().showInfoMessage("You got normal", 1.5f);

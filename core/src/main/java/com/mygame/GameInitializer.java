@@ -3,6 +3,7 @@ package com.mygame;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygame.entity.Player;
+import com.mygame.entity.item.ItemRegistry;
 import com.mygame.managers.ManagerRegistry;
 import com.mygame.managers.global.QuestManager;
 import com.mygame.managers.global.audio.MusicManager;
@@ -44,6 +45,8 @@ public class GameInitializer {
         player = new Player(500, 80, 80, 200, 200, Assets.textureZoe, world, null);
 
         managerRegistry = new ManagerRegistry(batch, font, player, world);
+
+        ItemRegistry.init(managerRegistry);
 
         // Set dependencies
         player.setItemManager(managerRegistry.getItemManager());

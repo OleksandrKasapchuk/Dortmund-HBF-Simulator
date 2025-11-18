@@ -8,6 +8,7 @@ import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.NPC;
 import com.mygame.entity.Player;
 import com.mygame.entity.Police;
+import com.mygame.entity.item.ItemRegistry;
 import com.mygame.managers.global.audio.SoundManager;
 import com.mygame.managers.global.QuestManager;
 import com.mygame.managers.global.TimerManager;
@@ -61,8 +62,8 @@ public class NpcManager {
             if (!QuestManager.hasQuest("Igo")) {
                 QuestManager.addQuest(new QuestManager.Quest("Igo", "Get some joint for igo"));
             }
-            if (player.getInventory().removeItem("joint", 1)) {
-                player.getInventory().addItem("vape", 1);
+            if (player.getInventory().removeItem(ItemRegistry.get("joint"), 1)) {
+                player.getInventory().addItem(ItemRegistry.get("vape"), 1);
                 uiManager.getGameUI().showInfoMessage("You got 1 vape", 1.5f);
                 QuestManager.removeQuest("Igo");
                 SoundManager.playSound(Assets.lighterSound);
@@ -88,7 +89,7 @@ public class NpcManager {
         DialogueNode ryzhyiNodeStart = new DialogueNode("Please take 20 euro but fuck off");
         DialogueNode ryzhyiNodeAfter = new DialogueNode("I gave you 20 euro, why do I still see you?");
         Runnable ryzhyiAction = () -> {
-            player.getInventory().addItem("money", 20);
+            player.getInventory().addItem(ItemRegistry.get("money"), 20);
             SoundManager.playSound(Assets.moneySound);
             uiManager.getGameUI().showInfoMessage("You got 20 euro", 1.5f);
             NPC ryzhyi = findNpcByName("Ryzhyi");
@@ -107,8 +108,8 @@ public class NpcManager {
         // --- BARYGA NPC ---
         DialogueNode barygaNode = new DialogueNode("What do you need?", "Grass 10 euro");
         barygaNode.addChoice("Buy grass (10 euro)", () -> {
-            if (player.getInventory().removeItem("money", 10)) {
-                player.getInventory().addItem("grass", 1);
+            if (player.getInventory().removeItem(ItemRegistry.get("money"), 10)) {
+                player.getInventory().addItem(ItemRegistry.get("grass"), 1);
                 uiManager.getGameUI().showInfoMessage("You got 1g grass for 10 euro", 1.5f);
             } else {
                 uiManager.getGameUI().showInfoMessage("Not enough money", 1.5f);
@@ -122,13 +123,13 @@ public class NpcManager {
         // --- CHIKITA NPC ---
         DialogueNode chikitaNode = new DialogueNode("Give me grass and pape and I make you a joint");
         chikitaNode.addChoice("Give grass and pape", () -> {
-            if (player.getInventory().hasItem("grass") && player.getInventory().hasItem("pape")) {
-                player.getInventory().removeItem("grass", 1);
-                player.getInventory().removeItem("pape", 1);
-                player.getInventory().addItem("joint",1);
+            if (player.getInventory().hasItem(ItemRegistry.get("grass")) && player.getInventory().hasItem(ItemRegistry.get("pape"))) {
+                player.getInventory().removeItem(ItemRegistry.get("grass"), 1);
+                player.getInventory().removeItem(ItemRegistry.get("pape"), 1);
                 player.setMovementLocked(true);
                 SoundManager.playSound(Assets.kosyakSound);
                 TimerManager.setAction(() -> {
+                    player.getInventory().addItem(ItemRegistry.get("joint"),1);
                     uiManager.getGameUI().showInfoMessage("You got 1 joint", 1.5f);
                     player.setMovementLocked(false);
                 }, 1f);
@@ -143,9 +144,9 @@ public class NpcManager {
 
         // --- POLICE NPC ---
         DialogueNode policeNode = new DialogueNode(() -> {
-            if (player.getInventory().removeItem("grass", 10000) ||
-                player.getInventory().removeItem("joint", 10000) ||
-                player.getInventory().removeItem("vape", 10000)) {
+            if (player.getInventory().removeItem(ItemRegistry.get("grass"), 10000) ||
+                player.getInventory().removeItem(ItemRegistry.get("joint"), 10000) ||
+                player.getInventory().removeItem(ItemRegistry.get("vape"), 10000)) {
                 uiManager.getGameUI().showInfoMessage("You lost your stuff", 1.5f);
             } else {
                 uiManager.getGameUI().showInfoMessage("You passed the police check", 1.5f);
@@ -157,17 +158,17 @@ public class NpcManager {
         // --- KIOSKMAN NPC ---
         DialogueNode kioskNodeStart = new DialogueNode("Hi! Pape 5 euro");
         kioskNodeStart.addChoice("Buy Pape (5 euro)", () -> {
-            if (player.getInventory().removeItem("money", 5)) {
-                player.getInventory().addItem("pape", 1);
+            if (player.getInventory().removeItem(ItemRegistry.get("money"), 5)) {
+                player.getInventory().addItem(ItemRegistry.get("pape"), 1);
                 uiManager.getGameUI().showInfoMessage("You got 1 pape", 1.5f);
             } else {
                 uiManager.getGameUI().showInfoMessage("Not enough money", 1.5f);
             }
         });
         kioskNodeStart.addChoice("Buy Ice Tee (10 euro)", () -> {
-            if (player.getInventory().getAmount("money") >= 10) {
-                player.getInventory().removeItem("money", 10);
-                player.getInventory().addItem("ice tee", 1);
+            if (player.getInventory().getAmount(ItemRegistry.get("money")) >= 10) {
+                player.getInventory().removeItem(ItemRegistry.get("money"), 10);
+                player.getInventory().addItem(ItemRegistry.get("ice tea"), 1);
                 uiManager.getGameUI().showInfoMessage("You got 1 ice tee", 1.5f);
             } else {
                 uiManager.getGameUI().showInfoMessage("Not enough money", 1.5f);
@@ -184,7 +185,7 @@ public class NpcManager {
             if (!QuestManager.hasQuest("Spoon")) {
                 QuestManager.addQuest(new QuestManager.Quest("Spoon", "Find a spoon for junky"));
             }
-            if (player.getInventory().removeItem("spoon", 1)) {
+            if (player.getInventory().removeItem(ItemRegistry.get("spoon"), 1)) {
                 uiManager.getGameUI().showInfoMessage("You got respect from junky", 1.5f);
                 QuestManager.removeQuest("Spoon");
             } else {
@@ -209,7 +210,7 @@ public class NpcManager {
         bossNodeStart.addChoice("Let's go", () -> {
             QuestManager.addQuest(new QuestManager.Quest("Big delivery", "Hide 1kg in the bush"));
             uiManager.getGameUI().showInfoMessage("You got 1kg grass", 1.5f);
-            player.getInventory().addItem("grass", 1000);
+            player.getInventory().addItem(ItemRegistry.get("grass"), 1000);
             NPC boss = findNpcByName("???");
             if (boss != null) boss.setDialogue(new Dialogue(bossNodeAfter));
         });

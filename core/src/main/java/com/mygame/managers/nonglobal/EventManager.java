@@ -5,10 +5,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygame.Assets;
 import com.mygame.dialogue.Dialogue;
 import com.mygame.dialogue.DialogueNode;
-import com.mygame.entity.Item;
+import com.mygame.entity.item.Item;
 import com.mygame.entity.NPC;
 import com.mygame.entity.Player;
 import com.mygame.entity.Police;
+import com.mygame.entity.item.ItemRegistry;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.managers.global.audio.SoundManager;
 import com.mygame.managers.global.QuestManager;
@@ -71,7 +72,7 @@ public class EventManager {
     private void handleBossFail() {
         if (!QuestManager.hasQuest("Big delivery")) return;
         if (bossFailureTriggered) return;
-        if (player.getInventory().getAmount("grass") >= 1000) return;
+        if (player.getInventory().getAmount(ItemRegistry.get("grass")) >= 1000) return;
 
         bossFailureTriggered = true;
         triggerBossFailure();
@@ -112,7 +113,7 @@ public class EventManager {
 
     private void triggerQuestSuccess() {
         // Remove items and quest
-        player.getInventory().removeItem("grass", 1000);
+        player.getInventory().removeItem(ItemRegistry.get("grass"), 1000);
         QuestManager.removeQuest("Big delivery");
         SoundManager.playSound(Assets.bushSound);
         player.setMovementLocked(true);
@@ -146,7 +147,7 @@ public class EventManager {
 
         if (pfandAutomat.isPlayerNear(player)) {
             if (uiManager.isInteractPressed() && pfandAutomat.canInteract()) {
-                if(player.getInventory().removeItem("pfand",1)){
+                if(player.getInventory().removeItem(ItemRegistry.get("pfand"),1)){
                     triggerPfandAutomat();
                 } else {
                     uiManager.getGameUI().showInfoMessage("You don't have enough pfand",1f);
@@ -162,7 +163,7 @@ public class EventManager {
         TimerManager.setAction(() -> {
             SoundManager.playSound(Assets.moneySound);
             uiManager.getGameUI().showInfoMessage("You got 1 money for pfand",1f);
-            player.getInventory().addItem("money",1);
+            player.getInventory().addItem(ItemRegistry.get("money"),1);
         }, 1.9f);
 
         itemManager.getPfandAutomat().startCooldown(1.9f);
@@ -183,7 +184,7 @@ public class EventManager {
 
                 // Reward player for escaping
                 Runnable rewardAction = () -> {
-                    player.getInventory().addItem("money", 50);
+                    player.getInventory().addItem(ItemRegistry.get("money"), 50);
                     uiManager.getGameUI().showInfoMessage("You got 50 money", 1.5f);
                     npcManager.getBoss().setDialogue(new Dialogue(new DialogueNode("What do you want from me?")));
                 };

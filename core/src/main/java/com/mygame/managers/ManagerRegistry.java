@@ -35,7 +35,7 @@ public class ManagerRegistry {
         pfandManager = new PfandManager();
 
         // 2️⃣ ItemManager і прив'язка до Player
-        itemManager = new ItemManager(world, player.getInventory());
+        itemManager = new ItemManager(world);
         player.setItemManager(itemManager);
 
         // 3️⃣ UIManager (тепер Player має ItemManager)
@@ -43,7 +43,6 @@ public class ManagerRegistry {
 
         // 4️⃣ PlayerEffectManager
         playerEffectManager = new PlayerEffectManager(player, uiManager);
-        playerEffectManager.registerEffects();
 
         // 5️⃣ NPC Manager (залежить від UIManager, Player, World)
         npcManager = new NpcManager(batch, player, world, uiManager, font);
@@ -102,4 +101,5 @@ public class ManagerRegistry {
     public ItemManager getItemManager() { return itemManager; }
     public NpcManager getNpcManager() { return npcManager; }
     public CameraManager getCameraManager() { return cameraManager; }
+    public PlayerEffectManager getPlayerEffectManager() { return playerEffectManager; }
 }

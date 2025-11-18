@@ -12,6 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.mygame.entity.Player;
+import com.mygame.entity.item.ItemRegistry;
+import com.mygame.entity.item.ItemType;
 
 import java.util.Map;
 
@@ -87,8 +89,8 @@ public class InventoryUI {
         inventoryTable.add(statusLabel).left().padBottom(40).colspan(4).row();
 
         // Iterate through all items
-        for (Map.Entry<String, Integer> entry : player.getInventory().getItems().entrySet()) {
-            String itemName = entry.getKey();
+        for (Map.Entry<ItemType, Integer> entry : player.getInventory().getItems().entrySet()) {
+            String itemName = entry.getKey().getName();
             int amount = entry.getValue();
 
             Label itemLabel = new Label(itemName + ": ", skin);
@@ -101,14 +103,14 @@ public class InventoryUI {
 
 
             // Add USE button if item is usable
-            if (player.getInventory().isUsable(itemName)) {
+            if (player.getInventory().isUsable(ItemRegistry.get(itemName))) {
                 TextButton useButton = new TextButton("USE", skin);
                 useButton.getLabel().setFontScale(2.5f);
                 useButton.addListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
                     @Override
                     public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event,
                                              float x, float y, int pointer, int button) {
-                        player.useItem(itemName);
+                        player.useItem(entry.getKey());
                         update(player);  // Refresh after using
                         return true;
                     }
@@ -119,7 +121,7 @@ public class InventoryUI {
             }
 
             // --- Description ---
-            String description = player.getInventory().getDescription(itemName);
+            String description = entry.getKey().getDescription();
             Label descriptionLabel = new Label(description, skin);
             descriptionLabel.setFontScale(2f); // Smaller font for description
             inventoryTable.add(descriptionLabel).expandX().right().padRight(20);

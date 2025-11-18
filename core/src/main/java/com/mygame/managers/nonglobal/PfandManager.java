@@ -4,7 +4,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygame.Assets;
 import com.mygame.Main;
-import com.mygame.entity.Item;
+import com.mygame.entity.item.Item;
+import com.mygame.entity.item.ItemRegistry;
 import com.mygame.world.World;
 import com.mygame.entity.Player;
 
@@ -44,7 +45,7 @@ public class PfandManager {
         for (Iterator<Item> it = pfands.iterator(); it.hasNext(); ) {
             Item p = it.next();
             if (p.isPlayerNear(player)) {
-                player.getInventory().addItem(p.getName(), 1);
+                player.getInventory().addItem(ItemRegistry.get(p.getName()), 1);
                 it.remove(); // Remove item from world after pickup
             }
         }
@@ -76,7 +77,7 @@ public class PfandManager {
             if (isTooCloseToOtherPfands(x, y)) continue;
 
             // Add new pfand to the world
-            pfands.add(new Item("pfand", itemWidth, itemHeight, x, y, 75, Assets.pfand, world, true, false));
+            pfands.add(new Item(ItemRegistry.get("pfand"), itemWidth, itemHeight, x, y, 75, Assets.pfand, world, true, false));
             break;
         }
     }

@@ -1,5 +1,7 @@
 package com.mygame.managers.nonglobal;
 
+import com.mygame.entity.item.ItemType;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -10,13 +12,7 @@ import java.util.Map;
 public class InventoryManager {
 
     // --- Stores items and their quantities ---
-    private Map<String, Integer> items;
-
-    // --- Stores item effects (Runnable) ---
-    private Map<String, Runnable> itemEffects;
-
-    // --- Stores item descriptions ---
-    private Map<String, String> itemDescriptions;
+    private final Map<ItemType, Integer> items;
 
     // --- Callback to notify UI or other systems about inventory changes ---
     private Runnable onInventoryChanged;
@@ -24,8 +20,35 @@ public class InventoryManager {
     // --- Constructor: initializes empty inventory and effect maps ---
     public InventoryManager() {
         items = new LinkedHashMap<>();       // Preserve insertion order
-        itemEffects = new LinkedHashMap<>();
-        itemDescriptions = new LinkedHashMap<>();
+    }
+
+    public void addItem(ItemType type, int amount) {
+        if (type == null) return; // Prevent adding null items
+        items.put(type, items.getOrDefault(type, 0) + amount);
+        notifyChange();
+    }
+
+    public boolean removeItem(ItemType type, int count) {
+        if (type == null || !items.containsKey(type)) return false;
+        int current = items.get(type);
+        if (current <= count) items.remove(type);
+        else items.put(type, current - count);
+        notifyChange();
+        return true;
+    }
+
+    public boolean hasItem(ItemType type) {
+        if (type == null) return false;
+        return items.containsKey(type);
+    }
+
+    public int getAmount(ItemType type) {
+        if (type == null) return 0;
+        return items.getOrDefault(type, 0);
+    }
+
+    public Map<ItemType, Integer> getItems() {
+        return items;
     }
 
     // --- Set callback to be called when inventory changes ---
@@ -38,63 +61,8 @@ public class InventoryManager {
         if (onInventoryChanged != null) onInventoryChanged.run();
     }
 
-    // --- Add an item to the inventory ---
-    public void addItem(String itemName, int amount) {
-        items.put(itemName, items.getOrDefault(itemName, 0) + amount); // Add or increase quantity
-        notifyChange(); // Notify that inventory changed
-    }
-
-    // --- Remove a certain quantity of an item ---
-    public boolean removeItem(String itemName, int count) {
-        if (!items.containsKey(itemName)) return false; // Item does not exist
-        int current = items.get(itemName);
-        if (current <= count) items.remove(itemName);  // Remove item completely if count >= current
-        else items.put(itemName, current - count);     // Otherwise, decrease quantity
-        notifyChange();
-        return true;
-    }
-
-    // --- Check if inventory contains an item ---
-    public boolean hasItem(String itemName) {
-        return items.containsKey(itemName);
-    }
-
-    // --- Get the quantity of a specific item ---
-    public int getAmount(String itemName) {
-        return items.getOrDefault(itemName, 0);
-    }
-
-    // --- Get all items in the inventory ---
-    public Map<String, Integer> getItems() {
-        return items;
-    }
-
-    // --- Register an effect for an item ---
-    public void registerEffect(String itemName, Runnable effect) {
-        itemEffects.put(itemName, effect);
-    }
-
-    // --- Register a description for an item ---
-    public void registerDescription(String itemName, String description) {
-        itemDescriptions.put(itemName, description);
-    }
-
-    // --- Get the description of a specific item ---
-    public String getDescription(String itemName) {
-        return itemDescriptions.getOrDefault(itemName, "Опис відсутній.");
-    }
-
-    // --- Apply the effect of an item if it has one ---
-    public void applyEffect(String itemName) {
-        if (itemEffects.containsKey(itemName)) {
-            itemEffects.get(itemName).run(); // Execute associated effect
-            notifyChange();                  // Notify about potential inventory change
-        }
-    }
-
     // --- Check if an item is usable (has an effect) ---
-    public boolean isUsable(String itemName) {
-        return itemEffects.containsKey(itemName);
+    public boolean isUsable(ItemType item) {
+        return item != null && item.isUsable();
     }
-
 }
