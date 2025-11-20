@@ -28,14 +28,9 @@ public class NPC extends Entity {
 
     public NPC(
         String name,
-        int width, int height,
-        float x, float y,
-        Texture texture,
-        World world,
-        int directionX, int directionY,
-        float pauseTime, float moveTime,
-        int speed, int distance,
-        Dialogue dialogue
+        int width, int height, float x, float y, Texture texture, World world,
+        int directionX, int directionY, float pauseTime, float moveTime,
+        int speed, int distance, Dialogue dialogue
     ) {
         super(width, height, x, y, texture, world);
 
@@ -123,7 +118,7 @@ public class NPC extends Entity {
         return (float) Math.sqrt(dx * dx + dy * dy);
     }
 
-    // --- Info / misc ---
+
     public String getName() { return this.name; }
     public void setTexture(Texture texture) { this.texture = texture; }
     public int getSpeed() { return speed; }

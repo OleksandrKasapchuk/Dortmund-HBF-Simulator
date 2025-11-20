@@ -1,7 +1,5 @@
 package com.mygame.managers.nonglobal;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygame.Assets;
 import com.mygame.dialogue.Dialogue;
 import com.mygame.dialogue.DialogueNode;
@@ -9,6 +7,7 @@ import com.mygame.entity.NPC;
 import com.mygame.entity.Player;
 import com.mygame.entity.Police;
 import com.mygame.entity.item.ItemRegistry;
+import com.mygame.managers.global.WorldManager;
 import com.mygame.managers.global.audio.SoundManager;
 import com.mygame.managers.global.QuestManager;
 import com.mygame.managers.global.TimerManager;
@@ -28,26 +27,21 @@ public class NpcManager {
     private Police police1;
 
     private final Player player;
-    private final SpriteBatch batch;
-    private final BitmapFont font;
-    private final World world;
 
     /**
      * Constructor initializes NPCs and sets up dialogues.
      */
-    public NpcManager(SpriteBatch batch, Player player, World world, UIManager uiManager, BitmapFont font) {
-        this.batch = batch;
+    public NpcManager(Player player, UIManager uiManager) {
         this.player = player;
-        this.font = font;
-        this.world = world;
-        createNpcs(uiManager, world);
+        createNpcs(uiManager);
     }
 
     /**
      * Initialize all NPCs with dialogues and actions.
      */
-    private void createNpcs(UIManager uiManager, World world) {
-        npcs.clear();
+    private void createNpcs(UIManager uiManager) {
+        World world = WorldManager.getWorld("main");
+        World world2 = WorldManager.getWorld("back");
 
         // --- IGO NPC ---
         DialogueNode igoNodeStart = new DialogueNode("Hi bro! Give me some joint");
@@ -81,9 +75,11 @@ public class NpcManager {
         igoNodeStart.addChoice("Give joint", igoAction);
         igoNodeStart.addChoice("Leave", igoNodeBye);
 
-        NPC igo = new NPC("Igo", 90, 90, 500, 300, Assets.textureIgo, world, 1, 0, 3f, 0f, 0, 150,
+        NPC igo = new NPC("Igo", 90, 90, 500, 300, Assets.textureIgo, world2, 1, 0, 3f, 0f, 0, 150,
             new Dialogue(igoNodeStart));
         npcs.add(igo);
+        world.getNpcs().add(igo);
+
 
         // --- RYZHYI NPC ---
         DialogueNode ryzhyiNodeStart = new DialogueNode("Please take 20 euro but fuck off");
@@ -99,6 +95,7 @@ public class NpcManager {
         NPC ryzhyi = new NPC("Ryzhyi", 90, 90, 1100, 500, Assets.textureRyzhyi, world, 0, 1, 1f, 2f, 200, 150,
             new Dialogue(ryzhyiNodeStart));
         npcs.add(ryzhyi);
+        world.getNpcs().add(ryzhyi);
 
         // --- DENYS NPC ---
         NPC denys = new NPC("Denys", 90, 90, 700, 700, Assets.textureDenys, world, 1, 1, 2f, 1f, 100, 150,
@@ -119,6 +116,8 @@ public class NpcManager {
         NPC baryga = new NPC("Baryga", 90, 90, 1000, 200, Assets.textureBaryga, world, 0, 1, 3f, 0f, 0, 150,
             new Dialogue(barygaNode));
         npcs.add(baryga);
+        world2.getNpcs().add(baryga);
+
 
         // --- CHIKITA NPC ---
         DialogueNode chikitaNode = new DialogueNode("Give me grass and pape and I make you a joint");
@@ -138,9 +137,11 @@ public class NpcManager {
             }
         });
         chikitaNode.addChoice("Leave", () -> {});
-        NPC chikita = new NPC("Chikita", 90, 90, 1500, 600, Assets.textureChikita, world, 0, 1, 3f, 0f, 0, 150,
+        NPC chikita = new NPC("Chikita", 90, 90, 1500, 100, Assets.textureChikita, world, 0, 1, 3f, 0f, 0, 150,
             new Dialogue(chikitaNode));
         npcs.add(chikita);
+        world2.getNpcs().add(chikita);
+
 
         // --- POLICE NPC ---
         DialogueNode policeNode = new DialogueNode(() -> {
@@ -154,6 +155,8 @@ public class NpcManager {
         }, "Police check, do you have some forbidden stuff?");
         police = new Police("Police", 100, 100, 400, 600, Assets.texturePolice, world, 0, 100, new Dialogue(policeNode));
         npcs.add(police);
+        world.getNpcs().add(police);
+
 
         // --- KIOSKMAN NPC ---
         DialogueNode kioskNodeStart = new DialogueNode("Hi! Pape 5 euro");
@@ -165,6 +168,7 @@ public class NpcManager {
                 uiManager.getGameUI().showInfoMessage("Not enough money", 1.5f);
             }
         });
+
         kioskNodeStart.addChoice("Buy Ice Tee (10 euro)", () -> {
             if (player.getInventory().getAmount(ItemRegistry.get("money")) >= 10) {
                 player.getInventory().removeItem(ItemRegistry.get("money"), 10);
@@ -178,6 +182,8 @@ public class NpcManager {
         NPC kioskman = new NPC("Mohammed", 90, 90, 1575, 350, Assets.textureKioskMan, world, 1, 0, 3f, 0f, 75, 100,
             new Dialogue(kioskNodeStart));
         npcs.add(kioskman);
+        world.getNpcs().add(kioskman);
+
 
         // --- JUNKY NPC ---
         DialogueNode junkyNode = new DialogueNode("Do you have a spoon?");
@@ -199,6 +205,8 @@ public class NpcManager {
         });
         NPC junky = new NPC("Junky", 100, 100, 200, 300, Assets.textureJunky, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(junkyNode));
         npcs.add(junky);
+        world.getNpcs().add(junky);
+
 
         // --- BOSS NPC ---
         DialogueNode bossNodeStart = new DialogueNode(
@@ -218,25 +226,20 @@ public class NpcManager {
         boss = new NPC("???", 100, 100, 700, 100, Assets.textureBoss, world, 1, 0, 3f, 0f, 75, 100,
             new Dialogue(bossNodeStart));
         npcs.add(boss);
+        world.getNpcs().add(boss);
+
 
         // --- KAMIL NPC ---
         NPC kamil = new NPC("Kamil", 90, 90, 500, 100, Assets.textureKamil, world, 1, 0, 3f, 0f, 75, 100,
             new Dialogue(new DialogueNode("Hello kurwa")));
         npcs.add(kamil);
+        world.getNpcs().add(kamil);
     }
 
     /** Update all NPCs */
     public void update(float delta) {
-        for (NPC npc : npcs) npc.update(delta);
-    }
-
-    /** Render all NPCs and interaction prompts */
-    public void render() {
-        for (NPC npc : npcs) {
-            npc.draw(batch);
-            if (npc.isPlayerNear(player)) {
-                font.draw(batch, "Press E to interact", npc.getX() - 100, npc.getY() + npc.getHeight() + 40);
-            }
+        for (NPC npc : WorldManager.getCurrentWorld().getNpcs()) {
+           npc.update(delta);
         }
     }
 
@@ -248,7 +251,6 @@ public class NpcManager {
         return null;
     }
 
-    public ArrayList<NPC> getNpcs() { return npcs; }
     public NPC getBoss() { return boss; }
     public Police getPolice1() { return police1; }
     public Police getPolice() { return police; }
@@ -263,8 +265,9 @@ public class NpcManager {
 
     /** Call police to the player's position */
     public void callPolice() {
-        police1 = new Police("Police", 100, 100, player.getX(), player.getY() - 300, Assets.texturePolice, world, 200, 100,
+        police1 = new Police("Police", 100, 100, player.getX(), player.getY() - 300, Assets.texturePolice, WorldManager.getWorld("main"), 200, 100,
             new Dialogue(new DialogueNode("What are you doing? Stop right there!")));
         npcs.add(police1);
+        WorldManager.getWorld("main").getNpcs().add(police1);
     }
 }

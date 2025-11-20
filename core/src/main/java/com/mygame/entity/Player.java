@@ -146,4 +146,8 @@ public class Player extends Entity {
     public void setItemManager(ItemManager itemManager) {
         this.itemManager = itemManager;
     }
+
+    public void setWorld(World world) {
+        this.world = world;
+    }
 }

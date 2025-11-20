@@ -6,6 +6,7 @@ import com.mygame.Assets;
 import com.mygame.Main;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemRegistry;
+import com.mygame.managers.global.WorldManager;
 import com.mygame.world.World;
 import com.mygame.entity.Player;
 
@@ -32,12 +33,12 @@ public class PfandManager {
      * - Handles spawning new items.
      * - Checks for player pickups.
      */
-    public void update(float delta, Player player, World world) {
+    public void update(float delta, Player player) {
         spawnTimer += delta;
 
         // Spawn a new pfand if interval passed and under max limit
         if (spawnTimer >= SPAWN_INTERVAL && pfands.size() < MAX_PFANDS) {
-            spawnRandomPfand(world);
+            spawnRandomPfand(WorldManager.getCurrentWorld());
             spawnTimer = 0f;
         }
 
@@ -77,7 +78,9 @@ public class PfandManager {
             if (isTooCloseToOtherPfands(x, y)) continue;
 
             // Add new pfand to the world
-            pfands.add(new Item(ItemRegistry.get("pfand"), itemWidth, itemHeight, x, y, 75, Assets.pfand, world, true, false));
+            Item pfand = new Item(ItemRegistry.get("pfand"), itemWidth, itemHeight, x, y, 75, Assets.pfand, WorldManager.getCurrentWorld(), true, false);
+            pfands.add(pfand);
+            WorldManager.getCurrentWorld().getItems().add(pfand);
             break;
         }
     }
@@ -128,12 +131,5 @@ public class PfandManager {
         float camTop = cam.position.y + cam.viewportHeight / 2f;
 
         return x >= camLeft && x <= camRight && y >= camBottom && y <= camTop;
-    }
-
-    /** Draws all pfand items */
-    public void draw(SpriteBatch batch) {
-        for (Item p : pfands) {
-            p.draw(batch);
-        }
     }
 }

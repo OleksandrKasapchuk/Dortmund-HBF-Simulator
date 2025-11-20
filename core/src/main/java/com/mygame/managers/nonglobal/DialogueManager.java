@@ -4,6 +4,7 @@ import com.mygame.dialogue.Dialogue;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.NPC;
 import com.mygame.entity.Player;
+import com.mygame.managers.global.WorldManager;
 import com.mygame.ui.DialogueUI;
 
 import java.util.ArrayList;
@@ -151,7 +152,9 @@ public class DialogueManager {
      * - updating text animation
      * - continuing dialogue on press
      */
-    public void update(float delta, boolean interactPressed, ArrayList<NPC> npcs) {
+    public void update(float delta, boolean interactPressed) {
+        if (WorldManager.getCurrentWorld() == null) return;
+        ArrayList<NPC> npcs = WorldManager.getCurrentWorld().getNpcs();
 
         // Cooldown
         if (interactCooldown > 0) interactCooldown -= delta;
