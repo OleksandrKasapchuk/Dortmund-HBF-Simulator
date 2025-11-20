@@ -4,8 +4,10 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygame.dialogue.Dialogue;
 import com.mygame.dialogue.DialogueNode;
+import com.mygame.managers.global.WorldManager;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.managers.nonglobal.NpcManager;
 import com.mygame.entity.Player;
@@ -14,12 +16,14 @@ import com.mygame.ui.UIManager;
 public class Main extends ApplicationAdapter {
 
     private static GameInitializer gameInitializer;
+    private ShapeRenderer shapeRenderer;
 
     @Override
     public void create() {
         Assets.load();                            // Load textures, sounds, music
         gameInitializer = new GameInitializer();
         gameInitializer.initGame();               // Initialize all game objects
+        shapeRenderer = new ShapeRenderer();
     }
 
     public static void restartGame() {
@@ -47,7 +51,7 @@ public class Main extends ApplicationAdapter {
 
     private void renderMenu(float delta) {
         UIManager uiManager = gameInitializer.getManagerRegistry().getUiManager();
-        uiManager.update(delta, gameInitializer.getPlayer(), gameInitializer.getManagerRegistry().getNpcManager().getNpcs());
+        uiManager.update(delta, gameInitializer.getPlayer());
         uiManager.render();
     }
 
@@ -56,7 +60,8 @@ public class Main extends ApplicationAdapter {
         Player player = gameInitializer.getPlayer();
         player.update(delta);
 
-        // Example death dialogue trigger
+        WorldManager.update(delta, player);
+
         if (player.getState() == Player.State.STONED) {
             npcManager.getPolice().setDialogue(
                 new Dialogue(
@@ -68,25 +73,36 @@ public class Main extends ApplicationAdapter {
 
         SpriteBatch batch = gameInitializer.getBatch();
 
+        // Draw sprites
+        batch.setProjectionMatrix(gameInitializer.getManagerRegistry().getCameraManager().getCamera().combined);
         batch.begin();
         gameInitializer.getManagerRegistry().update(delta);
-        gameInitializer.getWorld().draw(batch);
+        WorldManager.draw(batch, gameInitializer.getFont(), player);
         player.draw(batch);
         gameInitializer.getManagerRegistry().render();
         batch.end();
 
+        // Draw shapes
+        shapeRenderer.setProjectionMatrix(gameInitializer.getManagerRegistry().getCameraManager().getCamera().combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        if (WorldManager.getCurrentWorld() != null) {
+            WorldManager.getCurrentWorld().drawTransitions(shapeRenderer);
+        }
+        shapeRenderer.end();
+
+        // Draw UI
         gameInitializer.getManagerRegistry().getUiManager().render();
     }
 
     private void renderPaused(float delta) {
         UIManager uiManager = gameInitializer.getManagerRegistry().getUiManager();
-        uiManager.update(delta, gameInitializer.getPlayer(), gameInitializer.getManagerRegistry().getNpcManager().getNpcs());
+        uiManager.update(delta, gameInitializer.getPlayer());
         uiManager.render();
     }
 
     private void renderSettings(float delta) {
         UIManager uiManager = gameInitializer.getManagerRegistry().getUiManager();
-        uiManager.update(delta, gameInitializer.getPlayer(), gameInitializer.getManagerRegistry().getNpcManager().getNpcs());
+        uiManager.update(delta, gameInitializer.getPlayer());
         uiManager.render();
     }
 
@@ -103,6 +119,7 @@ public class Main extends ApplicationAdapter {
     public void dispose() {
         Assets.dispose();
         if (gameInitializer != null) gameInitializer.dispose();
+        if (shapeRenderer != null) shapeRenderer.dispose();
         MusicManager.stopAll();
     }
 

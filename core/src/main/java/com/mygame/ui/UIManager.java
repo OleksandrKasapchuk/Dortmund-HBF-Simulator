@@ -6,15 +6,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygame.managers.nonglobal.DialogueManager;
-import com.mygame.entity.NPC;
 import com.mygame.entity.Player;
 import com.mygame.ui.screenUI.DeathUI;
 import com.mygame.ui.screenUI.GameUI;
 import com.mygame.ui.screenUI.MenuUI;
 import com.mygame.ui.screenUI.PauseUI;
 import com.mygame.ui.screenUI.SettingsUI;
-
-import java.util.ArrayList;
 
 /**
  * UIManager is responsible for managing all UI components of the game.
@@ -106,15 +103,14 @@ public class UIManager {
      *
      * @param delta Time elapsed since last frame
      * @param player Reference to the player
-     * @param npcs List of NPCs to handle dialogue interactions
      */
-    public void update(float delta, Player player, ArrayList<NPC> npcs) {
+    public void update(float delta, Player player) {
         if (currentStage == gameUI.getStage()) {
             gameUI.update(delta);
             gameUI.updateMoney(player.getMoney());
 
             // Update dialogue manager
-            dialogueManager.update(delta, isInteractPressed(), npcs);
+            dialogueManager.update(delta, isInteractPressed());
 
             // Toggle inventory with Tab or touch button
             if (Gdx.input.isKeyJustPressed(Input.Keys.TAB) || (touchControlsUI != null && touchControlsUI.isInvButtonJustPressed())) {
