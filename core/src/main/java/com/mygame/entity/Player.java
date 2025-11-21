@@ -8,8 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.item.ItemType;
+import com.mygame.managers.global.WorldManager;
 import com.mygame.managers.nonglobal.InventoryManager;
-import com.mygame.managers.nonglobal.ItemManager;
 import com.mygame.world.World;
 
 // Player entity controlled by user
@@ -21,18 +21,13 @@ public class Player extends Entity {
     private final InventoryManager inventory = new InventoryManager();
     private boolean isMovementLocked = false;
 
-    private ItemManager itemManager;
-
     public enum State { NORMAL, STONED }
     private State currentState = State.NORMAL;
 
 
-    public Player(int speed, int width, int height, float x, float y,
-                  Texture texture, World world, ItemManager itemManager) {
-
+    public Player(int speed, int width, int height, float x, float y, Texture texture, World world) {
         super(width, height, x, y, texture, world);
         this.speed = speed;
-        this.itemManager = itemManager;
     }
 
     // Lock/unlock movement (used for dialogues, cutscenes etc.)
@@ -81,17 +76,17 @@ public class Player extends Entity {
             }
 
             // Collision handling
-            if (!isColliding(newX, getY(), itemManager)) {
+            if (!isColliding(newX, getY())) {
                 setX(newX);
             }
-            if (!isColliding(getX(), newY, itemManager)) {
+            if (!isColliding(getX(), newY)) {
                 setY(newY);
             }
         }
     }
 
     // Check collisions with world blocks & items
-    private boolean isColliding(float checkX, float checkY, ItemManager itemManager) {
+    private boolean isColliding(float checkX, float checkY) {
 
         // Check tile-based collision (world map)
         if (world.isSolid(checkX, checkY - getHeight() - 20) ||
@@ -103,7 +98,7 @@ public class Player extends Entity {
         }
 
         // Check collision with solid items
-        for (Item item : itemManager.getItems()) {
+        for (Item item : WorldManager.getCurrentWorld().getItems()) {
             if (item.isSolid() && intersects(checkX, checkY, item)) {
                 return true;
             }
@@ -142,10 +137,6 @@ public class Player extends Entity {
     public void setNormal() { currentState = State.NORMAL; }
 
     public State getState() { return currentState; }
-
-    public void setItemManager(ItemManager itemManager) {
-        this.itemManager = itemManager;
-    }
 
     public void setWorld(World world) {
         this.world = world;

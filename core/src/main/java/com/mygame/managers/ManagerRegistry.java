@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygame.entity.Player;
+import com.mygame.entity.item.ItemManager;
+import com.mygame.entity.item.ItemRegistry;
 import com.mygame.managers.nonglobal.*;
 import com.mygame.ui.UIManager;
 
@@ -32,12 +34,13 @@ public class ManagerRegistry {
         pfandManager = new PfandManager();
 
 
-        itemManager = new ItemManager();
-        player.setItemManager(itemManager);
-
         uiManager = new UIManager(player);
 
         playerEffectManager = new PlayerEffectManager(player, uiManager);
+
+        ItemRegistry.init(this);
+
+        itemManager = new ItemManager();
 
         npcManager = new NpcManager(player, uiManager);
 
@@ -84,7 +87,6 @@ public class ManagerRegistry {
     // --- Getters ---
     public UIManager getUiManager() { return uiManager; }
     public GameStateManager getGameStateManager() { return gameStateManager; }
-    public ItemManager getItemManager() { return itemManager; }
     public NpcManager getNpcManager() { return npcManager; }
     public CameraManager getCameraManager() { return cameraManager; }
     public PlayerEffectManager getPlayerEffectManager() { return playerEffectManager; }

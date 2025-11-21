@@ -9,7 +9,9 @@ import com.mygame.entity.item.Item;
 import com.mygame.entity.NPC;
 import com.mygame.entity.Player;
 import com.mygame.entity.Police;
+import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.item.ItemRegistry;
+import com.mygame.managers.global.WorldManager;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.managers.global.audio.SoundManager;
 import com.mygame.managers.global.QuestManager;
@@ -55,13 +57,13 @@ public class EventManager {
     // --- Render interaction hints for the player ---
     public void render() {
         // Hint for bush (quest hide spot)
-        if (QuestManager.hasQuest("Big delivery") && itemManager.getBush().isPlayerNear(player)) {
+        if (QuestManager.hasQuest("Big delivery") && itemManager.getBush().isPlayerNear(player) && itemManager.getBush().getWorld() == WorldManager.getCurrentWorld()) {
             font.draw(batch, "Press E to hide your kg", itemManager.getBush().getX(), itemManager.getBush().getY());
         }
 
         // Hint for Pfand Automat
         Item pfandAutomat = itemManager.getPfandAutomat();
-        if (pfandAutomat.isPlayerNear(player)) {
+        if (pfandAutomat.isPlayerNear(player) && pfandAutomat.getWorld() == WorldManager.getCurrentWorld()) {
             font.draw(batch,"Press E to change your pfand for money",
                 pfandAutomat.getX(),
                 pfandAutomat.getY() + 150);
@@ -106,7 +108,7 @@ public class EventManager {
         if (!QuestManager.hasQuest("Big delivery")) return;
         if (!itemManager.getBush().isPlayerNear(player)) return;
 
-        if (uiManager.isInteractPressed()) {
+        if (uiManager.isInteractPressed() && itemManager.getBush().getWorld() ==  WorldManager.getCurrentWorld()) {
             triggerQuestSuccess();
         }
     }
@@ -143,6 +145,7 @@ public class EventManager {
     // --- Handle Pfand Automat interaction ---
     public void handlePfandAutomat(float delta){
         Item pfandAutomat = itemManager.getPfandAutomat();
+        if (pfandAutomat.getWorld() != WorldManager.getCurrentWorld()) return;
         pfandAutomat.updateCooldown(delta);
 
         if (pfandAutomat.isPlayerNear(player)) {

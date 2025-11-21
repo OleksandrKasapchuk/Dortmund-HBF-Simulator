@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygame.entity.Player;
-import com.mygame.entity.item.ItemRegistry;
 import com.mygame.managers.ManagerRegistry;
 import com.mygame.managers.global.QuestManager;
 import com.mygame.managers.global.WorldManager;
@@ -52,14 +51,9 @@ public class GameInitializer {
         WorldManager.addWorld(backWorld);
         WorldManager.setCurrentWorld("main");
 
-        player = new Player(500, 80, 80, 200, 200, Assets.textureZoe, WorldManager.getCurrentWorld(), null);
+        player = new Player(500, 80, 80, 200, 200, Assets.textureZoe, WorldManager.getCurrentWorld());
 
         managerRegistry = new ManagerRegistry(batch, font, player);
-
-        ItemRegistry.init(managerRegistry);
-
-        // Set dependencies
-        player.setItemManager(managerRegistry.getItemManager());
 
         gameInputHandler = new GameInputHandler(managerRegistry.getGameStateManager());
 

@@ -1,13 +1,10 @@
-package com.mygame.managers.nonglobal;
+package com.mygame.entity.item;
 
 import com.mygame.Assets;
-import com.mygame.entity.item.Item;
-import com.mygame.entity.item.ItemRegistry;
 import com.mygame.managers.global.WorldManager;
 import com.mygame.world.World;
 import com.mygame.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -16,7 +13,6 @@ import java.util.Iterator;
  */
 public class ItemManager {
 
-    private ArrayList<Item> items = new ArrayList<>(); // List of all items in the world
     private Item bush;                                  // Special bush item
     private Item pfandAutomat;                          // Special Pfand Automat item
 
@@ -25,23 +21,21 @@ public class ItemManager {
         World world = WorldManager.getWorld("main");
         // Create bush
         bush = new Item(ItemRegistry.get("bush"),200, 100, 800, 1800, 125, Assets.bush, world, false, false);
-        items.add(bush);
         world.getItems().add(bush);
 
+        // Create spoon
         Item spoon = new Item(ItemRegistry.get("spoon"), 60, 60, 500, 1800, 100, Assets.textureSpoon, world, true, false);
-        items.add(spoon);
         world.getItems().add(spoon);
 
         // Create Pfand Automat
         pfandAutomat = new Item(ItemRegistry.get("pfandAutomat"), 150, 150, 1900, 100, 200, Assets.pfandAutomat, world, false, true);
-        items.add(pfandAutomat);
         world.getItems().add(pfandAutomat);
     }
 
 
     // --- Update items: handle pickups by the player ---
     public void update(Player player) {
-        for (Iterator<Item> it = items.iterator(); it.hasNext();) {
+        for (Iterator<Item> it = WorldManager.getCurrentWorld().getItems().iterator(); it.hasNext();) {
             Item item = it.next();
 
             // If item can be picked up and player is near, add to inventory and remove from world
@@ -52,19 +46,9 @@ public class ItemManager {
         }
     }
 
-    // --- Draw all items in the world ---
-//    public void draw(SpriteBatch batch) {
-//        for (Item item : items)
-//            item.draw(batch);
-//    }
-
     // --- Getters for special items ---
     public Item getBush() {
         return bush;
-    }
-
-    public ArrayList<Item> getItems() {
-        return items;
     }
 
     public Item getPfandAutomat() {
