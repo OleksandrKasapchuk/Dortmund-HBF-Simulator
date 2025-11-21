@@ -44,8 +44,8 @@ public class GameInitializer {
         World mainWorld = new World("main","maps/map1.txt");
         World backWorld = new World("back","maps/map2.txt");
 
-        mainWorld.addTransition(new Transition("back", 250, 200, new Rectangle(1500, 1000, 100, 100)));
-        backWorld.addTransition(new Transition("main", 1400, 1000, new Rectangle(100, 100, 100, 100)));
+        mainWorld.addTransition(new Transition("back", 350, 200, new Rectangle(1200, 1700, 1000, 200)));
+        backWorld.addTransition(new Transition("main", 1600, 1600, new Rectangle(100, 100, 200, 200)));
 
         WorldManager.addWorld(mainWorld);
         WorldManager.addWorld(backWorld);

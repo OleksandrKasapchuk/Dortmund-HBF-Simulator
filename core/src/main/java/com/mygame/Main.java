@@ -60,7 +60,7 @@ public class Main extends ApplicationAdapter {
         Player player = gameInitializer.getPlayer();
         player.update(delta);
 
-        WorldManager.update(delta, player);
+        WorldManager.update(delta, player, gameInitializer.getManagerRegistry().getUiManager().isInteractPressed());
 
         if (player.getState() == Player.State.STONED) {
             npcManager.getPolice().setDialogue(
@@ -120,6 +120,7 @@ public class Main extends ApplicationAdapter {
         Assets.dispose();
         if (gameInitializer != null) gameInitializer.dispose();
         if (shapeRenderer != null) shapeRenderer.dispose();
+        WorldManager.disposeWorlds();
         MusicManager.stopAll();
     }
 

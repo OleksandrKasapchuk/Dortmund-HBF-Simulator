@@ -16,6 +16,7 @@ public class WorldManager {
     private static World currentWorld;
     private static final float TRANSITION_COOLDOWN = 0.5f; // Cooldown in seconds
     private static float cooldownTimer = 0f;
+    private static boolean inTransitionZone = false;
 
 
     public static void addWorld(World world) {
@@ -30,6 +31,11 @@ public class WorldManager {
         return worlds.get(id);
     }
 
+    public static void disposeWorlds() {
+        worlds.clear();
+        currentWorld = null;
+    }
+
 
     public static void setCurrentWorld(String id) {
         if (!worlds.containsKey(id)) return;
@@ -38,27 +44,40 @@ public class WorldManager {
 
     public static void draw(SpriteBatch batch, BitmapFont font, Player player) {
         if (currentWorld != null) currentWorld.draw(batch, font, player);
+
+        if (inTransitionZone) {
+            font.draw(batch, "Press E to transition", player.getX() - 100, player.getY() + player.getHeight() + 30);
+        }
     }
 
-    public static void update(float delta, Player player) {
+    public static void update(float delta, Player player, boolean interactPressed) {
         if (cooldownTimer > 0) {
             cooldownTimer -= delta;
-            return; // Don't check for transitions during cooldown
+            inTransitionZone = false; // Don't show prompt during cooldown
+            return;
         }
 
         if (currentWorld == null) return;
 
         Rectangle playerBounds = new Rectangle(player.getX(), player.getY(), player.getWidth(), player.getHeight());
 
+        Transition activeTransition = null;
         for (Transition transition : currentWorld.getTransitions()) {
             if (transition.area.overlaps(playerBounds)) {
-                setCurrentWorld(transition.targetWorldId);
-                player.setX(transition.targetX);
-                player.setY(transition.targetY);
-                player.setWorld(currentWorld);
-                cooldownTimer = TRANSITION_COOLDOWN; // Start cooldown
-                break; // Exit after one transition
+                activeTransition = transition;
+                break;
             }
+        }
+
+        inTransitionZone = activeTransition != null;
+
+        if (inTransitionZone && interactPressed) {
+            setCurrentWorld(activeTransition.targetWorldId);
+            player.setX(activeTransition.targetX);
+            player.setY(activeTransition.targetY);
+            player.setWorld(currentWorld);
+            inTransitionZone = false;
+            cooldownTimer = TRANSITION_COOLDOWN; // Start cooldown
         }
     }
 }

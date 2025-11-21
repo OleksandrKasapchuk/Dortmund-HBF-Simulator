@@ -75,7 +75,7 @@ public class NpcManager {
         igoNodeStart.addChoice("Give joint", igoAction);
         igoNodeStart.addChoice("Leave", igoNodeBye);
 
-        NPC igo = new NPC("Igo", 90, 90, 500, 300, Assets.textureIgo, world2, 1, 0, 3f, 0f, 0, 150,
+        NPC igo = new NPC("Igo", 90, 90, 2500, 1200, Assets.textureIgo, world2, 1, 0, 3f, 0f, 0, 150,
             new Dialogue(igoNodeStart));
         npcs.add(igo);
         world.getNpcs().add(igo);
@@ -92,15 +92,16 @@ public class NpcManager {
             if (ryzhyi != null) ryzhyi.setDialogue(new Dialogue(ryzhyiNodeAfter));
         };
         ryzhyiNodeStart.addChoice("Take 20 euro", ryzhyiAction);
-        NPC ryzhyi = new NPC("Ryzhyi", 90, 90, 1100, 500, Assets.textureRyzhyi, world, 0, 1, 1f, 2f, 200, 150,
+        NPC ryzhyi = new NPC("Ryzhyi", 90, 90, 2900, 500, Assets.textureRyzhyi, world, 0, 1, 1f, 2f, 200, 150,
             new Dialogue(ryzhyiNodeStart));
         npcs.add(ryzhyi);
         world.getNpcs().add(ryzhyi);
 
         // --- DENYS NPC ---
-        NPC denys = new NPC("Denys", 90, 90, 700, 700, Assets.textureDenys, world, 1, 1, 2f, 1f, 100, 150,
+        NPC denys = new NPC("Denys", 90, 90, 200, 1400, Assets.textureDenys, world, 0, 1, 2f, 1f, 100, 150,
             new Dialogue(new DialogueNode("Hello!", "I'm not in mood to talk")));
         npcs.add(denys);
+        world.getNpcs().add(denys);
 
         // --- BARYGA NPC ---
         DialogueNode barygaNode = new DialogueNode("What do you need?", "Grass 10 euro");
@@ -113,7 +114,7 @@ public class NpcManager {
             }
         });
         barygaNode.addChoice("Leave", new DialogueNode("Come back if you need something."));
-        NPC baryga = new NPC("Baryga", 90, 90, 1000, 200, Assets.textureBaryga, world, 0, 1, 3f, 0f, 0, 150,
+        NPC baryga = new NPC("Baryga", 90, 90, 1500, 600, Assets.textureBaryga, world, 0, 1, 3f, 0f, 0, 150,
             new Dialogue(barygaNode));
         npcs.add(baryga);
         world2.getNpcs().add(baryga);
@@ -137,7 +138,7 @@ public class NpcManager {
             }
         });
         chikitaNode.addChoice("Leave", () -> {});
-        NPC chikita = new NPC("Chikita", 90, 90, 1500, 100, Assets.textureChikita, world, 0, 1, 3f, 0f, 0, 150,
+        NPC chikita = new NPC("Chikita", 90, 90, 450, 600, Assets.textureChikita, world, 0, 1, 3f, 0f, 0, 150,
             new Dialogue(chikitaNode));
         npcs.add(chikita);
         world2.getNpcs().add(chikita);
@@ -153,7 +154,7 @@ public class NpcManager {
                 uiManager.getGameUI().showInfoMessage("You passed the police check", 1.5f);
             }
         }, "Police check, do you have some forbidden stuff?");
-        police = new Police("Police", 100, 100, 400, 600, Assets.texturePolice, world, 0, 100, new Dialogue(policeNode));
+        police = new Police("Police", 100, 100, 1000, 600, Assets.texturePolice, world, 0, 100, new Dialogue(policeNode));
         npcs.add(police);
         world.getNpcs().add(police);
 
@@ -179,7 +180,7 @@ public class NpcManager {
             }
         });
         kioskNodeStart.addChoice("Leave", new DialogueNode("Okay bye!"));
-        NPC kioskman = new NPC("Mohammed", 90, 90, 1575, 350, Assets.textureKioskMan, world, 1, 0, 3f, 0f, 75, 100,
+        NPC kioskman = new NPC("Mohammed", 90, 90, 1575, 300, Assets.textureKioskMan, world, 1, 0, 3f, 0f, 75, 100,
             new Dialogue(kioskNodeStart));
         npcs.add(kioskman);
         world.getNpcs().add(kioskman);
@@ -203,7 +204,7 @@ public class NpcManager {
                 QuestManager.addQuest(new QuestManager.Quest("Spoon", "Find a spoon for junky"));
             }
         });
-        NPC junky = new NPC("Junky", 100, 100, 200, 300, Assets.textureJunky, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(junkyNode));
+        NPC junky = new NPC("Junky", 100, 100, 2800, 1600, Assets.textureJunky, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(junkyNode));
         npcs.add(junky);
         world.getNpcs().add(junky);
 
@@ -223,14 +224,14 @@ public class NpcManager {
             if (boss != null) boss.setDialogue(new Dialogue(bossNodeAfter));
         });
         bossNodeStart.addChoice("Leave", () -> {});
-        boss = new NPC("???", 100, 100, 700, 100, Assets.textureBoss, world, 1, 0, 3f, 0f, 75, 100,
+        boss = new NPC("???", 100, 100, 1850, 100, Assets.textureBoss, world, 1, 0, 3f, 0f, 75, 100,
             new Dialogue(bossNodeStart));
         npcs.add(boss);
         world.getNpcs().add(boss);
 
 
         // --- KAMIL NPC ---
-        NPC kamil = new NPC("Kamil", 90, 90, 500, 100, Assets.textureKamil, world, 1, 0, 3f, 0f, 75, 100,
+        NPC kamil = new NPC("Kamil", 90, 90, 1200, 800, Assets.textureKamil, world, 1, 0, 3f, 0f, 75, 100,
             new Dialogue(new DialogueNode("Hello kurwa")));
         npcs.add(kamil);
         world.getNpcs().add(kamil);

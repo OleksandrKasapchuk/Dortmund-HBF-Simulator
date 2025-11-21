@@ -28,7 +28,7 @@ public class ItemManager {
         world.getItems().add(spoon);
 
         // Create Pfand Automat
-        pfandAutomat = new Item(ItemRegistry.get("pfandAutomat"), 150, 150, 1900, 100, 200, Assets.pfandAutomat, world, false, true);
+        pfandAutomat = new Item(ItemRegistry.get("pfandAutomat"), 150, 150, 2425, 825, 200, Assets.pfandAutomat, world, false, true);
         world.getItems().add(pfandAutomat);
     }
 
