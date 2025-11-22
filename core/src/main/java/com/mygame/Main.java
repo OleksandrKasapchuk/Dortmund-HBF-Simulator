@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.mygame.game.GameInitializer;
 import com.mygame.managers.global.WorldManager;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.entity.Player;

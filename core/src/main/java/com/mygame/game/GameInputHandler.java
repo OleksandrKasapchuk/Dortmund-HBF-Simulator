@@ -1,8 +1,9 @@
-package com.mygame;
+package com.mygame.game;
 
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.mygame.Assets;
 import com.mygame.dialogue.Dialogue;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.Player;

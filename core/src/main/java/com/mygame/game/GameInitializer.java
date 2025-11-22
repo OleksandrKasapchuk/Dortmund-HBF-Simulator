@@ -1,8 +1,9 @@
-package com.mygame;
+package com.mygame.game;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.mygame.Assets;
 import com.mygame.entity.Player;
 import com.mygame.managers.ManagerRegistry;
 import com.mygame.managers.global.QuestManager;

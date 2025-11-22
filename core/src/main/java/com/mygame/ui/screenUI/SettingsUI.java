@@ -14,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygame.Assets;
 import com.mygame.Main;
+import com.mygame.game.GameSettings;
+import com.mygame.game.SettingsManager;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.managers.global.audio.SoundManager;
 
@@ -117,6 +119,9 @@ public class SettingsUI extends Screen {
         englishButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                GameSettings settings = SettingsManager.load();
+                settings.language = "en";
+                SettingsManager.save(settings);
                 Assets.loadBundle(new Locale("en"));
                 Main.restartGame();
             }
@@ -127,6 +132,9 @@ public class SettingsUI extends Screen {
         ukrainianButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                GameSettings settings = SettingsManager.load();
+                settings.language = "ua";
+                SettingsManager.save(settings);
                 Assets.loadBundle(new Locale("ua"));
                 Main.restartGame();
             }
@@ -137,6 +145,9 @@ public class SettingsUI extends Screen {
         germanButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                GameSettings settings = SettingsManager.load();
+                settings.language = "de";
+                SettingsManager.save(settings);
                 Assets.loadBundle(new Locale("de"));
                 Main.restartGame();
             }
