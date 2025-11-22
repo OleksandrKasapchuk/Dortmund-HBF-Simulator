@@ -65,10 +65,10 @@ public class TouchControlsUI {
         player.touchpad = touchpad;
 
         // Create "ACT" button
-        TextButton actButton = new TextButton("ACT", skin);
+        TextButton actButton = new TextButton("button.act", skin);
         actButton.setSize(150, 150);
         actButton.setPosition(1800, 150);
-        actButton.getLabel().setFontScale(4f);
+        actButton.getLabel().setFontScale(2f);
         actButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -79,10 +79,10 @@ public class TouchControlsUI {
         gameStage.addActor(actButton);
 
         // Create "INVENTORY" button
-        TextButton inventoryButton = new TextButton("INV", skin);
+        TextButton inventoryButton = new TextButton("button.inventory", skin);
         inventoryButton.setSize(150, 150);
         inventoryButton.setPosition(1800, 325);
-        inventoryButton.getLabel().setFontScale(3.5f);
+        inventoryButton.getLabel().setFontScale(2f);
         inventoryButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -93,7 +93,7 @@ public class TouchControlsUI {
         gameStage.addActor(inventoryButton);
 
         // Create "QUESTS" button
-        TextButton questButton = new TextButton("QUESTS", skin);
+        TextButton questButton = new TextButton("button.quests", skin);
         questButton.setSize(200, 100);
         questButton.setPosition(20, gameStage.getViewport().getWorldHeight() - 300);
         questButton.getLabel().setFontScale(2f);
@@ -107,7 +107,7 @@ public class TouchControlsUI {
         gameStage.addActor(questButton);
 
         // Create "PAUSE" button
-        TextButton pauseButton = new TextButton("PAUSE", skin);
+        TextButton pauseButton = new TextButton("button.pause", skin);
         pauseButton.setSize(150, 75);
         pauseButton.setPosition(1750, 800);
         pauseButton.getLabel().setFontScale(2f);
@@ -135,7 +135,7 @@ public class TouchControlsUI {
         menuStage.addActor(startButton);
 
         // Create "RESUME" button for pause stage
-        TextButton resumeButton = new TextButton("RESUME", skin);
+        TextButton resumeButton = new TextButton("button.resume", skin);
         resumeButton.setSize(300, 150);
         resumeButton.setPosition(pauseStage.getViewport().getWorldWidth()/2 - 150, 250);
         resumeButton.getLabel().setFontScale(3f);
@@ -149,7 +149,7 @@ public class TouchControlsUI {
         pauseStage.addActor(resumeButton);
 
         // Create "SETTINGS" button
-        TextButton settingsButton = new TextButton("SETTINGS", skin);
+        TextButton settingsButton = new TextButton("button.settings", skin);
         settingsButton.setSize(200, 100);
         settingsButton.setPosition(20, 850);
         settingsButton.getLabel().setFontScale(3f);
@@ -163,10 +163,10 @@ public class TouchControlsUI {
         gameStage.addActor(settingsButton);
 
         // Create "BACK" button in settings
-        TextButton backButton = new TextButton("BACK", skin);
+        TextButton backButton = new TextButton("button.back", skin);
         backButton.setSize(200, 100);
         backButton.setPosition(20, 850);
-        backButton.getLabel().setFontScale(3f);
+        backButton.getLabel().setFontScale(2f);
         backButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {

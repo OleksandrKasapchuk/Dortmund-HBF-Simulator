@@ -3,6 +3,7 @@ package com.mygame.managers.global;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.mygame.Assets;
 import com.mygame.entity.Player;
 import com.mygame.world.Transition;
 import com.mygame.world.World;
@@ -46,7 +47,7 @@ public class WorldManager {
         if (currentWorld != null) currentWorld.draw(batch, font, player);
 
         if (inTransitionZone) {
-            font.draw(batch, "Press E to transition", player.getX() - 100, player.getY() + player.getHeight() + 30);
+            font.draw(batch, Assets.bundle.get("world.pressEToTransition"), player.getX(), player.getY() + player.getHeight() + 30);
         }
     }
 

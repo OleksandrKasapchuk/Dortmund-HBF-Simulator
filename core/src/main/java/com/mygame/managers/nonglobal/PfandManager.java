@@ -1,17 +1,12 @@
 package com.mygame.managers.nonglobal;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygame.Assets;
 import com.mygame.Main;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.managers.global.WorldManager;
 import com.mygame.world.World;
-import com.mygame.entity.Player;
-
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -21,7 +16,6 @@ import java.util.Random;
  * - Allows the player to pick up items when nearby.
  */
 public class PfandManager {
-    private final ArrayList<Item> pfands = new ArrayList<>(); // List of spawned pfand items
     private final Random random = new Random();
     private float spawnTimer = 0f; // Timer to track spawn intervals
 
@@ -33,22 +27,13 @@ public class PfandManager {
      * - Handles spawning new items.
      * - Checks for player pickups.
      */
-    public void update(float delta, Player player) {
+    public void update(float delta) {
         spawnTimer += delta;
 
         // Spawn a new pfand if interval passed and under max limit
-        if (spawnTimer >= SPAWN_INTERVAL && pfands.size() < MAX_PFANDS) {
+        if (spawnTimer >= SPAWN_INTERVAL && WorldManager.getCurrentWorld().getPfands().size() < MAX_PFANDS) {
             spawnRandomPfand(WorldManager.getCurrentWorld());
             spawnTimer = 0f;
-        }
-
-        // Check for player pickup
-        for (Iterator<Item> it = pfands.iterator(); it.hasNext(); ) {
-            Item p = it.next();
-            if (p.isPlayerNear(player)) {
-                player.getInventory().addItem(ItemRegistry.get(p.getName()), 1);
-                it.remove(); // Remove item from world after pickup
-            }
         }
     }
 
@@ -78,9 +63,9 @@ public class PfandManager {
             if (isTooCloseToOtherPfands(x, y)) continue;
 
             // Add new pfand to the world
-            Item pfand = new Item(ItemRegistry.get("pfand"), itemWidth, itemHeight, x, y, 75, Assets.pfand, WorldManager.getCurrentWorld(), true, false);
-            pfands.add(pfand);
+            Item pfand = new Item(ItemRegistry.get("item.pfand.name"), itemWidth, itemHeight, x, y, 75, Assets.pfand, WorldManager.getCurrentWorld(), true, false);
             WorldManager.getCurrentWorld().getItems().add(pfand);
+            WorldManager.getCurrentWorld().getPfands().add(pfand);
             break;
         }
     }
@@ -114,7 +99,7 @@ public class PfandManager {
 
     /** Checks if a position is too close to existing pfand items */
     private boolean isTooCloseToOtherPfands(float x, float y) {
-        for (Item p : pfands) {
+        for (Item p : WorldManager.getCurrentWorld().getPfands()) {
             float dx = p.getX() - x;
             float dy = p.getY() - y;
             if (Math.sqrt(dx * dx + dy * dy) < 150f) // Minimum distance between pfands

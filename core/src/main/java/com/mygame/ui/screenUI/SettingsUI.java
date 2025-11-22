@@ -1,16 +1,23 @@
 package com.mygame.ui.screenUI;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygame.Assets;
+import com.mygame.Main;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.managers.global.audio.SoundManager;
+
+import java.util.Locale;
 
 /**
  * Settings UI screen for adjusting music and sound volumes and muting all audio.
@@ -35,15 +42,15 @@ public class SettingsUI extends Screen {
         stage.addActor(backgroundImage);
 
         // Settings title
-        settingsLabel1 = new Label("SETTINGS", skin);
+        settingsLabel1 = new Label(Assets.bundle.get("settings.title"), skin);
         settingsLabel1.setPosition(800, 800);
-        settingsLabel1.setFontScale(5f);
+        settingsLabel1.setFontScale(2.5f);
         stage.addActor(settingsLabel1);
 
         // Music volume label
-        musicVolumeLabel = new Label("Music", skin);
+        musicVolumeLabel = new Label(Assets.bundle.get("settings.music"), skin);
         musicVolumeLabel.setPosition(50, 650);
-        musicVolumeLabel.setFontScale(4f);
+        musicVolumeLabel.setFontScale(2f);
         stage.addActor(musicVolumeLabel);
 
         // Music volume slider
@@ -60,9 +67,9 @@ public class SettingsUI extends Screen {
         stage.addActor(musicVolumeSlider);
 
         // Sound volume label
-        soundVolumeLabel = new Label("Sounds", skin);
+        soundVolumeLabel = new Label(Assets.bundle.get("settings.sounds"), skin);
         soundVolumeLabel.setPosition(50, 550);
-        soundVolumeLabel.setFontScale(4f);
+        soundVolumeLabel.setFontScale(2f);
         stage.addActor(soundVolumeLabel);
 
         // Sound volume slider
@@ -79,9 +86,9 @@ public class SettingsUI extends Screen {
         stage.addActor(soundVolumeSlider);
 
         // Mute all checkbox
-        muteAllCheckbox = new CheckBox(" Mute All", skin);
+        muteAllCheckbox = new CheckBox(Assets.bundle.get("settings.muteAll"), skin);
         muteAllCheckbox.setPosition(50, 425);
-        muteAllCheckbox.getLabel().setFontScale(4f);
+        muteAllCheckbox.getLabel().setFontScale(2f);
         muteAllCheckbox.getImageCell().size(80, 80);
         muteAllCheckbox.addListener(new ChangeListener() {
             @Override
@@ -100,5 +107,44 @@ public class SettingsUI extends Screen {
             }
         });
         stage.addActor(muteAllCheckbox);
+
+        // --- Language Selection ---
+        Table langTable = new Table();
+        langTable.setPosition(1300, 550);
+
+        TextButton englishButton = new TextButton("English", skin);
+        englishButton.getLabel().setFontScale(2f);
+        englishButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Assets.loadBundle(new Locale("en"));
+                Main.restartGame();
+            }
+        });
+
+        TextButton ukrainianButton = new TextButton("Українська", skin);
+        ukrainianButton.getLabel().setFontScale(2f);
+        ukrainianButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Assets.loadBundle(new Locale("ua"));
+                Main.restartGame();
+            }
+        });
+
+        TextButton germanButton = new TextButton("Deutsch", skin);
+        germanButton.getLabel().setFontScale(2f);
+        germanButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Assets.loadBundle(new Locale("de"));
+                Main.restartGame();
+            }
+        });
+
+        langTable.add(englishButton).width(350).height(90).padBottom(20).row();
+        langTable.add(ukrainianButton).width(350).height(90).padBottom(20).row();
+        langTable.add(germanButton).width(350).height(90).row();
+        stage.addActor(langTable);
     }
 }

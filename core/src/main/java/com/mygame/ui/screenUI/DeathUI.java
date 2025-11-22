@@ -38,13 +38,13 @@ public class DeathUI extends Screen {
         stage.addActor(table);
 
         // Main death label
-        Label deathLabel = new Label("WASTED", skin);
+        Label deathLabel = new Label(Assets.bundle.get("death.title"), skin);
         deathLabel.setColor(Color.RED);
-        deathLabel.setFontScale(6f);
+        deathLabel.setFontScale(3f);
 
         // Restart button
-        TextButton restartButton = new TextButton("Restart", skin);
-        restartButton.getLabel().setFontScale(3f);
+        TextButton restartButton = new TextButton(Assets.bundle.get("death.restart"), skin);
+        restartButton.getLabel().setFontScale(2f);
         restartButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {

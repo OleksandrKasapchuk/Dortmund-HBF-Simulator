@@ -45,12 +45,12 @@ public class UIManager {
      * Sets up touch controls if running on Android.
      *
      * @param player The player object to link HUD elements and touchpad
+     * @param skin The fully configured skin to use for all UI components
      */
-    public UIManager(Player player) {
-        // Load UI skin
-        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+    public UIManager(Player player, Skin skin) {
+        this.skin = skin;
 
-        // Initialize screens
+        // Initialize screens with the provided skin
         gameUI = new GameUI(skin, player);
         menuUI = new MenuUI(skin);
         pauseUI = new PauseUI(skin);

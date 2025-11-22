@@ -13,15 +13,16 @@ public class ItemRegistry {
     // --- викликається один раз при старті гри ---
     public static void init(ManagerRegistry managerRegistry) {
 
-        register(new ItemType("money",  "With this you can buy everything", null));
-        register(new ItemType("grass",  "The most needed thing in this world", null));
-        register(new ItemType("pape", "Is needed for making a joint", null));
-        register(new ItemType("joint", "Very useful thing, makes you stoned", managerRegistry.getPlayerEffectManager()::applyJointEffect));
-        register(new ItemType("ice tea", "Nice and tasty tea, sets your status back to normal while stoned", managerRegistry.getPlayerEffectManager()::applyIceTeaEffect));
-        register(new ItemType("spoon", "Junky needs it", null));
-        register(new ItemType("pfand",  "Just a bottle, you can get money for it at pfand automat.", null));
-        register(new ItemType("bush",  "Just a bush", null));
-        register(new ItemType("pfandAutomat", "Exchange machine", null));
+        register(new ItemType("item.money.name", "item.money.description", null));
+        register(new ItemType("item.grass.name", "item.grass.description", null));
+        register(new ItemType("item.pape.name", "item.pape.description", null));
+        register(new ItemType("item.joint.name", "item.joint.description", managerRegistry.getPlayerEffectManager()::applyJointEffect));
+        register(new ItemType("item.ice_tea.name", "item.ice_tea.description", managerRegistry.getPlayerEffectManager()::applyIceTeaEffect));
+        register(new ItemType("item.spoon.name", "item.spoon.description", null));
+        register(new ItemType("item.pfand.name", "item.pfand.description", null));
+        register(new ItemType("item.bush.name", "item.bush.description", null));
+        register(new ItemType("item.pfandAutomat.name", "item.pfandAutomat.description", null));
+        register(new ItemType("item.vape.name", "item.vape.description", null)); // Added vape
     }
 
     private static void register(ItemType type) {

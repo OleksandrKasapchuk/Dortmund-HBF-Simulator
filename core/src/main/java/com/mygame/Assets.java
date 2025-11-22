@@ -3,7 +3,14 @@ package com.mygame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.utils.I18NBundle;
+
+import java.util.Locale;
 
 /**
  * Static class that manages all game assets: textures, sounds, and music.
@@ -14,6 +21,11 @@ import com.badlogic.gdx.graphics.Texture;
  * - Call Assets.dispose() when exiting the game to release resources.
  */
 public class Assets {
+
+    // === Internationalization ===
+    public static I18NBundle bundle;
+    private static Locale currentLocale; // Keep track of the current locale
+    public static BitmapFont myFont;
 
     // === Textures ===
     public static Texture textureRyzhyi;
@@ -57,6 +69,30 @@ public class Assets {
      * Should be called once at the start of the game.
      */
     public static void load() {
+        // Load localization bundle for the default or previously set locale
+        if (currentLocale == null) {
+            currentLocale = new Locale("en"); // Default to English
+        }
+        loadBundle(currentLocale);
+
+        // --- Correct Font Generation with full Ukrainian Alphabet ---
+        FreeTypeFontGenerator generator =
+            new FreeTypeFontGenerator(Gdx.files.internal("fonts/ScienceGothic-Regular.ttf"));
+
+        FreeTypeFontGenerator.FreeTypeFontParameter params =
+            new FreeTypeFontGenerator.FreeTypeFontParameter();
+
+        // Add all default characters + the full Ukrainian alphabet
+        params.characters = FreeTypeFontGenerator.DEFAULT_CHARS + "АаБбВвГгҐґДдЕеЄєЖжЗзИиІіЇїЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЬьЮюЯя";
+        params.size = 24; // You can adjust size
+        params.borderWidth = 1; // Optional: for outline
+        params.borderColor = Color.BLACK;
+        params.color = Color.WHITE;
+
+        myFont = generator.generateFont(params);
+        generator.dispose();
+        // --- End of Font Generation ---
+
         // Textures
         textureRyzhyi = new Texture(Gdx.files.internal("images/ryzhyi.png"));
         textureDenys = new Texture(Gdx.files.internal("images/denys.png"));
@@ -98,10 +134,21 @@ public class Assets {
     }
 
     /**
+     * Loads the I18NBundle for a specific locale and sets it as the current one.
+     * @param locale The locale to load (e.g., new Locale("en"), new Locale("ua")).
+     */
+    public static void loadBundle(Locale locale) {
+        currentLocale = locale;
+        FileHandle baseFileHandle = Gdx.files.internal("i18n/strings");
+        bundle = I18NBundle.createBundle(baseFileHandle, currentLocale, "UTF-8");
+    }
+
+    /**
      * Disposes all loaded assets from memory.
      * Should be called when the game exits to free resources.
      */
     public static void dispose() {
+        myFont.dispose();
         // Textures
         textureRyzhyi.dispose();
         textureDenys.dispose();

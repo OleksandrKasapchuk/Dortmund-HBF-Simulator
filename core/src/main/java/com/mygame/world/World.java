@@ -20,8 +20,9 @@ public class World {
     private String name;
 
     private ArrayList<Transition> transitions = new ArrayList<>();
-    private final ArrayList<NPC> npcs = new ArrayList<>();
-    private final ArrayList<Item> items = new ArrayList<>();
+    private ArrayList<NPC> npcs = new ArrayList<>();
+    private ArrayList<Item> items = new ArrayList<>();
+    private ArrayList<Item> pfands = new ArrayList<>();
 
 
     public World(String name, String pathToMapFile) {
@@ -87,7 +88,7 @@ public class World {
         for (NPC npc : npcs) {
             npc.draw(batch);
             if (npc.isPlayerNear(player)) {
-                font.draw(batch, "Press E to interact", npc.getX() - 100, npc.getY() + npc.getHeight() + 40);
+                font.draw(batch, "interact.npc", npc.getX() - 100, npc.getY() + npc.getHeight() + 40);
             }
         }
         for (Item item : items)
@@ -106,4 +107,5 @@ public class World {
     public void addTransition(Transition transition){transitions.add(transition);}
     public ArrayList<NPC> getNpcs() { return npcs; }
     public ArrayList<Item> getItems(){ return items; }
+    public ArrayList<Item> getPfands(){ return pfands; }
 }

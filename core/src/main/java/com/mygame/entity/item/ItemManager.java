@@ -20,15 +20,15 @@ public class ItemManager {
     public ItemManager() {
         World world = WorldManager.getWorld("main");
         // Create bush
-        bush = new Item(ItemRegistry.get("bush"),200, 100, 800, 1800, 125, Assets.bush, world, false, false);
+        bush = new Item(ItemRegistry.get("item.bush.name"),200, 100, 800, 1800, 125, Assets.bush, world, false, false);
         world.getItems().add(bush);
 
         // Create spoon
-        Item spoon = new Item(ItemRegistry.get("spoon"), 60, 60, 500, 1800, 100, Assets.textureSpoon, world, true, false);
+        Item spoon = new Item(ItemRegistry.get("item.spoon.name"), 60, 60, 500, 1800, 100, Assets.textureSpoon, world, true, false);
         world.getItems().add(spoon);
 
         // Create Pfand Automat
-        pfandAutomat = new Item(ItemRegistry.get("pfandAutomat"), 150, 150, 2425, 825, 200, Assets.pfandAutomat, world, false, true);
+        pfandAutomat = new Item(ItemRegistry.get("item.pfandAutomat.name"), 150, 150, 2425, 825, 200, Assets.pfandAutomat, world, false, true);
         world.getItems().add(pfandAutomat);
     }
 
@@ -41,6 +41,9 @@ public class ItemManager {
             // If item can be picked up and player is near, add to inventory and remove from world
             if (item.canBePickedUp() && item.isPlayerNear(player)) {
                 player.getInventory().addItem(item.getType(), 1);
+                if (item.getType().equals(ItemRegistry.get("item.pfand.name"))) {
+                    WorldManager.getCurrentWorld().getPfands().remove(item);
+                }
                 it.remove();
             }
         }

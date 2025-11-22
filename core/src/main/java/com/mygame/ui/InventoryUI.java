@@ -11,8 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.mygame.Assets;
 import com.mygame.entity.Player;
-import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.item.ItemType;
 
 import java.util.Map;
@@ -78,34 +78,41 @@ public class InventoryUI {
         inventoryTable.clear();
 
         // Title
-        Label titleLabel = new Label("INVENTORY", skin);
-        titleLabel.setFontScale(3f);
+        Label titleLabel = new Label(Assets.bundle.get("inventory.title"), skin);
+        titleLabel.setFontScale(2.5f);
         titleLabel.setColor(Color.GOLD);
         inventoryTable.add(titleLabel).padBottom(20).colspan(4).row();
 
-        // Player status
-        Label statusLabel = new Label("Status: " + player.getState().toString(), skin);
-        statusLabel.setFontScale(3f);
+        // Player status (DIAGNOSTIC CODE)
+        String statusKey;
+        if (player.getState() == Player.State.NORMAL) {
+            statusKey = "player.state.normal";
+        } else {
+            statusKey = "player.state.stoned";
+        }
+        Label statusLabel = new Label(Assets.bundle.get("inventory.status") + Assets.bundle.get(statusKey), skin);
+        statusLabel.setFontScale(1.5f);
         inventoryTable.add(statusLabel).left().padBottom(40).colspan(4).row();
 
         // Iterate through all items
         for (Map.Entry<ItemType, Integer> entry : player.getInventory().getItems().entrySet()) {
-            String itemName = entry.getKey().getName();
+            ItemType itemType = entry.getKey();
             int amount = entry.getValue();
 
+            String itemName = Assets.bundle.get(itemType.getName());
             Label itemLabel = new Label(itemName + ": ", skin);
-            itemLabel.setFontScale(3f);
+            itemLabel.setFontScale(1.5f);
             Label countLabel = new Label(String.valueOf(amount), skin);
-            countLabel.setFontScale(3f);
+            countLabel.setFontScale(1.5f);
 
             inventoryTable.add(itemLabel).left();
             inventoryTable.add(countLabel).left().padRight(20);
 
 
             // Add USE button if item is usable
-            if (player.getInventory().isUsable(ItemRegistry.get(itemName))) {
-                TextButton useButton = new TextButton("USE", skin);
-                useButton.getLabel().setFontScale(2.5f);
+            if (player.getInventory().isUsable(itemType)) {
+                TextButton useButton = new TextButton(Assets.bundle.get("ui.use"), skin);
+                useButton.getLabel().setFontScale(1.5f);
                 useButton.addListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
                     @Override
                     public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event,
@@ -121,9 +128,10 @@ public class InventoryUI {
             }
 
             // --- Description ---
-            String description = entry.getKey().getDescription();
+            String descriptionKey = itemType.getDescription();
+            String description = Assets.bundle.get(descriptionKey);
             Label descriptionLabel = new Label(description, skin);
-            descriptionLabel.setFontScale(2f); // Smaller font for description
+            descriptionLabel.setFontScale(1.2f); // Smaller font for description
             inventoryTable.add(descriptionLabel).expandX().right().padRight(20);
 
             inventoryTable.row().padBottom(20);

@@ -40,19 +40,22 @@ public class Main extends ApplicationAdapter {
 
         gameInitializer.getGameInputHandler().handleInput();
 
-        switch (gameInitializer.getManagerRegistry().getGameStateManager().getState()) {
-            case MENU: renderMenu(delta); break;
-            case PLAYING: renderGame(delta); break;
-            case PAUSED: renderPaused(delta); break;
-            case SETTINGS: renderSettings(delta); break;
-            case DEATH: renderDeath(); break;
-        }
-    }
-
-    private void renderMenu(float delta) {
         UIManager uiManager = gameInitializer.getManagerRegistry().getUiManager();
-        uiManager.update(delta, gameInitializer.getPlayer());
-        uiManager.render();
+
+        switch (gameInitializer.getManagerRegistry().getGameStateManager().getState()) {
+            case PLAYING:
+                renderGame(delta);
+                break;
+            case DEATH:
+                uiManager.render();
+                break;
+            case MENU:
+            case PAUSED:
+            case SETTINGS:
+                uiManager.update(delta, gameInitializer.getPlayer());
+                uiManager.render();
+                break;
+        }
     }
 
     private void renderGame(float delta) {
@@ -66,10 +69,12 @@ public class Main extends ApplicationAdapter {
             npcManager.getPolice().setDialogue(
                 new Dialogue(
                     new DialogueNode(gameInitializer.getManagerRegistry().getGameStateManager()::playerDied,
-                        "Are you stoned?", "You are caught")
+                        Assets.bundle.get("dialogue.police.stoned.1"),
+                        Assets.bundle.get("dialogue.police.stoned.2"))
                 )
             );
         }
+
 
         SpriteBatch batch = gameInitializer.getBatch();
 
@@ -91,22 +96,6 @@ public class Main extends ApplicationAdapter {
         shapeRenderer.end();
 
         // Draw UI
-        gameInitializer.getManagerRegistry().getUiManager().render();
-    }
-
-    private void renderPaused(float delta) {
-        UIManager uiManager = gameInitializer.getManagerRegistry().getUiManager();
-        uiManager.update(delta, gameInitializer.getPlayer());
-        uiManager.render();
-    }
-
-    private void renderSettings(float delta) {
-        UIManager uiManager = gameInitializer.getManagerRegistry().getUiManager();
-        uiManager.update(delta, gameInitializer.getPlayer());
-        uiManager.render();
-    }
-
-    private void renderDeath() {
         gameInitializer.getManagerRegistry().getUiManager().render();
     }
 

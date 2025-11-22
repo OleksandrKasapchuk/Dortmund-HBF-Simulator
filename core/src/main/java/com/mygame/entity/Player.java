@@ -21,7 +21,20 @@ public class Player extends Entity {
     private final InventoryManager inventory = new InventoryManager();
     private boolean isMovementLocked = false;
 
-    public enum State { NORMAL, STONED }
+    public enum State {
+        NORMAL("player.state.normal"),
+        STONED("player.state.stoned");
+
+        private final String localizationKey;
+
+        State(String localizationKey) {
+            this.localizationKey = localizationKey;
+        }
+
+        public String getLocalizationKey() {
+            return localizationKey;
+        }
+    }
     private State currentState = State.NORMAL;
 
 
@@ -116,7 +129,7 @@ public class Player extends Entity {
 
     // Money getter
     public int getMoney() {
-        return inventory.getAmount(ItemRegistry.get("money"));
+        return inventory.getAmount(ItemRegistry.get("item.money.name"));
     }
 
     public InventoryManager getInventory() {

@@ -44,101 +44,101 @@ public class NpcManager {
         World world2 = WorldManager.getWorld("back");
 
         // --- IGO NPC ---
-        DialogueNode igoNodeStart = new DialogueNode("Hi bro! Give me some joint");
-        DialogueNode igoNodeThanks = new DialogueNode("Thanks bro!");
+        DialogueNode igoNodeStart = new DialogueNode(Assets.bundle.get("dialogue.igo.start"));
+        DialogueNode igoNodeThanks = new DialogueNode(Assets.bundle.get("dialogue.igo.thanks"));
         DialogueNode igoNodeBye = new DialogueNode(() -> {
-            if (!QuestManager.hasQuest("Igo")) {
-                QuestManager.addQuest(new QuestManager.Quest("Igo", "Get some joint for igo"));
+            if (!QuestManager.hasQuest("quest.igo.name")) {
+                QuestManager.addQuest(new QuestManager.Quest(Assets.bundle.get("quest.igo.name"), Assets.bundle.get("quest.igo.description")));
             }
-        }, "See ya!");
+        }, Assets.bundle.get("dialogue.igo.bye"));
 
         Runnable igoAction = () -> {
-            if (!QuestManager.hasQuest("Igo")) {
-                QuestManager.addQuest(new QuestManager.Quest("Igo", "Get some joint for igo"));
+            if (!QuestManager.hasQuest("quest.igo.name")) {
+                QuestManager.addQuest(new QuestManager.Quest(Assets.bundle.get("quest.igo.name"), Assets.bundle.get("quest.igo.description")));
             }
-            if (player.getInventory().removeItem(ItemRegistry.get("joint"), 1)) {
-                player.getInventory().addItem(ItemRegistry.get("vape"), 1);
-                uiManager.getGameUI().showInfoMessage("You got 1 vape", 1.5f);
-                QuestManager.removeQuest("Igo");
+            if (player.getInventory().removeItem(ItemRegistry.get("item.joint.name"), 1)) {
+                player.getInventory().addItem(ItemRegistry.get("item.vape.name"), 1);
+                uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.igo.questItemReceived"), 1.5f);
+                QuestManager.removeQuest(Assets.bundle.get("quest.igo.name"));
                 SoundManager.playSound(Assets.lighterSound);
 
-                NPC igo = findNpcByName("Igo");
+                NPC igo = findNpcByName(Assets.bundle.get("npc.igo.name"));
                 if (igo != null) {
                     igo.setDialogue(new Dialogue(igoNodeThanks));
                     TimerManager.setAction(() -> igo.setTexture(Assets.textureIgo2), 5f);
                 }
             } else {
-                uiManager.getGameUI().showInfoMessage("Not enough joint", 1.5f);
+                uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.igo.notEnoughJoint"), 1.5f);
             }
         };
 
-        igoNodeStart.addChoice("Give joint", igoAction);
-        igoNodeStart.addChoice("Leave", igoNodeBye);
+        igoNodeStart.addChoice(Assets.bundle.get("dialogue.igo.choice.give"), igoAction);
+        igoNodeStart.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), igoNodeBye);
 
-        NPC igo = new NPC("Igo", 90, 90, 2500, 1200, Assets.textureIgo, world2, 1, 0, 3f, 0f, 0, 150,
+        NPC igo = new NPC(Assets.bundle.get("npc.igo.name"), 90, 90, 2500, 1200, Assets.textureIgo, world2, 1, 0, 3f, 0f, 0, 150,
             new Dialogue(igoNodeStart));
         npcs.add(igo);
         world.getNpcs().add(igo);
 
 
         // --- RYZHYI NPC ---
-        DialogueNode ryzhyiNodeStart = new DialogueNode("Please take 20 euro but fuck off");
-        DialogueNode ryzhyiNodeAfter = new DialogueNode("I gave you 20 euro, why do I still see you?");
+        DialogueNode ryzhyiNodeStart = new DialogueNode(Assets.bundle.get("dialogue.ryzhyi.start"));
+        DialogueNode ryzhyiNodeAfter = new DialogueNode(Assets.bundle.get("dialogue.ryzhyi.after"));
         Runnable ryzhyiAction = () -> {
-            player.getInventory().addItem(ItemRegistry.get("money"), 20);
+            player.getInventory().addItem(ItemRegistry.get("item.money.name"), 20);
             SoundManager.playSound(Assets.moneySound);
-            uiManager.getGameUI().showInfoMessage("You got 20 euro", 1.5f);
-            NPC ryzhyi = findNpcByName("Ryzhyi");
+            uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.ryzhyi.moneyReceived"), 1.5f);
+            NPC ryzhyi = findNpcByName(Assets.bundle.get("npc.ryzhyi.name"));
             if (ryzhyi != null) ryzhyi.setDialogue(new Dialogue(ryzhyiNodeAfter));
         };
-        ryzhyiNodeStart.addChoice("Take 20 euro", ryzhyiAction);
-        NPC ryzhyi = new NPC("Ryzhyi", 90, 90, 2900, 500, Assets.textureRyzhyi, world, 0, 1, 1f, 2f, 200, 150,
+        ryzhyiNodeStart.addChoice(Assets.bundle.get("dialogue.ryzhyi.choice.take"), ryzhyiAction);
+        NPC ryzhyi = new NPC(Assets.bundle.get("npc.ryzhyi.name"), 90, 90, 2900, 500, Assets.textureRyzhyi, world, 0, 1, 1f, 2f, 200, 150,
             new Dialogue(ryzhyiNodeStart));
         npcs.add(ryzhyi);
         world.getNpcs().add(ryzhyi);
 
         // --- DENYS NPC ---
-        NPC denys = new NPC("Denys", 90, 90, 200, 1400, Assets.textureDenys, world, 0, 1, 2f, 1f, 100, 150,
-            new Dialogue(new DialogueNode("Hello!", "I'm not in mood to talk")));
+        NPC denys = new NPC(Assets.bundle.get("npc.denys.name"), 90, 90, 200, 1400, Assets.textureDenys, world, 0, 1, 2f, 1f, 100, 150,
+            new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.denys.start"), Assets.bundle.get("dialogue.denys.declined"))));
         npcs.add(denys);
         world.getNpcs().add(denys);
 
         // --- BARYGA NPC ---
-        DialogueNode barygaNode = new DialogueNode("What do you need?", "Grass 10 euro");
-        barygaNode.addChoice("Buy grass (10 euro)", () -> {
-            if (player.getInventory().removeItem(ItemRegistry.get("money"), 10)) {
-                player.getInventory().addItem(ItemRegistry.get("grass"), 1);
-                uiManager.getGameUI().showInfoMessage("You got 1g grass for 10 euro", 1.5f);
+        DialogueNode barygaNode = new DialogueNode(Assets.bundle.get("dialogue.baryga.start.1"), Assets.bundle.get("dialogue.baryga.start.2"));
+        barygaNode.addChoice(Assets.bundle.get("dialogue.baryga.choice.buy"), () -> {
+            if (player.getInventory().removeItem(ItemRegistry.get("item.money.name"), 10)) {
+                player.getInventory().addItem(ItemRegistry.get("item.grass.name"), 1);
+                uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.baryga.grassBought"), 1.5f);
             } else {
-                uiManager.getGameUI().showInfoMessage("Not enough money", 1.5f);
+                uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.generic.notEnoughMoney"), 1.5f);
             }
         });
-        barygaNode.addChoice("Leave", new DialogueNode("Come back if you need something."));
-        NPC baryga = new NPC("Baryga", 90, 90, 1500, 600, Assets.textureBaryga, world, 0, 1, 3f, 0f, 0, 150,
+        barygaNode.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), new DialogueNode(Assets.bundle.get("dialogue.baryga.bye")));
+        NPC baryga = new NPC(Assets.bundle.get("npc.baryga.name"), 90, 90, 1500, 600, Assets.textureBaryga, world, 0, 1, 3f, 0f, 0, 150,
             new Dialogue(barygaNode));
         npcs.add(baryga);
         world2.getNpcs().add(baryga);
 
 
         // --- CHIKITA NPC ---
-        DialogueNode chikitaNode = new DialogueNode("Give me grass and pape and I make you a joint");
-        chikitaNode.addChoice("Give grass and pape", () -> {
-            if (player.getInventory().hasItem(ItemRegistry.get("grass")) && player.getInventory().hasItem(ItemRegistry.get("pape"))) {
-                player.getInventory().removeItem(ItemRegistry.get("grass"), 1);
-                player.getInventory().removeItem(ItemRegistry.get("pape"), 1);
+        DialogueNode chikitaNode = new DialogueNode(Assets.bundle.get("dialogue.chikita.start"));
+        chikitaNode.addChoice(Assets.bundle.get("dialogue.chikita.choice.give"), () -> {
+            if (player.getInventory().hasItem(ItemRegistry.get("item.grass.name")) && player.getInventory().hasItem(ItemRegistry.get("item.pape.name"))) {
+                player.getInventory().removeItem(ItemRegistry.get("item.grass.name"), 1);
+                player.getInventory().removeItem(ItemRegistry.get("item.pape.name"), 1);
                 player.setMovementLocked(true);
                 SoundManager.playSound(Assets.kosyakSound);
                 TimerManager.setAction(() -> {
-                    player.getInventory().addItem(ItemRegistry.get("joint"),1);
-                    uiManager.getGameUI().showInfoMessage("You got 1 joint", 1.5f);
+                    player.getInventory().addItem(ItemRegistry.get("item.joint.name"),1);
+                    uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.chikita.jointReceived"), 1.5f);
                     player.setMovementLocked(false);
                 }, 1f);
             } else {
-                uiManager.getGameUI().showInfoMessage("Not enough grass or pape", 1.5f);
+                uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.chikita.notEnoughItems"), 1.5f);
             }
         });
-        chikitaNode.addChoice("Leave", () -> {});
-        NPC chikita = new NPC("Chikita", 90, 90, 450, 600, Assets.textureChikita, world, 0, 1, 3f, 0f, 0, 150,
+        chikitaNode.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), () -> {});
+        NPC chikita = new NPC(Assets.bundle.get("npc.chikita.name"), 90, 90, 450, 600, Assets.textureChikita, world, 0, 1, 3f, 0f, 0, 150,
             new Dialogue(chikitaNode));
         npcs.add(chikita);
         world2.getNpcs().add(chikita);
@@ -146,93 +146,94 @@ public class NpcManager {
 
         // --- POLICE NPC ---
         DialogueNode policeNode = new DialogueNode(() -> {
-            if (player.getInventory().removeItem(ItemRegistry.get("grass"), 10000) ||
-                player.getInventory().removeItem(ItemRegistry.get("joint"), 10000) ||
-                player.getInventory().removeItem(ItemRegistry.get("vape"), 10000)) {
-                uiManager.getGameUI().showInfoMessage("You lost your stuff", 1.5f);
+            if (player.getInventory().removeItem(ItemRegistry.get("item.grass.name"), 10000) ||
+                player.getInventory().removeItem(ItemRegistry.get("item.joint.name"), 10000) ||
+                player.getInventory().removeItem(ItemRegistry.get("item.vape.name"), 10000)) {
+                uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.police.stuffLost"), 1.5f);
             } else {
-                uiManager.getGameUI().showInfoMessage("You passed the police check", 1.5f);
+                uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.police.checkPassed"), 1.5f);
             }
-        }, "Police check, do you have some forbidden stuff?");
-        police = new Police("Police", 100, 100, 1000, 600, Assets.texturePolice, world, 0, 100, new Dialogue(policeNode));
+        }, Assets.bundle.get("dialogue.police.check"));
+        police = new Police(Assets.bundle.get("npc.police.name"), 100, 100, 1000, 600, Assets.texturePolice, world, 0, 100, new Dialogue(policeNode));
         npcs.add(police);
         world.getNpcs().add(police);
 
 
         // --- KIOSKMAN NPC ---
-        DialogueNode kioskNodeStart = new DialogueNode("Hi! Pape 5 euro");
-        kioskNodeStart.addChoice("Buy Pape (5 euro)", () -> {
-            if (player.getInventory().removeItem(ItemRegistry.get("money"), 5)) {
-                player.getInventory().addItem(ItemRegistry.get("pape"), 1);
-                uiManager.getGameUI().showInfoMessage("You got 1 pape", 1.5f);
+        DialogueNode kioskNodeStart = new DialogueNode(Assets.bundle.get("dialogue.kioskman.start"));
+        kioskNodeStart.addChoice(Assets.bundle.get("dialogue.kioskman.choice.buyPape"), () -> {
+            if (player.getInventory().removeItem(ItemRegistry.get("item.money.name"), 5)) {
+                player.getInventory().addItem(ItemRegistry.get("item.pape.name"), 1);
+                uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.kioskman.papeBought"), 1.5f);
             } else {
-                uiManager.getGameUI().showInfoMessage("Not enough money", 1.5f);
+                uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.generic.notEnoughMoney"), 1.5f);
             }
         });
 
-        kioskNodeStart.addChoice("Buy Ice Tee (10 euro)", () -> {
-            if (player.getInventory().getAmount(ItemRegistry.get("money")) >= 10) {
-                player.getInventory().removeItem(ItemRegistry.get("money"), 10);
-                player.getInventory().addItem(ItemRegistry.get("ice tea"), 1);
-                uiManager.getGameUI().showInfoMessage("You got 1 ice tee", 1.5f);
+        kioskNodeStart.addChoice(Assets.bundle.get("dialogue.kioskman.choice.buyIceTea"), () -> {
+            if (player.getInventory().getAmount(ItemRegistry.get("item.money.name")) >= 10) {
+                player.getInventory().removeItem(ItemRegistry.get("item.money.name"), 10);
+                player.getInventory().addItem(ItemRegistry.get("item.ice_tea.name"), 1);
+                uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.kioskman.iceTeaBought"), 1.5f);
             } else {
-                uiManager.getGameUI().showInfoMessage("Not enough money", 1.5f);
+                uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.generic.notEnoughMoney"), 1.5f);
             }
         });
-        kioskNodeStart.addChoice("Leave", new DialogueNode("Okay bye!"));
-        NPC kioskman = new NPC("Mohammed", 90, 90, 1575, 300, Assets.textureKioskMan, world, 1, 0, 3f, 0f, 75, 100,
+        kioskNodeStart.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), new DialogueNode(Assets.bundle.get("dialogue.kioskman.bye")));
+        NPC kioskman = new NPC(Assets.bundle.get("npc.kioskman.name"), 90, 90, 1575, 300, Assets.textureKioskMan, world, 1, 0, 3f, 0f, 75, 100,
             new Dialogue(kioskNodeStart));
         npcs.add(kioskman);
         world.getNpcs().add(kioskman);
 
 
         // --- JUNKY NPC ---
-        DialogueNode junkyNode = new DialogueNode("Do you have a spoon?");
-        junkyNode.addChoice("Give a spoon", () -> {
-            if (!QuestManager.hasQuest("Spoon")) {
-                QuestManager.addQuest(new QuestManager.Quest("Spoon", "Find a spoon for junky"));
+        DialogueNode junkyNode = new DialogueNode(Assets.bundle.get("dialogue.junky.start"));
+        junkyNode.addChoice(Assets.bundle.get("dialogue.junky.choice.give"), () -> {
+            if (!QuestManager.hasQuest(Assets.bundle.get("quest.spoon.name"))) {
+                QuestManager.addQuest(new QuestManager.Quest(Assets.bundle.get("quest.spoon.name"), Assets.bundle.get("quest.spoon.description")));
             }
-            if (player.getInventory().removeItem(ItemRegistry.get("spoon"), 1)) {
-                uiManager.getGameUI().showInfoMessage("You got respect from junky", 1.5f);
-                QuestManager.removeQuest("Spoon");
+            if (player.getInventory().removeItem(ItemRegistry.get("item.spoon.name"), 1)) {
+                uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.junky.respect"), 1.5f);
+                QuestManager.removeQuest(Assets.bundle.get("quest.spoon.name"));
             } else {
-                uiManager.getGameUI().showInfoMessage("You do not have a spoon", 1.5f);
+                uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.junky.noSpoon"), 1.5f);
             }
         });
-        junkyNode.addChoice("Leave", () -> {
-            if (!QuestManager.hasQuest("Spoon")) {
-                QuestManager.addQuest(new QuestManager.Quest("Spoon", "Find a spoon for junky"));
+        junkyNode.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), () -> {
+            if (!QuestManager.hasQuest(Assets.bundle.get("quest.spoon.name"))) {
+                QuestManager.addQuest(new QuestManager.Quest(Assets.bundle.get("quest.spoon.name"), Assets.bundle.get("quest.spoon.description")));
             }
         });
-        NPC junky = new NPC("Junky", 100, 100, 2800, 1600, Assets.textureJunky, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(junkyNode));
+        NPC junky = new NPC(Assets.bundle.get("npc.junky.name"), 100, 100, 2800, 1600, Assets.textureJunky, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(junkyNode));
         npcs.add(junky);
         world.getNpcs().add(junky);
 
 
         // --- BOSS NPC ---
         DialogueNode bossNodeStart = new DialogueNode(
-            "Do you wanna get some money?", "I have a task for you.",
-            "You have to hide 1kg in the bush behind your house.",
-            "But remember! I'll see if you aren't doing what I asked for"
+            Assets.bundle.get("dialogue.boss.start.1"),
+            Assets.bundle.get("dialogue.boss.start.2"),
+            Assets.bundle.get("dialogue.boss.start.3"),
+            Assets.bundle.get("dialogue.boss.start.4")
         );
-        DialogueNode bossNodeAfter = new DialogueNode("You know what to do.", "So go ahead, I don't wanna wait too much");
-        bossNodeStart.addChoice("Let's go", () -> {
-            QuestManager.addQuest(new QuestManager.Quest("Big delivery", "Hide 1kg in the bush"));
-            uiManager.getGameUI().showInfoMessage("You got 1kg grass", 1.5f);
-            player.getInventory().addItem(ItemRegistry.get("grass"), 1000);
-            NPC boss = findNpcByName("???");
+        DialogueNode bossNodeAfter = new DialogueNode(Assets.bundle.get("dialogue.boss.after.1"), Assets.bundle.get("dialogue.boss.after.2"));
+        bossNodeStart.addChoice(Assets.bundle.get("dialogue.boss.choice.accept"), () -> {
+            QuestManager.addQuest(new QuestManager.Quest(Assets.bundle.get("quest.delivery.name"), Assets.bundle.get("quest.delivery.description")));
+            uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.boss.questItemReceived"), 1.5f);
+            player.getInventory().addItem(ItemRegistry.get("item.grass.name"), 1000);
+            NPC boss = findNpcByName(Assets.bundle.get("npc.boss.name"));
             if (boss != null) boss.setDialogue(new Dialogue(bossNodeAfter));
         });
-        bossNodeStart.addChoice("Leave", () -> {});
-        boss = new NPC("???", 100, 100, 1850, 100, Assets.textureBoss, world, 1, 0, 3f, 0f, 75, 100,
+        bossNodeStart.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), () -> {});
+        boss = new NPC(Assets.bundle.get("npc.boss.name"), 100, 100, 1850, 100, Assets.textureBoss, world, 1, 0, 3f, 0f, 75, 100,
             new Dialogue(bossNodeStart));
         npcs.add(boss);
         world.getNpcs().add(boss);
 
 
         // --- KAMIL NPC ---
-        NPC kamil = new NPC("Kamil", 90, 90, 1200, 800, Assets.textureKamil, world, 1, 0, 3f, 0f, 75, 100,
-            new Dialogue(new DialogueNode("Hello kurwa")));
+        NPC kamil = new NPC(Assets.bundle.get("npc.kamil.name"), 90, 90, 1200, 800, Assets.textureKamil, world, 1, 0, 3f, 0f, 75, 100,
+            new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.kamil.start"))));
         npcs.add(kamil);
         world.getNpcs().add(kamil);
     }
@@ -266,8 +267,8 @@ public class NpcManager {
 
     /** Call police to the player's position */
     public void callPolice() {
-        police1 = new Police("Police", 100, 100, player.getX(), player.getY() - 300, Assets.texturePolice, WorldManager.getWorld("main"), 200, 100,
-            new Dialogue(new DialogueNode("What are you doing? Stop right there!")));
+        police1 = new Police(Assets.bundle.get("npc.police.name"), 100, 100, player.getX(), player.getY() - 300, Assets.texturePolice, WorldManager.getWorld("main"), 200, 100,
+            new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.police.called"))));
         npcs.add(police1);
         WorldManager.getWorld("main").getNpcs().add(police1);
     }

@@ -59,15 +59,15 @@ public class QuestUI {
         questTable.clear();
 
         // Title
-        Label title = new Label("QUESTS", skin);
-        title.setFontScale(3f);
+        Label title = new Label("quest.title", skin);
+        title.setFontScale(2f);
         title.setColor(Color.GOLD);
         questTable.add(title).colspan(2).padBottom(30).center().row();
 
         // If no quests, show message
         if (QuestManager.getQuests().isEmpty()) {
-            Label noQuest = new Label("No quests yet.", skin);
-            noQuest.setFontScale(2.5f);
+            Label noQuest = new Label("quest.empty", skin);
+            noQuest.setFontScale(1f);
             questTable.add(noQuest).center();
             return;
         }

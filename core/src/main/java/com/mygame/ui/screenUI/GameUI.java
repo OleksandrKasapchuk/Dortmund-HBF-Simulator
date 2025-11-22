@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
+import com.mygame.Assets;
 import com.mygame.entity.Player;
 
 /**
@@ -26,16 +27,16 @@ public class GameUI extends Screen {
         Stage stage = getStage();
 
         // Money display
-        moneyLabel = new Label("Money: " + player.getMoney(), skin);
+        moneyLabel = new Label(Assets.bundle.format("ui.money", player.getMoney()), skin);
         moneyLabel.setPosition(1700, 925);
-        moneyLabel.setFontScale(3f);
+        moneyLabel.setFontScale(1.5f);
         stage.addActor(moneyLabel);
 
         // Info message display (temporary messages)
         infoLabel = new Label("", skin);
         infoLabel.setColor(Color.GOLD);
         infoLabel.setAlignment(Align.center);
-        infoLabel.setFontScale(4f);
+        infoLabel.setFontScale(2f);
         infoLabel.setPosition(stage.getViewport().getWorldWidth() / 2f, 850, Align.center);
         stage.addActor(infoLabel);
         infoLabel.setVisible(false);
@@ -47,7 +48,7 @@ public class GameUI extends Screen {
      * @param money Current player money
      */
     public void updateMoney(int money) {
-        moneyLabel.setText("Money: " + money);
+        moneyLabel.setText(Assets.bundle.format("ui.money", money));
     }
 
     /**

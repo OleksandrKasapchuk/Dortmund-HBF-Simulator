@@ -58,13 +58,13 @@ public class EventManager {
     public void render() {
         // Hint for bush (quest hide spot)
         if (QuestManager.hasQuest("Big delivery") && itemManager.getBush().isPlayerNear(player) && itemManager.getBush().getWorld() == WorldManager.getCurrentWorld()) {
-            font.draw(batch, "Press E to hide your kg", itemManager.getBush().getX(), itemManager.getBush().getY());
+            font.draw(batch, Assets.bundle.get("world.pressEToHideKg"), itemManager.getBush().getX(), itemManager.getBush().getY());
         }
 
         // Hint for Pfand Automat
         Item pfandAutomat = itemManager.getPfandAutomat();
         if (pfandAutomat.isPlayerNear(player) && pfandAutomat.getWorld() == WorldManager.getCurrentWorld()) {
-            font.draw(batch,"Press E to change your pfand for money",
+            font.draw(batch,Assets.bundle.get("interact.pfandAutomat"),
                 pfandAutomat.getX(),
                 pfandAutomat.getY() + 150);
         }
@@ -74,7 +74,7 @@ public class EventManager {
     private void handleBossFail() {
         if (!QuestManager.hasQuest("Big delivery")) return;
         if (bossFailureTriggered) return;
-        if (player.getInventory().getAmount(ItemRegistry.get("grass")) >= 1000) return;
+        if (player.getInventory().getAmount(ItemRegistry.get("item.grass.name")) >= 1000) return;
 
         bossFailureTriggered = true;
         triggerBossFailure();
@@ -89,9 +89,9 @@ public class EventManager {
             gameStateManager.playerDied(); // Kill player
             SoundManager.playSound(Assets.gunShot); // Play gunshot sound
         },
-            "You are not doing the task!",
-            "I told you to hide the grass, not lose it.",
-            "Now you will regret this...");
+            Assets.bundle.get("message.boss.failure.1"),
+            Assets.bundle.get("message.boss.failure.2"),
+            Assets.bundle.get("message.boss.failure.3"));
 
         boss.setDialogue(new Dialogue(failureNode));
 
@@ -105,7 +105,7 @@ public class EventManager {
 
     // --- Handle boss quest success ---
     private void handleBossSuccess() {
-        if (!QuestManager.hasQuest("Big delivery")) return;
+        if (!QuestManager.hasQuest("quest.delivery.name")) return;
         if (!itemManager.getBush().isPlayerNear(player)) return;
 
         if (uiManager.isInteractPressed() && itemManager.getBush().getWorld() ==  WorldManager.getCurrentWorld()) {
@@ -115,8 +115,8 @@ public class EventManager {
 
     private void triggerQuestSuccess() {
         // Remove items and quest
-        player.getInventory().removeItem(ItemRegistry.get("grass"), 1000);
-        QuestManager.removeQuest("Big delivery");
+        player.getInventory().removeItem(ItemRegistry.get("item.grass.name"), 1000);
+        QuestManager.removeQuest("quest.delivery.name");
         SoundManager.playSound(Assets.bushSound);
         player.setMovementLocked(true);
 
@@ -127,17 +127,17 @@ public class EventManager {
             if (police == null) return;
 
             // Dialogue for being caught
-            DialogueNode caughtNode = new DialogueNode(gameStateManager::playerDied, "You got caught!");
+            DialogueNode caughtNode = new DialogueNode(gameStateManager::playerDied, Assets.bundle.get("message.boss.chase.caught"));
 
             Runnable chaseAction = () -> {
                 police.startChase();                           // Start police chase
-                uiManager.getGameUI().showInfoMessage("RUN", 2f); // Show warning
+                uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.boss.chase.run"), 2f); // Show warning
                 MusicManager.playMusic(Assets.backMusic4);    // Change music to chase
                 police.setDialogue(new Dialogue(caughtNode)); // Assign caught dialogue
             };
 
             // Dialogue before chase
-            police.setDialogue(new Dialogue(new DialogueNode(chaseAction, "What are you doing?", "Stop right there!")));
+            police.setDialogue(new Dialogue(new DialogueNode(chaseAction, Assets.bundle.get("message.boss.dialogue.beforeChase.1"), Assets.bundle.get("message.boss.dialogue.beforeChase.2"))));
             uiManager.getDialogueManager().startForcedDialogue(police);
         }, 2f);
     }
@@ -150,10 +150,10 @@ public class EventManager {
 
         if (pfandAutomat.isPlayerNear(player)) {
             if (uiManager.isInteractPressed() && pfandAutomat.canInteract()) {
-                if(player.getInventory().removeItem(ItemRegistry.get("pfand"),1)){
+                if(player.getInventory().removeItem(ItemRegistry.get("item.pfand.name"),1)){
                     triggerPfandAutomat();
                 } else {
-                    uiManager.getGameUI().showInfoMessage("You don't have enough pfand",1f);
+                    uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.generic.notEnoughPfand"),1f);
                 }
             }
         }
@@ -165,8 +165,8 @@ public class EventManager {
         // Timer to give money after 1.9 seconds
         TimerManager.setAction(() -> {
             SoundManager.playSound(Assets.moneySound);
-            uiManager.getGameUI().showInfoMessage("You got 1 money for pfand",1f);
-            player.getInventory().addItem(ItemRegistry.get("money"),1);
+            uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.generic.moneyForPfand"),1f);
+            player.getInventory().addItem(ItemRegistry.get("item.money.name"),1);
         }, 1.9f);
 
         itemManager.getPfandAutomat().startCooldown(1.9f);
@@ -182,17 +182,17 @@ public class EventManager {
         switch (police.getState()) {
             case ESCAPED -> {
                 MusicManager.playMusic(Assets.backMusic1); // Change music back
-                uiManager.getGameUI().showInfoMessage("You ran away from the police", 1.5f);
+                uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.generic.ranAway"), 1.5f);
                 npcManager.kill(police);
 
                 // Reward player for escaping
                 Runnable rewardAction = () -> {
-                    player.getInventory().addItem(ItemRegistry.get("money"), 50);
-                    uiManager.getGameUI().showInfoMessage("You got 50 money", 1.5f);
-                    npcManager.getBoss().setDialogue(new Dialogue(new DialogueNode("What do you want from me?")));
+                    player.getInventory().addItem(ItemRegistry.get("item.money.name"), 50);
+                    uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.generic.reward"), 1.5f);
+                    npcManager.getBoss().setDialogue(new Dialogue(new DialogueNode(Assets.bundle.get("message.boss.whatDoYouWant"))));
                 };
 
-                npcManager.getBoss().setDialogue(new Dialogue(new DialogueNode(rewardAction, "Oh, you've managed this.", "Well done!")));
+                npcManager.getBoss().setDialogue(new Dialogue(new DialogueNode(rewardAction, Assets.bundle.get("message.boss.wellDone"))));
             }
             case CAUGHT -> gameStateManager.playerDied(); // Player dies if caught
         }

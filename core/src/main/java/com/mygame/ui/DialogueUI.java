@@ -60,13 +60,13 @@ public class DialogueUI {
 
         // NPC name label
         nameLabel = new Label("", skin);
-        nameLabel.setFontScale(3f);
+        nameLabel.setFontScale(1.5f);
         nameLabel.setColor(Color.GOLD);
         dialogueTable.add(nameLabel).align(Align.left).row();
 
         // Dialogue text label
         dialogueLabel = new Label("", skin);
-        dialogueLabel.setFontScale(3f);
+        dialogueLabel.setFontScale(1.5f);
         dialogueLabel.setWrap(true);
         dialogueTable.add(dialogueLabel).expand().fillX().align(Align.left).row();
 
@@ -93,7 +93,7 @@ public class DialogueUI {
         // Create buttons for each choice
         for (DialogueNode.Choice choice : node.getChoices()) {
             TextButton button = new TextButton(choice.text, skin, "default");
-            button.getLabel().setFontScale(2.5f);
+            button.getLabel().setFontScale(1.5f);
             button.addListener(event -> {
                 // Only respond to touchDown events
                 if (event.toString().equals("touchDown")) {

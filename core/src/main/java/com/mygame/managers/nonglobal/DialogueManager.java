@@ -1,5 +1,6 @@
 package com.mygame.managers.nonglobal;
 
+import com.mygame.Assets;
 import com.mygame.dialogue.Dialogue;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.NPC;
@@ -94,7 +95,7 @@ public class DialogueManager {
         activeDialogue.reset();
 
         // Forced dialogue or Police → player cannot move
-        player.setMovementLocked(isForcedDialogue || "Police".equals(npc.getName()));
+        player.setMovementLocked(isForcedDialogue || Assets.bundle.get("npc.police.name").equals(npc.getName()));
 
         displayCurrentNode();
     }
@@ -174,7 +175,7 @@ public class DialogueManager {
 
             // Police auto-dialog
             for (NPC npc : npcs) {
-                if ("Police".equals(npc.getName())
+                if (Assets.bundle.get("npc.police.name").equals(npc.getName())
                     && npc.isPlayerNear(player)
                     && npc != recentlyFinishedForcedNpc) {
                     startForcedDialogue(npc);

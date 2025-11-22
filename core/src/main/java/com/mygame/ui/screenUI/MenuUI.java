@@ -30,9 +30,9 @@ public class MenuUI extends Screen {
 
         // Show "Press Enter to Start" for non-Android platforms
         if (Gdx.app.getType() != Application.ApplicationType.Android){
-            Label menuLabel2 = new Label("PRESS ENTER TO START", skin);
+            Label menuLabel2 = new Label(Assets.bundle.get("menu.pressEnterToStart"), skin);
             menuLabel2.setPosition(710, 750);
-            menuLabel2.setFontScale(4f);
+            menuLabel2.setFontScale(2f);
             stage.addActor(menuLabel2);
         }
     }
