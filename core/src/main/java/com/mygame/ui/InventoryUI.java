@@ -81,7 +81,7 @@ public class InventoryUI {
         Label titleLabel = new Label(Assets.bundle.get("inventory.title"), skin);
         titleLabel.setFontScale(2.5f);
         titleLabel.setColor(Color.GOLD);
-        inventoryTable.add(titleLabel).padBottom(20).colspan(4).row();
+        inventoryTable.add(titleLabel).colspan(4).expandX().center().row();
 
         // Player status (DIAGNOSTIC CODE)
         String statusKey;

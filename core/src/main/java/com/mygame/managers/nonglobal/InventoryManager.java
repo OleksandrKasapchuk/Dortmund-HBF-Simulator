@@ -23,7 +23,7 @@ public class InventoryManager {
     }
 
     public void addItem(ItemType type, int amount) {
-//        if (type == null) return; // Prevent adding null items
+        if (type == null) return; // Prevent adding null items
         items.put(type, items.getOrDefault(type, 0) + amount);
         notifyChange();
     }

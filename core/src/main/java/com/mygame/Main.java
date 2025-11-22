@@ -8,10 +8,14 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygame.game.GameInitializer;
 import com.mygame.game.GameSettings;
 import com.mygame.game.SettingsManager;
+import com.mygame.managers.global.QuestManager;
 import com.mygame.managers.global.WorldManager;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.entity.Player;
 import com.mygame.ui.UIManager;
+
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Main extends ApplicationAdapter {
 
@@ -108,11 +112,24 @@ public class Main extends ApplicationAdapter {
     @Override
     public void dispose() {
         GameSettings settings = SettingsManager.load();
-        settings.playerX = gameInitializer.getPlayer().getX();
-        settings.playerY = gameInitializer.getPlayer().getY();
+        Player player = gameInitializer.getPlayer();
+
+        // Save player data
+        settings.playerX = player.getX();
+        settings.playerY = player.getY();
         if (WorldManager.getCurrentWorld() != null) {
             settings.currentWorldName = WorldManager.getCurrentWorld().getName();
         }
+
+        // Save inventory
+        settings.inventory = player.getInventory().getItems().entrySet().stream()
+            .collect(Collectors.toMap(entry -> entry.getKey().getKey(), Map.Entry::getValue));
+
+        // Save active quests
+        settings.activeQuests = QuestManager.getQuests().stream()
+            .map(QuestManager.Quest::getKey)
+            .collect(Collectors.toList());
+
         SettingsManager.save(settings);
 
         Assets.dispose();

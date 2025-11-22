@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygame.Assets;
 import com.mygame.entity.Player;
+import com.mygame.entity.item.ItemRegistry;
 import com.mygame.managers.ManagerRegistry;
 import com.mygame.managers.global.QuestManager;
 import com.mygame.managers.global.WorldManager;
@@ -55,9 +56,21 @@ public class GameInitializer {
         player = new Player(500, 80, 80, settings.playerX, settings.playerY, Assets.textureZoe, WorldManager.getCurrentWorld());
         System.out.println("GameInitializer: Player created.");
 
+
         managerRegistry = new ManagerRegistry(batch, font, player);
         System.out.println("GameInitializer: ManagerRegistry created.");
 
+        // Load inventory and quests from settings
+        if (settings.inventory != null) {
+            settings.inventory.forEach((itemKey, amount) -> {
+                player.getInventory().addItem(ItemRegistry.get(itemKey), amount);
+            });
+        }
+        if (settings.activeQuests != null) {
+            settings.activeQuests.forEach(key -> {
+                QuestManager.addQuest(new QuestManager.Quest(key, "quest." + key + ".name", "quest." + key + ".description"));
+            });
+        }
         gameInputHandler = new GameInputHandler(managerRegistry.getGameStateManager());
         System.out.println("GameInitializer: GameInputHandler created.");
 
