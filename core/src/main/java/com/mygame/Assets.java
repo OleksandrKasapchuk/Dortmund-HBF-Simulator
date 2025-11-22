@@ -71,7 +71,7 @@ public class Assets {
     public static void load() {
         // Load localization bundle for the default or previously set locale
         if (currentLocale == null) {
-            currentLocale = new Locale("en"); // Default to English
+            currentLocale = new Locale("de");
         }
         loadBundle(currentLocale);
 
@@ -83,7 +83,7 @@ public class Assets {
             new FreeTypeFontGenerator.FreeTypeFontParameter();
 
         // Add all default characters + the full Ukrainian alphabet
-        params.characters = FreeTypeFontGenerator.DEFAULT_CHARS + "АаБбВвГгҐґДдЕеЄєЖжЗзИиІіЇїЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЬьЮюЯя";
+        params.characters = FreeTypeFontGenerator.DEFAULT_CHARS + "АаБбВвГгҐґДдЕеЄєЖжЗзИиІіЇїЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЬьЮюЯя" + "ÄäÖöÜüß";
         params.size = 24; // You can adjust size
         params.borderWidth = 1; // Optional: for outline
         params.borderColor = Color.BLACK;
@@ -162,9 +162,11 @@ public class Assets {
         textureZoe.dispose();
         textureSpoon.dispose();
         textureBoss.dispose();
+        textureKamil.dispose();
         brick.dispose();
         bush.dispose();
         pfand.dispose();
+        pfandAutomat.dispose();
         deathBack.dispose();
         menuBack.dispose();
         menuBlurBack.dispose();

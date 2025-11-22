@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.mygame.Assets;
 import com.mygame.Main;
 import com.mygame.entity.Player;
 
@@ -65,7 +66,7 @@ public class TouchControlsUI {
         player.touchpad = touchpad;
 
         // Create "ACT" button
-        TextButton actButton = new TextButton("button.act", skin);
+        TextButton actButton = new TextButton(Assets.bundle.get("button.act.text"), skin);
         actButton.setSize(150, 150);
         actButton.setPosition(1800, 150);
         actButton.getLabel().setFontScale(2f);
@@ -79,7 +80,7 @@ public class TouchControlsUI {
         gameStage.addActor(actButton);
 
         // Create "INVENTORY" button
-        TextButton inventoryButton = new TextButton("button.inventory", skin);
+        TextButton inventoryButton = new TextButton(Assets.bundle.get("button.inventory.text"), skin);
         inventoryButton.setSize(150, 150);
         inventoryButton.setPosition(1800, 325);
         inventoryButton.getLabel().setFontScale(2f);
@@ -93,10 +94,10 @@ public class TouchControlsUI {
         gameStage.addActor(inventoryButton);
 
         // Create "QUESTS" button
-        TextButton questButton = new TextButton("button.quests", skin);
+        TextButton questButton = new TextButton(Assets.bundle.get("button.quests.text"), skin);
         questButton.setSize(200, 100);
         questButton.setPosition(20, gameStage.getViewport().getWorldHeight() - 300);
-        questButton.getLabel().setFontScale(2f);
+        questButton.getLabel().setFontScale(1f);
         questButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -107,10 +108,10 @@ public class TouchControlsUI {
         gameStage.addActor(questButton);
 
         // Create "PAUSE" button
-        TextButton pauseButton = new TextButton("button.pause", skin);
+        TextButton pauseButton = new TextButton(Assets.bundle.get("button.pause.text"), skin);
         pauseButton.setSize(150, 75);
         pauseButton.setPosition(1750, 800);
-        pauseButton.getLabel().setFontScale(2f);
+        pauseButton.getLabel().setFontScale(1f);
         pauseButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -121,10 +122,10 @@ public class TouchControlsUI {
         gameStage.addActor(pauseButton);
 
         // Create "START" button for menu
-        startButton = new TextButton("START", skin);
+        startButton = new TextButton(Assets.bundle.get("button.start.text"), skin);
         startButton.setSize(300, 150);
         startButton.setPosition(800, 100);
-        startButton.getLabel().setFontScale(3f);
+        startButton.getLabel().setFontScale(2f);
         startButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -135,10 +136,10 @@ public class TouchControlsUI {
         menuStage.addActor(startButton);
 
         // Create "RESUME" button for pause stage
-        TextButton resumeButton = new TextButton("button.resume", skin);
+        TextButton resumeButton = new TextButton(Assets.bundle.get("button.resume.text"), skin);
         resumeButton.setSize(300, 150);
         resumeButton.setPosition(pauseStage.getViewport().getWorldWidth()/2 - 150, 250);
-        resumeButton.getLabel().setFontScale(3f);
+        resumeButton.getLabel().setFontScale(1f);
         resumeButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -149,10 +150,10 @@ public class TouchControlsUI {
         pauseStage.addActor(resumeButton);
 
         // Create "SETTINGS" button
-        TextButton settingsButton = new TextButton("button.settings", skin);
+        TextButton settingsButton = new TextButton(Assets.bundle.get("button.settings.text"), skin);
         settingsButton.setSize(200, 100);
         settingsButton.setPosition(20, 850);
-        settingsButton.getLabel().setFontScale(3f);
+        settingsButton.getLabel().setFontScale(0.85f);
         settingsButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -163,10 +164,10 @@ public class TouchControlsUI {
         gameStage.addActor(settingsButton);
 
         // Create "BACK" button in settings
-        TextButton backButton = new TextButton("button.back", skin);
+        TextButton backButton = new TextButton(Assets.bundle.get("button.back.text"), skin);
         backButton.setSize(200, 100);
         backButton.setPosition(20, 850);
-        backButton.getLabel().setFontScale(2f);
+        backButton.getLabel().setFontScale(1f);
         backButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {

@@ -5,11 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.mygame.dialogue.Dialogue;
-import com.mygame.dialogue.DialogueNode;
 import com.mygame.managers.global.WorldManager;
 import com.mygame.managers.global.audio.MusicManager;
-import com.mygame.managers.nonglobal.NpcManager;
 import com.mygame.entity.Player;
 import com.mygame.ui.UIManager;
 
@@ -17,13 +14,20 @@ public class Main extends ApplicationAdapter {
 
     private static GameInitializer gameInitializer;
     private ShapeRenderer shapeRenderer;
+    private Player.State previousPlayerState;
 
     @Override
     public void create() {
+        System.out.println("Main: Starting application...");
         Assets.load();                            // Load textures, sounds, music
+        System.out.println("Main: Assets loaded.");
         gameInitializer = new GameInitializer();
+        System.out.println("Main: GameInitializer created.");
         gameInitializer.initGame();               // Initialize all game objects
+        System.out.println("Main: Game initialized.");
         shapeRenderer = new ShapeRenderer();
+        previousPlayerState = gameInitializer.getPlayer().getState();
+        System.out.println("Main: Create method finished.");
     }
 
     public static void restartGame() {
@@ -39,6 +43,12 @@ public class Main extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         gameInitializer.getGameInputHandler().handleInput();
+
+        Player player = gameInitializer.getPlayer();
+        if (player.getState() == Player.State.STONED && previousPlayerState == Player.State.NORMAL) {
+            gameInitializer.getGameInputHandler().handleStonedPlayer(player, gameInitializer.getManagerRegistry().getNpcManager());
+        }
+        previousPlayerState = player.getState();
 
         UIManager uiManager = gameInitializer.getManagerRegistry().getUiManager();
 
@@ -59,22 +69,10 @@ public class Main extends ApplicationAdapter {
     }
 
     private void renderGame(float delta) {
-        NpcManager npcManager = gameInitializer.getManagerRegistry().getNpcManager();
         Player player = gameInitializer.getPlayer();
         player.update(delta);
 
         WorldManager.update(delta, player, gameInitializer.getManagerRegistry().getUiManager().isInteractPressed());
-
-        if (player.getState() == Player.State.STONED) {
-            npcManager.getPolice().setDialogue(
-                new Dialogue(
-                    new DialogueNode(gameInitializer.getManagerRegistry().getGameStateManager()::playerDied,
-                        Assets.bundle.get("dialogue.police.stoned.1"),
-                        Assets.bundle.get("dialogue.police.stoned.2"))
-                )
-            );
-        }
-
 
         SpriteBatch batch = gameInitializer.getBatch();
 

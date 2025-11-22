@@ -48,6 +48,7 @@ public class UIManager {
      * @param skin The fully configured skin to use for all UI components
      */
     public UIManager(Player player, Skin skin) {
+        System.out.println("UIManager: Initializing...");
         this.skin = skin;
 
         // Initialize screens with the provided skin
@@ -69,6 +70,7 @@ public class UIManager {
 
         // Initialize touch controls only on Android
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
+            System.out.println("UIManager: Android detected, creating TouchControlsUI...");
             touchControlsUI = new TouchControlsUI(
                 skin,
                 menuUI.getStage(),
@@ -77,7 +79,9 @@ public class UIManager {
                 settingsUI.getStage(),
                 player
             );
+            System.out.println("UIManager: TouchControlsUI created.");
         }
+        System.out.println("UIManager: Initialization complete.");
     }
 
     /**
