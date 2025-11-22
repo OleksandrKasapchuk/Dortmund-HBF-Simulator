@@ -47,19 +47,19 @@ public class NpcManager {
         DialogueNode igoNodeStart = new DialogueNode(Assets.bundle.get("dialogue.igo.start"));
         DialogueNode igoNodeThanks = new DialogueNode(Assets.bundle.get("dialogue.igo.thanks"));
         DialogueNode igoNodeBye = new DialogueNode(() -> {
-            if (!QuestManager.hasQuest("quest.igo.name")) {
-                QuestManager.addQuest(new QuestManager.Quest(Assets.bundle.get("quest.igo.name"), Assets.bundle.get("quest.igo.description")));
+            if (!QuestManager.hasQuest("igo")) {
+                QuestManager.addQuest(new QuestManager.Quest("igo", "quest.igo.name", "quest.igo.description"));
             }
         }, Assets.bundle.get("dialogue.igo.bye"));
 
         Runnable igoAction = () -> {
-            if (!QuestManager.hasQuest("quest.igo.name")) {
-                QuestManager.addQuest(new QuestManager.Quest(Assets.bundle.get("quest.igo.name"), Assets.bundle.get("quest.igo.description")));
+            if (!QuestManager.hasQuest("igo")) {
+                QuestManager.addQuest(new QuestManager.Quest("igo", "quest.igo.name", "quest.igo.description"));
             }
-            if (player.getInventory().removeItem(ItemRegistry.get("item.joint.name"), 1)) {
-                player.getInventory().addItem(ItemRegistry.get("item.vape.name"), 1);
+            if (player.getInventory().removeItem(ItemRegistry.get("joint"), 1)) {
+                player.getInventory().addItem(ItemRegistry.get("vape"), 1);
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.igo.questItemReceived"), 1.5f);
-                QuestManager.removeQuest(Assets.bundle.get("quest.igo.name"));
+                QuestManager.removeQuest("igo");
                 SoundManager.playSound(Assets.lighterSound);
 
                 NPC igo = findNpcByName(Assets.bundle.get("npc.igo.name"));
@@ -85,7 +85,7 @@ public class NpcManager {
         DialogueNode ryzhyiNodeStart = new DialogueNode(Assets.bundle.get("dialogue.ryzhyi.start"));
         DialogueNode ryzhyiNodeAfter = new DialogueNode(Assets.bundle.get("dialogue.ryzhyi.after"));
         Runnable ryzhyiAction = () -> {
-            player.getInventory().addItem(ItemRegistry.get("item.money.name"), 20);
+            player.getInventory().addItem(ItemRegistry.get("money"), 20);
             SoundManager.playSound(Assets.moneySound);
             uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.ryzhyi.moneyReceived"), 1.5f);
             NPC ryzhyi = findNpcByName(Assets.bundle.get("npc.ryzhyi.name"));
@@ -106,8 +106,8 @@ public class NpcManager {
         // --- BARYGA NPC ---
         DialogueNode barygaNode = new DialogueNode(Assets.bundle.get("dialogue.baryga.start.1"), Assets.bundle.get("dialogue.baryga.start.2"));
         barygaNode.addChoice(Assets.bundle.get("dialogue.baryga.choice.buy"), () -> {
-            if (player.getInventory().removeItem(ItemRegistry.get("item.money.name"), 10)) {
-                player.getInventory().addItem(ItemRegistry.get("item.grass.name"), 1);
+            if (player.getInventory().removeItem(ItemRegistry.get("money"), 10)) {
+                player.getInventory().addItem(ItemRegistry.get("grass"), 1);
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.baryga.grassBought"), 1.5f);
             } else {
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.generic.notEnoughMoney"), 1.5f);
@@ -123,13 +123,13 @@ public class NpcManager {
         // --- CHIKITA NPC ---
         DialogueNode chikitaNode = new DialogueNode(Assets.bundle.get("dialogue.chikita.start"));
         chikitaNode.addChoice(Assets.bundle.get("dialogue.chikita.choice.give"), () -> {
-            if (player.getInventory().hasItem(ItemRegistry.get("item.grass.name")) && player.getInventory().hasItem(ItemRegistry.get("item.pape.name"))) {
-                player.getInventory().removeItem(ItemRegistry.get("item.grass.name"), 1);
-                player.getInventory().removeItem(ItemRegistry.get("item.pape.name"), 1);
+            if (player.getInventory().hasItem(ItemRegistry.get("grass")) && player.getInventory().hasItem(ItemRegistry.get("pape"))) {
+                player.getInventory().removeItem(ItemRegistry.get("grass"), 1);
+                player.getInventory().removeItem(ItemRegistry.get("pape"), 1);
                 player.setMovementLocked(true);
                 SoundManager.playSound(Assets.kosyakSound);
                 TimerManager.setAction(() -> {
-                    player.getInventory().addItem(ItemRegistry.get("item.joint.name"),1);
+                    player.getInventory().addItem(ItemRegistry.get("joint"),1);
                     uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.chikita.jointReceived"), 1.5f);
                     player.setMovementLocked(false);
                 }, 1f);
@@ -146,9 +146,9 @@ public class NpcManager {
 
         // --- POLICE NPC ---
         DialogueNode policeNode = new DialogueNode(() -> {
-            if (player.getInventory().removeItem(ItemRegistry.get("item.grass.name"), 10000) ||
-                player.getInventory().removeItem(ItemRegistry.get("item.joint.name"), 10000) ||
-                player.getInventory().removeItem(ItemRegistry.get("item.vape.name"), 10000)) {
+            if (player.getInventory().removeItem(ItemRegistry.get("grass"), 10000) ||
+                player.getInventory().removeItem(ItemRegistry.get("joint"), 10000) ||
+                player.getInventory().removeItem(ItemRegistry.get("vape"), 10000)) {
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.police.stuffLost"), 1.5f);
             } else {
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.police.checkPassed"), 1.5f);
@@ -162,8 +162,8 @@ public class NpcManager {
         // --- KIOSKMAN NPC ---
         DialogueNode kioskNodeStart = new DialogueNode(Assets.bundle.get("dialogue.kioskman.start"));
         kioskNodeStart.addChoice(Assets.bundle.get("dialogue.kioskman.choice.buyPape"), () -> {
-            if (player.getInventory().removeItem(ItemRegistry.get("item.money.name"), 5)) {
-                player.getInventory().addItem(ItemRegistry.get("item.pape.name"), 1);
+            if (player.getInventory().removeItem(ItemRegistry.get("money"), 5)) {
+                player.getInventory().addItem(ItemRegistry.get("pape"), 1);
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.kioskman.papeBought"), 1.5f);
             } else {
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.generic.notEnoughMoney"), 1.5f);
@@ -171,9 +171,9 @@ public class NpcManager {
         });
 
         kioskNodeStart.addChoice(Assets.bundle.get("dialogue.kioskman.choice.buyIceTea"), () -> {
-            if (player.getInventory().getAmount(ItemRegistry.get("item.money.name")) >= 10) {
-                player.getInventory().removeItem(ItemRegistry.get("item.money.name"), 10);
-                player.getInventory().addItem(ItemRegistry.get("item.ice_tea.name"), 1);
+            if (player.getInventory().getAmount(ItemRegistry.get("money")) >= 10) {
+                player.getInventory().removeItem(ItemRegistry.get("money"), 10);
+                player.getInventory().addItem(ItemRegistry.get("ice_tea"), 1);
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.kioskman.iceTeaBought"), 1.5f);
             } else {
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.generic.notEnoughMoney"), 1.5f);
@@ -189,19 +189,19 @@ public class NpcManager {
         // --- JUNKY NPC ---
         DialogueNode junkyNode = new DialogueNode(Assets.bundle.get("dialogue.junky.start"));
         junkyNode.addChoice(Assets.bundle.get("dialogue.junky.choice.give"), () -> {
-            if (!QuestManager.hasQuest(Assets.bundle.get("quest.spoon.name"))) {
-                QuestManager.addQuest(new QuestManager.Quest(Assets.bundle.get("quest.spoon.name"), Assets.bundle.get("quest.spoon.description")));
+            if (!QuestManager.hasQuest("spoon")) {
+                QuestManager.addQuest(new QuestManager.Quest("spoon", "quest.spoon.name", "quest.spoon.description"));
             }
-            if (player.getInventory().removeItem(ItemRegistry.get("item.spoon.name"), 1)) {
+            if (player.getInventory().removeItem(ItemRegistry.get("spoon"), 1)) {
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.junky.respect"), 1.5f);
-                QuestManager.removeQuest(Assets.bundle.get("quest.spoon.name"));
+                QuestManager.removeQuest("spoon");
             } else {
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.junky.noSpoon"), 1.5f);
             }
         });
         junkyNode.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), () -> {
-            if (!QuestManager.hasQuest(Assets.bundle.get("quest.spoon.name"))) {
-                QuestManager.addQuest(new QuestManager.Quest(Assets.bundle.get("quest.spoon.name"), Assets.bundle.get("quest.spoon.description")));
+            if (!QuestManager.hasQuest("spoon")) {
+                QuestManager.addQuest(new QuestManager.Quest("spoon", "quest.spoon.name", "quest.spoon.description"));
             }
         });
         NPC junky = new NPC(Assets.bundle.get("npc.junky.name"), 100, 100, 2800, 1600, Assets.textureJunky, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(junkyNode));
@@ -218,9 +218,9 @@ public class NpcManager {
         );
         DialogueNode bossNodeAfter = new DialogueNode(Assets.bundle.get("dialogue.boss.after.1"), Assets.bundle.get("dialogue.boss.after.2"));
         bossNodeStart.addChoice(Assets.bundle.get("dialogue.boss.choice.accept"), () -> {
-            QuestManager.addQuest(new QuestManager.Quest(Assets.bundle.get("quest.delivery.name"), Assets.bundle.get("quest.delivery.description")));
+            QuestManager.addQuest(new QuestManager.Quest("delivery", "quest.delivery.name", "quest.delivery.description"));
             uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.boss.questItemReceived"), 1.5f);
-            player.getInventory().addItem(ItemRegistry.get("item.grass.name"), 1000);
+            player.getInventory().addItem(ItemRegistry.get("grass"), 1000);
             NPC boss = findNpcByName(Assets.bundle.get("npc.boss.name"));
             if (boss != null) boss.setDialogue(new Dialogue(bossNodeAfter));
         });

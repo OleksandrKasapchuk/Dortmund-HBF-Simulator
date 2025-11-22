@@ -57,7 +57,7 @@ public class EventManager {
     // --- Render interaction hints for the player ---
     public void render() {
         // Hint for bush (quest hide spot)
-        if (QuestManager.hasQuest("Big delivery") && itemManager.getBush().isPlayerNear(player) && itemManager.getBush().getWorld() == WorldManager.getCurrentWorld()) {
+        if (QuestManager.hasQuest("delivery") && itemManager.getBush().isPlayerNear(player) && itemManager.getBush().getWorld() == WorldManager.getCurrentWorld()) {
             font.draw(batch, Assets.bundle.get("world.pressEToHideKg"), itemManager.getBush().getX(), itemManager.getBush().getY());
         }
 
@@ -72,9 +72,9 @@ public class EventManager {
 
     // --- Handle boss failure event ---
     private void handleBossFail() {
-        if (!QuestManager.hasQuest("Big delivery")) return;
+        if (!QuestManager.hasQuest("delivery")) return;
         if (bossFailureTriggered) return;
-        if (player.getInventory().getAmount(ItemRegistry.get("item.grass.name")) >= 1000) return;
+        if (player.getInventory().getAmount(ItemRegistry.get("grass")) >= 1000) return;
 
         bossFailureTriggered = true;
         triggerBossFailure();
@@ -105,7 +105,7 @@ public class EventManager {
 
     // --- Handle boss quest success ---
     private void handleBossSuccess() {
-        if (!QuestManager.hasQuest("quest.delivery.name")) return;
+        if (!QuestManager.hasQuest("delivery")) return;
         if (!itemManager.getBush().isPlayerNear(player)) return;
 
         if (uiManager.isInteractPressed() && itemManager.getBush().getWorld() ==  WorldManager.getCurrentWorld()) {
@@ -115,8 +115,8 @@ public class EventManager {
 
     private void triggerQuestSuccess() {
         // Remove items and quest
-        player.getInventory().removeItem(ItemRegistry.get("item.grass.name"), 1000);
-        QuestManager.removeQuest("quest.delivery.name");
+        player.getInventory().removeItem(ItemRegistry.get("grass"), 1000);
+        QuestManager.removeQuest("delivery");
         SoundManager.playSound(Assets.bushSound);
         player.setMovementLocked(true);
 
@@ -150,7 +150,7 @@ public class EventManager {
 
         if (pfandAutomat.isPlayerNear(player)) {
             if (uiManager.isInteractPressed() && pfandAutomat.canInteract()) {
-                if(player.getInventory().removeItem(ItemRegistry.get("item.pfand.name"),1)){
+                if(player.getInventory().removeItem(ItemRegistry.get("pfand"),1)){
                     triggerPfandAutomat();
                 } else {
                     uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.generic.notEnoughPfand"),1f);
@@ -166,7 +166,7 @@ public class EventManager {
         TimerManager.setAction(() -> {
             SoundManager.playSound(Assets.moneySound);
             uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.generic.moneyForPfand"),1f);
-            player.getInventory().addItem(ItemRegistry.get("item.money.name"),1);
+            player.getInventory().addItem(ItemRegistry.get("money"),1);
         }, 1.9f);
 
         itemManager.getPfandAutomat().startCooldown(1.9f);
@@ -187,7 +187,7 @@ public class EventManager {
 
                 // Reward player for escaping
                 Runnable rewardAction = () -> {
-                    player.getInventory().addItem(ItemRegistry.get("item.money.name"), 50);
+                    player.getInventory().addItem(ItemRegistry.get("money"), 50);
                     uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.generic.reward"), 1.5f);
                     npcManager.getBoss().setDialogue(new Dialogue(new DialogueNode(Assets.bundle.get("message.boss.whatDoYouWant"))));
                 };

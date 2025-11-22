@@ -88,7 +88,7 @@ public class World {
         for (NPC npc : npcs) {
             npc.draw(batch);
             if (npc.isPlayerNear(player)) {
-                font.draw(batch, "interact.npc", npc.getX() - 100, npc.getY() + npc.getHeight() + 40);
+                font.draw(batch, Assets.bundle.get("interact.npc"), npc.getX() - 100, npc.getY() + npc.getHeight() + 40);
             }
         }
         for (Item item : items)

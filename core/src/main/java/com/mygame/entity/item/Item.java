@@ -46,7 +46,7 @@ public class Item extends Entity {
     }
 
     // --- Basic getters ---
-    public String getName() { return type.getName(); }
+    public String getName() { return type.getNameKey(); }
     public ItemType getType() { return type; }
     public boolean canBePickedUp() { return canBePickedUp; }
     public boolean isSolid() { return solid; }

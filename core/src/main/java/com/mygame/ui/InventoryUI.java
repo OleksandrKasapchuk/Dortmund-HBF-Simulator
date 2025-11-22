@@ -99,7 +99,7 @@ public class InventoryUI {
             ItemType itemType = entry.getKey();
             int amount = entry.getValue();
 
-            String itemName = Assets.bundle.get(itemType.getName());
+            String itemName = Assets.bundle.get(itemType.getNameKey());
             Label itemLabel = new Label(itemName + ": ", skin);
             itemLabel.setFontScale(1.5f);
             Label countLabel = new Label(String.valueOf(amount), skin);
@@ -128,7 +128,7 @@ public class InventoryUI {
             }
 
             // --- Description ---
-            String descriptionKey = itemType.getDescription();
+            String descriptionKey = itemType.getDescriptionKey();
             String description = Assets.bundle.get(descriptionKey);
             Label descriptionLabel = new Label(description, skin);
             descriptionLabel.setFontScale(1.2f); // Smaller font for description

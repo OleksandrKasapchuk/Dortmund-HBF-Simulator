@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.mygame.Assets;
 import com.mygame.managers.global.QuestManager;
 
 /**
@@ -59,14 +60,14 @@ public class QuestUI {
         questTable.clear();
 
         // Title
-        Label title = new Label("quest.title", skin);
+        Label title = new Label(Assets.bundle.get("quest.title"), skin);
         title.setFontScale(2f);
         title.setColor(Color.GOLD);
         questTable.add(title).colspan(2).padBottom(30).center().row();
 
         // If no quests, show message
         if (QuestManager.getQuests().isEmpty()) {
-            Label noQuest = new Label("quest.empty", skin);
+            Label noQuest = new Label(Assets.bundle.get("quest.empty"), skin);
             noQuest.setFontScale(1f);
             questTable.add(noQuest).center();
             return;
@@ -74,7 +75,7 @@ public class QuestUI {
 
         // Display all quests
         for (QuestManager.Quest quest : QuestManager.getQuests()) {
-            Label qLabel = new Label("• " + quest.getDescription(), skin);
+            Label qLabel = new Label("• " + Assets.bundle.get(quest.getDescriptionKey()), skin);
             qLabel.setFontScale(2.5f);
             questTable.add(qLabel).left().pad(10).row();
         }

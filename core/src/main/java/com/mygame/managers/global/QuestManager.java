@@ -1,6 +1,7 @@
 package com.mygame.managers.global;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * QuestManager handles all quests in the game.
@@ -15,9 +16,9 @@ public class QuestManager {
         quests.add(quest);
     }
 
-    /** Removes a quest by its title */
-    public static void removeQuest(String title) {
-        quests.removeIf(q -> q.getTitle().equals(title));
+    /** Removes a quest by its key */
+    public static void removeQuest(String key) {
+        quests.removeIf(q -> q.getKey().equals(key));
     }
 
     /** Returns the list of all quests */
@@ -25,9 +26,9 @@ public class QuestManager {
         return quests;
     }
 
-    /** Checks if a quest with the given title exists */
-    public static boolean hasQuest(String title) {
-        return quests.stream().anyMatch(q -> q.getTitle().equals(title));
+    /** Checks if a quest with the given key exists */
+    public static boolean hasQuest(String key) {
+        return quests.stream().anyMatch(q -> q.getKey().equals(key));
     }
 
     /** Clears all quests from the quest list */
@@ -40,22 +41,39 @@ public class QuestManager {
      * Contains a title and description for display purposes.
      */
     public static class Quest {
-        private String title;
-        private String description;
+        private final String key;
+        private final String titleKey;
+        private final String descriptionKey;
 
-        public Quest(String title, String description) {
-            this.title = title;
-            this.description = description;
+        public Quest(String key, String titleKey, String descriptionKey) {
+            this.key = key;
+            this.titleKey = titleKey;
+            this.descriptionKey = descriptionKey;
         }
 
-        /** Returns the quest's title */
-        public String getTitle() {
-            return title;
+        public String getKey() {
+            return key;
         }
 
-        /** Returns the quest's description */
-        public String getDescription() {
-            return description;
+        public String getTitleKey() {
+            return titleKey;
+        }
+
+        public String getDescriptionKey() {
+            return descriptionKey;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Quest quest = (Quest) o;
+            return Objects.equals(key, quest.key);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(key);
         }
     }
 }

@@ -141,7 +141,7 @@ public class Player extends Entity {
         if (inventory.isUsable(item) && inventory.hasItem(item)) {
             item.apply();
             inventory.removeItem(item, 1);
-            System.out.println("Used " + item.getName());
+            System.out.println("Used " + item.getNameKey());
         }
     }
 
