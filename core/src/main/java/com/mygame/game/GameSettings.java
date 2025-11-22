@@ -16,9 +16,10 @@ public class GameSettings {
     public boolean muteAll;
     public float playerX;
     public float playerY;
-    public String currentWorldName; // Changed from World to String
+    public String currentWorldName;
     public Map<String, Integer> inventory;
     public List<String> activeQuests;
+    public List<String> completedDialogueEvents;
 
     public GameSettings() {
         // Default settings
@@ -26,10 +27,11 @@ public class GameSettings {
         this.musicVolume = 1.0f;
         this.soundVolume = 1.0f;
         this.muteAll = false;
-        this.playerX = 200; // Default starting position
-        this.playerY = 200;  // Default starting position
-        this.currentWorldName = "main"; // Default world
+        this.playerX = 200;
+        this.playerY = 200;
+        this.currentWorldName = "main";
         this.inventory = new HashMap<>();
         this.activeQuests = new ArrayList<>();
+        this.completedDialogueEvents = new ArrayList<>();
     }
 }

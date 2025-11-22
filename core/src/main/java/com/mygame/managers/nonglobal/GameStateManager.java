@@ -41,10 +41,13 @@ public class GameStateManager {
         MusicManager.playMusic(Assets.backMusic4); // Play death music
         uiManager.setCurrentStage("DEATH");        // Set UI to death stage
 
-        // Reset player position to default and save it
+        // Reset player progress and save it
         GameSettings settings = SettingsManager.load();
         settings.playerX = 200; // Default X
         settings.playerY = 200;  // Default Y
+        settings.inventory.clear();
+        settings.activeQuests.clear();
+        settings.completedDialogueEvents.clear();
         SettingsManager.save(settings);
     }
 

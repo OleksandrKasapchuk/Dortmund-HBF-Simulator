@@ -7,6 +7,8 @@ import com.mygame.entity.NPC;
 import com.mygame.entity.Player;
 import com.mygame.entity.Police;
 import com.mygame.entity.item.ItemRegistry;
+import com.mygame.game.GameSettings;
+import com.mygame.game.SettingsManager;
 import com.mygame.managers.global.WorldManager;
 import com.mygame.managers.global.audio.SoundManager;
 import com.mygame.managers.global.QuestManager;
@@ -15,6 +17,7 @@ import com.mygame.ui.UIManager;
 import com.mygame.world.World;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Manager for creating, updating, rendering, and managing NPCs.
@@ -40,6 +43,9 @@ public class NpcManager {
      * Initialize all NPCs with dialogues and actions.
      */
     private void createNpcs(UIManager uiManager) {
+        GameSettings settings = SettingsManager.load();
+        List<String> completedEvents = settings.completedDialogueEvents;
+
         World world = WorldManager.getWorld("main");
         World world2 = WorldManager.getWorld("back");
 
@@ -67,6 +73,8 @@ public class NpcManager {
                     igo.setDialogue(new Dialogue(igoNodeThanks));
                     TimerManager.setAction(() -> igo.setTexture(Assets.textureIgo2), 5f);
                 }
+                settings.completedDialogueEvents.add("igo_gave_vape");
+                SettingsManager.save(settings);
             } else {
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.igo.notEnoughJoint"), 1.5f);
             }
@@ -76,7 +84,10 @@ public class NpcManager {
         igoNodeStart.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), igoNodeBye);
 
         NPC igo = new NPC(Assets.bundle.get("npc.igo.name"), 90, 90, 2500, 1200, Assets.textureIgo, world2, 1, 0, 3f, 0f, 0, 150,
-            new Dialogue(igoNodeStart));
+            new Dialogue(completedEvents.contains("igo_gave_vape") ? igoNodeThanks : igoNodeStart));
+        if (completedEvents.contains("igo_gave_vape")) {
+            igo.setTexture(Assets.textureIgo2);
+        }
         npcs.add(igo);
         world.getNpcs().add(igo);
 
@@ -90,10 +101,12 @@ public class NpcManager {
             uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.ryzhyi.moneyReceived"), 1.5f);
             NPC ryzhyi = findNpcByName(Assets.bundle.get("npc.ryzhyi.name"));
             if (ryzhyi != null) ryzhyi.setDialogue(new Dialogue(ryzhyiNodeAfter));
+            settings.completedDialogueEvents.add("ryzhyi_gave_money");
+            SettingsManager.save(settings);
         };
         ryzhyiNodeStart.addChoice(Assets.bundle.get("dialogue.ryzhyi.choice.take"), ryzhyiAction);
         NPC ryzhyi = new NPC(Assets.bundle.get("npc.ryzhyi.name"), 90, 90, 2900, 500, Assets.textureRyzhyi, world, 0, 1, 1f, 2f, 200, 150,
-            new Dialogue(ryzhyiNodeStart));
+            new Dialogue(completedEvents.contains("ryzhyi_gave_money") ? ryzhyiNodeAfter : ryzhyiNodeStart));
         npcs.add(ryzhyi);
         world.getNpcs().add(ryzhyi);
 
@@ -223,10 +236,12 @@ public class NpcManager {
             player.getInventory().addItem(ItemRegistry.get("grass"), 1000);
             NPC boss = findNpcByName(Assets.bundle.get("npc.boss.name"));
             if (boss != null) boss.setDialogue(new Dialogue(bossNodeAfter));
+            settings.completedDialogueEvents.add("boss_gave_quest");
+            SettingsManager.save(settings);
         });
         bossNodeStart.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), () -> {});
         boss = new NPC(Assets.bundle.get("npc.boss.name"), 100, 100, 1850, 100, Assets.textureBoss, world, 1, 0, 3f, 0f, 75, 100,
-            new Dialogue(bossNodeStart));
+            new Dialogue(completedEvents.contains("boss_gave_quest") ? bossNodeAfter : bossNodeStart));
         npcs.add(boss);
         world.getNpcs().add(boss);
 
