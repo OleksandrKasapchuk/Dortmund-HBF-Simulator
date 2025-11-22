@@ -36,7 +36,12 @@ public class MusicManager {
     }
 
     // --- Volume control ---
-    public static void setVolume(float volume) { currentVolume = volume; currentMusic.setVolume(currentVolume); }
+    public static void setVolume(float volume) {
+        currentVolume = volume;
+        if (currentMusic != null) {
+            currentMusic.setVolume(currentVolume);
+        }
+    }
     public static float getVolume() { return currentVolume; }
 
     /**

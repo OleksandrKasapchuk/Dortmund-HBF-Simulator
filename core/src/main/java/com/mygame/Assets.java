@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.mygame.game.GameSettings;
 import com.mygame.game.SettingsManager;
+import com.mygame.managers.global.audio.MusicManager;
+import com.mygame.managers.global.audio.SoundManager;
 
 import java.util.Locale;
 
@@ -71,9 +73,16 @@ public class Assets {
      * Should be called once at the start of the game.
      */
     public static void load() {
-        // Load settings and set the locale
+        // Load settings and apply them
         GameSettings settings = SettingsManager.load();
         currentLocale = new Locale(settings.language);
+        MusicManager.setVolume(settings.musicVolume);
+        SoundManager.setVolume(settings.soundVolume);
+        if (settings.muteAll) {
+            MusicManager.setVolume(0);
+            SoundManager.setVolume(0);
+        }
+
         loadBundle(currentLocale);
 
         // --- Correct Font Generation with full Ukrainian Alphabet ---

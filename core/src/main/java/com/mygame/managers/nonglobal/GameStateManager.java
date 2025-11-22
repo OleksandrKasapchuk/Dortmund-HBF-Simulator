@@ -1,6 +1,8 @@
 package com.mygame.managers.nonglobal;
 
 import com.mygame.Assets;
+import com.mygame.game.GameSettings;
+import com.mygame.game.SettingsManager;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.ui.UIManager;
 
@@ -38,6 +40,12 @@ public class GameStateManager {
         state = GameState.DEATH;                  // Switch state to DEATH
         MusicManager.playMusic(Assets.backMusic4); // Play death music
         uiManager.setCurrentStage("DEATH");        // Set UI to death stage
+
+        // Reset player position to default and save it
+        GameSettings settings = SettingsManager.load();
+        settings.playerX = 200; // Default X
+        settings.playerY = 200;  // Default Y
+        SettingsManager.save(settings);
     }
 
     // --- Toggle pause state ---

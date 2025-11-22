@@ -64,6 +64,7 @@ public class SettingsUI extends Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 MusicManager.setVolume(musicVolumeSlider.getValue());
+                saveSoundSettings();
             }
         });
         stage.addActor(musicVolumeSlider);
@@ -83,6 +84,7 @@ public class SettingsUI extends Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 SoundManager.setVolume(soundVolumeSlider.getValue());
+                saveSoundSettings();
             }
         });
         stage.addActor(soundVolumeSlider);
@@ -95,17 +97,17 @@ public class SettingsUI extends Screen {
         muteAllCheckbox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (muteAllCheckbox.isChecked()) {
-                    // Save current volumes and mute everything
+                boolean isMuted = muteAllCheckbox.isChecked();
+                if (isMuted) {
                     lastMusicVolume = musicVolumeSlider.getValue();
                     lastSoundVolume = soundVolumeSlider.getValue();
                     musicVolumeSlider.setValue(0f);
                     soundVolumeSlider.setValue(0f);
                 } else {
-                    // Restore previous volumes
                     musicVolumeSlider.setValue(lastMusicVolume);
                     soundVolumeSlider.setValue(lastSoundVolume);
                 }
+                saveSoundSettings();
             }
         });
         stage.addActor(muteAllCheckbox);
@@ -119,11 +121,7 @@ public class SettingsUI extends Screen {
         englishButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                GameSettings settings = SettingsManager.load();
-                settings.language = "en";
-                SettingsManager.save(settings);
-                Assets.loadBundle(new Locale("en"));
-                Main.restartGame();
+                setLanguage("en");
             }
         });
 
@@ -132,11 +130,7 @@ public class SettingsUI extends Screen {
         ukrainianButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                GameSettings settings = SettingsManager.load();
-                settings.language = "ua";
-                SettingsManager.save(settings);
-                Assets.loadBundle(new Locale("ua"));
-                Main.restartGame();
+                setLanguage("ua");
             }
         });
 
@@ -145,11 +139,7 @@ public class SettingsUI extends Screen {
         germanButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                GameSettings settings = SettingsManager.load();
-                settings.language = "de";
-                SettingsManager.save(settings);
-                Assets.loadBundle(new Locale("de"));
-                Main.restartGame();
+                setLanguage("de");
             }
         });
 
@@ -157,5 +147,21 @@ public class SettingsUI extends Screen {
         langTable.add(ukrainianButton).width(350).height(90).padBottom(20).row();
         langTable.add(germanButton).width(350).height(90).row();
         stage.addActor(langTable);
+    }
+
+    private void saveSoundSettings() {
+        GameSettings settings = SettingsManager.load();
+        settings.musicVolume = musicVolumeSlider.getValue();
+        settings.soundVolume = soundVolumeSlider.getValue();
+        settings.muteAll = muteAllCheckbox.isChecked();
+        SettingsManager.save(settings);
+    }
+
+    private void setLanguage(String languageCode) {
+        GameSettings settings = SettingsManager.load();
+        settings.language = languageCode;
+        SettingsManager.save(settings);
+        Assets.loadBundle(new Locale(languageCode));
+        Main.restartGame();
     }
 }

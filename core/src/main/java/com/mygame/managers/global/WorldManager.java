@@ -42,6 +42,9 @@ public class WorldManager {
         if (!worlds.containsKey(id)) return;
         currentWorld = worlds.get(id);
     }
+    public static void setCurrentWorld(World world) {
+        currentWorld = world;
+    }
 
     public static void draw(SpriteBatch batch, BitmapFont font, Player player) {
         if (currentWorld != null) currentWorld.draw(batch, font, player);

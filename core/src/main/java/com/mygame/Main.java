@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygame.game.GameInitializer;
+import com.mygame.game.GameSettings;
+import com.mygame.game.SettingsManager;
 import com.mygame.managers.global.WorldManager;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.entity.Player;
@@ -105,6 +107,14 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void dispose() {
+        GameSettings settings = SettingsManager.load();
+        settings.playerX = gameInitializer.getPlayer().getX();
+        settings.playerY = gameInitializer.getPlayer().getY();
+        if (WorldManager.getCurrentWorld() != null) {
+            settings.currentWorldName = WorldManager.getCurrentWorld().getName();
+        }
+        SettingsManager.save(settings);
+
         Assets.dispose();
         if (gameInitializer != null) gameInitializer.dispose();
         if (shapeRenderer != null) shapeRenderer.dispose();
