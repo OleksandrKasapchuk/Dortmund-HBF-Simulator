@@ -23,7 +23,7 @@ public class TouchControlsUI {
 
     private Texture knobTexture;
     private Texture bgTexture;
-    private TextButton startButton;
+
 
     // Flags to track one-time button presses
     private boolean actButtonJustPressed = false;
@@ -40,7 +40,7 @@ public class TouchControlsUI {
      * @param settingsStage Stage for settings buttons
      * @param player        Player to link the touchpad movement
      */
-    public TouchControlsUI(Skin skin, Stage menuStage, Stage gameStage, Stage pauseStage, Stage settingsStage, Player player) {
+    public TouchControlsUI(Skin skin, Stage gameStage, Stage pauseStage, Stage settingsStage, Player player) {
 
         // Create textures for the joystick knob and background
         Pixmap knobPixmap = new Pixmap(50, 50, Pixmap.Format.RGBA8888);
@@ -121,19 +121,6 @@ public class TouchControlsUI {
         });
         gameStage.addActor(pauseButton);
 
-        // Create "START" button for menu
-        startButton = new TextButton(Assets.bundle.get("button.start.text"), skin);
-        startButton.setSize(300, 150);
-        startButton.setPosition(800, 100);
-        startButton.getLabel().setFontScale(2f);
-        startButton.addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Main.getGameInitializer().getManagerRegistry().getGameStateManager().startGame();
-                return true;
-            }
-        });
-        menuStage.addActor(startButton);
 
         // Create "RESUME" button for pause stage
         TextButton resumeButton = new TextButton(Assets.bundle.get("button.resume.text"), skin);

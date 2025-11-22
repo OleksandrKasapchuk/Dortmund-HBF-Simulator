@@ -1,11 +1,10 @@
 package com.mygame.ui.screenUI;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -20,7 +19,7 @@ import com.mygame.game.SettingsManager;
  */
 public class MenuUI extends Screen {
     private Image backgroundImage; // Background image for the menu
-
+    private TextButton startButton;
     /**
      * Constructor sets up the menu UI elements.
      *
@@ -34,19 +33,26 @@ public class MenuUI extends Screen {
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
 
-        // Show "Press Enter to Start" for non-Android platforms
-        if (Gdx.app.getType() != Application.ApplicationType.Android){
-            Label menuLabel2 = new Label(Assets.bundle.get("menu.pressEnterToStart"), skin);
-            menuLabel2.setPosition(710, 750);
-            menuLabel2.setFontScale(2f);
-            stage.addActor(menuLabel2);
-        }
+
+        // Create "START" button for menu
+        startButton = new TextButton(Assets.bundle.get("button.start.text"), skin);
+        startButton.setSize(300, 125);
+        startButton.setPosition(200, 100);
+        startButton.getLabel().setFontScale(1.5f);
+        startButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Main.getGameInitializer().getManagerRegistry().getGameStateManager().startGame();
+                return true;
+            }
+        });
+        stage.addActor(startButton);
 
         // New Game button
         TextButton newGameButton = new TextButton(Assets.bundle.get("button.newGame.text"), skin);
-        newGameButton.setSize(300, 100);
-        newGameButton.setPosition(stage.getWidth() / 2 - 150, 300);
-        newGameButton.getLabel().setFontScale(2f);
+        newGameButton.setSize(300, 125);
+        newGameButton.setPosition(200, 300);
+        newGameButton.getLabel().setFontScale(1.5f);
         newGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

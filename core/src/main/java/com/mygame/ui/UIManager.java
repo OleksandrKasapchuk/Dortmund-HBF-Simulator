@@ -73,7 +73,6 @@ public class UIManager {
             System.out.println("UIManager: Android detected, creating TouchControlsUI...");
             touchControlsUI = new TouchControlsUI(
                 skin,
-                menuUI.getStage(),
                 gameUI.getStage(),
                 pauseUI.getStage(),
                 settingsUI.getStage(),
