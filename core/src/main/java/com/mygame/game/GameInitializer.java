@@ -67,6 +67,7 @@ public class GameInitializer {
         if (settings.activeQuests != null) {
             settings.activeQuests.forEach(key -> QuestManager.addQuest(new QuestManager.Quest(key, "quest." + key + ".name", "quest." + key + ".description")));
         }
+
         gameInputHandler = new GameInputHandler(managerRegistry.getGameStateManager());
         System.out.println("GameInitializer: GameInputHandler created.");
 
