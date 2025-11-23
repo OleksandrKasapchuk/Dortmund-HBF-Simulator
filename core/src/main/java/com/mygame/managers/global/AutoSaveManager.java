@@ -6,6 +6,7 @@ import com.mygame.entity.Player;
 import com.mygame.game.GameInitializer;
 import com.mygame.game.GameSettings;
 import com.mygame.game.SettingsManager;
+import com.mygame.world.WorldManager;
 
 import java.util.Map;
 import java.util.stream.Collectors;

@@ -1,7 +1,7 @@
 package com.mygame.entity.item;
 
 import com.mygame.Assets;
-import com.mygame.managers.global.WorldManager;
+import com.mygame.world.WorldManager;
 import com.mygame.world.World;
 import com.mygame.entity.Player;
 
@@ -19,13 +19,15 @@ public class ItemManager {
     // --- Constructor: initialize items and special items in the world ---
     public ItemManager() {
         World world = WorldManager.getWorld("main");
+        World homeWorld = WorldManager.getWorld("home");
+
         // Create bush
         bush = new Item(ItemRegistry.get("item.bush.name"),200, 100, 800, 1800, 125, Assets.bush, world, false, false);
         world.getItems().add(bush);
 
         // Create spoon
         Item spoon = new Item(ItemRegistry.get("item.spoon.name"), 60, 60, 500, 1800, 100, Assets.textureSpoon, world, true, false);
-        world.getItems().add(spoon);
+        homeWorld.getItems().add(spoon);
 
         // Create Pfand Automat
         pfandAutomat = new Item(ItemRegistry.get("item.pfandAutomat.name"), 150, 150, 2425, 825, 200, Assets.pfandAutomat, world, false, true);

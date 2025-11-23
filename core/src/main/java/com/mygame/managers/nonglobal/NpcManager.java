@@ -9,7 +9,7 @@ import com.mygame.entity.Police;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.game.GameSettings;
 import com.mygame.game.SettingsManager;
-import com.mygame.managers.global.WorldManager;
+import com.mygame.world.WorldManager;
 import com.mygame.managers.global.audio.SoundManager;
 import com.mygame.managers.global.QuestManager;
 import com.mygame.managers.global.TimerManager;
@@ -47,7 +47,7 @@ public class NpcManager {
         List<String> completedEvents = settings.completedDialogueEvents;
 
         World world = WorldManager.getWorld("main");
-        World world2 = WorldManager.getWorld("back");
+        World world2 = WorldManager.getWorld("leopold");
 
         // --- IGO NPC ---
         DialogueNode igoNodeStart = new DialogueNode(Assets.bundle.get("dialogue.igo.start"));

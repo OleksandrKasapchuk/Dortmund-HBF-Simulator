@@ -12,6 +12,7 @@ import com.mygame.ui.screenUI.GameUI;
 import com.mygame.ui.screenUI.MenuUI;
 import com.mygame.ui.screenUI.PauseUI;
 import com.mygame.ui.screenUI.SettingsUI;
+import com.mygame.world.WorldManager;
 
 /**
  * UIManager is responsible for managing all UI components of the game.
@@ -52,7 +53,7 @@ public class UIManager {
         this.skin = skin;
 
         // Initialize screens with the provided skin
-        gameUI = new GameUI(skin, player);
+        gameUI = new GameUI(skin);
         menuUI = new MenuUI(skin);
         pauseUI = new PauseUI(skin);
         settingsUI = new SettingsUI(skin);
@@ -111,7 +112,7 @@ public class UIManager {
         if (currentStage == gameUI.getStage()) {
             gameUI.update(delta);
             gameUI.updateMoney(player.getMoney());
-
+            gameUI.updateWorld(WorldManager.getCurrentWorld().getName());
             // Update dialogue manager
             dialogueManager.update(delta, isInteractPressed());
 

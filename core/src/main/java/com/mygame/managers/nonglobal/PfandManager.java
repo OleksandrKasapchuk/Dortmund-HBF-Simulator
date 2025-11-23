@@ -5,7 +5,7 @@ import com.mygame.Assets;
 import com.mygame.Main;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemRegistry;
-import com.mygame.managers.global.WorldManager;
+import com.mygame.world.WorldManager;
 import com.mygame.world.World;
 import java.util.Random;
 

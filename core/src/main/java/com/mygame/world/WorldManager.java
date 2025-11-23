@@ -1,12 +1,10 @@
-package com.mygame.managers.global;
+package com.mygame.world;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygame.Assets;
 import com.mygame.entity.Player;
-import com.mygame.world.Transition;
-import com.mygame.world.World;
 
 import java.util.HashMap;
 import java.util.Map;

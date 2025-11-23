@@ -5,7 +5,7 @@ import com.mygame.dialogue.Dialogue;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.NPC;
 import com.mygame.entity.Player;
-import com.mygame.managers.global.WorldManager;
+import com.mygame.world.WorldManager;
 import com.mygame.ui.DialogueUI;
 
 import java.util.ArrayList;

@@ -11,7 +11,7 @@ import com.mygame.entity.Player;
 import com.mygame.entity.Police;
 import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.item.ItemRegistry;
-import com.mygame.managers.global.WorldManager;
+import com.mygame.world.WorldManager;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.managers.global.audio.SoundManager;
 import com.mygame.managers.global.QuestManager;

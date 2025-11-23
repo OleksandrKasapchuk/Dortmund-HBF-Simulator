@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.item.ItemType;
-import com.mygame.managers.global.WorldManager;
+import com.mygame.world.WorldManager;
 import com.mygame.managers.nonglobal.InventoryManager;
 import com.mygame.world.World;
 

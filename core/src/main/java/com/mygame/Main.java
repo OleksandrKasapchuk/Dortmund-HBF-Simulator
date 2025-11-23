@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygame.game.GameInitializer;
 import com.mygame.managers.global.AutoSaveManager;
-import com.mygame.managers.global.WorldManager;
+import com.mygame.world.WorldManager;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.entity.Player;
 import com.mygame.ui.UIManager;

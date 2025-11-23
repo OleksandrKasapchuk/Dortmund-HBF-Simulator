@@ -93,6 +93,12 @@ public class World {
         }
         for (Item item : items)
             item.draw(batch);
+
+        for (Transition transition : transitions) {
+            float textX = transition.area.x + transition.area.width / 2 - 50;
+            float textY = transition.area.y + transition.area.height / 2;
+            font.draw(batch, Assets.bundle.get("ui.world.name." + transition.targetWorldId), textX, textY);
+        }
     }
 
     public void drawTransitions(ShapeRenderer shapeRenderer) {

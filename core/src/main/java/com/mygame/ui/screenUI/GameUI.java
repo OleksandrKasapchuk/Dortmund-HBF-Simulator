@@ -1,12 +1,12 @@
 package com.mygame.ui.screenUI;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.mygame.Assets;
-import com.mygame.entity.Player;
 
 /**
  * GameUI handles the on-screen HUD elements during gameplay.
@@ -16,18 +16,17 @@ public class GameUI extends Screen {
     private Label moneyLabel;       // Shows player's current money
     private Label infoLabel;        // Temporary info messages
     private float infoMessageTimer = 0f; // Timer to hide infoLabel automatically
-
+    private Label worldLabel;
     /**
      * Constructor sets up the UI elements.
      *
      * @param skin   The Skin used for labels
-     * @param player The player whose money will be displayed
      */
-    public GameUI(Skin skin, Player player){
+    public GameUI(Skin skin){
         Stage stage = getStage();
 
         // Money display
-        moneyLabel = new Label(Assets.bundle.format("ui.money", player.getMoney()), skin);
+        moneyLabel = new Label("", skin);
         moneyLabel.setPosition(1700, 925);
         moneyLabel.setFontScale(1.5f);
         stage.addActor(moneyLabel);
@@ -40,6 +39,11 @@ public class GameUI extends Screen {
         infoLabel.setPosition(stage.getViewport().getWorldWidth() / 2f, 850, Align.center);
         stage.addActor(infoLabel);
         infoLabel.setVisible(false);
+
+        worldLabel = new Label("", skin);
+        worldLabel.setFontScale(1.5f);
+        worldLabel.setPosition(10, Gdx.graphics.getHeight() - 100);
+        stage.addActor(worldLabel);
     }
 
     /**
@@ -50,6 +54,10 @@ public class GameUI extends Screen {
     public void updateMoney(int money) {
         moneyLabel.setText(Assets.bundle.format("ui.money", money));
     }
+    public void updateWorld(String worldName) {
+        worldLabel.setText(Assets.bundle.format("ui.world.name", Assets.bundle.get("ui.world.name." + worldName)));
+    }
+
 
     /**
      * Show a temporary info message

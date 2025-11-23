@@ -8,7 +8,7 @@ import com.mygame.entity.Player;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.managers.ManagerRegistry;
 import com.mygame.managers.global.QuestManager;
-import com.mygame.managers.global.WorldManager;
+import com.mygame.world.WorldManager;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.world.Transition;
 import com.mygame.world.World;
@@ -40,13 +40,28 @@ public class GameInitializer {
         font = Assets.myFont; // Use the font from Assets
         System.out.println("GameInitializer: Batch and font created.");
 
-        World mainWorld = new World("main","maps/map1.txt");
-        World backWorld = new World("back","maps/map2.txt");
+        World mainWorld = new World("main","maps/main_station.txt");
+        World backWorld = new World("leopold","maps/leopold.txt");
+
+        World subwayWorld = new World("subway", "maps/subway.txt");
+        World homeWorld = new World("home","maps/home.txt");
+
         backWorld.addTransition(new Transition("main", 1600, 1600, new Rectangle(100, 100, 200, 200)));
+        mainWorld.addTransition(new Transition("leopold", 350, 200, new Rectangle(1200, 1700, 1000, 200)));
+
+        mainWorld.addTransition(new Transition("subway", 1900, 300, new Rectangle(1000, 1100, 150, 200)));
+        subwayWorld.addTransition(new Transition("main", 1000, 1100, new Rectangle(1900, 100, 300, 200)));
+
+        subwayWorld.addTransition(new Transition("home", 350, 200, new Rectangle(1400, 800, 150, 200)));
+
+        homeWorld.addTransition(new Transition("subway", 1600, 900, new Rectangle(100, 100, 200, 200)));
+
 
         WorldManager.addWorld(mainWorld);
         WorldManager.addWorld(backWorld);
-        mainWorld.addTransition(new Transition("back", 350, 200, new Rectangle(1200, 1700, 1000, 200)));
+        WorldManager.addWorld(subwayWorld);
+        WorldManager.addWorld(homeWorld);
+
         WorldManager.setCurrentWorld("main");
         System.out.println("GameInitializer: Worlds created and configured.");
 
