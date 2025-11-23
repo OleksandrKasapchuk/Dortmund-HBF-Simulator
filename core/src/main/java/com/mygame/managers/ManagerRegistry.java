@@ -3,7 +3,6 @@ package com.mygame.managers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.mygame.Assets;
 import com.mygame.entity.Player;
@@ -83,14 +82,6 @@ public class ManagerRegistry {
 
         eventManager = new EventManager(player, npcManager, uiManager, itemManager, batch, font, gameStateManager);
 
-
-        if (player.getInventory() != null) {
-            player.getInventory().setOnInventoryChanged(() -> {
-                if (uiManager.getInventoryUI() != null && uiManager.getInventoryUI().isVisible()) {
-                    uiManager.getInventoryUI().update(player);
-                }
-            });
-        }
 
         uiManager.setCurrentStage("MENU");
         resize();

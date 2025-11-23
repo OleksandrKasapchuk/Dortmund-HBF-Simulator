@@ -32,6 +32,8 @@ public class Assets {
     public static BitmapFont myFont;
 
     // === Textures ===
+
+    // === NPC ===
     public static Texture textureRyzhyi;
     public static Texture textureDenys;
     public static Texture textureIgo;
@@ -44,16 +46,26 @@ public class Assets {
     public static Texture textureZoe;
     public static Texture textureBoss;
     public static Texture textureKamil;
+
+    //  === ITEM ===
     public static Texture textureSpoon;
-    public static Texture brick;
-    public static Texture bush;
     public static Texture pfand;
     public static Texture pfandAutomat;
+
+    // === BLOCK ===
+    public static Texture brick;
+    public static Texture bush;
+    public static Texture brick2;
+
+    public static Texture plate;
+    public static Texture rock;
+
+    // === BACKGROUND ===
     public static Texture deathBack;
     public static Texture menuBack;
     public static Texture menuBlurBack;
 
-    // === Sounds ===
+    // === SOUND ===
     public static Sound moneySound;
     public static Sound kosyakSound;
     public static Sound lighterSound;
@@ -61,7 +73,7 @@ public class Assets {
     public static Sound gunShot;
     public static Sound pfandAutomatSound;
 
-    // === Music ===
+    // === MUSIC ===
     public static Music startMusic;
     public static Music backMusic1;
     public static Music backMusic2;
@@ -104,30 +116,40 @@ public class Assets {
         // --- End of Font Generation ---
 
         // Textures
-        textureRyzhyi = new Texture(Gdx.files.internal("images/ryzhyi.png"));
-        textureDenys = new Texture(Gdx.files.internal("images/denys.png"));
-        textureIgo = new Texture(Gdx.files.internal("images/igo.png"));
-        textureIgo2 = new Texture(Gdx.files.internal("images/igo2.png"));
-        textureBaryga = new Texture(Gdx.files.internal("images/baryga.png"));
-        textureChikita = new Texture(Gdx.files.internal("images/chikita.png"));
-        texturePolice = new Texture(Gdx.files.internal("images/police.png"));
-        textureKioskMan = new Texture(Gdx.files.internal("images/kioskman.png"));
-        textureJunky = new Texture(Gdx.files.internal("images/junky.png"));
-        textureZoe = new Texture(Gdx.files.internal("images/zoe.png"));
-        textureBoss = new Texture(Gdx.files.internal("images/boss.png"));
-        textureKamil = new Texture(Gdx.files.internal("images/kamil.png"));
 
-        deathBack = new Texture(Gdx.files.internal("images/deathScreen.jpg"));
-        menuBack = new Texture("images/menu.jpg");
-        menuBlurBack = new Texture("images/menublur.jpg");
+        // === NPC ===
+        textureRyzhyi = new Texture(Gdx.files.internal("images/npc/ryzhyi.png"));
+        textureDenys = new Texture(Gdx.files.internal("images/npc/denys.png"));
+        textureIgo = new Texture(Gdx.files.internal("images/npc/igo.png"));
+        textureIgo2 = new Texture(Gdx.files.internal("images/npc/igo2.png"));
+        textureBaryga = new Texture(Gdx.files.internal("images/npc/baryga.png"));
+        textureChikita = new Texture(Gdx.files.internal("images/npc/chikita.png"));
+        texturePolice = new Texture(Gdx.files.internal("images/npc/police.png"));
+        textureKioskMan = new Texture(Gdx.files.internal("images/npc/kioskman.png"));
+        textureJunky = new Texture(Gdx.files.internal("images/npc/junky.png"));
+        textureZoe = new Texture(Gdx.files.internal("images/npc/zoe.png"));
+        textureBoss = new Texture(Gdx.files.internal("images/npc/boss.png"));
+        textureKamil = new Texture(Gdx.files.internal("images/npc/kamil.png"));
 
-        textureSpoon = new Texture(Gdx.files.internal("images/spoon.png"));
-        brick = new Texture(Gdx.files.internal("images/brick.png"));
-        bush = new Texture(Gdx.files.internal("images/bush.png"));
-        pfand = new Texture(Gdx.files.internal("images/pfand.png"));
-        pfandAutomat = new Texture(Gdx.files.internal("images/pfand_automat.png"));
+        // === BACKGROUND ===
+        deathBack = new Texture(Gdx.files.internal("images/background/deathScreen.jpg"));
+        menuBack = new Texture("images/background/menu.jpg");
+        menuBlurBack = new Texture("images/background/menublur.jpg");
 
-        // Sounds
+        // === ITEM ===
+        textureSpoon = new Texture(Gdx.files.internal("images/item/spoon.png"));
+        pfand = new Texture(Gdx.files.internal("images/item/pfand.png"));
+        pfandAutomat = new Texture(Gdx.files.internal("images/item/pfand_automat.png"));
+
+        // === BLOCK ===
+        brick = new Texture(Gdx.files.internal("images/block/brick.png"));
+        bush = new Texture(Gdx.files.internal("images/block/bush.jpg"));
+        brick2 = new Texture(Gdx.files.internal("images/block/brick2.jpg"));
+        rock = new Texture(Gdx.files.internal("images/block/rock.jpg"));
+        plate = new Texture(Gdx.files.internal("images/block/plate.jpg"));
+
+
+        // === SOUND ===
         moneySound = Gdx.audio.newSound(Gdx.files.internal("sound/money.ogg"));
         kosyakSound = Gdx.audio.newSound(Gdx.files.internal("sound/kosyak.wav"));
         lighterSound = Gdx.audio.newSound(Gdx.files.internal("sound/lighter.ogg"));
@@ -135,7 +157,7 @@ public class Assets {
         gunShot = Gdx.audio.newSound(Gdx.files.internal("sound/gunshots.ogg"));
         pfandAutomatSound = Gdx.audio.newSound(Gdx.files.internal("sound/pfand_automat.ogg"));
 
-        // Music
+        // === MUSIC ===
         startMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/menu.ogg"));
         backMusic1 = Gdx.audio.newMusic(Gdx.files.internal("sound/epic_back1.ogg"));
         backMusic2 = Gdx.audio.newMusic(Gdx.files.internal("sound/epic_back2.ogg"));

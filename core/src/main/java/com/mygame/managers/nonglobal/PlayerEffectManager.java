@@ -24,7 +24,6 @@ public class PlayerEffectManager {
         this.uiManager = uiManager;
     }
 
-
     /**
      * Effect triggered by using a "joint".
      * - Plays a lighter sound
@@ -41,7 +40,6 @@ public class PlayerEffectManager {
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.joint"), 1.5f);
 
             player.setStone();
-            uiManager.getInventoryUI().update(player);
             MusicManager.playMusic(Assets.kaifMusic);
         }, 4f);
     }
@@ -60,7 +58,6 @@ public class PlayerEffectManager {
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.ice_tea"), 1.5f);
 
             player.setNormal();
-            uiManager.getInventoryUI().update(player);
             MusicManager.playMusic(Assets.backMusic1);
         }, 0.5f);
     }

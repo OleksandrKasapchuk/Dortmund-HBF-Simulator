@@ -1,5 +1,7 @@
 package com.mygame.game;
 
+import com.mygame.entity.Player;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,10 +22,11 @@ public class GameSettings {
     public Map<String, Integer> inventory;
     public List<String> activeQuests;
     public List<String> completedDialogueEvents;
+    public Player.State playerState;
 
     public GameSettings() {
         // Default settings
-        this.language = "ua";
+        this.language = "en";
         this.musicVolume = 1.0f;
         this.soundVolume = 1.0f;
         this.muteAll = false;
@@ -33,5 +36,6 @@ public class GameSettings {
         this.inventory = new HashMap<>();
         this.activeQuests = new ArrayList<>();
         this.completedDialogueEvents = new ArrayList<>();
+        this.playerState = Player.State.NORMAL;
     }
 }

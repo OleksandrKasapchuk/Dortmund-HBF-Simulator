@@ -61,12 +61,10 @@ public class InventoryUI {
      * Toggles the inventory visibility.
      * If shown, updates the inventory contents.
      *
-     * @param player Player whose inventory is displayed
      */
-    public void toggle(Player player) {
+    public void toggle() {
         visible = !visible;
         inventoryTable.setVisible(visible);
-        if (visible) update(player);
     }
 
     /**
@@ -118,7 +116,6 @@ public class InventoryUI {
                     public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event,
                                              float x, float y, int pointer, int button) {
                         player.useItem(entry.getKey());
-                        update(player);  // Refresh after using
                         return true;
                     }
                 });

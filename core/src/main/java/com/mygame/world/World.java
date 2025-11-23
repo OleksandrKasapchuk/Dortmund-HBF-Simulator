@@ -32,10 +32,19 @@ public class World {
 
         for (int y = 0; y < map.length; y++) {
             for (int x = 0; x < map[y].length; x++) {
-                if (map[y][x] == 1) {
-                    blocks[y][x] = new Block(true, Assets.brick);
-                } else if (map[y][x] == 2) {
-                    blocks[y][x] = new Block(false, Assets.bush);
+                switch (map[y][x]){
+                    case 0:
+                        blocks[y][x] = new Block(false, Assets.plate);
+                        break;
+                    case 1:
+                        blocks[y][x] = new Block(true, Assets.brick2);
+                        break;
+                    case 2:
+                        blocks[y][x] = new Block(false, Assets.bush);
+                        break;
+                    case 3:
+                        blocks[y][x] = new Block(true, Assets.rock);
+                        break;
                 }
             }
         }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.item.ItemType;
+import com.mygame.game.SettingsManager;
 import com.mygame.world.WorldManager;
 import com.mygame.managers.nonglobal.InventoryManager;
 import com.mygame.world.World;
@@ -35,12 +36,14 @@ public class Player extends Entity {
             return localizationKey;
         }
     }
-    private State currentState = State.NORMAL;
+
+    private State currentState;
 
 
     public Player(int speed, int width, int height, float x, float y, Texture texture, World world) {
         super(width, height, x, y, texture, world);
         this.speed = speed;
+        this.currentState = SettingsManager.load().playerState;
     }
 
     // Lock/unlock movement (used for dialogues, cutscenes etc.)
@@ -129,7 +132,7 @@ public class Player extends Entity {
 
     // Money getter
     public int getMoney() {
-        return inventory.getAmount(ItemRegistry.get("item.money.name"));
+        return inventory.getAmount(ItemRegistry.get("money"));
     }
 
     public InventoryManager getInventory() {

@@ -22,7 +22,7 @@ public class ItemManager {
         World homeWorld = WorldManager.getWorld("home");
 
         // Create bush
-        bush = new Item(ItemRegistry.get("item.bush.name"),200, 100, 800, 1800, 125, Assets.bush, world, false, false);
+        bush = new Item(ItemRegistry.get("item.bush.name"),200, 200, 800, 1700, 125, Assets.bush, world, false, false);
         world.getItems().add(bush);
 
         // Create spoon

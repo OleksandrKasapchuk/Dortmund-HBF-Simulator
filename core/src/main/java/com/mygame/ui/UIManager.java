@@ -116,14 +116,17 @@ public class UIManager {
             // Update dialogue manager
             dialogueManager.update(delta, isInteractPressed());
 
+            if (questUI.isVisible()) questUI.update();
+            if (inventoryUI.isVisible()) inventoryUI.update(player);
+
             // Toggle inventory with Tab or touch button
             if (Gdx.input.isKeyJustPressed(Input.Keys.TAB) || (touchControlsUI != null && touchControlsUI.isInvButtonJustPressed())) {
-                toggleInventoryTable(player);
+                toggleInventoryTable();
             }
 
             // Toggle quests with Q or touch button
             if (Gdx.input.isKeyJustPressed(Input.Keys.Q) || (touchControlsUI != null && touchControlsUI.isQuestButtonJustPressed())) {
-                toggleQuestTable(player);
+                toggleQuestTable();
             }
         }
 
@@ -158,15 +161,15 @@ public class UIManager {
     }
 
     /** Toggles the quest UI; closes inventory if open */
-    public void toggleQuestTable(Player player) {
-        if (inventoryUI.isVisible()) inventoryUI.toggle(player);
+    public void toggleQuestTable() {
+        if (inventoryUI.isVisible()) inventoryUI.toggle();
         questUI.toggle();
     }
 
     /** Toggles the inventory UI; closes quest UI if open */
-    public void toggleInventoryTable(Player player) {
+    public void toggleInventoryTable() {
         if (questUI.isVisible()) questUI.toggle();
-        inventoryUI.toggle(player);
+        inventoryUI.toggle();
     }
 
     /** Resets the "just pressed" flags of touch buttons */
@@ -175,5 +178,4 @@ public class UIManager {
     // Getter methods for accessing UI components
     public DialogueManager getDialogueManager() { return dialogueManager; }
     public GameUI getGameUI() { return gameUI; }
-    public InventoryUI getInventoryUI() { return inventoryUI; }
 }

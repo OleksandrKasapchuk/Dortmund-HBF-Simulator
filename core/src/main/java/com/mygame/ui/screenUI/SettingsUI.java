@@ -13,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygame.Assets;
-import com.mygame.Main;
 import com.mygame.game.GameSettings;
 import com.mygame.game.SettingsManager;
 import com.mygame.managers.global.audio.MusicManager;
@@ -162,6 +161,13 @@ public class SettingsUI extends Screen {
         settings.language = languageCode;
         SettingsManager.save(settings);
         Assets.loadBundle(new Locale(languageCode));
-        Main.restartGame();
+        updateLabels();
+    }
+
+    private void updateLabels() {
+        settingsLabel1.setText(Assets.bundle.get("settings.title"));
+        musicVolumeLabel.setText(Assets.bundle.get("settings.music"));
+        soundVolumeLabel.setText(Assets.bundle.get("settings.sounds"));
+        muteAllCheckbox.setText(Assets.bundle.get("settings.muteAll"));
     }
 }

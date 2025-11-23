@@ -24,7 +24,7 @@ public class Transition {
 
 
     public void drawDebug(ShapeRenderer shapeRenderer) {
-        shapeRenderer.setColor(Color.RED); // колір зони
+        shapeRenderer.setColor(Color.WHITE); // колір зони
         shapeRenderer.rect(area.x, area.y, area.width, area.height);
     }
 

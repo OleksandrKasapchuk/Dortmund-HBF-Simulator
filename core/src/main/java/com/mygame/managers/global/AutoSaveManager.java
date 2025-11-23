@@ -33,7 +33,9 @@ public class AutoSaveManager {
         if (gameInitializer == null || gameInitializer.getPlayer() == null) return;
 
         GameSettings settings = SettingsManager.load();
+
         Player player = gameInitializer.getPlayer();
+        settings.playerState = player.getState();
 
         // Save player data
         settings.playerX = player.getX();
