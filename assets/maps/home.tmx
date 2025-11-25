@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="100" tileheight="100" infinite="0" nextlayerid="4" nextobjectid="2">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="100" tileheight="100" infinite="0" nextlayerid="6" nextobjectid="3">
  <tileset firstgid="1" source="plate.tsx"/>
  <tileset firstgid="2" source="brick.tsx"/>
+ <tileset firstgid="3" source="npc.tsx"/>
  <layer id="1" name="background" width="40" height="40">
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -99,4 +100,13 @@
    </properties>
   </object>
  </objectgroup>
+ <objectgroup id="4" name="npcs">
+  <object id="2" gid="3" x="2321" y="2702" width="70" height="100">
+   <properties>
+    <property name="name" value="denys"/>
+    <property name="textureKey" value="denys"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="5" name="items"/>
 </map>

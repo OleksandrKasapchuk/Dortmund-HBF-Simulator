@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="60" tilewidth="100" tileheight="100" infinite="0" nextlayerid="4" nextobjectid="3">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="60" tilewidth="100" tileheight="100" infinite="0" nextlayerid="7" nextobjectid="31">
  <tileset firstgid="1" source="plate.tsx"/>
  <tileset firstgid="2" source="brick.tsx"/>
+ <tileset firstgid="3" source="npc.tsx"/>
  <layer id="1" name="background" width="50" height="60">
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -141,6 +142,21 @@
     <property name="targetWorldId" value="main"/>
     <property name="targetX" type="float" value="4000"/>
     <property name="targetY" type="float" value="7700"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="6" name="items"/>
+ <objectgroup id="5" name="npcs">
+  <object id="29" gid="3" x="2719.55" y="3304.55" width="70" height="100">
+   <properties>
+    <property name="name" value="baryga"/>
+    <property name="textureKey" value="baryga"/>
+   </properties>
+  </object>
+  <object id="30" gid="3" x="3213.48" y="4101.52" width="70" height="100">
+   <properties>
+    <property name="name" value="chikita"/>
+    <property name="textureKey" value="chikita"/>
    </properties>
   </object>
  </objectgroup>

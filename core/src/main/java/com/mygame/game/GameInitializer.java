@@ -7,6 +7,7 @@ import com.mygame.entity.Player;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.managers.ManagerRegistry;
 import com.mygame.managers.global.QuestManager;
+import com.mygame.managers.nonglobal.NpcManager;
 import com.mygame.world.WorldManager;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.world.World;
@@ -40,7 +41,6 @@ public class GameInitializer {
 
         World mainWorld = new World("main","maps/main_station.tmx");
         World backWorld = new World("leopold","maps/leopold.tmx");
-
         World subwayWorld = new World("subway", "maps/subway.tmx");
         World homeWorld = new World("home","maps/home.tmx");
 
@@ -53,14 +53,21 @@ public class GameInitializer {
         System.out.println("GameInitializer: Worlds created and configured.");
 
         GameSettings settings = SettingsManager.load();
-
-         WorldManager.setCurrentWorld(WorldManager.getWorld(settings.currentWorldName));
+        WorldManager.setCurrentWorld(WorldManager.getWorld(settings.currentWorldName));
 
         player = new Player(500, 80, 80, settings.playerX, settings.playerY, Assets.textureZoe, WorldManager.getCurrentWorld());
         System.out.println("GameInitializer: Player created.");
 
         managerRegistry = new ManagerRegistry(batch, font, player);
         System.out.println("GameInitializer: ManagerRegistry created.");
+
+        // --- Load NPCs from all maps ---
+        NpcManager npcManager = managerRegistry.getNpcManager();
+        npcManager.loadNpcsFromMap(mainWorld);
+        npcManager.loadNpcsFromMap(backWorld);
+        npcManager.loadNpcsFromMap(subwayWorld);
+        npcManager.loadNpcsFromMap(homeWorld);
+        // ------------------------------
 
         // Load inventory and quests from settings
         if (settings.inventory != null) {

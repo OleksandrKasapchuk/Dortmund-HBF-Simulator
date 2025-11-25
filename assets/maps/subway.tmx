@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="40" height="60" tilewidth="100" tileheight="100" infinite="0" nextlayerid="4" nextobjectid="3">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="40" height="60" tilewidth="100" tileheight="100" infinite="0" nextlayerid="6" nextobjectid="10">
  <tileset firstgid="1" source="plate.tsx"/>
  <tileset firstgid="2" source="brick.tsx"/>
+ <tileset firstgid="3" source="npc.tsx"/>
  <layer id="1" name="background" width="40" height="60">
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -66,22 +67,6 @@
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 </data>
  </layer>
- <objectgroup id="3" name="transitions">
-  <object id="1" gid="2" x="2562" y="2774" width="296" height="692">
-   <properties>
-    <property name="targetWorldId" value="home"/>
-    <property name="targetX" type="float" value="2000"/>
-    <property name="targetY" type="float" value="700"/>
-   </properties>
-  </object>
-  <object id="2" gid="2" x="2610" y="4598" width="800" height="460">
-   <properties>
-    <property name="targetWorldId" value="main"/>
-    <property name="targetX" type="float" value="6250"/>
-    <property name="targetY" type="float" value="6700"/>
-   </properties>
-  </object>
- </objectgroup>
  <layer id="2" name="collision" width="40" height="60">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -146,4 +131,29 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="3" name="transitions">
+  <object id="1" gid="2" x="2562" y="2774" width="296" height="692">
+   <properties>
+    <property name="targetWorldId" value="home"/>
+    <property name="targetX" type="float" value="2000"/>
+    <property name="targetY" type="float" value="700"/>
+   </properties>
+  </object>
+  <object id="2" gid="2" x="2610" y="4598" width="800" height="460">
+   <properties>
+    <property name="targetWorldId" value="main"/>
+    <property name="targetX" type="float" value="6250"/>
+    <property name="targetY" type="float" value="6700"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="npcs">
+  <object id="9" gid="3" x="2613.48" y="3889.39" width="70" height="100">
+   <properties>
+    <property name="name" value="ryzhyi"/>
+    <property name="textureKey" value="ryzhyi"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="5" name="items"/>
 </map>

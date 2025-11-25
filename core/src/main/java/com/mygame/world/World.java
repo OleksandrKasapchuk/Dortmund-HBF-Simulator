@@ -142,7 +142,6 @@ public class World {
     public TiledMap getMap() { return map; }
     public String getName() { return name; }
     public ArrayList<Transition> getTransitions() { return transitions; }
-    public void addTransition(Transition transition) { transitions.add(transition); }
     public ArrayList<NPC> getNpcs() { return npcs; }
     public ArrayList<Item> getItems() { return items; }
     public ArrayList<Item> getPfands() { return pfands; }

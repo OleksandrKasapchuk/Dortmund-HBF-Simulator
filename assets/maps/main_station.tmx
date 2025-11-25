@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="80" height="80" tilewidth="100" tileheight="100" infinite="0" nextlayerid="5" nextobjectid="13">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="80" height="80" tilewidth="100" tileheight="100" infinite="0" nextlayerid="8" nextobjectid="20">
  <tileset firstgid="1" source="plate.tsx"/>
  <tileset firstgid="2" source="brick.tsx"/>
+ <tileset firstgid="3" source="npc.tsx"/>
  <layer id="1" name="background" width="80" height="80">
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -186,4 +187,19 @@
    </properties>
   </object>
  </objectgroup>
+ <objectgroup id="6" name="npcs">
+  <object id="17" gid="3" x="4923.67" y="5410" width="70" height="100">
+   <properties>
+    <property name="name" value="kamil"/>
+    <property name="textureKey" value="kamil"/>
+   </properties>
+  </object>
+  <object id="18" gid="3" x="4913" y="4702" width="70" height="100">
+   <properties>
+    <property name="name" value="igo"/>
+    <property name="textureKey" value="igo"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="7" name="items"/>
 </map>
