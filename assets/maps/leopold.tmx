@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="60" tilewidth="100" tileheight="100" infinite="0" nextlayerid="3" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="60" tilewidth="100" tileheight="100" infinite="0" nextlayerid="4" nextobjectid="3">
  <tileset firstgid="1" source="plate.tsx"/>
  <tileset firstgid="2" source="brick.tsx"/>
  <layer id="1" name="background" width="50" height="60">
@@ -130,4 +130,18 @@
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="3" name="transitions">
+  <properties>
+   <property name="targetWorldId" value=""/>
+   <property name="targetX" type="float" value="0"/>
+   <property name="targetY" type="float" value="0"/>
+  </properties>
+  <object id="1" gid="2" x="2177.76" y="5956.91" width="715.152" height="200">
+   <properties>
+    <property name="targetWorldId" value="main"/>
+    <property name="targetX" type="float" value="4000"/>
+    <property name="targetY" type="float" value="7700"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>
