@@ -1,67 +1,83 @@
 package com.mygame.managers.nonglobal;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygame.entity.Player;
+import com.mygame.world.World;
 
 /**
- * Handles camera movement and viewport scaling.
- * Follows the player while keeping the camera inside the world bounds.
+ * CameraManager handles the game's camera, including:
+ * - Following the player.
+ * - Clamping the camera to the world boundaries.
+ * - Handling camera shake effects.
+ * - Managing viewport resizing.
  */
 public class CameraManager {
-
     private final OrthographicCamera camera;
     private final Viewport viewport;
+    private final Player player;
 
-    // World boundaries for clamping camera position
-    private final float worldWidth;
-    private final float worldHeight;
+    // Camera shake parameters
+    private float shakeDuration = 0;
+    private float shakeIntensity = 0;
 
-    public CameraManager(float worldWidth, float worldHeight) {
-        this.camera = new OrthographicCamera();
+    private static final float VIEWPORT_WIDTH = 2000f;
+    private static final float VIEWPORT_HEIGHT = 1000f;
 
-        // Fixed virtual resolution, scaled with black bars when needed
-        this.viewport = new FitViewport(2000, 1000, camera);
-
-        this.worldWidth = worldWidth;
-        this.worldHeight = worldHeight;
+    public CameraManager(Player player) {
+        this.player = player;
+        camera = new OrthographicCamera();
+        viewport = new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, camera);
+        viewport.apply();
     }
 
-    /**
-     * Updates camera position based on the player's location.
-     * Keeps the camera inside world bounds and applies the projection to the batch.
-     */
-    public void update(Player player, SpriteBatch batch) {
-        if (player == null) return;
+    /** Updates camera position and handles shake effects */
+    public void update(float delta, World world) {
+        // The alpha value determines how quickly the camera catches up to the player.
+        // A smaller value means smoother, more delayed movement.
+        float alpha = 0.1f;
 
-        // Center camera on player
+        // Calculate the target position (center of the player)
         float targetX = player.getX() + player.getWidth() / 2f;
         float targetY = player.getY() + player.getHeight() / 2f;
 
-        // Clamp camera to world borders
-        float cameraX = Math.max(
-            camera.viewportWidth / 2f,
-            Math.min(targetX, worldWidth - camera.viewportWidth / 2f)
-        );
+        // Smoothly interpolate the camera's position towards the target
+        camera.position.x += (targetX - camera.position.x) * alpha;
+        camera.position.y += (targetY - camera.position.y) * alpha;
 
-        float cameraY = Math.max(
-            camera.viewportHeight / 2f,
-            Math.min(targetY, worldHeight - camera.viewportHeight / 2f)
-        );
+        // Apply camera shake if active
+        if (shakeDuration > 0) {
+            shakeDuration -= delta;
+            float shakeX = (MathUtils.random() - 0.5f) * 2 * shakeIntensity;
+            float shakeY = (MathUtils.random() - 0.5f) * 2 * shakeIntensity;
+            camera.position.add(shakeX, shakeY, 0);
+        }
 
-        camera.position.set(cameraX, cameraY, 0);
+        // Clamp camera to world boundaries
+        float halfViewportWidth = viewport.getWorldWidth() / 2f;
+        float halfViewportHeight = viewport.getWorldHeight() / 2f;
+
+        float minX = halfViewportWidth;
+        float maxX = world.mapWidth - halfViewportWidth;
+        float minY = halfViewportHeight;
+        float maxY = world.mapHeight - halfViewportHeight;
+
+        camera.position.x = MathUtils.clamp(camera.position.x, minX, maxX);
+        camera.position.y = MathUtils.clamp(camera.position.y, minY, maxY);
+
         camera.update();
-
-        // Apply viewport transform before drawing
-        viewport.apply();
-        batch.setProjectionMatrix(camera.combined);
     }
 
-    /**
-     * Updates viewport on window resize.
-     */
+
+    /** Initiates a camera shake effect */
+    public void shake(float intensity, float duration) {
+        this.shakeIntensity = intensity;
+        this.shakeDuration = duration;
+    }
+
+    /** Handles window resizing */
     public void resize(int width, int height) {
         viewport.update(width, height, true);
     }

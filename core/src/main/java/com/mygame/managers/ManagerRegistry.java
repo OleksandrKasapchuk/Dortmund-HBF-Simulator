@@ -11,6 +11,7 @@ import com.mygame.entity.item.ItemRegistry;
 
 import com.mygame.managers.nonglobal.*;
 import com.mygame.ui.UIManager;
+import com.mygame.world.WorldManager;
 
 public class ManagerRegistry {
 
@@ -26,14 +27,12 @@ public class ManagerRegistry {
 
     // --- Core game objects ---
     private Player player;
-    private SpriteBatch batch;
     private Skin skin;
 
     public ManagerRegistry(SpriteBatch batch, BitmapFont font, Player player) {
-        this.batch = batch;
         this.player = player;
 
-        cameraManager = new CameraManager(4000, 2000);
+        cameraManager = new CameraManager(player);
         pfandManager = new PfandManager();
 
         // --- Skin Loading ---
@@ -89,7 +88,7 @@ public class ManagerRegistry {
 
     public void update(float delta) {
         npcManager.update(delta);
-        cameraManager.update(player, batch);
+        cameraManager.update(delta,WorldManager.getCurrentWorld());
         itemManager.update(player);
         uiManager.update(delta, player);
         pfandManager.update(delta);

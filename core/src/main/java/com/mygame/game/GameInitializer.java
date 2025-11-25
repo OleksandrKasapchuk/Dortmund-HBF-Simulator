@@ -40,11 +40,11 @@ public class GameInitializer {
         font = Assets.myFont; // Use the font from Assets
         System.out.println("GameInitializer: Batch and font created.");
 
-        World mainWorld = new World("main","maps/main_station.txt");
-        World backWorld = new World("leopold","maps/leopold.txt");
+        World mainWorld = new World("main","maps/main_station.tmx");
+        World backWorld = new World("leopold","maps/leopold.tmx");
 
-        World subwayWorld = new World("subway", "maps/subway.txt");
-        World homeWorld = new World("home","maps/home.txt");
+        World subwayWorld = new World("subway", "maps/subway.tmx");
+        World homeWorld = new World("home","maps/home.tmx");
 
         backWorld.addTransition(new Transition("main", 1600, 1600, new Rectangle(100, 100, 200, 200)));
         mainWorld.addTransition(new Transition("leopold", 350, 200, new Rectangle(1200, 1700, 1000, 200)));

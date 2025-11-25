@@ -3,6 +3,7 @@ package com.mygame;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygame.game.GameInitializer;
@@ -78,26 +79,30 @@ public class Main extends ApplicationAdapter {
 
         WorldManager.update(delta, player, gameInitializer.getManagerRegistry().getUiManager().isInteractPressed());
 
-        SpriteBatch batch = gameInitializer.getBatch();
+        OrthographicCamera camera = gameInitializer.getManagerRegistry().getCameraManager().getCamera();
 
-        // Draw sprites
-        batch.setProjectionMatrix(gameInitializer.getManagerRegistry().getCameraManager().getCamera().combined);
+        // 1. Render the TMX map layer
+        WorldManager.renderMap(camera);
+
+        // 2. Draw sprites (entities) on top
+        SpriteBatch batch = gameInitializer.getBatch();
+        batch.setProjectionMatrix(camera.combined);
         batch.begin();
         gameInitializer.getManagerRegistry().update(delta);
-        WorldManager.draw(batch, gameInitializer.getFont(), player);
+        WorldManager.drawEntities(batch, gameInitializer.getFont(), player); // Corrected method
         player.draw(batch);
         gameInitializer.getManagerRegistry().render();
         batch.end();
 
-        // Draw shapes
-        shapeRenderer.setProjectionMatrix(gameInitializer.getManagerRegistry().getCameraManager().getCamera().combined);
+        // 3. Draw debug shapes
+        shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         if (WorldManager.getCurrentWorld() != null) {
             WorldManager.getCurrentWorld().drawTransitions(shapeRenderer);
         }
         shapeRenderer.end();
 
-        // Draw UI
+        // 4. Draw UI
         gameInitializer.getManagerRegistry().getUiManager().render();
     }
 

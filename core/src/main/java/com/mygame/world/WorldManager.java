@@ -1,5 +1,6 @@
 package com.mygame.world;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -11,12 +12,11 @@ import java.util.Map;
 
 public class WorldManager {
 
-    private static Map<String, World> worlds = new HashMap<>();
+    private static final Map<String, World> worlds = new HashMap<>();
     private static World currentWorld;
     private static final float TRANSITION_COOLDOWN = 0.5f; // Cooldown in seconds
     private static float cooldownTimer = 0f;
     private static boolean inTransitionZone = false;
-
 
     public static void addWorld(World world) {
         worlds.put(world.getName(), world);
@@ -31,20 +31,29 @@ public class WorldManager {
     }
 
     public static void disposeWorlds() {
+        for (World world : worlds.values()) {
+            world.dispose();
+        }
         worlds.clear();
         currentWorld = null;
     }
-
 
     public static void setCurrentWorld(String id) {
         if (!worlds.containsKey(id)) return;
         currentWorld = worlds.get(id);
     }
+
     public static void setCurrentWorld(World world) {
         currentWorld = world;
     }
 
-    public static void draw(SpriteBatch batch, BitmapFont font, Player player) {
+    public static void renderMap(OrthographicCamera camera) {
+        if (currentWorld != null) {
+            currentWorld.renderMap(camera);
+        }
+    }
+
+    public static void drawEntities(SpriteBatch batch, BitmapFont font, Player player) {
         if (currentWorld != null) currentWorld.draw(batch, font, player);
 
         if (inTransitionZone) {

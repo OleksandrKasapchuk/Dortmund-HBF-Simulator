@@ -48,7 +48,7 @@ public class NpcManager {
 
         World world = WorldManager.getWorld("main");
         World world2 = WorldManager.getWorld("leopold");
-
+        World world3 = WorldManager.getWorld("subway");
         // --- IGO NPC ---
         DialogueNode igoNodeStart = new DialogueNode(Assets.bundle.get("dialogue.igo.start"));
         DialogueNode igoNodeThanks = new DialogueNode(Assets.bundle.get("dialogue.igo.thanks"));
@@ -127,7 +127,7 @@ public class NpcManager {
             }
         });
         barygaNode.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), new DialogueNode(Assets.bundle.get("dialogue.baryga.bye")));
-        NPC baryga = new NPC(Assets.bundle.get("npc.baryga.name"), 90, 90, 1500, 600, Assets.textureBaryga, world, 0, 1, 3f, 0f, 0, 150,
+        NPC baryga = new NPC(Assets.bundle.get("npc.baryga.name"), 90, 90, 1500, 600, Assets.textureBaryga, world2, 0, 1, 3f, 0f, 0, 150,
             new Dialogue(barygaNode));
         npcs.add(baryga);
         world2.getNpcs().add(baryga);
@@ -151,7 +151,7 @@ public class NpcManager {
             }
         });
         chikitaNode.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), () -> {});
-        NPC chikita = new NPC(Assets.bundle.get("npc.chikita.name"), 90, 90, 450, 600, Assets.textureChikita, world, 0, 1, 3f, 0f, 0, 150,
+        NPC chikita = new NPC(Assets.bundle.get("npc.chikita.name"), 90, 90, 450, 600, Assets.textureChikita, world2, 0, 1, 3f, 0f, 0, 150,
             new Dialogue(chikitaNode));
         npcs.add(chikita);
         world2.getNpcs().add(chikita);
@@ -251,6 +251,20 @@ public class NpcManager {
             new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.kamil.start"))));
         npcs.add(kamil);
         world.getNpcs().add(kamil);
+
+        // --- KAMIL NPC ---
+        NPC jan = new NPC(Assets.bundle.get("npc.jan.name"), 90, 90, 1200, 1100, Assets.textureJan, world3, 1, 0, 3f, 0f, 75, 100,
+            new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.jan.start"))));
+        npcs.add(jan);
+        world3.getNpcs().add(jan);
+
+        // --- KAMIL NPC ---
+        NPC filip = new NPC(Assets.bundle.get("npc.filip.name"), 90, 90, 1200, 800, Assets.textureFilip, world3, 1, 0, 3f, 0f, 75, 100,
+            new Dialogue(new DialogueNode(
+                Assets.bundle.get("dialogue.filip.start.1"), Assets.bundle.get("dialogue.filip.start.2"),
+                Assets.bundle.get("dialogue.filip.start.3"), Assets.bundle.get("dialogue.filip.start.4"))));
+        npcs.add(filip);
+        world3.getNpcs().add(filip);
     }
 
     /** Update all NPCs */

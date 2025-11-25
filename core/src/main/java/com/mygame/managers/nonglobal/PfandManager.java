@@ -50,8 +50,9 @@ public class PfandManager {
         while (attempts < 80) {
             attempts++;
 
-            float x = random.nextFloat() * (4000 - itemWidth); // World width assumed 4000
-            float y = random.nextFloat() * (2000 - itemHeight); // World height assumed 2000
+            // Use world dimensions from the TMX map
+            float x = random.nextFloat() * (world.mapWidth - itemWidth);
+            float y = random.nextFloat() * (world.mapHeight - itemHeight);
 
             // Skip if inside camera view
             if (isInCameraView(x, y, cam)) continue;
@@ -70,31 +71,16 @@ public class PfandManager {
         }
     }
 
-    /** Checks if a rectangle collides with any block in the world */
+    /**
+     * Checks if an item's bounding box collides with any solid tile in the world.
+     * It checks the four corners of the bounding box.
+     */
     private boolean isCollidingWithAnyBlock(World world, float x, float y, float width, float height) {
-        int startX = (int) (x / world.tileSize);
-        int endX = (int) ((x + width) / world.tileSize);
-        int startY = (int) (y / world.tileSize);
-        int endY = (int) ((y + height) / world.tileSize);
-
-        // Invert Y axis because world blocks array may start from top
-        startY = world.getBlocks().length - 1 - startY;
-        endY = world.getBlocks().length - 1 - endY;
-
-        if (startY > endY) { // Swap if needed
-            int tmp = startY;
-            startY = endY;
-            endY = tmp;
-        }
-
-        for (int ty = startY; ty <= endY; ty++) {
-            for (int tx = startX; tx <= endX; tx++) {
-                if (ty < 0 || ty >= world.getBlocks().length || tx < 0 || tx >= world.getBlocks()[0].length)
-                    return true; // Out of world bounds
-                if (world.getBlocks()[ty][tx] != null) return true; // Block exists
-            }
-        }
-        return false;
+        // Check the four corners of the item's bounding box against the world's collision layer
+        if (world.isSolid(x, y)) return true;                      // Bottom-left
+        if (world.isSolid(x + width, y)) return true;             // Bottom-right
+        if (world.isSolid(x, y + height)) return true;             // Top-left
+        return world.isSolid(x + width, y + height); // Top-right
     }
 
     /** Checks if a position is too close to existing pfand items */

@@ -1,99 +1,66 @@
 package com.mygame.world;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.mygame.Assets;
 import com.mygame.entity.NPC;
 import com.mygame.entity.Player;
 import com.mygame.entity.item.Item;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class World {
-    public int tileSize = 100;
-    private Block[][] blocks;
-    private String name;
+    private final String name;
+    private final TiledMap map;
+    private final OrthogonalTiledMapRenderer mapRenderer;
+    private final TiledMapTileLayer collisionLayer;
+    public final int tileSize;
+    public final int mapWidth;
+    public final int mapHeight;
 
-    private ArrayList<Transition> transitions = new ArrayList<>();
-    private ArrayList<NPC> npcs = new ArrayList<>();
-    private ArrayList<Item> items = new ArrayList<>();
-    private ArrayList<Item> pfands = new ArrayList<>();
-
+    private final ArrayList<Transition> transitions = new ArrayList<>();
+    private final ArrayList<NPC> npcs = new ArrayList<>();
+    private final ArrayList<Item> items = new ArrayList<>();
+    private final ArrayList<Item> pfands = new ArrayList<>();
 
     public World(String name, String pathToMapFile) {
         this.name = name;
-        int[][] map = readMapFromFile(pathToMapFile);
-        blocks = new Block[map.length][map[0].length];
+        this.map = new TmxMapLoader().load(pathToMapFile);
+        this.mapRenderer = new OrthogonalTiledMapRenderer(this.map);
+        this.collisionLayer = (TiledMapTileLayer) this.map.getLayers().get("collision");
 
-        for (int y = 0; y < map.length; y++) {
-            for (int x = 0; x < map[y].length; x++) {
-                switch (map[y][x]){
-                    case 0:
-                        blocks[y][x] = new Block(false, Assets.plate);
-                        break;
-                    case 1:
-                        blocks[y][x] = new Block(true, Assets.brick2);
-                        break;
-                    case 2:
-                        blocks[y][x] = new Block(false, Assets.bush);
-                        break;
-                    case 3:
-                        blocks[y][x] = new Block(true, Assets.rock);
-                        break;
-                }
-            }
-        }
+        this.tileSize = this.map.getProperties().get("tilewidth", Integer.class);
+        this.mapWidth = this.map.getProperties().get("width", Integer.class) * tileSize;
+        this.mapHeight = this.map.getProperties().get("height", Integer.class) * tileSize;
     }
-
-    private int[][] readMapFromFile(String filePath) {
-        ArrayList<int[]> tempMap = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(Gdx.files.internal(filePath).read()))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] tokens = line.trim().split(",\\s*");
-                int[] row = new int[tokens.length];
-                for (int i = 0; i < tokens.length; i++) {
-                    row[i] = Integer.parseInt(tokens[i]);
-                }
-                tempMap.add(row);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        int[][] map = new int[tempMap.size()][];
-        for (int i = 0; i < tempMap.size(); i++) {
-            map[i] = tempMap.get(i);
-        }
-        return map;
-    }
-
 
     public boolean isSolid(float x, float y) {
+        if (collisionLayer == null) {
+            return false;
+        }
         int tileX = (int) (x / tileSize);
-        int tileY = (int) ((blocks.length - 1) - (y / tileSize));
+        int tileY = (int) (y / tileSize);
 
-        if (tileY < 0 || tileY >= blocks.length || tileX < 0 || tileX >= blocks[0].length)
-            return true;
+        if (tileX < 0 || tileX >= collisionLayer.getWidth() || tileY < 0 || tileY >= collisionLayer.getHeight()) {
+            return true; // Out of bounds is solid
+        }
 
-        Block block = blocks[tileY][tileX];
-        return block != null && block.issolid;
+        TiledMapTileLayer.Cell cell = collisionLayer.getCell(tileX, tileY);
+        return cell != null;
+    }
+
+    public void renderMap(OrthographicCamera camera) {
+        mapRenderer.setView(camera);
+        mapRenderer.render();
     }
 
     public void draw(SpriteBatch batch, BitmapFont font, Player player) {
-        for (int y = 0; y < blocks.length; y++) {
-            for (int x = 0; x < blocks[0].length; x++) {
-                Block block = blocks[y][x];
-                if (block != null) {
-                    batch.draw(block.texture, x * tileSize, (blocks.length - 1 - y) * tileSize, tileSize, tileSize);
-                }
-            }
-        }
         for (NPC npc : npcs) {
             npc.draw(batch);
             if (npc.isPlayerNear(player)) {
@@ -116,11 +83,16 @@ public class World {
         }
     }
 
-    public Block[][] getBlocks() {return blocks;}
-    public String getName(){return name;}
-    public ArrayList<Transition> getTransitions(){return transitions;}
-    public void addTransition(Transition transition){transitions.add(transition);}
+    public void dispose() {
+        map.dispose();
+        mapRenderer.dispose();
+    }
+
+    public TiledMap getMap() { return map; }
+    public String getName() { return name; }
+    public ArrayList<Transition> getTransitions() { return transitions; }
+    public void addTransition(Transition transition) { transitions.add(transition); }
     public ArrayList<NPC> getNpcs() { return npcs; }
-    public ArrayList<Item> getItems(){ return items; }
-    public ArrayList<Item> getPfands(){ return pfands; }
+    public ArrayList<Item> getItems() { return items; }
+    public ArrayList<Item> getPfands() { return pfands; }
 }

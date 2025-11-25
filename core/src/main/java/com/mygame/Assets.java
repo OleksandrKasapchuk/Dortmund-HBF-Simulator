@@ -46,6 +46,8 @@ public class Assets {
     public static Texture textureZoe;
     public static Texture textureBoss;
     public static Texture textureKamil;
+    public static Texture textureJan;
+    public static Texture textureFilip;
 
     //  === ITEM ===
     public static Texture textureSpoon;
@@ -53,11 +55,7 @@ public class Assets {
     public static Texture pfandAutomat;
 
     // === BLOCK ===
-    public static Texture brick;
     public static Texture bush;
-    public static Texture brick2;
-
-    public static Texture plate;
     public static Texture rock;
 
     // === BACKGROUND ===
@@ -131,6 +129,9 @@ public class Assets {
         textureBoss = new Texture(Gdx.files.internal("images/npc/boss.png"));
         textureKamil = new Texture(Gdx.files.internal("images/npc/kamil.png"));
 
+        textureJan = new Texture(Gdx.files.internal("images/npc/jan.png"));
+        textureFilip = new Texture(Gdx.files.internal("images/npc/filip.png"));
+
         // === BACKGROUND ===
         deathBack = new Texture(Gdx.files.internal("images/background/deathScreen.jpg"));
         menuBack = new Texture("images/background/menu.jpg");
@@ -142,11 +143,8 @@ public class Assets {
         pfandAutomat = new Texture(Gdx.files.internal("images/item/pfand_automat.png"));
 
         // === BLOCK ===
-        brick = new Texture(Gdx.files.internal("images/block/brick.png"));
         bush = new Texture(Gdx.files.internal("images/block/bush.jpg"));
-        brick2 = new Texture(Gdx.files.internal("images/block/brick2.jpg"));
         rock = new Texture(Gdx.files.internal("images/block/rock.jpg"));
-        plate = new Texture(Gdx.files.internal("images/block/plate.jpg"));
 
 
         // === SOUND ===
@@ -195,7 +193,6 @@ public class Assets {
         textureSpoon.dispose();
         textureBoss.dispose();
         textureKamil.dispose();
-        brick.dispose();
         bush.dispose();
         pfand.dispose();
         pfandAutomat.dispose();
