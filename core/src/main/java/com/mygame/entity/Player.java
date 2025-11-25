@@ -4,14 +4,15 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.item.ItemType;
 import com.mygame.game.SettingsManager;
-import com.mygame.world.WorldManager;
 import com.mygame.managers.nonglobal.InventoryManager;
 import com.mygame.world.World;
+import com.mygame.world.WorldManager;
 
 // Player entity controlled by user
 public class Player extends Entity {
@@ -61,73 +62,70 @@ public class Player extends Entity {
             speed = 500;
         }
 
-        // If movement locked → stop here
-        if (!isMovementLocked) {
+        // If movement is locked, do nothing
+        if (isMovementLocked) {
+            return;
+        }
 
-            float newX = getX();
-            float newY = getY();
+        float moveSpeed = speed * delta;
+        float dx = 0, dy = 0;
 
-            // === PC CONTROLS ===
-            if (Gdx.app.getType() != Application.ApplicationType.Android) {
+        // === PC CONTROLS ===
+        if (Gdx.app.getType() != Application.ApplicationType.Android) {
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A))
+                dx -= moveSpeed;
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D))
+                dx += moveSpeed;
+            if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W))
+                dy += moveSpeed;
+            if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S))
+                dy -= moveSpeed;
+        } else if (touchpad != null) { // === ANDROID TOUCHPAD ===
+            dx = touchpad.getKnobPercentX() * speed * delta;
+            dy = touchpad.getKnobPercentY() * speed * delta;
+        }
 
-                if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A))
-                    newX -= speed * delta;
+        // --- Collision Detection and Movement ---
+        // Move on X axis
+        if (!isCollidingWithMap(getX() + dx, getY()) && !isCollidingWithSolidItems(getX() + dx, getY())) {
+            setX(getX() + dx);
+        }
 
-                if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D))
-                    newX += speed * delta;
-
-                if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W))
-                    newY += speed * delta;
-
-                if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S))
-                    newY -= speed * delta;
-
-                // === ANDROID TOUCHPAD ===
-            } else if (touchpad != null) {
-                float dx = touchpad.getKnobPercentX();
-                float dy = touchpad.getKnobPercentY();
-
-                newX += dx * speed * delta;
-                newY += dy * speed * delta;
-            }
-
-            // Collision handling
-            if (!isColliding(newX, getY())) {
-                setX(newX);
-            }
-            if (!isColliding(getX(), newY)) {
-                setY(newY);
-            }
+        // Move on Y axis
+        if (!isCollidingWithMap(getX(), getY() + dy) && !isCollidingWithSolidItems(getX(), getY() + dy)) {
+            setY(getY() + dy);
         }
     }
 
-    // Check collisions with world blocks & items
-    private boolean isColliding(float checkX, float checkY) {
+    /**
+     * Checks if the player at a new position would collide with a solid tile on the map.
+     * It checks the four corners of the player's bounding box.
+     */
+    private boolean isCollidingWithMap(float newX, float newY) {
+        // Check bottom-left corner
+        if (world.isSolid(newX, newY)) return true;
+        // Check bottom-right corner
+        if (world.isSolid(newX + getWidth(), newY)) return true;
+        // Check top-left corner
+        if (world.isSolid(newX, newY + getHeight())) return true;
+        // Check top-right corner
+        return world.isSolid(newX + getWidth(), newY + getHeight());
+    }
 
-        // Check tile-based collision (world map)
-        if (world.isSolid(checkX, checkY - getHeight() - 20) ||
-            world.isSolid(checkX + getWidth(), checkY - getHeight() - 20) ||
-            world.isSolid(checkX, checkY - 20) ||
-            world.isSolid(checkX + getWidth(), checkY - 20)) {
-
-            return true;
-        }
-
-        // Check collision with solid items
+    /**
+     * Checks if the player at a new position would collide with any solid items.
+     */
+    private boolean isCollidingWithSolidItems(float newX, float newY) {
+        Rectangle playerRect = new Rectangle(newX, newY, getWidth(), getHeight());
         for (Item item : WorldManager.getCurrentWorld().getItems()) {
-            if (item.isSolid() && intersects(checkX, checkY, item)) {
-                return true;
+            if (item.isSolid()) {
+                Rectangle itemRect = new Rectangle(item.getX(), item.getY(), item.getWidth(), item.getHeight());
+                if (playerRect.overlaps(itemRect)) {
+                    return true;
+                }
             }
         }
         return false;
-    }
-
-    // Simple AABB collision check
-    private boolean intersects(float px, float py, Item item) {
-        return px < item.getX() + item.getWidth() &&
-            px + getWidth() > item.getX() &&
-            py < item.getY() + item.getHeight() &&
-            py + getHeight() > item.getY();
     }
 
     // Money getter
