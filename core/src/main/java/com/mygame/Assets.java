@@ -29,7 +29,7 @@ public class Assets {
     public static BitmapFont myFont;
 
     // === Textures (Kept for backward compatibility) ===
-    public static Texture textureRyzhyi, textureDenys, textureIgo, textureIgo2, textureBaryga, textureChikita, texturePolice, textureKioskMan, textureJunky, textureZoe, textureBoss, textureKamil, textureJan, textureFilip;
+    public static Texture textureRyzhyi, textureDenys, textureIgo, textureIgo2, textureBaryga, textureChikita, texturePolice, textureKioskMan, textureJunky, textureZoe, textureBoss, textureKamil, textureJan, textureFilip, textureJason;
     public static Texture textureSpoon, pfand, pfandAutomat;
     public static Texture bush, rock;
     public static Texture deathBack, menuBack, menuBlurBack;
@@ -83,6 +83,7 @@ public class Assets {
         textureKamil = loadAndStore("kamil", "images/npc/kamil.png");
         textureJan = loadAndStore("jan", "images/npc/jan.png");
         textureFilip = loadAndStore("filip", "images/npc/filip.png");
+        textureJason = loadAndStore("jason", "images/npc/jason.png");
 
         deathBack = loadAndStore("deathBack", "images/background/deathScreen.jpg");
         menuBack = loadAndStore("menuBack", "images/background/menu.jpg");

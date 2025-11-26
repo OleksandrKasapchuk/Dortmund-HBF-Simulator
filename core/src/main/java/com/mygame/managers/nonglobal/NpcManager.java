@@ -217,6 +217,21 @@ public class NpcManager {
             case "filip":
                 npc = new NPC(Assets.bundle.get("npc.filip.name"), 90, 90, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.filip.start.1"), Assets.bundle.get("dialogue.filip.start.2"), Assets.bundle.get("dialogue.filip.start.3"), Assets.bundle.get("dialogue.filip.start.4"))));
                 break;
+
+            case "jason":
+                npc = new NPC(Assets.bundle.get("npc.jason.name"), 90, 90, x, y, texture, world, 1, 0, 3f, 0f, 75, 100,
+                    new Dialogue(new DialogueNode(() -> {
+                        player.getInventory().addItem(ItemRegistry.get("money"), 20);
+                        NPC jason = findNpcByName(Assets.bundle.get("npc.jason.name"));
+                        jason.setDialogue(new Dialogue(new DialogueNode("...")));
+                        uiManager.getGameUI().showInfoMessage("You got 20 euro", 1.5f);
+                    },
+                    Assets.bundle.get("dialogue.jason.start.1"), Assets.bundle.get("dialogue.jason.start.2"),
+                    Assets.bundle.get("dialogue.jason.start.3"), Assets.bundle.get("dialogue.jason.start.4"),
+                    Assets.bundle.get("dialogue.jason.start.5"), Assets.bundle.get("dialogue.jason.start.6"),
+                    Assets.bundle.get("dialogue.jason.start.7"))));
+                break;
+
         }
 
         if (npc != null) {
