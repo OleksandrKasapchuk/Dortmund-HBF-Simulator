@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.mygame.entity.item.Item;
@@ -94,6 +95,14 @@ public class Player extends Entity {
         // Move on Y axis
         if (!isCollidingWithMap(getX(), getY() + dy) && !isCollidingWithSolidItems(getX(), getY() + dy)) {
             setY(getY() + dy);
+        }
+
+        // --- World Bounds Clamping ---
+        if (world != null) {
+            float clampedX = MathUtils.clamp(getX(), 0, world.mapWidth - getWidth());
+            float clampedY = MathUtils.clamp(getY(), 0, world.mapHeight - getHeight());
+            setX(clampedX);
+            setY(clampedY);
         }
     }
 

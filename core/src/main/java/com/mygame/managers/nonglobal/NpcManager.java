@@ -82,7 +82,7 @@ public class NpcManager {
                     }
                 });
                 igoNodeStart.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), () -> { if (!QuestManager.hasQuest("igo")) QuestManager.addQuest(new QuestManager.Quest("igo", "quest.igo.name", "quest.igo.description")); });
-                npc = new NPC(Assets.bundle.get("npc.igo.name"), 90, 90, x, y, texture, world, 1, 0, 3f, 0f, 0, 150, new Dialogue(completedEvents.contains("igo_gave_vape") ? igoNodeThanks : igoNodeStart));
+                npc = new NPC(Assets.bundle.get("npc.igo.name"), 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 0, 150, new Dialogue(completedEvents.contains("igo_gave_vape") ? igoNodeThanks : igoNodeStart));
                 if (completedEvents.contains("igo_gave_vape")) npc.setTexture(Assets.getTexture("igo2"));
                 break;
 
@@ -96,11 +96,11 @@ public class NpcManager {
                     SettingsManager.save(settings);
                     findNpcByName(Assets.bundle.get("npc.ryzhyi.name")).setDialogue(new Dialogue(ryzhyiNodeAfter));
                 });
-                npc = new NPC(Assets.bundle.get("npc.ryzhyi.name"), 90, 90, x, y, texture, world, 0, 1, 1f, 2f, 200, 150, new Dialogue(completedEvents.contains("ryzhyi_gave_money") ? ryzhyiNodeAfter : ryzhyiNodeStart));
+                npc = new NPC(Assets.bundle.get("npc.ryzhyi.name"), 100, 100, x, y, texture, world, 0, 1, 1f, 2f, 200, 150, new Dialogue(completedEvents.contains("ryzhyi_gave_money") ? ryzhyiNodeAfter : ryzhyiNodeStart));
                 break;
 
             case "denys":
-                npc = new NPC(Assets.bundle.get("npc.denys.name"), 90, 90, x, y, texture, world, 0, 1, 2f, 1f, 100, 150, new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.denys.start"), Assets.bundle.get("dialogue.denys.declined"))));
+                npc = new NPC(Assets.bundle.get("npc.denys.name"), 100, 100, x, y, texture, world, 0, 1, 2f, 1f, 100, 150, new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.denys.start"), Assets.bundle.get("dialogue.denys.declined"))));
                 break;
 
             case "baryga":
@@ -114,7 +114,7 @@ public class NpcManager {
                     }
                 });
                 barygaNode.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), new DialogueNode(Assets.bundle.get("dialogue.baryga.bye")));
-                npc = new NPC(Assets.bundle.get("npc.baryga.name"), 90, 90, x, y, texture, world, 0, 1, 3f, 0f, 0, 150, new Dialogue(barygaNode));
+                npc = new NPC(Assets.bundle.get("npc.baryga.name"), 100, 100, x, y, texture, world, 0, 1, 3f, 0f, 0, 150, new Dialogue(barygaNode));
                 break;
 
             case "chikita":
@@ -135,7 +135,7 @@ public class NpcManager {
                     }
                 });
                 chikitaNode.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), () -> {});
-                npc = new NPC(Assets.bundle.get("npc.chikita.name"), 90, 90, x, y, texture, world, 0, 1, 3f, 0f, 0, 150, new Dialogue(chikitaNode));
+                npc = new NPC(Assets.bundle.get("npc.chikita.name"), 100, 100, x, y, texture, world, 0, 1, 3f, 0f, 0, 150, new Dialogue(chikitaNode));
                 break;
 
             case "kioskman":
@@ -158,7 +158,7 @@ public class NpcManager {
                     }
                 });
                 kioskNodeStart.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), new DialogueNode(Assets.bundle.get("dialogue.kioskman.bye")));
-                npc = new NPC(Assets.bundle.get("npc.kioskman.name"), 90, 90, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(kioskNodeStart));
+                npc = new NPC(Assets.bundle.get("npc.kioskman.name"), 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(kioskNodeStart));
                 break;
 
             case "junky":
@@ -207,31 +207,52 @@ public class NpcManager {
                 break;
 
             case "kamil":
-                npc = new NPC(Assets.bundle.get("npc.kamil.name"), 90, 90, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.kamil.start"))));
+                npc = new NPC(Assets.bundle.get("npc.kamil.name"), 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.kamil.start"))));
                 break;
 
             case "jan":
-                npc = new NPC(Assets.bundle.get("npc.jan.name"), 90, 90, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.jan.start"))));
+                npc = new NPC(Assets.bundle.get("npc.jan.name"), 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.jan.start"))));
                 break;
 
             case "filip":
-                npc = new NPC(Assets.bundle.get("npc.filip.name"), 90, 90, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.filip.start.1"), Assets.bundle.get("dialogue.filip.start.2"), Assets.bundle.get("dialogue.filip.start.3"), Assets.bundle.get("dialogue.filip.start.4"))));
+                npc = new NPC(Assets.bundle.get("npc.filip.name"), 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.filip.start.1"), Assets.bundle.get("dialogue.filip.start.2"), Assets.bundle.get("dialogue.filip.start.3"), Assets.bundle.get("dialogue.filip.start.4"))));
                 break;
 
             case "jason":
-                npc = new NPC(Assets.bundle.get("npc.jason.name"), 90, 90, x, y, texture, world, 1, 0, 3f, 0f, 75, 100,
-                    new Dialogue(new DialogueNode(() -> {
-                        player.getInventory().addItem(ItemRegistry.get("money"), 20);
-                        NPC jason = findNpcByName(Assets.bundle.get("npc.jason.name"));
-                        jason.setDialogue(new Dialogue(new DialogueNode("...")));
-                        uiManager.getGameUI().showInfoMessage("You got 20 euro", 1.5f);
-                    },
-                    Assets.bundle.get("dialogue.jason.start.1"), Assets.bundle.get("dialogue.jason.start.2"),
+                DialogueNode jasonEndNode = new DialogueNode("...");
+                DialogueNode jasonStartNode = new DialogueNode(() -> {
+                    player.getInventory().addItem(ItemRegistry.get("money"), 20);
+                    NPC jason = findNpcByName(Assets.bundle.get("npc.jason.name"));
+                    jason.setDialogue(new Dialogue(jasonEndNode));
+                    uiManager.getGameUI().showInfoMessage("You got 20 euro", 1.5f);
+                    settings.completedDialogueEvents.add("jason_gave_money");
+                    SettingsManager.save(settings);
+                },  Assets.bundle.get("dialogue.jason.start.1"), Assets.bundle.get("dialogue.jason.start.2"),
                     Assets.bundle.get("dialogue.jason.start.3"), Assets.bundle.get("dialogue.jason.start.4"),
                     Assets.bundle.get("dialogue.jason.start.5"), Assets.bundle.get("dialogue.jason.start.6"),
-                    Assets.bundle.get("dialogue.jason.start.7"))));
-                break;
+                    Assets.bundle.get("dialogue.jason.start.7"));
 
+                npc = new NPC(Assets.bundle.get("npc.jason.name"), 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100,
+                    new Dialogue(completedEvents.contains("jason_gave_money") ? jasonEndNode : jasonStartNode));
+                break;
+            case "turkish":
+                npc = new NPC("turkish", 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.filip.start.1"), Assets.bundle.get("dialogue.filip.start.2"), Assets.bundle.get("dialogue.filip.start.3"), Assets.bundle.get("dialogue.filip.start.4"))));
+                break;
+            case "talahon1":
+                npc = new NPC("talahon1", 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode("...")));
+                break;
+            case "talahon2":
+                npc = new NPC("talahon2", 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode("...")));
+                break;
+            case "grandpa":
+                npc = new NPC("grandpa", 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode("...")));
+                break;
+            case "russian":
+                npc = new NPC("russian", 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode("...")));
+                break;
+            case "nigga":
+                npc = new NPC("nigga", 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode("...")));
+                break;
         }
 
         if (npc != null) {
