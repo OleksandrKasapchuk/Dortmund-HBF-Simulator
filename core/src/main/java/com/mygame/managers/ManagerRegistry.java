@@ -11,6 +11,7 @@ import com.mygame.entity.item.ItemRegistry;
 
 import com.mygame.managers.nonglobal.*;
 import com.mygame.ui.UIManager;
+import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 
 public class ManagerRegistry {
@@ -20,6 +21,7 @@ public class ManagerRegistry {
     private NpcManager npcManager;
     private PfandManager pfandManager;
     private ItemManager itemManager;
+    private TransitionManager transitionManager;
     private PlayerEffectManager playerEffectManager;
     private CameraManager cameraManager;
     private GameStateManager gameStateManager;
@@ -65,6 +67,18 @@ public class ManagerRegistry {
             style.titleFont = cyrillicFont;
         }
         // --- End of Skin and Font Loading ---
+        // 2. Now, create the worlds. They can now safely access the ItemRegistry.
+        World mainWorld = new World("main", "maps/main_station.tmx");
+        World backWorld = new World("leopold", "maps/leopold.tmx");
+        World subwayWorld = new World("subway", "maps/subway.tmx");
+        World homeWorld = new World("home", "maps/home.tmx");
+
+        WorldManager.addWorld(mainWorld);
+        WorldManager.addWorld(backWorld);
+        WorldManager.addWorld(subwayWorld);
+        WorldManager.addWorld(homeWorld);
+        System.out.println("GameInitializer: All worlds created and loaded.");
+
 
         // Pass the configured skin to the UIManager
         uiManager = new UIManager(player, skin);
@@ -76,6 +90,13 @@ public class ManagerRegistry {
         itemManager = new ItemManager();
 
         npcManager = new NpcManager(player, uiManager);
+        transitionManager = new TransitionManager();
+
+        for (World world : WorldManager.getWorlds().values()) {
+            npcManager.loadNpcsFromMap(world);
+            itemManager.loadItemsFromMap(world);
+            transitionManager.loadTransitionsFromMap(world);
+        }
 
         gameStateManager = new GameStateManager(uiManager);
 

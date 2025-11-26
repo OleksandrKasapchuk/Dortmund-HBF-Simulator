@@ -13,44 +13,40 @@ import com.mygame.entity.Police;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.game.GameSettings;
 import com.mygame.game.SettingsManager;
-import com.mygame.world.WorldManager;
-import com.mygame.managers.global.audio.SoundManager;
 import com.mygame.managers.global.QuestManager;
 import com.mygame.managers.global.TimerManager;
+import com.mygame.managers.global.audio.SoundManager;
 import com.mygame.ui.UIManager;
 import com.mygame.world.World;
+import com.mygame.world.WorldManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class NpcManager {
-    private final ArrayList<NPC> npcs = new ArrayList<>();
-    private Police police;
-    private NPC boss;
-    private Police police1;
-
+    private final ArrayList<NPC> allNpcs = new ArrayList<>();
     private final Player player;
     private final UIManager uiManager;
+
+    // Direct references for special NPCs if needed
+    private Police police;
+    private NPC boss;
+    private Police police1; // For the summoned police
 
     public NpcManager(Player player, UIManager uiManager) {
         this.player = player;
         this.uiManager = uiManager;
-        createNpcs(uiManager); // Old method is still here and works
     }
 
-    // +++ NEW GENERIC METHOD to load NPCs from the map +++
     public void loadNpcsFromMap(World world) {
         MapLayer npcLayer = world.getMap().getLayers().get("npcs");
-        if (npcLayer == null) {
-            return; // No "npcs" layer in this world, which is fine.
-        }
+        if (npcLayer == null) return;
 
         for (MapObject object : npcLayer.getObjects()) {
             MapProperties props = object.getProperties();
             String npcId = props.get("name", String.class);
             if (npcId == null) continue;
 
-            // This method will act as a factory based on the NPC ID from Tiled
             createNpcById(npcId, props, world);
         }
     }
@@ -58,68 +54,41 @@ public class NpcManager {
     private void createNpcById(String npcId, MapProperties props, World world) {
         float x = props.get("x", 0f, Float.class);
         float y = props.get("y", 0f, Float.class);
-        Texture texture = Assets.getTexture(npcId.toLowerCase()); // Assumes texture key matches npcId
+        Texture texture = Assets.getTexture(npcId.toLowerCase());
 
         if (texture == null) {
             System.err.println("Texture for '" + npcId + "' not found! Using fallback.");
-            texture = Assets.getTexture("zoe"); // Default texture
+            texture = Assets.getTexture("zoe");
         }
 
         NPC npc = null;
         GameSettings settings = SettingsManager.load();
         List<String> completedEvents = settings.completedDialogueEvents;
 
-        // The switch statement will contain the logic for each NPC
         switch (npcId.toLowerCase()) {
-            case "kamil":
-                npc = new NPC(Assets.bundle.get("npc.kamil.name"), 90, 90, x, y, texture, world, 1, 0, 3f, 0f, 75, 100,
-                    new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.kamil.start"))));
-                break;
-
             case "igo":
-                // --- IGO NPC ---
                 DialogueNode igoNodeStart = new DialogueNode(Assets.bundle.get("dialogue.igo.start"));
                 DialogueNode igoNodeThanks = new DialogueNode(Assets.bundle.get("dialogue.igo.thanks"));
-                DialogueNode igoNodeBye = new DialogueNode(() -> {
-                    if (!QuestManager.hasQuest("igo")) {
-                        QuestManager.addQuest(new QuestManager.Quest("igo", "quest.igo.name", "quest.igo.description"));
-                    }
-                }, Assets.bundle.get("dialogue.igo.bye"));
-
-                Runnable igoAction = () -> {
-                    if (!QuestManager.hasQuest("igo")) {
-                        QuestManager.addQuest(new QuestManager.Quest("igo", "quest.igo.name", "quest.igo.description"));
-                    }
+                igoNodeStart.addChoice(Assets.bundle.get("dialogue.igo.choice.give"), () -> {
                     if (player.getInventory().removeItem(ItemRegistry.get("joint"), 1)) {
                         player.getInventory().addItem(ItemRegistry.get("vape"), 1);
-                        uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.igo.questItemReceived"), 1.5f);
                         QuestManager.removeQuest("igo");
-                        SoundManager.playSound(Assets.lighterSound);
-
-                        NPC igo = findNpcByName(Assets.bundle.get("npc.igo.name"));
-                        if (igo != null) {
-                            igo.setDialogue(new Dialogue(igoNodeThanks));
-                            TimerManager.setAction(() -> igo.setTexture(Assets.textureIgo2), 5f);
-                        }
                         settings.completedDialogueEvents.add("igo_gave_vape");
                         SettingsManager.save(settings);
+                        findNpcByName(Assets.bundle.get("npc.igo.name")).setDialogue(new Dialogue(igoNodeThanks));
+                        TimerManager.setAction(() -> findNpcByName(Assets.bundle.get("npc.igo.name")).setTexture(Assets.getTexture("igo2")), 5f);
                     } else {
                         uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.igo.notEnoughJoint"), 1.5f);
                     }
-                };
-
-                igoNodeStart.addChoice(Assets.bundle.get("dialogue.igo.choice.give"), igoAction);
-                igoNodeStart.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), igoNodeBye);
-
+                });
+                igoNodeStart.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), () -> { if (!QuestManager.hasQuest("igo")) QuestManager.addQuest(new QuestManager.Quest("igo", "quest.igo.name", "quest.igo.description")); });
                 npc = new NPC(Assets.bundle.get("npc.igo.name"), 90, 90, x, y, texture, world, 1, 0, 3f, 0f, 0, 150, new Dialogue(completedEvents.contains("igo_gave_vape") ? igoNodeThanks : igoNodeStart));
                 if (completedEvents.contains("igo_gave_vape")) npc.setTexture(Assets.getTexture("igo2"));
                 break;
 
             case "ryzhyi":
-                // --- RYZHYI NPC ---
                 DialogueNode ryzhyiNodeStart = new DialogueNode(Assets.bundle.get("dialogue.ryzhyi.start"));
                 DialogueNode ryzhyiNodeAfter = new DialogueNode(Assets.bundle.get("dialogue.ryzhyi.after"));
-
                 ryzhyiNodeStart.addChoice(Assets.bundle.get("dialogue.ryzhyi.choice.take"), () -> {
                     player.getInventory().addItem(ItemRegistry.get("money"), 20);
                     SoundManager.playSound(Assets.moneySound);
@@ -130,42 +99,11 @@ public class NpcManager {
                 npc = new NPC(Assets.bundle.get("npc.ryzhyi.name"), 90, 90, x, y, texture, world, 0, 1, 1f, 2f, 200, 150, new Dialogue(completedEvents.contains("ryzhyi_gave_money") ? ryzhyiNodeAfter : ryzhyiNodeStart));
                 break;
 
-             case "denys":
-                npc = new NPC(Assets.bundle.get("npc.denys.name"), 90, 90, x, y, texture, world, 0, 1, 2f, 1f, 100, 150,
-                    new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.denys.start"), Assets.bundle.get("dialogue.denys.declined"))));
+            case "denys":
+                npc = new NPC(Assets.bundle.get("npc.denys.name"), 90, 90, x, y, texture, world, 0, 1, 2f, 1f, 100, 150, new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.denys.start"), Assets.bundle.get("dialogue.denys.declined"))));
                 break;
 
-//            case "boss":
-//                DialogueNode bossNodeStart = new DialogueNode(Assets.bundle.get("dialogue.boss.start.1"), Assets.bundle.get("dialogue.boss.start.2"), Assets.bundle.get("dialogue.boss.start.3"), Assets.bundle.get("dialogue.boss.start.4"));
-//                DialogueNode bossNodeAfter = new DialogueNode(Assets.bundle.get("dialogue.boss.after.1"), Assets.bundle.get("dialogue.boss.after.2"));
-//                bossNodeStart.addChoice(Assets.bundle.get("dialogue.boss.choice.accept"), () -> {
-//                    QuestManager.addQuest(new QuestManager.Quest("delivery", "quest.delivery.name", "quest.delivery.description"));
-//                    player.getInventory().addItem(ItemRegistry.get("grass"), 1000);
-//                    NPC bossRef = findNpcByName(Assets.bundle.get("npc.boss.name"));
-//                    if (bossRef != null) bossRef.setDialogue(new Dialogue(bossNodeAfter));
-//                    settings.completedDialogueEvents.add("boss_gave_quest");
-//                    SettingsManager.save(settings);
-//                });
-//                bossNodeStart.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), () -> {});
-//                this.boss = new NPC(Assets.bundle.get("npc.boss.name"), 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(completedEvents.contains("boss_gave_quest") ? bossNodeAfter : bossNodeStart));
-//                npc = this.boss;
-//                break;
-//
-//            case "police":
-//                // --- POLICE NPC ---
-//                DialogueNode policeNode = new DialogueNode(() -> {
-//                    if (player.getInventory().removeItem(ItemRegistry.get("grass"), 10000) || player.getInventory().removeItem(ItemRegistry.get("joint"), 10000) || player.getInventory().removeItem(ItemRegistry.get("vape"), 10000)) {
-//                        uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.police.stuffLost"), 1.5f);
-//                    } else {
-//                        uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.police.checkPassed"), 1.5f);
-//                    }
-//                }, Assets.bundle.get("dialogue.police.check"));
-//                this.police = new Police(Assets.bundle.get("npc.police.name"), 100, 100, x, y, texture, world, 0, 100, new Dialogue(policeNode));
-//                npc = this.police;
-//                break;
-
             case "baryga":
-                // --- BARYGA NPC ---
                 DialogueNode barygaNode = new DialogueNode(Assets.bundle.get("dialogue.baryga.start.1"), Assets.bundle.get("dialogue.baryga.start.2"));
                 barygaNode.addChoice(Assets.bundle.get("dialogue.baryga.choice.buy"), () -> {
                     if (player.getInventory().removeItem(ItemRegistry.get("money"), 10)) {
@@ -176,11 +114,10 @@ public class NpcManager {
                     }
                 });
                 barygaNode.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), new DialogueNode(Assets.bundle.get("dialogue.baryga.bye")));
-                npc = new NPC(Assets.bundle.get("npc.baryga.name"), 90, 90, x, y, texture, world, 0, 1, 3f, 0f, 0, 150,
-                    new Dialogue(barygaNode));
+                npc = new NPC(Assets.bundle.get("npc.baryga.name"), 90, 90, x, y, texture, world, 0, 1, 3f, 0f, 0, 150, new Dialogue(barygaNode));
                 break;
+
             case "chikita":
-                // --- CHIKITA NPC ---
                 DialogueNode chikitaNode = new DialogueNode(Assets.bundle.get("dialogue.chikita.start"));
                 chikitaNode.addChoice(Assets.bundle.get("dialogue.chikita.choice.give"), () -> {
                     if (player.getInventory().hasItem(ItemRegistry.get("grass")) && player.getInventory().hasItem(ItemRegistry.get("pape"))) {
@@ -189,7 +126,7 @@ public class NpcManager {
                         player.setMovementLocked(true);
                         SoundManager.playSound(Assets.kosyakSound);
                         TimerManager.setAction(() -> {
-                            player.getInventory().addItem(ItemRegistry.get("joint"),1);
+                            player.getInventory().addItem(ItemRegistry.get("joint"), 1);
                             uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.chikita.jointReceived"), 1.5f);
                             player.setMovementLocked(false);
                         }, 1f);
@@ -198,11 +135,10 @@ public class NpcManager {
                     }
                 });
                 chikitaNode.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), () -> {});
-                npc = new NPC(Assets.bundle.get("npc.chikita.name"), 90, 90, x, y, texture, world, 0, 1, 3f, 0f, 0, 150,
-                    new Dialogue(chikitaNode));
+                npc = new NPC(Assets.bundle.get("npc.chikita.name"), 90, 90, x, y, texture, world, 0, 1, 3f, 0f, 0, 150, new Dialogue(chikitaNode));
                 break;
+
             case "kioskman":
-                // --- KIOSKMAN NPC ---
                 DialogueNode kioskNodeStart = new DialogueNode(Assets.bundle.get("dialogue.kioskman.start"));
                 kioskNodeStart.addChoice(Assets.bundle.get("dialogue.kioskman.choice.buyPape"), () -> {
                     if (player.getInventory().removeItem(ItemRegistry.get("money"), 5)) {
@@ -222,12 +158,10 @@ public class NpcManager {
                     }
                 });
                 kioskNodeStart.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), new DialogueNode(Assets.bundle.get("dialogue.kioskman.bye")));
-                npc = new NPC(Assets.bundle.get("npc.kioskman.name"), 90, 90, x, y, texture, world, 1, 0, 3f, 0f, 75, 100,
-                    new Dialogue(kioskNodeStart));
+                npc = new NPC(Assets.bundle.get("npc.kioskman.name"), 90, 90, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(kioskNodeStart));
                 break;
 
             case "junky":
-                // --- JUNKY NPC ---
                 DialogueNode junkyNode = new DialogueNode(Assets.bundle.get("dialogue.junky.start"));
                 junkyNode.addChoice(Assets.bundle.get("dialogue.junky.choice.give"), () -> {
                     if (!QuestManager.hasQuest("spoon")) {
@@ -240,115 +174,85 @@ public class NpcManager {
                         uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.junky.noSpoon"), 1.5f);
                     }
                 });
-                junkyNode.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), () -> {
-                    if (!QuestManager.hasQuest("spoon")) {
-                        QuestManager.addQuest(new QuestManager.Quest("spoon", "quest.spoon.name", "quest.spoon.description"));
-                    }
-                });
+                junkyNode.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), () -> { if (!QuestManager.hasQuest("spoon")) QuestManager.addQuest(new QuestManager.Quest("spoon", "quest.spoon.name", "quest.spoon.description")); });
                 npc = new NPC(Assets.bundle.get("npc.junky.name"), 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(junkyNode));
                 break;
 
+            case "boss":
+                DialogueNode bossNodeStart = new DialogueNode(Assets.bundle.get("dialogue.boss.start.1"), Assets.bundle.get("dialogue.boss.start.2"), Assets.bundle.get("dialogue.boss.start.3"), Assets.bundle.get("dialogue.boss.start.4"));
+                DialogueNode bossNodeAfter = new DialogueNode(Assets.bundle.get("dialogue.boss.after.1"), Assets.bundle.get("dialogue.boss.after.2"));
+                bossNodeStart.addChoice(Assets.bundle.get("dialogue.boss.choice.accept"), () -> {
+                    QuestManager.addQuest(new QuestManager.Quest("delivery", "quest.delivery.name", "quest.delivery.description"));
+                    player.getInventory().addItem(ItemRegistry.get("grass"), 1000);
+                    NPC bossRef = findNpcByName(Assets.bundle.get("npc.boss.name"));
+                    if (bossRef != null) bossRef.setDialogue(new Dialogue(bossNodeAfter));
+                    settings.completedDialogueEvents.add("boss_gave_quest");
+                    SettingsManager.save(settings);
+                });
+                bossNodeStart.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), () -> {});
+                this.boss = new NPC(Assets.bundle.get("npc.boss.name"), 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(completedEvents.contains("boss_gave_quest") ? bossNodeAfter : bossNodeStart));
+                npc = this.boss;
+                break;
+
+            case "police":
+                DialogueNode policeNode = new DialogueNode(() -> {
+                    if (player.getInventory().removeItem(ItemRegistry.get("grass"), 10000) || player.getInventory().removeItem(ItemRegistry.get("joint"), 10000) || player.getInventory().removeItem(ItemRegistry.get("vape"), 10000)) {
+                        uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.police.stuffLost"), 1.5f);
+                    } else {
+                        uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.police.checkPassed"), 1.5f);
+                    }
+                }, Assets.bundle.get("dialogue.police.check"));
+                this.police = new Police(Assets.bundle.get("npc.police.name"), 100, 100, x, y, texture, world, 0, 100, new Dialogue(policeNode));
+                npc = this.police;
+                break;
+
+            case "kamil":
+                npc = new NPC(Assets.bundle.get("npc.kamil.name"), 90, 90, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.kamil.start"))));
+                break;
+
             case "jan":
-                // --- JAN NPC ---
-                npc = new NPC(Assets.bundle.get("npc.jan.name"), 90, 90, x, y, texture, world, 1, 0, 3f, 0f, 75, 100,
-                    new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.jan.start"))));
+                npc = new NPC(Assets.bundle.get("npc.jan.name"), 90, 90, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.jan.start"))));
                 break;
 
             case "filip":
-                // --- FILIP NPC ---
-                npc = new NPC(Assets.bundle.get("npc.filip.name"), 90, 90, x, y, texture, world, 1, 0, 3f, 0f, 75, 100,
-                    new Dialogue(new DialogueNode(
-                        Assets.bundle.get("dialogue.filip.start.1"), Assets.bundle.get("dialogue.filip.start.2"),
-                        Assets.bundle.get("dialogue.filip.start.3"), Assets.bundle.get("dialogue.filip.start.4"))));
+                npc = new NPC(Assets.bundle.get("npc.filip.name"), 90, 90, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.filip.start.1"), Assets.bundle.get("dialogue.filip.start.2"), Assets.bundle.get("dialogue.filip.start.3"), Assets.bundle.get("dialogue.filip.start.4"))));
+                break;
         }
 
         if (npc != null) {
-            npcs.add(npc);
+            allNpcs.add(npc);
             world.getNpcs().add(npc);
             System.out.println("SUCCESS: Loaded '" + npcId + "' from map in world '" + world.getName() + "'");
         }
     }
 
-
-    private void createNpcs(UIManager uiManager) {
-        GameSettings settings = SettingsManager.load();
-        List<String> completedEvents = settings.completedDialogueEvents;
-
-        World world = WorldManager.getWorld("main");
-
-
-        // --- POLICE NPC ---
-        DialogueNode policeNode = new DialogueNode(() -> {
-            if (player.getInventory().removeItem(ItemRegistry.get("grass"), 10000) ||
-                player.getInventory().removeItem(ItemRegistry.get("joint"), 10000) ||
-                player.getInventory().removeItem(ItemRegistry.get("vape"), 10000)) {
-                uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.police.stuffLost"), 1.5f);
-            } else {
-                uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.police.checkPassed"), 1.5f);
-            }
-        }, Assets.bundle.get("dialogue.police.check"));
-
-        police = new Police(Assets.bundle.get("npc.police.name"), 100, 100, 1000, 600, Assets.texturePolice, world, 0, 100, new Dialogue(policeNode));
-        npcs.add(police);
-        world.getNpcs().add(police);
-
-        // --- BOSS NPC ---
-        DialogueNode bossNodeStart = new DialogueNode(
-            Assets.bundle.get("dialogue.boss.start.1"),
-            Assets.bundle.get("dialogue.boss.start.2"),
-            Assets.bundle.get("dialogue.boss.start.3"),
-            Assets.bundle.get("dialogue.boss.start.4")
-        );
-        DialogueNode bossNodeAfter = new DialogueNode(Assets.bundle.get("dialogue.boss.after.1"), Assets.bundle.get("dialogue.boss.after.2"));
-        bossNodeStart.addChoice(Assets.bundle.get("dialogue.boss.choice.accept"), () -> {
-            QuestManager.addQuest(new QuestManager.Quest("delivery", "quest.delivery.name", "quest.delivery.description"));
-            uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.boss.questItemReceived"), 1.5f);
-            player.getInventory().addItem(ItemRegistry.get("grass"), 1000);
-            NPC boss = findNpcByName(Assets.bundle.get("npc.boss.name"));
-            if (boss != null) boss.setDialogue(new Dialogue(bossNodeAfter));
-            settings.completedDialogueEvents.add("boss_gave_quest");
-            SettingsManager.save(settings);
-        });
-        bossNodeStart.addChoice(Assets.bundle.get("dialogue.igo.choice.leave"), () -> {});
-        boss = new NPC(Assets.bundle.get("npc.boss.name"), 100, 100, 1850, 100, Assets.textureBoss, world, 1, 0, 3f, 0f, 75, 100,
-            new Dialogue(completedEvents.contains("boss_gave_quest") ? bossNodeAfter : bossNodeStart));
-        npcs.add(boss);
-        world.getNpcs().add(boss);
-
-    }
-
-    /** Update all NPCs */
     public void update(float delta) {
         for (NPC npc : WorldManager.getCurrentWorld().getNpcs()) {
-           npc.update(delta);
+            npc.update(delta);
         }
     }
 
-    /** Find NPC by name */
     public NPC findNpcByName(String name) {
-        for (NPC npc : npcs) {
+        for (NPC npc : allNpcs) {
             if (npc.getName().equals(name)) return npc;
         }
         return null;
     }
 
+    public void callPolice() {
+        police1 = new Police(Assets.bundle.get("npc.police.name"), 100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police"), WorldManager.getWorld("main"), 200, 100, new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.police.called"))));
+        allNpcs.add(police1);
+        WorldManager.getWorld("main").getNpcs().add(police1);
+    }
+
     public NPC getBoss() { return boss; }
-    public Police getPolice1() { return police1; }
     public Police getPolice() { return police; }
+    public Police getPolice1(){ return police1; }
 
     /** Remove NPC from the game */
     public void kill(NPC npc) {
-        npcs.remove(npc);
         if (npc == police1) police1 = null;
         if (npc == police) police = null;
         if (npc == boss) boss = null;
-    }
-
-    /** Call police to the player's position */
-    public void callPolice() {
-        police1 = new Police(Assets.bundle.get("npc.police.name"), 100, 100, player.getX(), player.getY() - 300, Assets.texturePolice, WorldManager.getWorld("main"), 200, 100,
-            new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.police.called"))));
-        npcs.add(police1);
-        WorldManager.getWorld("main").getNpcs().add(police1);
     }
 }
