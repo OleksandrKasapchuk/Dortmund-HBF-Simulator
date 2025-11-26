@@ -15,6 +15,10 @@ import com.mygame.entity.item.Item;
 
 import java.util.ArrayList;
 
+/**
+ * Represents a game world, loaded from a TMX map file.
+ * This class is a data container for the map, its layers, and the entities within it.
+ */
 public class World {
     private final String name;
     private final TiledMap map;
@@ -88,10 +92,10 @@ public class World {
         mapRenderer.dispose();
     }
 
+    // --- Getters ---
     public TiledMap getMap() { return map; }
     public String getName() { return name; }
     public ArrayList<Transition> getTransitions() { return transitions; }
-    public void addTransition(Transition transition) { transitions.add(transition); }
     public ArrayList<NPC> getNpcs() { return npcs; }
     public ArrayList<Item> getItems() { return items; }
     public ArrayList<Item> getPfands() { return pfands; }

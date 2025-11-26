@@ -30,6 +30,7 @@ public class WorldManager {
         return worlds.get(id);
     }
 
+    public static Map<String, World> getWorlds(){return worlds;}
     public static void disposeWorlds() {
         for (World world : worlds.values()) {
             world.dispose();

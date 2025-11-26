@@ -1,57 +1,101 @@
 package com.mygame.entity.item;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapProperties;
 import com.mygame.Assets;
-import com.mygame.world.WorldManager;
-import com.mygame.world.World;
 import com.mygame.entity.Player;
+import com.mygame.world.World;
+import com.mygame.world.WorldManager;
 
 import java.util.Iterator;
 
 /**
- * Manages all items in the game world, including special items like bushes and Pfand Automat.
+ * Manages all items in the game world, including loading them from the map.
  * Handles item updates, drawing, and player pickups.
  */
 public class ItemManager {
 
-    private Item bush;                                  // Special bush item
-    private Item pfandAutomat;                          // Special Pfand Automat item
+    // --- Fields for specific, important items (Restored) ---
+    private Item bush;
+    private Item pfandAutomat;
 
-    // --- Constructor: initialize items and special items in the world ---
-    public ItemManager() {
-        World world = WorldManager.getWorld("main");
-        World homeWorld = WorldManager.getWorld("home");
+    /**
+     * Loads items from a specific world's Tiled map layer named "items".
+     * @param world The world from which to load items.
+     */
+    public void loadItemsFromMap(World world) {
+        MapLayer itemLayer = world.getMap().getLayers().get("items");
+        if (itemLayer == null) {
+            return; // No items layer in this world, which is fine.
+        }
 
-        // Create bush
-        bush = new Item(ItemRegistry.get("item.bush.name"),200, 200, 800, 1700, 125, Assets.bush, world, false, false);
-        world.getItems().add(bush);
+        for (MapObject object : itemLayer.getObjects()) {
+            MapProperties props = object.getProperties();
 
-        // Create spoon
-        Item spoon = new Item(ItemRegistry.get("item.spoon.name"), 60, 60, 500, 1800, 100, Assets.textureSpoon, world, true, false);
-        homeWorld.getItems().add(spoon);
+            String itemKey = props.get("itemKey", String.class);
+            if (itemKey == null || itemKey.isEmpty()) {
+                System.err.println("Skipping item object: 'itemKey' property is missing.");
+                continue;
+            }
 
-        // Create Pfand Automat
-        pfandAutomat = new Item(ItemRegistry.get("item.pfandAutomat.name"), 150, 150, 2425, 825, 200, Assets.pfandAutomat, world, false, true);
-        world.getItems().add(pfandAutomat);
+            ItemType itemType = ItemRegistry.get(itemKey);
+            if (itemType == null) {
+                System.err.println("Skipping item: ItemType with key '" + itemKey + "' not found in ItemRegistry.");
+                continue;
+            }
+
+            float x = props.get("x", 0f, Float.class);
+            float y = props.get("y", 0f, Float.class);
+            float width = props.get("width", 64f, Float.class);
+            float height = props.get("height", 64f, Float.class);
+
+            boolean isSolid = props.get("isSolid", false, Boolean.class);
+            boolean isPickupable = props.get("isPickupable", false, Boolean.class);
+
+            int interactionDistance = props.get("interactionDistance", 100, Integer.class);
+
+            String textureKey = props.get("textureKey", itemKey, String.class);
+            Texture texture = Assets.getTexture(textureKey);
+            if (texture == null) {
+                System.err.println("Texture for item '" + itemKey + "' with textureKey '" + textureKey +  "' not found!");
+                continue;
+            }
+
+            Item item = new Item(itemType, (int) width, (int) height, x, y, interactionDistance, texture, world, isPickupable, isSolid);
+            world.getItems().add(item);
+
+            // --- Assign to specific fields if they match ---
+            if ("bush".equalsIgnoreCase(itemKey)) {
+                this.bush = item;
+            }
+            if ("pfandAutomat".equalsIgnoreCase(itemKey)) {
+                this.pfandAutomat = item;
+            }
+
+            System.out.println("SUCCESS: ItemManager loaded item '" + itemKey + "' into world '" + world.getName() + "'");
+        }
     }
-
 
     // --- Update items: handle pickups by the player ---
     public void update(Player player) {
-        for (Iterator<Item> it = WorldManager.getCurrentWorld().getItems().iterator(); it.hasNext();) {
+        for (Iterator<Item> it = WorldManager.getCurrentWorld().getItems().iterator(); it.hasNext(); ) {
             Item item = it.next();
 
             // If item can be picked up and player is near, add to inventory and remove from world
             if (item.canBePickedUp() && item.isPlayerNear(player)) {
                 player.getInventory().addItem(item.getType(), 1);
-                if (item.getType().equals(ItemRegistry.get("item.pfand.name"))) {
+
+                if (item.getType().getKey().equals("pfand")) { // Use getKey() for safety
                     WorldManager.getCurrentWorld().getPfands().remove(item);
                 }
-                it.remove();
+                it.remove(); // Remove item from the world
             }
         }
     }
 
-    // --- Getters for special items ---
+    // --- Getters for special items (Restored) ---
     public Item getBush() {
         return bush;
     }
