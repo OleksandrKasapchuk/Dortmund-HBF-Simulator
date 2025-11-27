@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.mygame.Assets;
 import com.mygame.managers.nonglobal.DialogueManager;
 import com.mygame.entity.Player;
 import com.mygame.ui.screenUI.DeathUI;
@@ -178,4 +179,11 @@ public class UIManager {
     // Getter methods for accessing UI components
     public DialogueManager getDialogueManager() { return dialogueManager; }
     public GameUI getGameUI() { return gameUI; }
+
+    public void showEarned(int amount, String thing){
+        gameUI.showInfoMessage(Assets.bundle.format("message.generic.got", amount, thing),1f);
+    }
+    public void showNotEnough(String thing) {
+        gameUI.showInfoMessage(Assets.bundle.format("message.generic.not_enough", thing), 1f);
+    }
 }

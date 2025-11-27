@@ -165,9 +165,8 @@ public class EventManager {
 
         // Timer to give money after 1.9 seconds
         TimerManager.setAction(() -> {
-            SoundManager.playSound(Assets.moneySound);
-            uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.generic.moneyForPfand"),1f);
-            player.getInventory().addItem(ItemRegistry.get("money"),1);
+            player.addMoney(1);
+            uiManager.showEarned(1, Assets.bundle.get("item.money.name"));
         }, 1.9f);
 
         itemManager.getPfandAutomat().startCooldown(1.9f);
@@ -188,8 +187,8 @@ public class EventManager {
 
                 // Reward player for escaping
                 Runnable rewardAction = () -> {
-                    player.getInventory().addItem(ItemRegistry.get("money"), 50);
-                    uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.generic.reward"), 1.5f);
+                    player.addMoney(50);
+                    uiManager.showEarned(50, Assets.bundle.get("item.money.name"));
                     npcManager.getBoss().setDialogue(new Dialogue(new DialogueNode(Assets.bundle.get("message.boss.whatDoYouWant"))));
                 };
 

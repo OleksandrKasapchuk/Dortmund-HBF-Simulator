@@ -7,13 +7,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.mygame.Assets;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.item.ItemType;
 import com.mygame.game.SettingsManager;
+import com.mygame.managers.global.audio.SoundManager;
 import com.mygame.managers.nonglobal.InventoryManager;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;
+
 
 // Player entity controlled by user
 public class Player extends Entity {
@@ -137,10 +140,7 @@ public class Player extends Entity {
         return false;
     }
 
-    // Money getter
-    public int getMoney() {
-        return inventory.getAmount(ItemRegistry.get("money"));
-    }
+
 
     public InventoryManager getInventory() {
         return inventory;
@@ -163,5 +163,15 @@ public class Player extends Entity {
 
     public void setWorld(World world) {
         this.world = world;
+    }
+    // Money getter
+    public int getMoney() {
+        return inventory.getAmount(ItemRegistry.get("money"));
+    }
+
+    public void addMoney(int amount) {
+        SoundManager.playSound(Assets.moneySound);
+        inventory.addItem(ItemRegistry.get("money"), amount);
+
     }
 }

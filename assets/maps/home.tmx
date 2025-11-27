@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="100" tileheight="100" infinite="0" nextlayerid="6" nextobjectid="4">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="100" tileheight="100" infinite="0" nextlayerid="6" nextobjectid="5">
  <tileset firstgid="1" source="plate.tsx"/>
  <tileset firstgid="2" source="brick.tsx"/>
  <tileset firstgid="3" source="npc.tsx"/>
@@ -87,7 +87,9 @@
     <property name="textureKey" value="denys"/>
    </properties>
   </object>
-  <object id="3" gid="3" x="726.151" y="1680.24" width="150" height="150">
+ </objectgroup>
+ <objectgroup id="5" name="items">
+  <object id="4" gid="3" x="845" y="1693" width="150" height="150">
    <properties>
     <property name="isPickupable" type="bool" value="false"/>
     <property name="isSolid" type="bool" value="true"/>
@@ -95,5 +97,4 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="5" name="items"/>
 </map>
