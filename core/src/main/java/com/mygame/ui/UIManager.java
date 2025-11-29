@@ -65,7 +65,7 @@ public class UIManager {
         Gdx.input.setInputProcessor(currentStage);
 
         // Initialize in-game UI elements
-        questUI = new QuestUI(skin, gameUI.getStage(), 1200, 800);
+        questUI = new QuestUI(skin, gameUI.getStage(), 1200, 900);
         inventoryUI = new InventoryUI(gameUI.getStage(), skin);
         dialogueUI = new DialogueUI(skin, gameUI.getStage(), 1950, 250, 25f, 10f);
         dialogueManager = new DialogueManager(dialogueUI, player);
