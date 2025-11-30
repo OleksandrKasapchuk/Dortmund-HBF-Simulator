@@ -24,15 +24,6 @@ public class PlayerEffectManager {
         this.uiManager = uiManager;
     }
 
-    /**
-     * Effect triggered by using a "joint".
-     * - Plays a lighter sound
-     * - After 4 seconds:
-     *      - Sets player state to STONED
-     *      - Updates the inventory UI
-     *      - Shows an info message
-     *      - Plays special "kaif" music
-     */
     public void applyJointEffect() {
         SoundManager.playSound(Assets.lighterSound);
         TimerManager.setAction(() -> {
@@ -44,14 +35,6 @@ public class PlayerEffectManager {
         }, 4f);
     }
 
-    /**
-     * Effect triggered by using an "ice tee".
-     * - After 0.5 seconds:
-     *      - Resets player state to NORMAL if previously STONED
-     *      - Updates the inventory UI
-     *      - Shows an info message
-     *      - Plays background music
-     */
     public void applyIceTeaEffect() {
         TimerManager.setAction(() -> {
             if (player.getState() == Player.State.STONED)

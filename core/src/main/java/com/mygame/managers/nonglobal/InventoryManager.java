@@ -14,9 +14,6 @@ public class InventoryManager {
     // --- Stores items and their quantities ---
     private final Map<ItemType, Integer> items;
 
-    // --- Callback to notify UI or other systems about inventory changes ---
-    private Runnable onInventoryChanged;
-
     // --- Constructor: initializes empty inventory and effect maps ---
     public InventoryManager() {
         items = new LinkedHashMap<>();       // Preserve insertion order
@@ -25,7 +22,6 @@ public class InventoryManager {
     public void addItem(ItemType type, int amount) {
         if (type == null) return; // Prevent adding null items
         items.put(type, items.getOrDefault(type, 0) + amount);
-        notifyChange();
     }
 
     public boolean removeItem(ItemType type, int count) {
@@ -33,7 +29,6 @@ public class InventoryManager {
         int current = items.get(type);
         if (current <= count) items.remove(type);
         else items.put(type, current - count);
-        notifyChange();
         return true;
     }
 
@@ -49,16 +44,6 @@ public class InventoryManager {
 
     public Map<ItemType, Integer> getItems() {
         return items;
-    }
-
-    // --- Set callback to be called when inventory changes ---
-    public void setOnInventoryChanged(Runnable callback) {
-        this.onInventoryChanged = callback;
-    }
-
-    // --- Call the callback if it exists ---
-    private void notifyChange() {
-        if (onInventoryChanged != null) onInventoryChanged.run();
     }
 
     // --- Check if an item is usable (has an effect) ---

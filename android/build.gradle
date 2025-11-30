@@ -48,6 +48,9 @@ android {
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
+  aaptOptions {
+    noCompress 'png', '.jpg', '.jpeg', '.ogg', '.mp3', '.tmx', '.tsx'
+  }
 }
 
 repositories {

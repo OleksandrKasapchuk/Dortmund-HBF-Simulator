@@ -5,7 +5,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygame.Assets;
+import com.mygame.DarkOverlay;
 import com.mygame.entity.Player;
+import com.mygame.managers.global.TimerManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,9 +62,9 @@ public class WorldManager {
         if (inTransitionZone) {
             font.draw(batch, Assets.bundle.get("world.pressEToTransition"), player.getX(), player.getY() + player.getHeight() + 30);
         }
-    }
 
-    public static void update(float delta, Player player, boolean interactPressed) {
+    }
+    public static void update(float delta, Player player, boolean interactPressed, DarkOverlay darkOverlay) {
         if (cooldownTimer > 0) {
             cooldownTimer -= delta;
             inTransitionZone = false; // Don't show prompt during cooldown
@@ -84,12 +86,17 @@ public class WorldManager {
         inTransitionZone = activeTransition != null;
 
         if (inTransitionZone && interactPressed) {
-            setCurrentWorld(activeTransition.targetWorldId);
-            player.setX(activeTransition.targetX);
-            player.setY(activeTransition.targetY);
-            player.setWorld(currentWorld);
-            inTransitionZone = false;
-            cooldownTimer = TRANSITION_COOLDOWN; // Start cooldown
+            final Transition finalTransition = activeTransition;
+
+            darkOverlay.show(1, 0.7f);
+            TimerManager.setAction(() -> {
+                setCurrentWorld(finalTransition.targetWorldId);
+                player.setX(finalTransition.targetX);
+                player.setY(finalTransition.targetY);
+                player.setWorld(currentWorld);
+                inTransitionZone = false;
+                cooldownTimer = TRANSITION_COOLDOWN; // Start cooldown
+            }, 0.05f);
         }
     }
 }

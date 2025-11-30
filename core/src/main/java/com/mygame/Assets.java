@@ -29,7 +29,7 @@ public class Assets {
     public static BitmapFont myFont;
 
     // === Textures (Kept for backward compatibility) ===
-    public static Texture textureRyzhyi, textureDenys, textureIgo, textureIgo2, textureBaryga, textureChikita, texturePolice, textureKioskMan, textureJunky, textureZoe, textureBoss, textureKamil, textureJan, textureFilip, textureJason;
+    public static Texture textureRyzhyi, textureDenys, textureIgo, textureIgo2, textureBaryga, textureChikita, texturePolice, textureKioskMan, textureJunky, textureZoe, textureBoss, textureKamil, textureJan, textureFilip, textureJason, textureTalahon1, textureTalahon2, textureGrandpa, textureTurkish, textureNigga, textureRussian;
     public static Texture textureSpoon, pfand, pfandAutomat;
     public static Texture bush, rock;
     public static Texture deathBack, menuBack, menuBlurBack;
@@ -84,6 +84,12 @@ public class Assets {
         textureJan = loadAndStore("jan", "images/npc/jan.png");
         textureFilip = loadAndStore("filip", "images/npc/filip.png");
         textureJason = loadAndStore("jason", "images/npc/jason.png");
+        textureTalahon1 = loadAndStore("talahon1", "images/npc/talahon1.png");
+        textureTalahon2 = loadAndStore("talahon2", "images/npc/talahon2.png");
+        textureGrandpa = loadAndStore("walter", "images/npc/walter.png");
+        textureTurkish = loadAndStore("murat", "images/npc/murat.png");
+        textureNigga = loadAndStore("jamal", "images/npc/jamal.png");
+        textureRussian = loadAndStore("dmitri", "images/npc/dmitri.png");
 
         deathBack = loadAndStore("deathBack", "images/background/deathScreen.jpg");
         menuBack = loadAndStore("menuBack", "images/background/menu.jpg");

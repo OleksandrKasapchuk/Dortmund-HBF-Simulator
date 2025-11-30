@@ -19,6 +19,7 @@ public class Main extends ApplicationAdapter {
     private static GameInitializer gameInitializer;
     private ShapeRenderer shapeRenderer;
     private Player.State previousPlayerState;
+    private DarkOverlay darkOverlay;
 
     @Override
     public void create() {
@@ -32,6 +33,7 @@ public class Main extends ApplicationAdapter {
         shapeRenderer = new ShapeRenderer();
         previousPlayerState = gameInitializer.getPlayer().getState();
         System.out.println("Main: Create method finished.");
+        darkOverlay = new DarkOverlay();
     }
 
     public static void restartGame() {
@@ -77,8 +79,8 @@ public class Main extends ApplicationAdapter {
         Player player = gameInitializer.getPlayer();
         player.update(delta);
 
-        WorldManager.update(delta, player, gameInitializer.getManagerRegistry().getUiManager().isInteractPressed());
-
+        WorldManager.update(delta, player, gameInitializer.getManagerRegistry().getUiManager().isInteractPressed(), darkOverlay);
+        darkOverlay.update(delta);
         OrthographicCamera camera = gameInitializer.getManagerRegistry().getCameraManager().getCamera();
 
         // 1. Render the TMX map layer
@@ -104,6 +106,7 @@ public class Main extends ApplicationAdapter {
 
         // 4. Draw UI
         gameInitializer.getManagerRegistry().getUiManager().render();
+        darkOverlay.render();
     }
 
     @Override
