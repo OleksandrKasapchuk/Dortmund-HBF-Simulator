@@ -42,6 +42,7 @@ public class GameInitializer {
         GameSettings settings = SettingsManager.load();
         player = new Player(500, 80, 80, settings.playerX, settings.playerY, Assets.getTexture("zoe"), null);
         managerRegistry = new ManagerRegistry(batch, font, player);
+
         System.out.println("GameInitializer: Player and ManagerRegistry created. ItemRegistry is now initialized.");
 
         // 3. Set the player's world and the current world
@@ -58,7 +59,7 @@ public class GameInitializer {
             settings.activeQuests.forEach(key -> QuestManager.addQuest(new QuestManager.Quest(key, "quest." + key + ".name", "quest." + key + ".description")));
         }
 
-        gameInputHandler = new GameInputHandler(managerRegistry.getGameStateManager());
+        gameInputHandler = new GameInputHandler(managerRegistry.getGameStateManager(), managerRegistry.getUiManager());
         System.out.println("GameInitializer: GameInputHandler created.");
 
         MusicManager.playMusic(Assets.startMusic);

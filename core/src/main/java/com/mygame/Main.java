@@ -2,7 +2,6 @@ package com.mygame;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -46,14 +45,12 @@ public class Main extends ApplicationAdapter {
     public void render() {
         float delta = Gdx.graphics.getDeltaTime();
         AutoSaveManager.update(delta);
-        Gdx.gl.glClearColor(0.1f, 0.1f, 0.15f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         gameInitializer.getGameInputHandler().handleInput();
 
         Player player = gameInitializer.getPlayer();
         if (player.getState() == Player.State.STONED && previousPlayerState == Player.State.NORMAL) {
-            gameInitializer.getGameInputHandler().handleStonedPlayer(player, gameInitializer.getManagerRegistry().getNpcManager());
+            gameInitializer.getGameInputHandler().handleStonedPlayer(gameInitializer.getManagerRegistry().getNpcManager());
         }
         previousPlayerState = player.getState();
 
@@ -66,6 +63,7 @@ public class Main extends ApplicationAdapter {
             case DEATH:
                 uiManager.render();
                 break;
+            case MAP:
             case MENU:
             case PAUSED:
             case SETTINGS:

@@ -8,11 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygame.Assets;
 import com.mygame.managers.nonglobal.DialogueManager;
 import com.mygame.entity.Player;
-import com.mygame.ui.screenUI.DeathUI;
-import com.mygame.ui.screenUI.GameUI;
-import com.mygame.ui.screenUI.MenuUI;
-import com.mygame.ui.screenUI.PauseUI;
-import com.mygame.ui.screenUI.SettingsUI;
+import com.mygame.ui.screenUI.*;
 import com.mygame.world.WorldManager;
 
 /**
@@ -32,6 +28,7 @@ public class UIManager {
     private InventoryUI inventoryUI;
     private DialogueUI dialogueUI;
     private TouchControlsUI touchControlsUI;
+    private WorldMapUI worldMapUI;
 
     private GameUI gameUI;
     private MenuUI menuUI;
@@ -59,6 +56,7 @@ public class UIManager {
         pauseUI = new PauseUI(skin);
         settingsUI = new SettingsUI(skin);
         deathUI = new DeathUI(skin);
+        worldMapUI = new WorldMapUI(skin);
 
         // Set initial stage to menu
         currentStage = menuUI.getStage();
@@ -89,7 +87,7 @@ public class UIManager {
      * Switches the current input stage.
      * This ensures that input events are processed by the correct screen.
      *
-     * @param stageName Name of the stage: MENU, GAME, PAUSE, SETTINGS, DEATH
+     * @param stageName Name of the stage: MENU, GAME, PAUSE, SETTINGS, DEATH, MAP
      */
     public void setCurrentStage(String stageName) {
         switch (stageName) {
@@ -98,6 +96,7 @@ public class UIManager {
             case "PAUSE": currentStage = pauseUI.getStage(); break;
             case "SETTINGS": currentStage = settingsUI.getStage(); break;
             case "DEATH": currentStage = deathUI.getStage(); break;
+            case "MAP": currentStage = worldMapUI.getStage(); break;
         }
         Gdx.input.setInputProcessor(currentStage);
     }
@@ -110,7 +109,9 @@ public class UIManager {
      * @param player Reference to the player
      */
     public void update(float delta, Player player) {
-        if (currentStage == gameUI.getStage()) {
+        if (worldMapUI.isVisible()) {
+            worldMapUI.update();
+        } else if (currentStage == gameUI.getStage()) {
             gameUI.update(delta);
             gameUI.updateMoney(player.getMoney());
             gameUI.updateWorld(WorldManager.getCurrentWorld().getName());
@@ -136,7 +137,13 @@ public class UIManager {
     }
 
     /** Draws the current stage */
-    public void render() { currentStage.draw(); }
+    public void render() {
+        if (worldMapUI.isVisible()) {
+            worldMapUI.render();
+        } else {
+            currentStage.draw();
+        }
+    }
 
     /** Updates viewport size for current stage */
     public void resize(int width, int height) { currentStage.getViewport().update(width, height, true); }
@@ -148,6 +155,7 @@ public class UIManager {
         pauseUI.dispose();
         deathUI.dispose();
         settingsUI.dispose();
+        worldMapUI.dispose();
         skin.dispose();
         dialogueUI.dispose();
         inventoryUI.dispose();
@@ -171,6 +179,13 @@ public class UIManager {
     public void toggleInventoryTable() {
         if (questUI.isVisible()) questUI.toggle();
         inventoryUI.toggle();
+    }
+    public void toggleWorldMap() {
+        worldMapUI.toggle();
+    }
+
+    public boolean isMapVisible() {
+        return worldMapUI.isVisible();
     }
 
     /** Resets the "just pressed" flags of touch buttons */

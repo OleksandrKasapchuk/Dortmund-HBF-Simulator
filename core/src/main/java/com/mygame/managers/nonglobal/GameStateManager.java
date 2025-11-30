@@ -13,11 +13,10 @@ import com.mygame.ui.UIManager;
 public class GameStateManager {
 
     // --- Enum of possible game states ---
-    public enum GameState { MENU, PLAYING, PAUSED, SETTINGS, DEATH }
+    public enum GameState { MENU, PLAYING, PAUSED, SETTINGS, DEATH, MAP }
 
     private GameState state = GameState.MENU; // Current state of the game
-    private final UIManager uiManager;        // UI manager to switch stages/screens
-
+    private final UIManager uiManager;
     // --- Constructor ---
     public GameStateManager(UIManager uiManager) {
         this.uiManager = uiManager;
@@ -26,6 +25,10 @@ public class GameStateManager {
     // --- Get the current game state ---
     public GameState getState() {
         return state;
+    }
+
+    public void setGameState(GameState state) {
+        this.state = state;
     }
 
     // --- Start the game ---

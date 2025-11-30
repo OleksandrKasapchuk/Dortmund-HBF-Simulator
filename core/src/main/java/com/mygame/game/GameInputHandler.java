@@ -9,11 +9,16 @@ import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.Player;
 import com.mygame.managers.nonglobal.GameStateManager;
 import com.mygame.managers.nonglobal.NpcManager;
+import com.mygame.ui.UIManager;
 
 public class GameInputHandler {
     private final GameStateManager gsm;
+    private final UIManager uiManager;
 
-    public GameInputHandler(GameStateManager gsm) { this.gsm = gsm; }
+    public GameInputHandler(GameStateManager gsm, UIManager uiManager) {
+        this.gsm = gsm;
+        this.uiManager = uiManager;
+    }
 
     /**Handles key input for global game actions (pause, settings, start game).*/
     public void handleInput() {
@@ -21,9 +26,18 @@ public class GameInputHandler {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) gsm.toggleSettings();
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && gsm.getState() == GameStateManager.GameState.MENU)
             gsm.startGame();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+            uiManager.toggleWorldMap();
+            if (uiManager.isMapVisible()) {
+                gsm.setGameState(GameStateManager.GameState.MAP);
+            } else {
+                gsm.setGameState(GameStateManager.GameState.PLAYING);
+            }
+        }
     }
 
-    public void handleStonedPlayer(Player player, NpcManager npcManager) {
+    public void handleStonedPlayer(NpcManager npcManager) {
         npcManager.getPolice().setDialogue(
             new Dialogue(
                 new DialogueNode(gsm::playerDied,

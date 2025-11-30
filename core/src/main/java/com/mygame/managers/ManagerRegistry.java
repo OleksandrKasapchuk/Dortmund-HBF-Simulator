@@ -66,19 +66,20 @@ public class ManagerRegistry {
         for (Window.WindowStyle style : skin.getAll(Window.WindowStyle.class).values()) {
             style.titleFont = cyrillicFont;
         }
-        // --- End of Skin and Font Loading ---
-        // 2. Now, create the worlds. They can now safely access the ItemRegistry.
+
         World mainWorld = new World("main", "maps/main_station.tmx");
         World backWorld = new World("leopold", "maps/leopold.tmx");
         World subwayWorld = new World("subway", "maps/subway.tmx");
         World homeWorld = new World("home", "maps/home.tmx");
         World kampWorld = new World("kamp", "maps/kamp.tmx");
+        World clubWorld = new World("club", "maps/club.tmx");
 
         WorldManager.addWorld(mainWorld);
         WorldManager.addWorld(backWorld);
         WorldManager.addWorld(subwayWorld);
         WorldManager.addWorld(homeWorld);
         WorldManager.addWorld(kampWorld);
+        WorldManager.addWorld(clubWorld);
 
         System.out.println("GameInitializer: All worlds created and loaded.");
 
