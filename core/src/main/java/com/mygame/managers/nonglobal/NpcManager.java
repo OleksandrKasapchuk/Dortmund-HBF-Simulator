@@ -254,30 +254,49 @@ public class NpcManager {
                     SettingsManager.save(settings);
                 },  Assets.bundle.get("dialogue.jason.start.1"), Assets.bundle.get("dialogue.jason.start.2"),
                     Assets.bundle.get("dialogue.jason.start.3"), Assets.bundle.get("dialogue.jason.start.4"),
-                    Assets.bundle.get("dialogue.jason.start.5"), Assets.bundle.get("dialogue.jason.start.6"),
-                    Assets.bundle.get("dialogue.jason.start.7"));
+                    Assets.bundle.get("dialogue.jason.start.5"));
 
                 npc = new NPC(Assets.bundle.get("npc.jason.name"), 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100,
                     new Dialogue(completedEvents.contains("jason_gave_money") ? jasonEndNode : jasonStartNode));
                 break;
-            case "turkish":
-                npc = new NPC("turkish", 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.filip.start.1"), Assets.bundle.get("dialogue.filip.start.2"), Assets.bundle.get("dialogue.filip.start.3"), Assets.bundle.get("dialogue.filip.start.4"))));
+
+            case "murat":
+                DialogueNode muratNode = new DialogueNode(Assets.bundle.get("dialogue.murat.start.1"), Assets.bundle.get("dialogue.murat.start.2"), Assets.bundle.get("dialogue.murat.start.3"), Assets.bundle.get("dialogue.murat.start.4"), Assets.bundle.get("dialogue.murat.start.5"), Assets.bundle.get("dialogue.murat.start.6"));
+                muratNode.addChoice(Assets.bundle.get("dialogue.murat.choice.accept"), () -> QuestManager.addQuest(new QuestManager.Quest("chili", "quest.chili.name", "quest.chili.description")));
+                muratNode.addChoice(Assets.bundle.get("dialogue.murat.choice.decline"), () -> {});
+                npc = new NPC(Assets.bundle.get("npc.murat.name"), 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(muratNode));
                 break;
+
             case "talahon1":
-                npc = new NPC("talahon1", 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode("...")));
+                npc = new NPC("talahon1", 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.talahon1.start.1"), Assets.bundle.get("dialogue.talahon1.start.2"), Assets.bundle.get("dialogue.talahon1.start.3"))));
                 break;
             case "talahon2":
-                npc = new NPC("talahon2", 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode("...")));
+                npc = new NPC("talahon2", 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode(Assets.bundle.get("dialogue.talahon2.start.1"), Assets.bundle.get("dialogue.talahon2.start.2"), Assets.bundle.get("dialogue.talahon2.start.3"))));
                 break;
-            case "grandpa":
-                npc = new NPC("grandpa", 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode("...")));
+
+            case "walter":
+                DialogueNode walterNode = new DialogueNode(Assets.bundle.get("dialogue.walter.start.1"), Assets.bundle.get("dialogue.walter.start.2"), Assets.bundle.get("dialogue.walter.start.3"), Assets.bundle.get("dialogue.walter.start.4"), Assets.bundle.get("dialogue.walter.start.5"), Assets.bundle.get("dialogue.walter.start.6"));
+                walterNode.addChoice(Assets.bundle.get("dialogue.walter.choice.help"), () -> QuestManager.addQuest(new QuestManager.Quest("wallet", "quest.wallet.name", "quest.wallet.description")));
+                walterNode.addChoice(Assets.bundle.get("dialogue.walter.choice.ignore"), () -> {});
+                npc = new NPC(Assets.bundle.get("npc.walter.name"), 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(walterNode));
                 break;
-            case "russian":
-                npc = new NPC("russian", 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode("...")));
+
+            case "dmitri":
+                DialogueNode dmitriNode = new DialogueNode(Assets.bundle.get("dialogue.dmitri.start.1"), Assets.bundle.get("dialogue.dmitri.start.2"), Assets.bundle.get("dialogue.dmitri.start.3"), Assets.bundle.get("dialogue.dmitri.start.4"), Assets.bundle.get("dialogue.dmitri.start.5"), Assets.bundle.get("dialogue.dmitri.start.6"), Assets.bundle.get("dialogue.dmitri.start.7"));
+                npc = new NPC(Assets.bundle.get("npc.dmitri.name"), 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(dmitriNode));
                 break;
-            case "nigga":
-                npc = new NPC("nigga", 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(new DialogueNode("...")));
-                break;
+
+            case "jamal":
+                DialogueNode jamalNode = new DialogueNode(Assets.bundle.get("dialogue.jamal.start.1"), Assets.bundle.get("dialogue.jamal.start.2"), Assets.bundle.get("dialogue.jamal.start.3"), Assets.bundle.get("dialogue.jamal.start.4"), Assets.bundle.get("dialogue.jamal.start.5"), Assets.bundle.get("dialogue.jamal.start.6"));
+                jamalNode.addChoice(Assets.bundle.get("dialogue.jamal.choice.give_money"), () -> {
+                    if (inventory.removeItem(ItemRegistry.get("money"), 5)) {
+                        gameUI.showInfoMessage(Assets.bundle.get("message.jamal.thanks"), 2f);
+                    } else {
+                        uiManager.showNotEnough(Assets.bundle.get("item.money.name"));
+                    }
+                });
+                jamalNode.addChoice(Assets.bundle.get("dialogue.jamal.choice.ignore"), () -> {});
+                npc = new NPC(Assets.bundle.get("npc.jamal.name"), 100, 100, x, y, texture, world, 1, 0, 3f, 0f, 75, 100, new Dialogue(jamalNode));
         }
 
         if (npc != null) {

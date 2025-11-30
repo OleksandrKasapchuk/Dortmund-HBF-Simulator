@@ -72,11 +72,14 @@ public class ManagerRegistry {
         World backWorld = new World("leopold", "maps/leopold.tmx");
         World subwayWorld = new World("subway", "maps/subway.tmx");
         World homeWorld = new World("home", "maps/home.tmx");
+        World kampWorld = new World("kamp", "maps/kamp.tmx");
 
         WorldManager.addWorld(mainWorld);
         WorldManager.addWorld(backWorld);
         WorldManager.addWorld(subwayWorld);
         WorldManager.addWorld(homeWorld);
+        WorldManager.addWorld(kampWorld);
+
         System.out.println("GameInitializer: All worlds created and loaded.");
 
 

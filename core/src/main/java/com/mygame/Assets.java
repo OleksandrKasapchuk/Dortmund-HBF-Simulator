@@ -86,10 +86,10 @@ public class Assets {
         textureJason = loadAndStore("jason", "images/npc/jason.png");
         textureTalahon1 = loadAndStore("talahon1", "images/npc/talahon1.png");
         textureTalahon2 = loadAndStore("talahon2", "images/npc/talahon2.png");
-        textureGrandpa = loadAndStore("grandpa", "images/npc/grandpa.png");
-        textureTurkish = loadAndStore("turkish", "images/npc/turkish.png");
-        textureNigga = loadAndStore("nigga", "images/npc/nigga.png");
-        textureRussian = loadAndStore("russian", "images/npc/russian.png");
+        textureGrandpa = loadAndStore("walter", "images/npc/walter.png");
+        textureTurkish = loadAndStore("murat", "images/npc/murat.png");
+        textureNigga = loadAndStore("jamal", "images/npc/jamal.png");
+        textureRussian = loadAndStore("dmitri", "images/npc/dmitri.png");
 
         deathBack = loadAndStore("deathBack", "images/background/deathScreen.jpg");
         menuBack = loadAndStore("menuBack", "images/background/menu.jpg");

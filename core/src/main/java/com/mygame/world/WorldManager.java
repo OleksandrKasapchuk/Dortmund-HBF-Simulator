@@ -62,8 +62,8 @@ public class WorldManager {
         if (inTransitionZone) {
             font.draw(batch, Assets.bundle.get("world.pressEToTransition"), player.getX(), player.getY() + player.getHeight() + 30);
         }
-    }
 
+    }
     public static void update(float delta, Player player, boolean interactPressed, DarkOverlay darkOverlay) {
         if (cooldownTimer > 0) {
             cooldownTimer -= delta;
@@ -88,7 +88,7 @@ public class WorldManager {
         if (inTransitionZone && interactPressed) {
             final Transition finalTransition = activeTransition;
 
-            darkOverlay.show(1, 0.75f);
+            darkOverlay.show(1, 0.7f);
             TimerManager.setAction(() -> {
                 setCurrentWorld(finalTransition.targetWorldId);
                 player.setX(finalTransition.targetX);
@@ -97,7 +97,6 @@ public class WorldManager {
                 inTransitionZone = false;
                 cooldownTimer = TRANSITION_COOLDOWN; // Start cooldown
             }, 0.05f);
-
         }
     }
 }
