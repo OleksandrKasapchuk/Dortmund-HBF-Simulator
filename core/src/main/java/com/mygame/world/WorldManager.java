@@ -67,7 +67,7 @@ public class WorldManager {
     public static void update(float delta, Player player, boolean interactPressed, DarkOverlay darkOverlay) {
         if (cooldownTimer > 0) {
             cooldownTimer -= delta;
-            inTransitionZone = false; // Don't show prompt during cooldown
+            inTransitionZone = false;
             return;
         }
 

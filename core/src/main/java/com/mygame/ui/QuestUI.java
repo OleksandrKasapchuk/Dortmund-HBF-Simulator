@@ -75,7 +75,7 @@ public class QuestUI {
 
         // Display all quests
         for (QuestManager.Quest quest : QuestManager.getQuests()) {
-            Label qLabel = new Label("• " + Assets.bundle.get(quest.getDescriptionKey()), skin);
+            Label qLabel = new Label("• " + Assets.bundle.get(quest.descriptionKey()), skin);
             qLabel.setFontScale(1.5f);
             questTable.add(qLabel).left().pad(10).row();
         }

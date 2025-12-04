@@ -140,13 +140,10 @@ public class Player extends Entity {
         return false;
     }
 
-
-
     public InventoryManager getInventory() {
         return inventory;
     }
 
-    // Use items (food, drugs, boosters etc.)
     public void useItem(ItemType item) {
         if (inventory.isUsable(item) && inventory.hasItem(item)) {
             item.apply();
@@ -164,6 +161,7 @@ public class Player extends Entity {
     public void setWorld(World world) {
         this.world = world;
     }
+
     // Money getter
     public int getMoney() {
         return inventory.getAmount(ItemRegistry.get("money"));
@@ -172,6 +170,5 @@ public class Player extends Entity {
     public void addMoney(int amount) {
         SoundManager.playSound(Assets.moneySound);
         inventory.addItem(ItemRegistry.get("money"), amount);
-
     }
 }

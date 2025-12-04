@@ -40,23 +40,6 @@ public class DarkOverlay {
     }
 
     /**
-     * Запускає ефект зникнення (fade-out).
-     */
-    public void hide() {
-        if (currentState != State.HIDDEN) {
-            currentState = State.FADING_OUT;
-            stayTimer = 0; // Скасувати таймер, якщо він був
-        }
-    }
-
-    /**
-     * Перевіряє, чи видиме зараз затемнення.
-     */
-    public boolean isVisible() {
-        return currentState != State.HIDDEN;
-    }
-
-    /**
      * Оновлює логіку затемнення (повинно викликатися кожен кадр).
      */
     public void update(float delta) {

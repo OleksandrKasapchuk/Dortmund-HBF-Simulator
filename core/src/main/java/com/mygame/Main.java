@@ -121,8 +121,6 @@ public class Main extends ApplicationAdapter {
         MusicManager.stopAll();
     }
 
-
-
     public static GameInitializer getGameInitializer() {
         return gameInitializer;
     }

@@ -4,9 +4,7 @@ package com.mygame.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.mygame.Assets;
-import com.mygame.dialogue.Dialogue;
 import com.mygame.dialogue.DialogueNode;
-import com.mygame.entity.Player;
 import com.mygame.managers.nonglobal.GameStateManager;
 import com.mygame.managers.nonglobal.NpcManager;
 import com.mygame.ui.UIManager;
@@ -39,11 +37,9 @@ public class GameInputHandler {
 
     public void handleStonedPlayer(NpcManager npcManager) {
         npcManager.getPolice().setDialogue(
-            new Dialogue(
-                new DialogueNode(gsm::playerDied,
-                    Assets.bundle.get("dialogue.police.stoned.1"),
-                    Assets.bundle.get("dialogue.police.stoned.2"))
-            )
+            new DialogueNode(gsm::playerDied,
+                Assets.bundle.get("dialogue.police.stoned.1"),
+                Assets.bundle.get("dialogue.police.stoned.2"))
         );
     }
 }

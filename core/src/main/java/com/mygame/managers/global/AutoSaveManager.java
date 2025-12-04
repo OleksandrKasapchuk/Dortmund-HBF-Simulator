@@ -25,7 +25,6 @@ public class AutoSaveManager {
         }
     }
 
-
     public static void saveGame() {
         timer = 0;
 
@@ -50,7 +49,7 @@ public class AutoSaveManager {
 
         // Save active quests
         settings.activeQuests = QuestManager.getQuests().stream()
-            .map(QuestManager.Quest::getKey)
+            .map(QuestManager.Quest::key)
             .collect(Collectors.toList());
 
         SettingsManager.save(settings);

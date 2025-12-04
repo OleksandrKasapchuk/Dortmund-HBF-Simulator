@@ -3,7 +3,6 @@ package com.mygame.managers.nonglobal;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygame.Assets;
-import com.mygame.dialogue.Dialogue;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.NPC;
@@ -92,7 +91,7 @@ public class EventManager {
             Assets.bundle.get("message.boss.failure.2"),
             Assets.bundle.get("message.boss.failure.3"));
 
-        boss.setDialogue(new Dialogue(failureNode));
+        boss.setDialogue(failureNode);
 
         // Set timer to start dialogue after 2 seconds
         TimerManager.setAction(() -> {
@@ -124,7 +123,7 @@ public class EventManager {
         // Call police after 2 seconds
         TimerManager.setAction(() -> {
             npcManager.callPolice();
-            Police police = npcManager.getPolice1();
+            Police police = npcManager.getSummonedPolice();
             if (police == null) return;
 
             // Dialogue for being caught
@@ -134,11 +133,11 @@ public class EventManager {
                 police.startChase();                           // Start police chase
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.boss.chase.run"), 2f); // Show warning
                 MusicManager.playMusic(Assets.backMusic4);    // Change music to chase
-                police.setDialogue(new Dialogue(caughtNode)); // Assign caught dialogue
+                police.setDialogue(caughtNode); // Assign caught dialogue
             };
 
             // Dialogue before chase
-            police.setDialogue(new Dialogue(new DialogueNode(chaseAction, Assets.bundle.get("message.boss.dialogue.beforeChase.1"), Assets.bundle.get("message.boss.dialogue.beforeChase.2"))));
+            police.setDialogue(new DialogueNode(chaseAction, Assets.bundle.get("message.boss.dialogue.beforeChase.1"), Assets.bundle.get("message.boss.dialogue.beforeChase.2")));
             uiManager.getDialogueManager().startForcedDialogue(police);
         }, 2f);
     }
@@ -174,9 +173,9 @@ public class EventManager {
 
     // --- Handle police behavior ---
     public void handlePolice(){
-        if (npcManager.getPolice1() == null) return;
+        if (npcManager.getSummonedPolice() == null) return;
 
-        Police police = npcManager.getPolice1();
+        Police police = npcManager.getSummonedPolice();
         police.update(player);
 
         switch (police.getState()) {
@@ -189,10 +188,10 @@ public class EventManager {
                 Runnable rewardAction = () -> {
                     player.addMoney(50);
                     uiManager.showEarned(50, Assets.bundle.get("item.money.name"));
-                    npcManager.getBoss().setDialogue(new Dialogue(new DialogueNode(Assets.bundle.get("message.boss.whatDoYouWant"))));
+                    npcManager.getBoss().setDialogue(new DialogueNode(Assets.bundle.get("message.boss.whatDoYouWant")));
                 };
 
-                npcManager.getBoss().setDialogue(new Dialogue(new DialogueNode(rewardAction, Assets.bundle.get("message.boss.wellDone"))));
+                npcManager.getBoss().setDialogue(new DialogueNode(rewardAction, Assets.bundle.get("message.boss.wellDone")));
             }
             case CAUGHT -> gameStateManager.playerDied(); // Player dies if caught
         }
