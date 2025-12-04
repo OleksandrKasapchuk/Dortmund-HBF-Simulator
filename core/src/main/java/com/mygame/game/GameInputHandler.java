@@ -5,8 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.mygame.Assets;
 import com.mygame.dialogue.DialogueNode;
-import com.mygame.managers.nonglobal.GameStateManager;
-import com.mygame.managers.nonglobal.NpcManager;
+import com.mygame.entity.npc.NpcManager;
 import com.mygame.ui.UIManager;
 
 public class GameInputHandler {

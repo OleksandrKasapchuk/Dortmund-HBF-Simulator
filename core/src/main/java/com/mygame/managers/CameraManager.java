@@ -1,10 +1,10 @@
-package com.mygame.managers.nonglobal;
+package com.mygame.managers;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mygame.entity.Player;
+import com.mygame.entity.player.Player;
 import com.mygame.world.World;
 
 /**

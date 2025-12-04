@@ -9,9 +9,10 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.mygame.Assets;
-import com.mygame.entity.NPC;
-import com.mygame.entity.Player;
+import com.mygame.entity.npc.NPC;
+import com.mygame.entity.player.Player;
 import com.mygame.entity.item.Item;
+import com.mygame.world.transition.Transition;
 
 import java.util.ArrayList;
 

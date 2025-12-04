@@ -1,8 +1,7 @@
-package com.mygame.managers.nonglobal;
+package com.mygame.game;
 
 import com.mygame.Assets;
-import com.mygame.game.GameSettings;
-import com.mygame.game.SettingsManager;
+import com.mygame.managers.global.save.SettingsManager;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.ui.UIManager;
 

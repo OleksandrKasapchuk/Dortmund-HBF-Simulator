@@ -1,4 +1,4 @@
-package com.mygame.ui;
+package com.mygame.ui.inGameUI;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.mygame.Assets;
 import com.mygame.Main;
-import com.mygame.entity.Player;
+import com.mygame.entity.player.Player;
 
 /**
  * TouchControlsUI handles on-screen touch controls for mobile devices.

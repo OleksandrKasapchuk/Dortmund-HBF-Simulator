@@ -1,18 +1,16 @@
-package com.mygame.managers.nonglobal;
+package com.mygame.entity.npc;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.mygame.Assets;
+import com.mygame.dialogue.DialogueActionRegistry;
 import com.mygame.dialogue.DialogueNode;
-import com.mygame.entity.NPC;
-import com.mygame.entity.Player;
-import com.mygame.entity.Police;
+import com.mygame.entity.player.Player;
 import com.mygame.game.GameSettings;
-import com.mygame.game.SettingsManager;
-import com.mygame.managers.global.ActionRegistry;
-import com.mygame.managers.global.DialogueRegistry;
+import com.mygame.managers.global.save.SettingsManager;
+import com.mygame.dialogue.DialogueRegistry;
 import com.mygame.ui.UIManager;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;
@@ -33,7 +31,7 @@ public class NpcManager {
     public NpcManager(Player player, UIManager uiManager) {
         this.player = player;
         this.dialogueRegistry = new DialogueRegistry();
-        ActionRegistry.registerAll(dialogueRegistry, player, uiManager, this);
+        DialogueActionRegistry.registerAll(dialogueRegistry, player, uiManager, this);
     }
 
     public void loadNpcsFromMap(World world) {

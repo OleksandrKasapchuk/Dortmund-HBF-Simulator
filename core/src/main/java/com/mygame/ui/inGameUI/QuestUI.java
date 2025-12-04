@@ -1,4 +1,4 @@
-package com.mygame.ui;
+package com.mygame.ui.inGameUI;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;

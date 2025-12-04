@@ -1,11 +1,10 @@
-package com.mygame.managers.nonglobal;
+package com.mygame.dialogue;
 
 import com.mygame.Assets;
-import com.mygame.dialogue.DialogueNode;
-import com.mygame.entity.NPC;
-import com.mygame.entity.Player;
+import com.mygame.entity.npc.NPC;
+import com.mygame.entity.player.Player;
 import com.mygame.world.WorldManager;
-import com.mygame.ui.DialogueUI;
+import com.mygame.ui.inGameUI.DialogueUI;
 
 import java.util.ArrayList;
 

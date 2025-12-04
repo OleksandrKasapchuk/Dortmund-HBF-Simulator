@@ -1,18 +1,20 @@
-package com.mygame.managers.global;
+package com.mygame.dialogue;
 
 import com.mygame.Assets;
-import com.mygame.entity.NPC;
-import com.mygame.entity.Player;
+import com.mygame.entity.npc.NPC;
+import com.mygame.entity.player.Player;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.game.GameSettings;
-import com.mygame.game.SettingsManager;
-import com.mygame.managers.nonglobal.InventoryManager;
-import com.mygame.managers.nonglobal.NpcManager;
+import com.mygame.entity.player.InventoryManager;
+import com.mygame.entity.npc.NpcManager;
+import com.mygame.managers.global.QuestManager;
+import com.mygame.managers.global.TimerManager;
 import com.mygame.managers.global.audio.SoundManager;
+import com.mygame.managers.global.save.SettingsManager;
 import com.mygame.ui.UIManager;
 import com.mygame.ui.screenUI.GameUI;
 
-public class ActionRegistry {
+public class DialogueActionRegistry {
 
     public static void registerAll(DialogueRegistry dialogueRegistry, Player player, UIManager uiManager, NpcManager npcManager) {
         InventoryManager inventory = player.getInventory();

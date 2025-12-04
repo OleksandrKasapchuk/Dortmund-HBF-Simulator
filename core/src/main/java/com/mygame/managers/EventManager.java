@@ -1,15 +1,17 @@
-package com.mygame.managers.nonglobal;
+package com.mygame.managers;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygame.Assets;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.item.Item;
-import com.mygame.entity.NPC;
-import com.mygame.entity.Player;
-import com.mygame.entity.Police;
+import com.mygame.entity.npc.NPC;
+import com.mygame.entity.player.Player;
+import com.mygame.entity.npc.Police;
 import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.item.ItemRegistry;
+import com.mygame.entity.npc.NpcManager;
+import com.mygame.game.GameStateManager;
 import com.mygame.world.WorldManager;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.managers.global.audio.SoundManager;

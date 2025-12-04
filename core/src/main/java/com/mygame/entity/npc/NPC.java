@@ -1,7 +1,9 @@
-package com.mygame.entity;
+package com.mygame.entity.npc;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.mygame.dialogue.DialogueNode;
+import com.mygame.entity.Entity;
+import com.mygame.entity.player.Player;
 import com.mygame.world.World;
 
 /**

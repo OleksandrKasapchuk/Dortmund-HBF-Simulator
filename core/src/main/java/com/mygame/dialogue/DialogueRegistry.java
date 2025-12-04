@@ -1,10 +1,9 @@
-package com.mygame.managers.global;
+package com.mygame.dialogue;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.mygame.Assets;
-import com.mygame.dialogue.DialogueNode;
 
 import java.util.HashMap;
 import java.util.Map;

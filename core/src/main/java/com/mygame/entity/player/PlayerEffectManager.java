@@ -1,7 +1,6 @@
-package com.mygame.managers.nonglobal;
+package com.mygame.entity.player;
 
 import com.mygame.Assets;
-import com.mygame.entity.Player;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.managers.global.audio.SoundManager;
 import com.mygame.managers.global.TimerManager;

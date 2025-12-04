@@ -6,8 +6,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygame.Assets;
-import com.mygame.managers.nonglobal.DialogueManager;
-import com.mygame.entity.Player;
+import com.mygame.dialogue.DialogueManager;
+import com.mygame.entity.player.Player;
+import com.mygame.ui.inGameUI.DialogueUI;
+import com.mygame.ui.inGameUI.InventoryUI;
+import com.mygame.ui.inGameUI.QuestUI;
+import com.mygame.ui.inGameUI.TouchControlsUI;
 import com.mygame.ui.screenUI.*;
 import com.mygame.world.WorldManager;
 

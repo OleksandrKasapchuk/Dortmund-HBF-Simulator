@@ -5,12 +5,16 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.mygame.Assets;
-import com.mygame.entity.Player;
+import com.mygame.entity.player.Player;
 import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.item.ItemRegistry;
 
-import com.mygame.managers.nonglobal.*;
+import com.mygame.entity.npc.NpcManager;
+import com.mygame.entity.item.PfandManager;
+import com.mygame.entity.player.PlayerEffectManager;
+import com.mygame.game.GameStateManager;
 import com.mygame.ui.UIManager;
+import com.mygame.world.transition.TransitionManager;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 

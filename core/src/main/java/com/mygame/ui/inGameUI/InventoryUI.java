@@ -1,4 +1,4 @@
-package com.mygame.ui;
+package com.mygame.ui.inGameUI;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.mygame.Assets;
-import com.mygame.entity.Player;
+import com.mygame.entity.player.Player;
 import com.mygame.entity.item.ItemType;
 
 import java.util.Map;

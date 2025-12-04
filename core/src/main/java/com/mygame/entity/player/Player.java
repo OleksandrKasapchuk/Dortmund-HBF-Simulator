@@ -1,4 +1,4 @@
-package com.mygame.entity;
+package com.mygame.entity.player;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -8,12 +8,12 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.mygame.Assets;
+import com.mygame.entity.Entity;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.item.ItemType;
-import com.mygame.game.SettingsManager;
+import com.mygame.managers.global.save.SettingsManager;
 import com.mygame.managers.global.audio.SoundManager;
-import com.mygame.managers.nonglobal.InventoryManager;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 

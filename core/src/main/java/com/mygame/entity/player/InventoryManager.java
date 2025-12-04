@@ -1,4 +1,4 @@
-package com.mygame.managers.nonglobal;
+package com.mygame.entity.player;
 
 import com.mygame.entity.item.ItemType;
 
