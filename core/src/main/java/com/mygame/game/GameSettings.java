@@ -1,6 +1,6 @@
 package com.mygame.game;
 
-import com.mygame.entity.Player;
+import com.mygame.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;

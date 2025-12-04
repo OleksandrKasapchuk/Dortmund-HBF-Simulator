@@ -1,85 +1,89 @@
 package com.mygame.dialogue;
 
+import com.mygame.Assets;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * Represents a single node in a dialogue sequence.
- * Each node contains:
- *  - Texts to display to the player
- *  - Optional action to execute when this node is reached
- *  - List of choices that the player can select to progress the dialogue
+ * DialogueNode — один екран діалогу.
+ * Містить:
+ *   • список фраз (текст, який друкується по черзі)
+ *   • список choices (варіантів відповіді)
+ *   • action, який виконується коли цей вузол був показаний або коли закінчився
+ * Важливо:
+ *   choose(choice) тепер ПОВЕРТАЄ nextNode!
  */
 public class DialogueNode {
 
     /**
-     * Represents a choice that a player can select from a dialogue node.
-     * Each choice can:
-     *  - Lead to another DialogueNode (nextNode)
-     *  - Trigger an action (Runnable)
-     *  - Have display text
-     */
-    public static class Choice {
-        public final String text;           // Text displayed for this choice
-        public final DialogueNode nextNode; // Node to move to if this choice is selected
-        public final Runnable action;       // Action to execute when this choice is selected
-
-        // Choice that leads to another node
-        public Choice(String text, DialogueNode nextNode) {
-            this(text, nextNode, null);
-        }
-
-        // Choice that executes an action without moving to a new node
-        public Choice(String text, Runnable action) {
-            this(text, null, action);
-        }
-
-        // Choice with both a next node and an action
-        public Choice(String text, DialogueNode nextNode, Runnable action) {
-            this.text = text;
-            this.nextNode = nextNode;
-            this.action = action;
-        }
+     * @param text     що показувати гравцю
+     * @param nextNode куди переходимо
+     * @param action   що виконати при виборі
+     */ // =============================================================
+        // CHOICE — варіант вибору
+        // =============================================================
+        public record Choice(String text, DialogueNode nextNode, Runnable action) {
     }
 
-    private final List<String> texts;   // Dialogue text lines for this node
-    private final List<Choice> choices; // List of choices available at this node
-    private final Runnable action;      // Optional action executed when entering this node
+    // =============================================================
+    // NODE DATA
+    // =============================================================
+    private final List<String> texts;   // фрази вузла
+    private final List<Choice> choices; // варіанти відповіді
+    private final Runnable action;      // виконується коли вузол завершується
 
-    // Private constructor used internally
-    private DialogueNode(Runnable action, List<String> texts) {
-        this.texts = (texts == null || texts.isEmpty()) ? List.of("") : texts;
+    // =============================================================
+    // CONSTRUCTORS
+    // =============================================================
+
+    public DialogueNode(String... textKeys) {
+        this(null, textKeys);
+    }
+
+    public DialogueNode(Runnable onFinish, String... textKeys) {
+        this.action = onFinish;
+        this.texts = (textKeys == null || textKeys.length == 0) ?
+                List.of("") :
+                Arrays.stream(textKeys).map(key -> {
+                    try {
+                        return Assets.bundle.get(key);
+                    } catch (java.util.MissingResourceException e) {
+                        System.err.println("DialogueNode: Missing bundle key: \"" + key + "\"");
+                        return key;
+                    }
+                }).collect(Collectors.toList());
         this.choices = new ArrayList<>();
-        this.action = action;
     }
 
-    // Constructor with only texts
-    public DialogueNode(String... texts) {
-        this(null, Arrays.asList(texts));
+    // =============================================================
+    // ADD CHOICES
+    // =============================================================
+
+    public void addChoice(String text, DialogueNode next, Runnable action) {
+        choices.add(new Choice(text, next, action));
     }
 
-    // Constructor with action and texts
-    public DialogueNode(Runnable action, String... texts) {
-        this(action, Arrays.asList(texts));
-    }
-
-    /**
-     * Adds a choice leading to another dialogue node.
-     */
-    public void addChoice(String choiceText, DialogueNode nextNode) {
-        this.choices.add(new Choice(choiceText, nextNode));
-    }
+    // =============================================================
+    // LOGIC — головне оновлення
+    // =============================================================
 
     /**
-     * Adds a choice that executes an action when selected.
+     * Викликається коли гравець натиснув на Choice
      */
-    public void addChoice(String choiceText, Runnable action) {
-        this.choices.add(new Choice(choiceText, action));
+    public void choose(Choice choice) {
+        if (choice.action != null)          // спершу виконуємо action
+            choice.action.run();
+
     }
 
-    // Getters
+    // =============================================================
+    // GETTERS
+    // =============================================================
     public List<String> getTexts() { return texts; }
     public List<Choice> getChoices() { return choices; }
     public Runnable getAction() { return action; }
+//    public void reset() {}
 }

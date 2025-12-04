@@ -1,11 +1,11 @@
-package com.mygame.managers.global;
+package com.mygame.managers.global.save;
 
 
 import com.mygame.Main;
-import com.mygame.entity.Player;
+import com.mygame.entity.player.Player;
 import com.mygame.game.GameInitializer;
 import com.mygame.game.GameSettings;
-import com.mygame.game.SettingsManager;
+import com.mygame.managers.global.QuestManager;
 import com.mygame.world.WorldManager;
 
 import java.util.Map;
@@ -24,7 +24,6 @@ public class AutoSaveManager {
             saveGame();
         }
     }
-
 
     public static void saveGame() {
         timer = 0;
@@ -50,7 +49,7 @@ public class AutoSaveManager {
 
         // Save active quests
         settings.activeQuests = QuestManager.getQuests().stream()
-            .map(QuestManager.Quest::getKey)
+            .map(QuestManager.Quest::key)
             .collect(Collectors.toList());
 
         SettingsManager.save(settings);

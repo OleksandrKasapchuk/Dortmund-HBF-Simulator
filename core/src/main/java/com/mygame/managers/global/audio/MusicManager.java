@@ -24,7 +24,6 @@ public class MusicManager {
         // Stop previous track if switching to a new one
         if (currentMusic != null && currentMusic != newMusic) {
             currentMusic.stop();
-            currentMusic.setOnCompletionListener(null);
         }
 
         currentMusic = newMusic;
@@ -70,7 +69,6 @@ public class MusicManager {
     public static void stopAll() {
         if (currentMusic != null) {
             currentMusic.stop();
-            currentMusic.setOnCompletionListener(null);
             currentMusic = null;
         }
         isPaused = false;

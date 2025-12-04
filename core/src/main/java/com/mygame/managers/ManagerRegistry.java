@@ -5,12 +5,16 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.mygame.Assets;
-import com.mygame.entity.Player;
+import com.mygame.entity.player.Player;
 import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.item.ItemRegistry;
 
-import com.mygame.managers.nonglobal.*;
+import com.mygame.entity.npc.NpcManager;
+import com.mygame.entity.item.PfandManager;
+import com.mygame.entity.player.PlayerEffectManager;
+import com.mygame.game.GameStateManager;
 import com.mygame.ui.UIManager;
+import com.mygame.world.transition.TransitionManager;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 
@@ -66,19 +70,20 @@ public class ManagerRegistry {
         for (Window.WindowStyle style : skin.getAll(Window.WindowStyle.class).values()) {
             style.titleFont = cyrillicFont;
         }
-        // --- End of Skin and Font Loading ---
-        // 2. Now, create the worlds. They can now safely access the ItemRegistry.
+
         World mainWorld = new World("main", "maps/main_station.tmx");
         World backWorld = new World("leopold", "maps/leopold.tmx");
         World subwayWorld = new World("subway", "maps/subway.tmx");
         World homeWorld = new World("home", "maps/home.tmx");
         World kampWorld = new World("kamp", "maps/kamp.tmx");
+        World clubWorld = new World("club", "maps/club.tmx");
 
         WorldManager.addWorld(mainWorld);
         WorldManager.addWorld(backWorld);
         WorldManager.addWorld(subwayWorld);
         WorldManager.addWorld(homeWorld);
         WorldManager.addWorld(kampWorld);
+        WorldManager.addWorld(clubWorld);
 
         System.out.println("GameInitializer: All worlds created and loaded.");
 

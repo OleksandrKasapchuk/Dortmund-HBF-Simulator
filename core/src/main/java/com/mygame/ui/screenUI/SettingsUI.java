@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygame.Assets;
 import com.mygame.Main;
 import com.mygame.game.GameSettings;
-import com.mygame.game.SettingsManager;
+import com.mygame.managers.global.save.SettingsManager;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.managers.global.audio.SoundManager;
 

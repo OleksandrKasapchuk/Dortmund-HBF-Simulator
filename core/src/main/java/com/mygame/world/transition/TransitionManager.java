@@ -1,10 +1,9 @@
-package com.mygame.managers.nonglobal;
+package com.mygame.world.transition;
 
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.Rectangle;
-import com.mygame.world.Transition;
 import com.mygame.world.World;
 
 public class TransitionManager {

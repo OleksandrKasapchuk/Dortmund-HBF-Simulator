@@ -1,8 +1,9 @@
-package com.mygame.entity;
+package com.mygame.entity.npc;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.mygame.dialogue.Dialogue;
+import com.mygame.dialogue.DialogueNode;
+import com.mygame.entity.player.Player;
 import com.mygame.world.World;
 
 /**
@@ -18,7 +19,7 @@ public class Police extends NPC {
 
     /** Constructor for Police NPC */
     public Police(String name, int width, int height, float x, float y,
-                  Texture texture, World world, int speed, int distance, Dialogue dialogue) {
+                  Texture texture, World world, int speed, int distance, DialogueNode dialogue) {
 
         // NPC constructor expects many params; most unused here (0,0,0f,0f)
         super(name, width, height, x, y, texture, world,

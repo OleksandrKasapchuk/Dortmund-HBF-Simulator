@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.mygame.game.GameSettings;
-import com.mygame.game.SettingsManager;
+import com.mygame.managers.global.save.SettingsManager;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.managers.global.audio.SoundManager;
 

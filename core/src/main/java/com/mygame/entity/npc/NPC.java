@@ -1,7 +1,9 @@
-package com.mygame.entity;
+package com.mygame.entity.npc;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.mygame.dialogue.Dialogue;
+import com.mygame.dialogue.DialogueNode;
+import com.mygame.entity.Entity;
+import com.mygame.entity.player.Player;
 import com.mygame.world.World;
 
 /**
@@ -13,7 +15,7 @@ public class NPC extends Entity {
     // --- Movement state ---
     private float timer = 0f;
     private boolean isPaused = false;
-    private int directionX;  // current movement direction (-1, 0, 1)
+    private int directionX;
     private int directionY;
 
     // --- Behaviour settings ---
@@ -24,13 +26,13 @@ public class NPC extends Entity {
 
     // --- Identity & interaction ---
     private String name;
-    private Dialogue dialogue;
+    private DialogueNode dialogue;
 
     public NPC(
         String name,
         int width, int height, float x, float y, Texture texture, World world,
         int directionX, int directionY, float pauseTime, float moveTime,
-        int speed, int distance, Dialogue dialogue
+        int speed, int distance, DialogueNode dialogue
     ) {
         super(width, height, x, y, texture, world);
 
@@ -100,8 +102,8 @@ public class NPC extends Entity {
     }
 
     // --- Dialogue ---
-    public Dialogue getDialogue() { return dialogue; }
-    public void setDialogue(Dialogue dialogue) { this.dialogue = dialogue; }
+    public DialogueNode getDialogue() { return dialogue; }
+    public void setDialogue(DialogueNode dialogue) { this.dialogue = dialogue; }
 
     // --- Player distance checks ---
     public boolean isPlayerNear(Player player) {

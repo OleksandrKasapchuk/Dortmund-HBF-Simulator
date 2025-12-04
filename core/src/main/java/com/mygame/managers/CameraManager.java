@@ -1,10 +1,10 @@
-package com.mygame.managers.nonglobal;
+package com.mygame.managers;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mygame.entity.Player;
+import com.mygame.entity.player.Player;
 import com.mygame.world.World;
 
 /**
@@ -59,24 +59,14 @@ public class CameraManager {
         float halfViewportWidth = viewport.getWorldWidth() / 2f;
         float halfViewportHeight = viewport.getWorldHeight() / 2f;
 
-        float minX = halfViewportWidth;
         float maxX = world.mapWidth - halfViewportWidth;
-        float minY = halfViewportHeight;
         float maxY = world.mapHeight - halfViewportHeight;
 
-        camera.position.x = MathUtils.clamp(camera.position.x, minX, maxX);
-        camera.position.y = MathUtils.clamp(camera.position.y, minY, maxY);
+        camera.position.x = MathUtils.clamp(camera.position.x, halfViewportWidth, maxX);
+        camera.position.y = MathUtils.clamp(camera.position.y, halfViewportHeight, maxY);
 
         camera.update();
     }
-
-
-    /** Initiates a camera shake effect */
-    public void shake(float intensity, float duration) {
-        this.shakeIntensity = intensity;
-        this.shakeDuration = duration;
-    }
-
     /** Handles window resizing */
     public void resize(int width, int height) {
         viewport.update(width, height, true);

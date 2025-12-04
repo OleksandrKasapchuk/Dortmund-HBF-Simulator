@@ -6,8 +6,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygame.Assets;
 import com.mygame.DarkOverlay;
-import com.mygame.entity.Player;
+import com.mygame.entity.player.Player;
 import com.mygame.managers.global.TimerManager;
+import com.mygame.world.transition.Transition;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,7 +68,7 @@ public class WorldManager {
     public static void update(float delta, Player player, boolean interactPressed, DarkOverlay darkOverlay) {
         if (cooldownTimer > 0) {
             cooldownTimer -= delta;
-            inTransitionZone = false; // Don't show prompt during cooldown
+            inTransitionZone = false;
             return;
         }
 

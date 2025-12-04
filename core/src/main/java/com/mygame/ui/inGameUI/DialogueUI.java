@@ -1,4 +1,4 @@
-package com.mygame.ui;
+package com.mygame.ui.inGameUI;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -92,7 +92,7 @@ public class DialogueUI {
 
         // Create buttons for each choice
         for (DialogueNode.Choice choice : node.getChoices()) {
-            TextButton button = new TextButton(choice.text, skin, "default");
+            TextButton button = new TextButton(choice.text(), skin, "default");
             button.getLabel().setFontScale(1.5f);
             button.addListener(event -> {
                 // Only respond to touchDown events

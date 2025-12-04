@@ -2,7 +2,7 @@ package com.mygame.entity.item;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.mygame.entity.Entity;
-import com.mygame.entity.Player;
+import com.mygame.entity.player.Player;
 import com.mygame.world.World;
 
 /**
