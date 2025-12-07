@@ -23,7 +23,7 @@ public class PauseUI extends Screen {
 
         // "GAME PAUSED" label
         pauseLabel1 = new Label(Assets.bundle.get("pause.title"), skin);
-        pauseLabel1.setPosition(825, 600);
+        pauseLabel1.setPosition(750, 600);
         pauseLabel1.setFontScale(2.5f);
         stage.addActor(pauseLabel1);
 

@@ -1,5 +1,6 @@
 package com.mygame.entity.player;
 
+import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.item.ItemType;
 
 import java.util.LinkedHashMap;
@@ -24,12 +25,11 @@ public class InventoryManager {
         items.put(type, items.getOrDefault(type, 0) + amount);
     }
 
-    public boolean removeItem(ItemType type, int count) {
-        if (type == null || !items.containsKey(type)) return false;
+    public void removeItem(ItemType type, int count) {
+        if (type == null || !items.containsKey(type)) return;
         int current = items.get(type);
         if (current <= count) items.remove(type);
         else items.put(type, current - count);
-        return true;
     }
 
     public boolean hasItem(ItemType type) {
@@ -40,6 +40,15 @@ public class InventoryManager {
     public int getAmount(ItemType type) {
         if (type == null) return 0;
         return items.getOrDefault(type, 0);
+    }
+
+    public boolean trade(String item1, String item2, int amount1, int amount2) {
+        if (getAmount(ItemRegistry.get(item1)) >= amount1) {
+            removeItem(ItemRegistry.get(item1), amount1);
+            addItem(ItemRegistry.get(item2), amount2);
+            return true;
+        }
+        return false;
     }
 
     public Map<ItemType, Integer> getItems() {

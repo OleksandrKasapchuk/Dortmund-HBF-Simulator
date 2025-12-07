@@ -152,7 +152,8 @@ public class EventManager {
 
         if (pfandAutomat.isPlayerNear(player)) {
             if (uiManager.isInteractPressed() && pfandAutomat.canInteract()) {
-                if(player.getInventory().removeItem(ItemRegistry.get("pfand"),1)){
+                if(player.getInventory().getAmount(ItemRegistry.get("pfand")) >= 1){
+                    player.getInventory().removeItem(ItemRegistry.get("pfand"),1);
                     triggerPfandAutomat();
                 } else {
                     uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.generic.notEnoughPfand"),1f);

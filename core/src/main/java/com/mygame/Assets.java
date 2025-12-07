@@ -31,7 +31,7 @@ public class Assets {
     // === Textures (Kept for backward compatibility) ===
     public static Texture textureRyzhyi, textureDenys, textureIgo, textureIgo2, textureBaryga, textureChikita, texturePolice, textureKioskMan, textureJunky, textureZoe, textureBoss, textureKamil, textureJan, textureFilip, textureJason, textureTalahon1, textureTalahon2, textureGrandpa, textureTurkish, textureNigga, textureRussian;
     public static Texture textureSpoon, pfand, pfandAutomat;
-    public static Texture bush, rock;
+    public static Texture bush;
     public static Texture deathBack, menuBack, menuBlurBack;
 
     // === SOUND & MUSIC ===
@@ -100,7 +100,6 @@ public class Assets {
         pfandAutomat = loadAndStore("pfandAutomat", "images/item/pfand_automat.png");
 
         bush = loadAndStore("bush", "images/block/bush.jpg");
-        rock = loadAndStore("rock", "images/block/rock.jpg");
 
         // === SOUNDS & MUSIC ===
         moneySound = Gdx.audio.newSound(Gdx.files.internal("sound/money.ogg"));

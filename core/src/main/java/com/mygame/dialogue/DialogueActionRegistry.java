@@ -22,8 +22,8 @@ public class DialogueActionRegistry {
         GameSettings settings = SettingsManager.load();
 
         dialogueRegistry.registerAction("igo_give_vape", () -> {
-            if (inventory.removeItem(ItemRegistry.get("joint"), 1)) {
-                inventory.addItem(ItemRegistry.get("vape"), 1);
+            if (inventory.trade("joint", "vape", 1, 1)) {
+
                 uiManager.showEarned(1, Assets.bundle.get("item.vape.name"));
                 QuestManager.removeQuest("igo");
                 settings.completedDialogueEvents.add("igo_gave_vape");
@@ -50,8 +50,7 @@ public class DialogueActionRegistry {
         });
 
         dialogueRegistry.registerAction("baryga_buy_grass", () -> {
-            if (inventory.removeItem(ItemRegistry.get("money"), 10)) {
-                inventory.addItem(ItemRegistry.get("grass"), 1);
+            if (inventory.trade("money", "grass", 10, 1)) {
                 uiManager.showEarned(1, Assets.bundle.get("item.grass.name"));
             } else {
                 uiManager.showNotEnough(Assets.bundle.get("item.money.name"));
@@ -79,8 +78,7 @@ public class DialogueActionRegistry {
         });
 
         dialogueRegistry.registerAction("kioskman_buy_pape", () -> {
-            if (inventory.removeItem(ItemRegistry.get("money"), 5)) {
-                inventory.addItem(ItemRegistry.get("pape"), 1);
+            if (inventory.trade("money", "pape", 5, 1)) {
                 uiManager.showEarned(1, Assets.bundle.get("item.pape.name"));
             } else {
                 uiManager.showNotEnough(Assets.bundle.get("item.money.name"));
@@ -88,9 +86,7 @@ public class DialogueActionRegistry {
         });
 
         dialogueRegistry.registerAction("kioskman_buy_icetea", () -> {
-            if (inventory.getAmount(ItemRegistry.get("money")) >= 10) {
-                inventory.removeItem(ItemRegistry.get("money"), 10);
-                inventory.addItem(ItemRegistry.get("ice_tea"), 1);
+            if (inventory.trade("money", "ice_tea", 10, 1)) {
                 uiManager.showEarned(1, Assets.bundle.get("item.ice_tea.name"));
             } else {
                 uiManager.showNotEnough(Assets.bundle.get("item.money.name"));
@@ -101,7 +97,8 @@ public class DialogueActionRegistry {
             if (!QuestManager.hasQuest("spoon")) {
                 QuestManager.addQuest(new QuestManager.Quest("spoon", "quest.spoon.name", "quest.spoon.description"));
             }
-            if (inventory.removeItem(ItemRegistry.get("spoon"), 1)) {
+            if (inventory.getAmount(ItemRegistry.get("spoon")) >= 1) {
+                inventory.removeItem(ItemRegistry.get("spoon"), 1);
                 gameUI.showInfoMessage(Assets.bundle.get("message.junky.respect"), 1.5f);
                 QuestManager.removeQuest("spoon");
             } else {
@@ -126,7 +123,11 @@ public class DialogueActionRegistry {
         });
 
         dialogueRegistry.registerAction("police_check", () -> {
-            if (inventory.removeItem(ItemRegistry.get("grass"), 10000) || inventory.removeItem(ItemRegistry.get("joint"), 10000) || inventory.removeItem(ItemRegistry.get("vape"), 10000)) {
+            if (inventory.getAmount(ItemRegistry.get("grass")) > 0 || inventory.getAmount(ItemRegistry.get("joint")) > 0 || inventory.getAmount(ItemRegistry.get("vape")) > 0) {
+                inventory.removeItem(ItemRegistry.get("grass"), 10000);
+                inventory.removeItem(ItemRegistry.get("joint"), 10000);
+                inventory.removeItem(ItemRegistry.get("vape"), 10000);
+
                 gameUI.showInfoMessage(Assets.bundle.get("message.police.stuffLost"), 1.5f);
             } else {
                 gameUI.showInfoMessage(Assets.bundle.get("message.police.checkPassed"), 1.5f);
@@ -147,7 +148,8 @@ public class DialogueActionRegistry {
         dialogueRegistry.registerAction("walter_accept_quest", () -> QuestManager.addQuest(new QuestManager.Quest("wallet", "quest.wallet.name", "quest.wallet.description")));
 
         dialogueRegistry.registerAction("jamal_give_money", () -> {
-            if (inventory.removeItem(ItemRegistry.get("money"), 5)) {
+            if (inventory.getAmount(ItemRegistry.get("money")) >= 5) {
+                inventory.removeItem(ItemRegistry.get("money"), 5);
                 gameUI.showInfoMessage(Assets.bundle.get("message.jamal.thanks"), 2f);
             } else {
                 uiManager.showNotEnough(Assets.bundle.get("item.money.name"));
