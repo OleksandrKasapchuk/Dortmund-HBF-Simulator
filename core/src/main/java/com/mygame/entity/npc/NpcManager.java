@@ -8,7 +8,7 @@ import com.mygame.Assets;
 import com.mygame.dialogue.DialogueActionRegistry;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.player.Player;
-import com.mygame.game.GameSettings;
+import com.mygame.managers.global.save.GameSettings;
 import com.mygame.managers.global.save.SettingsManager;
 import com.mygame.dialogue.DialogueRegistry;
 import com.mygame.ui.UIManager;

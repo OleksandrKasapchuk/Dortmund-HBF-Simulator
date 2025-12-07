@@ -117,7 +117,7 @@ public class UIManager {
             worldMapUI.update();
         } else if (currentStage == gameUI.getStage()) {
             gameUI.update(delta);
-            gameUI.updateMoney(player.getMoney());
+            gameUI.updateMoney(player.getInventory().getMoney());
             gameUI.updateWorld(WorldManager.getCurrentWorld().getName());
             // Update dialogue manager
             dialogueManager.update(delta, isInteractPressed());

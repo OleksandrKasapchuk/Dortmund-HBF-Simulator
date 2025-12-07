@@ -167,7 +167,7 @@ public class EventManager {
 
         // Timer to give money after 1.9 seconds
         TimerManager.setAction(() -> {
-            player.addMoney(1);
+            player.getInventory().addMoney(1);
             uiManager.showEarned(1, Assets.bundle.get("item.money.name"));
         }, 1.9f);
 
@@ -189,7 +189,7 @@ public class EventManager {
 
                 // Reward player for escaping
                 Runnable rewardAction = () -> {
-                    player.addMoney(50);
+                    player.getInventory().addMoney(50);
                     uiManager.showEarned(50, Assets.bundle.get("item.money.name"));
                     npcManager.getBoss().setDialogue(new DialogueNode(Assets.bundle.get("message.boss.whatDoYouWant")));
                 };

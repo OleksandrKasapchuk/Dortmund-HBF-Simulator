@@ -7,6 +7,7 @@ import com.mygame.entity.player.Player;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.managers.ManagerRegistry;
 import com.mygame.managers.global.QuestManager;
+import com.mygame.managers.global.save.GameSettings;
 import com.mygame.managers.global.save.SettingsManager;
 import com.mygame.world.WorldManager;
 import com.mygame.managers.global.audio.MusicManager;
@@ -43,6 +44,8 @@ public class GameInitializer {
         GameSettings settings = SettingsManager.load();
         player = new Player(500, 80, 80, settings.playerX, settings.playerY, Assets.getTexture("zoe"), null);
         managerRegistry = new ManagerRegistry(batch, font, player);
+
+        player.getInventory().setUI(managerRegistry.getUiManager());
 
         System.out.println("GameInitializer: Player and ManagerRegistry created. ItemRegistry is now initialized.");
 

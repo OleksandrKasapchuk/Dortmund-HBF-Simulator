@@ -161,14 +161,4 @@ public class Player extends Entity {
     public void setWorld(World world) {
         this.world = world;
     }
-
-    // Money getter
-    public int getMoney() {
-        return inventory.getAmount(ItemRegistry.get("money"));
-    }
-
-    public void addMoney(int amount) {
-        SoundManager.playSound(Assets.moneySound);
-        inventory.addItem(ItemRegistry.get("money"), amount);
-    }
 }

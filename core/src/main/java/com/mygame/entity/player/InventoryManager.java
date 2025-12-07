@@ -1,7 +1,10 @@
 package com.mygame.entity.player;
 
+import com.mygame.Assets;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.item.ItemType;
+import com.mygame.managers.global.audio.SoundManager;
+import com.mygame.ui.UIManager;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -12,6 +15,8 @@ import java.util.Map;
  */
 public class InventoryManager {
 
+    UIManager uiManager;
+
     // --- Stores items and their quantities ---
     private final Map<ItemType, Integer> items;
 
@@ -19,6 +24,8 @@ public class InventoryManager {
     public InventoryManager() {
         items = new LinkedHashMap<>();       // Preserve insertion order
     }
+
+    public void setUI(UIManager uiManager) {this.uiManager = uiManager;}
 
     public void addItem(ItemType type, int amount) {
         if (type == null) return; // Prevent adding null items
@@ -42,21 +49,32 @@ public class InventoryManager {
         return items.getOrDefault(type, 0);
     }
 
-    public boolean trade(String item1, String item2, int amount1, int amount2) {
-        if (getAmount(ItemRegistry.get(item1)) >= amount1) {
-            removeItem(ItemRegistry.get(item1), amount1);
-            addItem(ItemRegistry.get(item2), amount2);
+    public Map<ItemType, Integer> getItems() {return items;}
+
+    public int getMoney() {return getAmount(ItemRegistry.get("money"));}
+
+    public void addMoney(int amount) {
+        SoundManager.playSound(Assets.moneySound);
+        addItem(ItemRegistry.get("money"), amount);
+    }
+
+    public void addItemAndNotify(ItemType type, int amount) {
+        if (type == ItemRegistry.get("money")) addMoney(amount);
+        else addItem(type, amount);
+
+        uiManager.showEarned(amount, type.getKey());
+    }
+
+    public boolean trade(ItemType give, ItemType receive, int giveAmount, int receiveAmount) {
+        if (getAmount(give) >= giveAmount) {
+            removeItem(give, giveAmount);
+            addItemAndNotify(receive, receiveAmount);
             return true;
         }
+        uiManager.showNotEnough(give.getKey());
         return false;
     }
 
-    public Map<ItemType, Integer> getItems() {
-        return items;
-    }
-
     // --- Check if an item is usable (has an effect) ---
-    public boolean isUsable(ItemType item) {
-        return item != null && item.isUsable();
-    }
+    public boolean isUsable(ItemType item) {return item != null && item.isUsable();}
 }

@@ -1,6 +1,7 @@
 package com.mygame.game;
 
 import com.mygame.Assets;
+import com.mygame.managers.global.save.GameSettings;
 import com.mygame.managers.global.save.SettingsManager;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.ui.UIManager;

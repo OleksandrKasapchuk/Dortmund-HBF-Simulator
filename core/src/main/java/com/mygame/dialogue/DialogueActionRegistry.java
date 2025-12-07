@@ -4,7 +4,7 @@ import com.mygame.Assets;
 import com.mygame.entity.npc.NPC;
 import com.mygame.entity.player.Player;
 import com.mygame.entity.item.ItemRegistry;
-import com.mygame.game.GameSettings;
+import com.mygame.managers.global.save.GameSettings;
 import com.mygame.entity.player.InventoryManager;
 import com.mygame.entity.npc.NpcManager;
 import com.mygame.managers.global.QuestManager;
@@ -22,16 +22,12 @@ public class DialogueActionRegistry {
         GameSettings settings = SettingsManager.load();
 
         dialogueRegistry.registerAction("igo_give_vape", () -> {
-            if (inventory.trade("joint", "vape", 1, 1)) {
+            if (inventory.trade(ItemRegistry.get("joint"), ItemRegistry.get("vape"), 1, 1)) {
 
-                uiManager.showEarned(1, Assets.bundle.get("item.vape.name"));
                 QuestManager.removeQuest("igo");
                 settings.completedDialogueEvents.add("igo_gave_vape");
-                SettingsManager.save(settings);
                 npcManager.findNpcByName(Assets.bundle.get("npc.igo.name")).setDialogue(dialogueRegistry.getDialogue("igo", "thanks"));
                 TimerManager.setAction(() -> npcManager.findNpcByName(Assets.bundle.get("npc.igo.name")).setTexture(Assets.getTexture("igo2")), 5f);
-            } else {
-                uiManager.showNotEnough(Assets.bundle.format("item.joint.name"));
             }
         });
 
@@ -42,20 +38,13 @@ public class DialogueActionRegistry {
         });
 
         dialogueRegistry.registerAction("ryzhyi_take_money", () -> {
-            player.addMoney(20);
-            uiManager.showEarned(20, Assets.bundle.get("item.money.name"));
+            inventory.addItemAndNotify(ItemRegistry.get("money"),20);
             settings.completedDialogueEvents.add("ryzhyi_gave_money");
-            SettingsManager.save(settings);
             npcManager.findNpcByName(Assets.bundle.get("npc.ryzhyi.name")).setDialogue(dialogueRegistry.getDialogue("ryzhyi", "after"));
         });
 
-        dialogueRegistry.registerAction("baryga_buy_grass", () -> {
-            if (inventory.trade("money", "grass", 10, 1)) {
-                uiManager.showEarned(1, Assets.bundle.get("item.grass.name"));
-            } else {
-                uiManager.showNotEnough(Assets.bundle.get("item.money.name"));
-            }
-        });
+        dialogueRegistry.registerAction("baryga_buy_grass", () ->
+            inventory.trade(ItemRegistry.get("money"), ItemRegistry.get("grass"), 10, 1));
 
         dialogueRegistry.registerAction("chikita_craft_joint", () -> {
             if (!inventory.hasItem(ItemRegistry.get("grass"))) {
@@ -77,21 +66,11 @@ public class DialogueActionRegistry {
             }, 1f);
         });
 
-        dialogueRegistry.registerAction("kioskman_buy_pape", () -> {
-            if (inventory.trade("money", "pape", 5, 1)) {
-                uiManager.showEarned(1, Assets.bundle.get("item.pape.name"));
-            } else {
-                uiManager.showNotEnough(Assets.bundle.get("item.money.name"));
-            }
-        });
+        dialogueRegistry.registerAction("kioskman_buy_pape", () ->
+            inventory.trade(ItemRegistry.get("money"), ItemRegistry.get("pape"), 5, 1));
 
-        dialogueRegistry.registerAction("kioskman_buy_icetea", () -> {
-            if (inventory.trade("money", "ice_tea", 10, 1)) {
-                uiManager.showEarned(1, Assets.bundle.get("item.ice_tea.name"));
-            } else {
-                uiManager.showNotEnough(Assets.bundle.get("item.money.name"));
-            }
-        });
+        dialogueRegistry.registerAction("kioskman_buy_icetea", () ->
+            inventory.trade(ItemRegistry.get("money"), ItemRegistry.get("ice_tea"), 10, 1));
 
         dialogueRegistry.registerAction("junky_give_spoon", () -> {
             if (!QuestManager.hasQuest("spoon")) {
@@ -114,12 +93,10 @@ public class DialogueActionRegistry {
 
         dialogueRegistry.registerAction("boss_accept_quest", () -> {
             QuestManager.addQuest(new QuestManager.Quest("delivery", "quest.delivery.name", "quest.delivery.description"));
-            inventory.addItem(ItemRegistry.get("grass"), 1000);
-            uiManager.showEarned(1000, Assets.bundle.get("item.grass.name"));
+            inventory.addItemAndNotify(ItemRegistry.get("grass"), 1000);
             NPC bossRef = npcManager.findNpcByName(Assets.bundle.get("npc.boss.name"));
             if (bossRef != null) bossRef.setDialogue(dialogueRegistry.getDialogue("boss", "after"));
             settings.completedDialogueEvents.add("boss_gave_quest");
-            SettingsManager.save(settings);
         });
 
         dialogueRegistry.registerAction("police_check", () -> {
@@ -135,17 +112,17 @@ public class DialogueActionRegistry {
         });
 
         dialogueRegistry.registerAction("jason_give_money", () -> {
-            player.addMoney(20);
-            uiManager.showEarned(20, Assets.bundle.get("item.money.name"));
+            inventory.addItemAndNotify(ItemRegistry.get("money"),20);
             NPC jason = npcManager.findNpcByName(Assets.bundle.get("npc.jason.name"));
             jason.setDialogue(dialogueRegistry.getDialogue("jason", "after"));
             settings.completedDialogueEvents.add("jason_gave_money");
-            SettingsManager.save(settings);
         });
 
-        dialogueRegistry.registerAction("murat_accept_quest", () -> QuestManager.addQuest(new QuestManager.Quest("chili", "quest.chili.name", "quest.chili.description")));
+        dialogueRegistry.registerAction("murat_accept_quest", () ->
+            QuestManager.addQuest(new QuestManager.Quest("chili", "quest.chili.name", "quest.chili.description")));
 
-        dialogueRegistry.registerAction("walter_accept_quest", () -> QuestManager.addQuest(new QuestManager.Quest("wallet", "quest.wallet.name", "quest.wallet.description")));
+        dialogueRegistry.registerAction("walter_accept_quest", () ->
+            QuestManager.addQuest(new QuestManager.Quest("wallet", "quest.wallet.name", "quest.wallet.description")));
 
         dialogueRegistry.registerAction("jamal_give_money", () -> {
             if (inventory.getAmount(ItemRegistry.get("money")) >= 5) {
