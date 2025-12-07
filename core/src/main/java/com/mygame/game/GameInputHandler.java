@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.mygame.Assets;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.npc.NpcManager;
+import com.mygame.entity.player.Player;
 import com.mygame.ui.UIManager;
 
 public class GameInputHandler {
@@ -16,6 +17,12 @@ public class GameInputHandler {
         this.gsm = gsm;
         this.uiManager = uiManager;
     }
+
+    public void update(Player player, NpcManager npcManager){
+        handleInput();
+        handleStonedPlayer(player, npcManager);
+    }
+
 
     /**Handles key input for global game actions (pause, settings, start game).*/
     public void handleInput() {
@@ -34,11 +41,13 @@ public class GameInputHandler {
         }
     }
 
-    public void handleStonedPlayer(NpcManager npcManager) {
-        npcManager.getPolice().setDialogue(
-            new DialogueNode(gsm::playerDied,
-                Assets.bundle.get("dialogue.police.stoned.1"),
-                Assets.bundle.get("dialogue.police.stoned.2"))
-        );
+    public void handleStonedPlayer(Player player, NpcManager npcManager) {
+        if (player.getState() == Player.State.STONED) {
+            npcManager.getPolice().setDialogue(
+                new DialogueNode(gsm::playerDied,
+                    Assets.bundle.get("dialogue.police.stoned.1"),
+                    Assets.bundle.get("dialogue.police.stoned.2"))
+            );
+        }
     }
 }

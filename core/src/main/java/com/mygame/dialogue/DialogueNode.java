@@ -22,22 +22,13 @@ public class DialogueNode {
      * @param text     що показувати гравцю
      * @param nextNode куди переходимо
      * @param action   що виконати при виборі
-     */ // =============================================================
-        // CHOICE — варіант вибору
-        // =============================================================
-        public record Choice(String text, DialogueNode nextNode, Runnable action) {
-    }
+     */
+    public record Choice(String text, DialogueNode nextNode, Runnable action) {}
 
-    // =============================================================
-    // NODE DATA
-    // =============================================================
     private final List<String> texts;   // фрази вузла
     private final List<Choice> choices; // варіанти відповіді
     private final Runnable action;      // виконується коли вузол завершується
 
-    // =============================================================
-    // CONSTRUCTORS
-    // =============================================================
 
     public DialogueNode(String... textKeys) {
         this(null, textKeys);
@@ -58,17 +49,9 @@ public class DialogueNode {
         this.choices = new ArrayList<>();
     }
 
-    // =============================================================
-    // ADD CHOICES
-    // =============================================================
-
     public void addChoice(String text, DialogueNode next, Runnable action) {
         choices.add(new Choice(text, next, action));
     }
-
-    // =============================================================
-    // LOGIC — головне оновлення
-    // =============================================================
 
     /**
      * Викликається коли гравець натиснув на Choice
@@ -79,11 +62,7 @@ public class DialogueNode {
 
     }
 
-    // =============================================================
-    // GETTERS
-    // =============================================================
     public List<String> getTexts() { return texts; }
     public List<Choice> getChoices() { return choices; }
     public Runnable getAction() { return action; }
-//    public void reset() {}
 }

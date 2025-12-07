@@ -7,13 +7,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
-import com.mygame.Assets;
 import com.mygame.entity.Entity;
 import com.mygame.entity.item.Item;
-import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.item.ItemType;
 import com.mygame.managers.global.save.SettingsManager;
-import com.mygame.managers.global.audio.SoundManager;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 
@@ -76,6 +73,8 @@ public class Player extends Entity {
 
         // === PC CONTROLS ===
         if (Gdx.app.getType() != Application.ApplicationType.Android) {
+            if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+                moveSpeed *= 3;
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A))
                 dx -= moveSpeed;
             if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D))
@@ -157,8 +156,4 @@ public class Player extends Entity {
     public void setNormal() { currentState = State.NORMAL; }
 
     public State getState() { return currentState; }
-
-    public void setWorld(World world) {
-        this.world = world;
-    }
 }

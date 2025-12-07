@@ -77,8 +77,8 @@
   <object id="1" gid="2" x="750" y="2974" width="1548" height="580">
    <properties>
     <property name="targetWorldId" value="subway"/>
-    <property name="targetX" type="float" value="3500"/>
-    <property name="targetY" type="float" value="3500"/>
+    <property name="targetX" type="float" value="3000"/>
+    <property name="targetY" type="float" value="2500"/>
    </properties>
   </object>
  </objectgroup>

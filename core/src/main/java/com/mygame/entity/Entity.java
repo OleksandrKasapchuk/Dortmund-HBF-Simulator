@@ -52,4 +52,8 @@ public abstract class Entity {
     public void setY(float y) { this.y = y; }
 
     public World getWorld(){return world;}
+
+    public void setWorld(World world) {
+        this.world = world;
+    }
 }

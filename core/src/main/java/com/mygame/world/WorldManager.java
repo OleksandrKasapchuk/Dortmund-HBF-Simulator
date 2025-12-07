@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygame.Assets;
 import com.mygame.DarkOverlay;
+import com.mygame.entity.npc.NpcManager;
+import com.mygame.entity.npc.Police;
 import com.mygame.entity.player.Player;
 import com.mygame.managers.global.TimerManager;
 import com.mygame.world.transition.Transition;
@@ -65,7 +67,7 @@ public class WorldManager {
         }
 
     }
-    public static void update(float delta, Player player, boolean interactPressed, DarkOverlay darkOverlay) {
+    public static void update(float delta, Player player, boolean interactPressed, DarkOverlay darkOverlay, NpcManager npcManager) {
         if (cooldownTimer > 0) {
             cooldownTimer -= delta;
             inTransitionZone = false;
@@ -89,15 +91,27 @@ public class WorldManager {
         if (inTransitionZone && interactPressed) {
             final Transition finalTransition = activeTransition;
 
-            darkOverlay.show(1, 0.7f);
-            TimerManager.setAction(() -> {
-                setCurrentWorld(finalTransition.targetWorldId);
-                player.setX(finalTransition.targetX);
-                player.setY(finalTransition.targetY);
-                player.setWorld(currentWorld);
-                inTransitionZone = false;
-                cooldownTimer = TRANSITION_COOLDOWN; // Start cooldown
-            }, 0.05f);
+            Police summonedPolice = npcManager.getSummonedPolice();
+            boolean policeInTransitionZone = false;
+            if (summonedPolice != null) {
+                Rectangle policeBounds = new Rectangle(summonedPolice.getX(), summonedPolice.getY(), summonedPolice.getWidth(), summonedPolice.getHeight());
+                if (finalTransition.area.overlaps(policeBounds)) {
+                    policeInTransitionZone = true;
+                }
+            }
+
+            final boolean finalPoliceInTransitionZone = policeInTransitionZone;
+
+            darkOverlay.show(1, 0.8f);
+            if (finalPoliceInTransitionZone) {
+                npcManager.moveSummonedPoliceToNewWorld(worlds.get(finalTransition.targetWorldId));
+            }
+            setCurrentWorld(finalTransition.targetWorldId);
+            player.setX(finalTransition.targetX);
+            player.setY(finalTransition.targetY);
+            player.setWorld(currentWorld);
+            inTransitionZone = false;
+            cooldownTimer = TRANSITION_COOLDOWN; // Start cooldown
         }
     }
 }

@@ -107,7 +107,7 @@ public class NpcManager {
     }
 
     public void update(float delta) {
-        for (NPC npc : WorldManager.getCurrentWorld().getNpcs()) {
+        for (NPC npc : new ArrayList<>(WorldManager.getCurrentWorld().getNpcs())) {
             npc.update(delta);
         }
     }
@@ -120,9 +120,20 @@ public class NpcManager {
     }
 
     public void callPolice() {
-        summonedPolice = new Police(Assets.bundle.get("npc.police.name"), 100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police"), WorldManager.getWorld("main"), 200, 100, new DialogueNode("dialogue.police.called"));
+        summonedPolice = new Police(Assets.bundle.get("npc.police.name"), 100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police"), WorldManager.getCurrentWorld(), 200, 100, new DialogueNode("dialogue.police.called"));
         npcs.add(summonedPolice);
-        WorldManager.getWorld("main").getNpcs().add(summonedPolice);
+        WorldManager.getCurrentWorld().getNpcs().add(summonedPolice);
+    }
+
+    public void moveSummonedPoliceToNewWorld(World newWorld) {
+        if (summonedPolice != null) {
+            World oldWorld = summonedPolice.getWorld();
+            if (oldWorld != null) {
+                oldWorld.getNpcs().remove(summonedPolice);
+            }
+            summonedPolice.setWorld(newWorld);
+            newWorld.getNpcs().add(summonedPolice);
+        }
     }
 
     public NPC getBoss() { return boss; }
@@ -130,8 +141,15 @@ public class NpcManager {
     public Police getSummonedPolice(){ return summonedPolice; }
 
     public void kill(NPC npc) {
+        if (npc == null) return;
+
         if (npc == summonedPolice) summonedPolice = null;
         if (npc == police) police = null;
         if (npc == boss) boss = null;
+
+        if (npc.getWorld() != null) {
+            npc.getWorld().getNpcs().remove(npc);
+        }
+        npcs.remove(npc);
     }
 }

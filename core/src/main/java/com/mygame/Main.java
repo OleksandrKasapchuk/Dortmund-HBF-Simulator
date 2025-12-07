@@ -18,29 +18,18 @@ public class Main extends ApplicationAdapter {
 
     private static GameInitializer gameInitializer;
     private ShapeRenderer shapeRenderer;
-    private Player.State previousPlayerState;
     private DarkOverlay darkOverlay;
 
     @Override
     public void create() {
-        System.out.println("Main: Starting application...");
         Assets.load();                            // Load textures, sounds, music
-        System.out.println("Main: Assets loaded.");
         gameInitializer = new GameInitializer();
-        System.out.println("Main: GameInitializer created.");
         gameInitializer.initGame();               // Initialize all game objects
-        System.out.println("Main: Game initialized.");
         shapeRenderer = new ShapeRenderer();
-        previousPlayerState = gameInitializer.getPlayer().getState();
-        System.out.println("Main: Create method finished.");
         darkOverlay = new DarkOverlay();
     }
 
-    public static void restartGame() {
-        if (gameInitializer != null) {
-            gameInitializer.initGame();
-        }
-    }
+    public static void restartGame() {gameInitializer.initGame();}
 
     @Override
     public void render() {
@@ -49,13 +38,9 @@ public class Main extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         AutoSaveManager.update(delta);
 
-        gameInitializer.getGameInputHandler().handleInput();
-
         Player player = gameInitializer.getPlayer();
-        if (player.getState() == Player.State.STONED && previousPlayerState == Player.State.NORMAL) {
-            gameInitializer.getGameInputHandler().handleStonedPlayer(gameInitializer.getManagerRegistry().getNpcManager());
-        }
-        previousPlayerState = player.getState();
+
+        gameInitializer.getGameInputHandler().update(player, gameInitializer.getManagerRegistry().getNpcManager());
 
         UIManager uiManager = gameInitializer.getManagerRegistry().getUiManager();
 
@@ -70,7 +55,7 @@ public class Main extends ApplicationAdapter {
             case MENU:
             case PAUSED:
             case SETTINGS:
-                uiManager.update(delta, gameInitializer.getPlayer());
+                uiManager.update(delta, player);
                 uiManager.render();
                 break;
         }
@@ -80,7 +65,7 @@ public class Main extends ApplicationAdapter {
         Player player = gameInitializer.getPlayer();
         player.update(delta);
 
-        WorldManager.update(delta, player, gameInitializer.getManagerRegistry().getUiManager().isInteractPressed(), darkOverlay);
+        WorldManager.update(delta, player, gameInitializer.getManagerRegistry().getUiManager().isInteractPressed(), darkOverlay, gameInitializer.getManagerRegistry().getNpcManager());
         darkOverlay.update(delta);
         OrthographicCamera camera = gameInitializer.getManagerRegistry().getCameraManager().getCamera();
 
@@ -111,9 +96,8 @@ public class Main extends ApplicationAdapter {
     }
 
     @Override
-    public void resize(int width, int height) {
-        gameInitializer.getManagerRegistry().resize();
-    }
+    public void resize(int width, int height) {gameInitializer.getManagerRegistry().resize();}
+
     @Override
     public void dispose() {
         AutoSaveManager.saveGame();
@@ -124,7 +108,5 @@ public class Main extends ApplicationAdapter {
         MusicManager.stopAll();
     }
 
-    public static GameInitializer getGameInitializer() {
-        return gameInitializer;
-    }
+    public static GameInitializer getGameInitializer() {return gameInitializer;}
 }

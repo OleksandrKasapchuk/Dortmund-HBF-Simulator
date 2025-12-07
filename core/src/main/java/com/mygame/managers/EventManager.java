@@ -18,6 +18,8 @@ import com.mygame.managers.global.audio.SoundManager;
 import com.mygame.managers.global.QuestManager;
 import com.mygame.managers.global.TimerManager;
 import com.mygame.ui.UIManager;
+import com.mygame.world.transition.Transition;
+import com.mygame.world.World;
 
 /**
  * Handles all in-game events, including boss quest success/failure,
@@ -89,9 +91,9 @@ public class EventManager {
             gameStateManager.playerDied(); // Kill player
             SoundManager.playSound(Assets.gunShot); // Play gunshot sound
         },
-            Assets.bundle.get("message.boss.failure.1"),
-            Assets.bundle.get("message.boss.failure.2"),
-            Assets.bundle.get("message.boss.failure.3"));
+            "message.boss.failure.1",
+            "message.boss.failure.2",
+            "message.boss.failure.3");
 
         boss.setDialogue(failureNode);
 
@@ -129,17 +131,17 @@ public class EventManager {
             if (police == null) return;
 
             // Dialogue for being caught
-            DialogueNode caughtNode = new DialogueNode(gameStateManager::playerDied, Assets.bundle.get("message.boss.chase.caught"));
+            DialogueNode caughtNode = new DialogueNode(gameStateManager::playerDied, "message.boss.chase.caught");
 
             Runnable chaseAction = () -> {
-                police.startChase();                           // Start police chase
+                police.startChase(player); // Pass player to set initial chase coordinates
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.boss.chase.run"), 2f); // Show warning
                 MusicManager.playMusic(Assets.backMusic4);    // Change music to chase
                 police.setDialogue(caughtNode); // Assign caught dialogue
             };
 
             // Dialogue before chase
-            police.setDialogue(new DialogueNode(chaseAction, Assets.bundle.get("message.boss.dialogue.beforeChase.1"), Assets.bundle.get("message.boss.dialogue.beforeChase.2")));
+            police.setDialogue(new DialogueNode(chaseAction, "message.boss.dialogue.beforeChase.1", "message.boss.dialogue.beforeChase.2"));
             uiManager.getDialogueManager().startForcedDialogue(police);
         }, 2f);
     }
@@ -166,21 +168,36 @@ public class EventManager {
         SoundManager.playSound(Assets.pfandAutomatSound);
 
         // Timer to give money after 1.9 seconds
-        TimerManager.setAction(() -> {
-            player.getInventory().addMoney(1);
-            uiManager.showEarned(1, Assets.bundle.get("item.money.name"));
-        }, 1.9f);
+        TimerManager.setAction(() ->
+            player.getInventory().addItemAndNotify(ItemRegistry.get("money"),1), 1.9f);
 
         itemManager.getPfandAutomat().startCooldown(1.9f);
     }
 
     // --- Handle police behavior ---
     public void handlePolice(){
-        if (npcManager.getSummonedPolice() == null) return;
-
         Police police = npcManager.getSummonedPolice();
-        police.update(player);
+        if (police == null) return;
 
+        // Update police logic and check if a transition is triggered
+        Transition policeTransition = police.update(player);
+
+        if (policeTransition != null) {
+            TimerManager.setAction(() -> {
+                World newWorld = WorldManager.getWorld(policeTransition.targetWorldId);
+                if (newWorld != null) {
+                    // Якщо поліція увійшла в перехід, перемістіть її в новий світ
+                    npcManager.moveSummonedPoliceToNewWorld(newWorld);
+                    // Встановіть позицію поліцейського поруч із гравцем у новому світі
+                    police.setX(policeTransition.targetX);
+                    police.setY(policeTransition.targetY);
+                    police.setState(Police.PoliceState.CHASING);
+                }
+            }, 0.7f);
+
+        }
+
+        // Handle state changes (escaped, caught)
         switch (police.getState()) {
             case ESCAPED -> {
                 MusicManager.playMusic(Assets.backMusic1); // Change music back
@@ -189,12 +206,11 @@ public class EventManager {
 
                 // Reward player for escaping
                 Runnable rewardAction = () -> {
-                    player.getInventory().addMoney(50);
-                    uiManager.showEarned(50, Assets.bundle.get("item.money.name"));
-                    npcManager.getBoss().setDialogue(new DialogueNode(Assets.bundle.get("message.boss.whatDoYouWant")));
+                    player.getInventory().addItemAndNotify(ItemRegistry.get("money"),50);
+                    npcManager.getBoss().setDialogue(new DialogueNode("message.boss.whatDoYouWant"));
                 };
 
-                npcManager.getBoss().setDialogue(new DialogueNode(rewardAction, Assets.bundle.get("message.boss.wellDone")));
+                npcManager.getBoss().setDialogue(new DialogueNode(rewardAction, "message.boss.wellDone"));
             }
             case CAUGHT -> gameStateManager.playerDied(); // Player dies if caught
         }
