@@ -3,10 +3,6 @@ package com.mygame.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.mygame.Assets;
-import com.mygame.dialogue.DialogueNode;
-import com.mygame.entity.npc.NpcManager;
-import com.mygame.entity.player.Player;
 import com.mygame.ui.UIManager;
 
 public class GameInputHandler {
@@ -18,9 +14,8 @@ public class GameInputHandler {
         this.uiManager = uiManager;
     }
 
-    public void update(Player player, NpcManager npcManager){
+    public void update(){
         handleInput();
-        handleStonedPlayer(player, npcManager);
     }
 
 
@@ -38,16 +33,6 @@ public class GameInputHandler {
             } else {
                 gsm.setGameState(GameStateManager.GameState.PLAYING);
             }
-        }
-    }
-
-    public void handleStonedPlayer(Player player, NpcManager npcManager) {
-        if (player.getState() == Player.State.STONED) {
-            npcManager.getPolice().setDialogue(
-                new DialogueNode(gsm::playerDied,
-                    Assets.bundle.get("dialogue.police.stoned.1"),
-                    Assets.bundle.get("dialogue.police.stoned.2"))
-            );
         }
     }
 }

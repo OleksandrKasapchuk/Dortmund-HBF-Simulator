@@ -40,9 +40,12 @@ public class Main extends ApplicationAdapter {
 
         Player player = gameInitializer.getPlayer();
 
-        gameInitializer.getGameInputHandler().update(player, gameInitializer.getManagerRegistry().getNpcManager());
+        gameInitializer.getGameInputHandler().update();
 
         UIManager uiManager = gameInitializer.getManagerRegistry().getUiManager();
+
+        gameInitializer.getManagerRegistry().getGameStateManager().handleStonedPlayer(player, gameInitializer.getManagerRegistry().getNpcManager());
+
 
         switch (gameInitializer.getManagerRegistry().getGameStateManager().getState()) {
             case PLAYING:

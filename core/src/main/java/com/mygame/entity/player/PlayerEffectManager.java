@@ -30,7 +30,6 @@ public class PlayerEffectManager {
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.joint"), 1.5f);
 
             player.setStone();
-            MusicManager.playMusic(Assets.kaifMusic);
         }, 4f);
     }
 

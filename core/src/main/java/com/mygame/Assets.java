@@ -112,7 +112,7 @@ public class Assets {
         backMusic1 = Gdx.audio.newMusic(Gdx.files.internal("sound/epic_back1.ogg"));
         backMusic2 = Gdx.audio.newMusic(Gdx.files.internal("sound/epic_back2.ogg"));
         backMusic4 = Gdx.audio.newMusic(Gdx.files.internal("sound/norm.ogg"));
-        kaifMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/kaif.ogg"));
+        kaifMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/kaif2.ogg"));
     }
 
     public static void loadBundle(Locale locale) {

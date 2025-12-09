@@ -104,20 +104,12 @@ public class Police extends NPC {
 
             case TRANSITIONING:
                 Gdx.app.log("Police", "State: TRANSITIONING");
-                // Нічого не робити, очікувати, поки EventManager не перемістить поліцейського
+                
                 break;
 
             case ESCAPED:
-                 Gdx.app.log("Police", "State: ESCAPED");
-                 // Do nothing in these states.
-                break;
             case CAUGHT:
-                 Gdx.app.log("Police", "State: CAUGHT");
-                 // Do nothing in these states.
-                break;
             case IDLE:
-                 Gdx.app.log("Police", "State: IDLE");
-                 // Do nothing in these states.
                 break;
         }
         return null; // No transition triggered

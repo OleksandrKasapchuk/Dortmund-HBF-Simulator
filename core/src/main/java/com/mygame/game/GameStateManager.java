@@ -1,6 +1,9 @@
 package com.mygame.game;
 
 import com.mygame.Assets;
+import com.mygame.dialogue.DialogueNode;
+import com.mygame.entity.npc.NpcManager;
+import com.mygame.entity.player.Player;
 import com.mygame.managers.global.save.GameSettings;
 import com.mygame.managers.global.save.SettingsManager;
 import com.mygame.managers.global.audio.MusicManager;
@@ -75,6 +78,16 @@ public class GameStateManager {
         } else if (state == GameState.SETTINGS) {
             state = GameState.PLAYING;           // Close settings menu and return to game
             uiManager.setCurrentStage("GAME");
+        }
+    }
+
+    public void handleStonedPlayer(Player player, NpcManager npcManager) {
+        if (player.getState() == Player.State.STONED && state == GameState.PLAYING) {
+            MusicManager.playMusic(Assets.kaifMusic);
+            npcManager.getPolice().setDialogue(
+                new DialogueNode(this::playerDied, "dialogue.police.stoned.1",
+                    "dialogue.police.stoned.2")
+            );
         }
     }
 }

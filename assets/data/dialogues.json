@@ -5,7 +5,7 @@
         "texts": ["dialogue.igo.start"],
         "choices": [
           { "text": "dialogue.igo.choice.give", "action": "igo_give_vape" },
-          { "text": "dialogue.igo.choice.leave", "action": "igo_add_quest" }
+          { "text": "dialogue.choice.leave", "action": "igo_add_quest" }
         ]
       },
       "thanks": ["dialogue.igo.thanks"]
@@ -31,7 +31,7 @@
         "texts": ["dialogue.baryga.start.1", "dialogue.baryga.start.2"],
         "choices": [
           { "text": "dialogue.baryga.choice.buy", "action": "baryga_buy_grass" },
-          { "text": "dialogue.igo.choice.leave", "next": "bye" }
+          { "text": "dialogue.choice.leave", "next": "bye" }
         ]
       },
       "bye": ["dialogue.baryga.bye"]
@@ -43,7 +43,7 @@
         "texts": ["dialogue.chikita.start"],
         "choices": [
           { "text": "dialogue.chikita.choice.give", "action": "chikita_craft_joint" },
-          "dialogue.igo.choice.leave"
+          "dialogue.choice.leave"
         ]
       }
     }
@@ -55,7 +55,7 @@
         "choices": [
           { "text": "dialogue.kioskman.choice.buyPape", "action": "kioskman_buy_pape" },
           { "text": "dialogue.kioskman.choice.buyIceTea", "action": "kioskman_buy_icetea" },
-          "dialogue.igo.choice.leave"
+          "dialogue.choice.leave"
         ]
       }
     }
@@ -66,7 +66,7 @@
         "texts": ["dialogue.junky.start"],
         "choices": [
           { "text": "dialogue.junky.choice.give", "action": "junky_give_spoon" },
-          { "text": "dialogue.igo.choice.leave", "action": "junky_add_quest" }
+          { "text": "dialogue.choice.leave", "action": "junky_add_quest" }
         ]
       }
     }
@@ -77,7 +77,7 @@
         "texts": ["dialogue.boss.start.1", "dialogue.boss.start.2", "dialogue.boss.start.3", "dialogue.boss.start.4"],
         "choices": [
           { "text": "dialogue.boss.choice.accept", "action": "boss_accept_quest" },
-          "dialogue.igo.choice.leave"
+          "dialogue.choice.leave"
         ]
       },
       "after": ["dialogue.boss.after.1", "dialogue.boss.after.2"]
@@ -116,10 +116,25 @@
     }
   },
   "talahon1": {
-    "nodes": { "start": ["dialogue.talahon1.start.1", "dialogue.talahon1.start.2", "dialogue.talahon1.start.3"] }
+    "nodes": {
+      "start": ["dialogue.talahon1.start.1", "dialogue.talahon1.start.2", "dialogue.talahon1.start.3"] }
   },
   "talahon2": {
-    "nodes": { "start": ["dialogue.talahon2.start.1", "dialogue.talahon2.start.2", "dialogue.talahon2.start.3"] }
+    "nodes": {
+      "start": {
+        "texts": ["dialogue.talahon2.start.1", "dialogue.talahon2.start.2"],
+        "choices": [
+          { "text": "dialogue.talahon2.choice.accept", "action": "give_vape_action" },
+          { "text": "dialogue.choice.leave", "next": "decline" }
+        ]
+      },
+      "accept": {
+        "texts": ["dialogue.talahon2.yes"]
+      },
+      "decline": {
+        "texts": ["dialogue.talahon2.no"]
+      }
+    }
   },
   "walter": {
     "nodes": {

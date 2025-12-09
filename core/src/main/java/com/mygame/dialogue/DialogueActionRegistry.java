@@ -132,5 +132,13 @@ public class DialogueActionRegistry {
                 uiManager.showNotEnough(Assets.bundle.get("item.money.name"));
             }
         });
+
+        dialogueRegistry.registerAction("give_vape_action", () -> {
+            if (inventory.hasItem(ItemRegistry.get("vape"))) {
+
+                npcManager.findNpcByName(Assets.bundle.get("npc.talahon2.name")).setDialogue(dialogueRegistry.getDialogue("talahon2", "accept"));
+
+            }
+        });
     }
 }

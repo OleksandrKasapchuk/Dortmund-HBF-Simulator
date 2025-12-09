@@ -48,7 +48,7 @@ public class DialogueManager {
 
         if (choice.action() != null) choice.action().run();
         if (choice.nextNode() != null) {
-            activeDialogue.choose(choice);
+            activeDialogue = choice.nextNode();
             displayCurrentNode();
         } else {
             endDialogue();
