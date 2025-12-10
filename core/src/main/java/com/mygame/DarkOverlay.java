@@ -22,9 +22,7 @@ public class DarkOverlay {
     private float fadeDuration = 0.1f;
     private float stayTimer = 0f;
 
-    public DarkOverlay() {
-        shapeRenderer = new ShapeRenderer();
-    }
+    public DarkOverlay() {shapeRenderer = new ShapeRenderer();}
 
     /**
      * Показує затемнення з ефектом появи (fade-in).
@@ -38,10 +36,6 @@ public class DarkOverlay {
         this.stayTimer = staySeconds;
         this.currentState = State.FADING_IN;
     }
-
-    /**
-     * Оновлює логіку затемнення (повинно викликатися кожен кадр).
-     */
     public void update(float delta) {
         if (fadeDuration <= 0) return; // Запобігання діленню на нуль
 
@@ -72,16 +66,9 @@ public class DarkOverlay {
                     currentState = State.HIDDEN;
                 }
                 break;
-
-            case HIDDEN:
-                // Нічого не робити
-                break;
         }
     }
 
-    /**
-     * Рендерить чорний екран.
-     */
     public void render() {
         if (currentState == State.HIDDEN) {
             return;
@@ -103,9 +90,6 @@ public class DarkOverlay {
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
-    /**
-     * Звільняє ресурси.
-     */
     public void dispose() {
         shapeRenderer.dispose();
     }

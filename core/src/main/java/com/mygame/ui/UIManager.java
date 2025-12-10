@@ -13,7 +13,6 @@ import com.mygame.ui.inGameUI.InventoryUI;
 import com.mygame.ui.inGameUI.QuestUI;
 import com.mygame.ui.inGameUI.TouchControlsUI;
 import com.mygame.ui.screenUI.*;
-import com.mygame.world.WorldManager;
 
 /**
  * UIManager is responsible for managing all UI components of the game.
@@ -108,46 +107,27 @@ public class UIManager {
     /**
      * Updates UI elements and handles input events.
      * This should be called every frame during the game.
-     *
      * @param delta Time elapsed since last frame
      * @param player Reference to the player
      */
     public void update(float delta, Player player) {
-        if (worldMapUI.isVisible()) {
+        if (currentStage == worldMapUI.getStage()) {
             worldMapUI.update();
         } else if (currentStage == gameUI.getStage()) {
-            gameUI.update(delta);
-            gameUI.updateMoney(player.getInventory().getMoney());
-            gameUI.updateWorld(WorldManager.getCurrentWorld().getName());
-            // Update dialogue manager
+
+            gameUI.update(delta, player);
+
             dialogueManager.update(delta, isInteractPressed());
 
             if (questUI.isVisible()) questUI.update();
             if (inventoryUI.isVisible()) inventoryUI.update(player);
-
-            // Toggle inventory with Tab or touch button
-            if (Gdx.input.isKeyJustPressed(Input.Keys.TAB) || (touchControlsUI != null && touchControlsUI.isInvButtonJustPressed())) {
-                toggleInventoryTable();
-            }
-
-            // Toggle quests with Q or touch button
-            if (Gdx.input.isKeyJustPressed(Input.Keys.Q) || (touchControlsUI != null && touchControlsUI.isQuestButtonJustPressed())) {
-                toggleQuestTable();
-            }
         }
-
         // Update the current stage actors
         currentStage.act(delta);
     }
 
     /** Draws the current stage */
-    public void render() {
-        if (worldMapUI.isVisible()) {
-            worldMapUI.render();
-        } else {
-            currentStage.draw();
-        }
-    }
+    public void render() { currentStage.draw();}
 
     /** Updates viewport size for current stage */
     public void resize(int width, int height) { currentStage.getViewport().update(width, height, true); }
@@ -184,13 +164,6 @@ public class UIManager {
         if (questUI.isVisible()) questUI.toggle();
         inventoryUI.toggle();
     }
-    public void toggleWorldMap() {
-        worldMapUI.toggle();
-    }
-
-    public boolean isMapVisible() {
-        return worldMapUI.isVisible();
-    }
 
     /** Resets the "just pressed" flags of touch buttons */
     public void resetButtons() {if (touchControlsUI != null) touchControlsUI.resetButtons();}
@@ -198,10 +171,13 @@ public class UIManager {
     // Getter methods for accessing UI components
     public DialogueManager getDialogueManager() { return dialogueManager; }
     public GameUI getGameUI() { return gameUI; }
+    public TouchControlsUI getTouchControlsUI() { return touchControlsUI; }
+
 
     public void showEarned(int amount, String thing){
         gameUI.showInfoMessage(Assets.bundle.format("message.generic.got", amount, thing),1f);
     }
+
     public void showNotEnough(String thing) {
         gameUI.showInfoMessage(Assets.bundle.format("message.generic.not_enough", thing), 1f);
     }

@@ -103,14 +103,13 @@ public class Assets {
 
         // === SOUNDS & MUSIC ===
         moneySound = Gdx.audio.newSound(Gdx.files.internal("sound/money.ogg"));
-        kosyakSound = Gdx.audio.newSound(Gdx.files.internal("sound/kosyak.wav"));
+        kosyakSound = Gdx.audio.newSound(Gdx.files.internal("sound/kosyak.ogg"));
         lighterSound = Gdx.audio.newSound(Gdx.files.internal("sound/lighter.ogg"));
         bushSound = Gdx.audio.newSound(Gdx.files.internal("sound/bush.ogg"));
         gunShot = Gdx.audio.newSound(Gdx.files.internal("sound/gunshots.ogg"));
         pfandAutomatSound = Gdx.audio.newSound(Gdx.files.internal("sound/pfand_automat.ogg"));
         startMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/menu.ogg"));
         backMusic1 = Gdx.audio.newMusic(Gdx.files.internal("sound/epic_back1.ogg"));
-        backMusic2 = Gdx.audio.newMusic(Gdx.files.internal("sound/epic_back2.ogg"));
         backMusic4 = Gdx.audio.newMusic(Gdx.files.internal("sound/norm.ogg"));
         kaifMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/kaif2.ogg"));
     }

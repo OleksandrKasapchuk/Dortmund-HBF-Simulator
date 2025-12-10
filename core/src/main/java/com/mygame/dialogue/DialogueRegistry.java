@@ -15,7 +15,7 @@ public class DialogueRegistry {
 
     public DialogueRegistry() {
         JsonReader jsonReader = new JsonReader();
-        JsonValue base = jsonReader.parse(Gdx.files.internal("data/dialogues.json"));
+        JsonValue base = jsonReader.parse(Gdx.files.internal("data/dialogues/dialogues.json"));
         for (JsonValue npcData : base) {
             npcDialogueData.put(npcData.name(), npcData);
         }
@@ -54,6 +54,8 @@ public class DialogueRegistry {
 
         Runnable onFinish = null;
         String[] textKeys;
+        boolean isForced = false;
+
         DialogueNode node;
 
         if (nodeData.isObject()) {
@@ -65,7 +67,10 @@ public class DialogueRegistry {
                 }
             }
             textKeys = nodeData.get("texts").asStringArray();
-            node = new DialogueNode(onFinish, textKeys);
+            if (nodeData.has("isForced")) {
+                isForced = nodeData.getBoolean("isForced");
+            }
+            node = new DialogueNode(onFinish, isForced, textKeys);
 
             if (nodeData.has("choices")) {
                 for (JsonValue choiceData : nodeData.get("choices")) {
@@ -95,7 +100,7 @@ public class DialogueRegistry {
             }
         } else { // isArray (simplified node)
             textKeys = nodeData.asStringArray();
-            node = new DialogueNode(null, textKeys);
+            node = new DialogueNode(null, false, textKeys);
         }
 
         builtNodes.put(fullNodeId, node);

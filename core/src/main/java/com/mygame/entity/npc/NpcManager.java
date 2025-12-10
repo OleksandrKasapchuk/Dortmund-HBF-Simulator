@@ -133,6 +133,7 @@ public class NpcManager {
             }
             summonedPolice.setWorld(newWorld);
             newWorld.getNpcs().add(summonedPolice);
+
         }
     }
 

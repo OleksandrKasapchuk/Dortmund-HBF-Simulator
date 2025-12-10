@@ -30,9 +30,6 @@ public class GameStateManager {
         return state;
     }
 
-    public void setGameState(GameState state) {
-        this.state = state;
-    }
 
     // --- Start the game ---
     public void startGame() {
@@ -69,6 +66,15 @@ public class GameStateManager {
             uiManager.setCurrentStage("GAME");  // Show game UI
         }
     }
+    public void toggleMap() {
+        if (state == GameState.PLAYING) {
+            state = GameState.MAP;
+            uiManager.setCurrentStage("MAP");
+        } else if (state == GameState.MAP) {
+            state = GameState.PLAYING;
+            uiManager.setCurrentStage("GAME");
+        }
+    }
 
     // --- Toggle settings menu ---
     public void toggleSettings() {
@@ -85,7 +91,7 @@ public class GameStateManager {
         if (player.getState() == Player.State.STONED && state == GameState.PLAYING) {
             MusicManager.playMusic(Assets.kaifMusic);
             npcManager.getPolice().setDialogue(
-                new DialogueNode(this::playerDied, "dialogue.police.stoned.1",
+                new DialogueNode(this::playerDied, true, "dialogue.police.stoned.1",
                     "dialogue.police.stoned.2")
             );
         }

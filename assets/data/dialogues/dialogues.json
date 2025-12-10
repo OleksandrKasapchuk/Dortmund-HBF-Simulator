@@ -87,7 +87,8 @@
     "nodes": {
       "start": {
         "onFinish": "police_check",
-        "texts": ["dialogue.police.check"]
+        "texts": ["dialogue.police.check"],
+        "isForced": true
       }
     }
   },
@@ -117,12 +118,16 @@
   },
   "talahon1": {
     "nodes": {
-      "start": ["dialogue.talahon1.start.1", "dialogue.talahon1.start.2", "dialogue.talahon1.start.3"] }
+      "start": ["dialogue.talahon1.start.1", "dialogue.talahon1.start.2", "dialogue.talahon1.start.3"],
+
+      "isForced": true
+    }
   },
   "talahon2": {
     "nodes": {
       "start": {
         "texts": ["dialogue.talahon2.start.1", "dialogue.talahon2.start.2"],
+        "isForced": true,
         "choices": [
           { "text": "dialogue.talahon2.choice.accept", "action": "give_vape_action" },
           { "text": "dialogue.choice.leave", "next": "decline" }

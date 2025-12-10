@@ -7,6 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.mygame.Assets;
+import com.mygame.entity.player.Player;
+import com.mygame.world.WorldManager;
 
 /**
  * GameUI handles the on-screen HUD elements during gameplay.
@@ -77,10 +79,12 @@ public class GameUI extends Screen {
      *
      * @param delta Time since last frame
      */
-    public void update(float delta) {
+    public void update(float delta, Player player) {
         if (infoMessageTimer > 0) {
             infoMessageTimer -= delta;
             if (infoMessageTimer <= 0) infoLabel.setVisible(false);
         }
+        updateMoney(player.getInventory().getMoney());
+        updateWorld(WorldManager.getCurrentWorld().getName());
     }
 }

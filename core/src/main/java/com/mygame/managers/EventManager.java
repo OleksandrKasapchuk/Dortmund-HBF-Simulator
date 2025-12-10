@@ -91,7 +91,7 @@ public class EventManager {
             gameStateManager.playerDied(); // Kill player
             SoundManager.playSound(Assets.gunShot); // Play gunshot sound
         },
-            "message.boss.failure.1",
+            true,"message.boss.failure.1",
             "message.boss.failure.2",
             "message.boss.failure.3");
 
@@ -131,7 +131,7 @@ public class EventManager {
             if (police == null) return;
 
             // Dialogue for being caught
-            DialogueNode caughtNode = new DialogueNode(gameStateManager::playerDied, "message.boss.chase.caught");
+            DialogueNode caughtNode = new DialogueNode(gameStateManager::playerDied, true, "message.boss.chase.caught");
 
             Runnable chaseAction = () -> {
                 police.startChase(player); // Pass player to set initial chase coordinates
@@ -141,7 +141,7 @@ public class EventManager {
             };
 
             // Dialogue before chase
-            police.setDialogue(new DialogueNode(chaseAction, "message.boss.dialogue.beforeChase.1", "message.boss.dialogue.beforeChase.2"));
+            police.setDialogue(new DialogueNode(chaseAction, true, "message.boss.dialogue.beforeChase.1", "message.boss.dialogue.beforeChase.2"));
             uiManager.getDialogueManager().startForcedDialogue(police);
         }, 2f);
     }
@@ -190,10 +190,10 @@ public class EventManager {
                     npcManager.moveSummonedPoliceToNewWorld(newWorld);
                     // Встановіть позицію поліцейського поруч із гравцем у новому світі
                     police.setX(policeTransition.targetX);
-                    police.setY(policeTransition.targetY);
+                    police.setY(policeTransition.targetY + 100);
                     police.setState(Police.PoliceState.CHASING);
                 }
-            }, 0.7f);
+            }, 1.5f);
 
         }
 
@@ -210,7 +210,7 @@ public class EventManager {
                     npcManager.getBoss().setDialogue(new DialogueNode("message.boss.whatDoYouWant"));
                 };
 
-                npcManager.getBoss().setDialogue(new DialogueNode(rewardAction, "message.boss.wellDone"));
+                npcManager.getBoss().setDialogue(new DialogueNode(rewardAction, false, "message.boss.wellDone"));
             }
             case CAUGHT -> gameStateManager.playerDied(); // Player dies if caught
         }

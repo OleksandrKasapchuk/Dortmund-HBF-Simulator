@@ -1,6 +1,5 @@
 package com.mygame.dialogue;
 
-import com.mygame.Assets;
 import com.mygame.entity.npc.NPC;
 import com.mygame.entity.player.Player;
 import com.mygame.world.WorldManager;
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Controls all dialogue logic:
  * - starting / ending dialogues
- * - forced dialogues (Police)
+ * - forced dialogues
  * - typewriter text animation
  * - switching lines & nodes
  * - choice selection
@@ -86,10 +85,8 @@ public class DialogueManager {
         activeDialogue = npc.getDialogue();
         if (activeDialogue == null) return;
 
-//        activeDialogue.reset();
-
-        // Forced dialogue or Police → player cannot move
-        player.setMovementLocked(isForcedDialogue || Assets.bundle.get("npc.police.name").equals(npc.getName()));
+        // Forced dialogue → player cannot move
+        player.setMovementLocked(activeDialogue.isForced());
 
         displayCurrentNode();
     }
@@ -162,9 +159,7 @@ public class DialogueManager {
 
             // Police auto-dialog
             for (NPC npc : npcs) {
-                if (Assets.bundle.get("npc.police.name").equals(npc.getName())
-                    && npc.isPlayerNear(player)
-                    && npc != recentlyFinishedForcedNpc) {
+                if (npc.getDialogue().isForced() && npc.isPlayerNear(player) && npc != recentlyFinishedForcedNpc) {
                     startForcedDialogue(npc);
                     return;
                 }
@@ -179,7 +174,6 @@ public class DialogueManager {
                     }
                 }
             }
-
             return;
         }
 

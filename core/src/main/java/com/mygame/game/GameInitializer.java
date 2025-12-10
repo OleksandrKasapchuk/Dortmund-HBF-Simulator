@@ -56,12 +56,12 @@ public class GameInitializer {
         System.out.println("GameInitializer: Player world set to: " + startWorld.getName());
 
         // 5. Load other game state data
-        if (settings.inventory != null) {
+        if (settings.inventory != null)
             settings.inventory.forEach((itemKey, amount) -> player.getInventory().addItem(ItemRegistry.get(itemKey), amount));
-        }
-        if (settings.activeQuests != null) {
+
+        if (settings.activeQuests != null)
             settings.activeQuests.forEach(key -> QuestManager.addQuest(new QuestManager.Quest(key, "quest." + key + ".name", "quest." + key + ".description")));
-        }
+
 
         gameInputHandler = new GameInputHandler(managerRegistry.getGameStateManager(), managerRegistry.getUiManager());
         System.out.println("GameInitializer: GameInputHandler created.");

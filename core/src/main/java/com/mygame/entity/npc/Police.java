@@ -85,32 +85,22 @@ public class Police extends NPC {
                             movingToTransition = false; // Reset for next chase
                             Transition transitionToReturn = activeTransition;
                             activeTransition = null;
-                            setState(PoliceState.TRANSITIONING); // Перехід у стан очікування
-                            return transitionToReturn; // Signal that a transition should occur
+                            setState(PoliceState.TRANSITIONING);
+                            return transitionToReturn;
                         }
                     }
                 }
 
-                chase(); // Move towards the target coordinates
+                chase();
 
                 // Check for state changes
-                if (isPlayerCaught(player)) {
-                    setState(PoliceState.CAUGHT);
-                } else if (isPlayerEscaped(player)) {
-                    setState(PoliceState.ESCAPED);
-                }
+                if (isPlayerCaught(player)) setState(PoliceState.CAUGHT);
+                if (isPlayerEscaped(player)) setState(PoliceState.ESCAPED);
 
                 break;
 
             case TRANSITIONING:
                 Gdx.app.log("Police", "State: TRANSITIONING");
-                
-                break;
-
-            case ESCAPED:
-            case CAUGHT:
-            case IDLE:
-                break;
         }
         return null; // No transition triggered
     }
@@ -122,10 +112,8 @@ public class Police extends NPC {
 
    private boolean isPlayerEscaped(Player player) {
         if (player.getWorld() != this.getWorld()) {
-            // Якщо поліція не рухається до переходу і не може знайти шлях, то гравець втік
             return !movingToTransition && activeTransition == null;
         }
-        // Логіка для того ж світу: якщо гравець занадто далеко занадто довго
         if (!isPlayerNear(player, 800)) {
             lostTimer += Gdx.graphics.getDeltaTime();
             return lostTimer >= MAX_LOST_TIME;
@@ -135,9 +123,6 @@ public class Police extends NPC {
         }
     }
 
-    /**
-     * Moves police toward the stored target coordinates.
-     */
     private void chase() {
         if (state != PoliceState.CHASING) return;
 

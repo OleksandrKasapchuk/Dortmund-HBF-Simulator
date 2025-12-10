@@ -40,7 +40,7 @@ public class Main extends ApplicationAdapter {
 
         Player player = gameInitializer.getPlayer();
 
-        gameInitializer.getGameInputHandler().update();
+        gameInitializer.getGameInputHandler().handleInput();
 
         UIManager uiManager = gameInitializer.getManagerRegistry().getUiManager();
 
@@ -68,7 +68,7 @@ public class Main extends ApplicationAdapter {
         Player player = gameInitializer.getPlayer();
         player.update(delta);
 
-        WorldManager.update(delta, player, gameInitializer.getManagerRegistry().getUiManager().isInteractPressed(), darkOverlay, gameInitializer.getManagerRegistry().getNpcManager());
+        WorldManager.update(delta, player, gameInitializer.getManagerRegistry().getUiManager().isInteractPressed(), darkOverlay);
         darkOverlay.update(delta);
         OrthographicCamera camera = gameInitializer.getManagerRegistry().getCameraManager().getCamera();
 

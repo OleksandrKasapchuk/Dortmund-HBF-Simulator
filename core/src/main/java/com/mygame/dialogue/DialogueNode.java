@@ -28,13 +28,16 @@ public class DialogueNode {
     private final List<String> texts;   // фрази вузла
     private final List<Choice> choices; // варіанти відповіді
     private final Runnable action;      // виконується коли вузол завершується
-
+    private boolean isForced;
 
     public DialogueNode(String... textKeys) {
-        this(null, textKeys);
+        this(null, false, textKeys);
+    }
+    public DialogueNode(boolean isForced, String... textKeys) {
+        this(null, isForced, textKeys);
     }
 
-    public DialogueNode(Runnable onFinish, String... textKeys) {
+    public DialogueNode(Runnable onFinish, boolean isForced, String... textKeys) {
         this.action = onFinish;
         this.texts = (textKeys == null || textKeys.length == 0) ?
                 List.of("") :
@@ -47,22 +50,15 @@ public class DialogueNode {
                     }
                 }).collect(Collectors.toList());
         this.choices = new ArrayList<>();
+        this.isForced = isForced;
     }
 
     public void addChoice(String text, DialogueNode next, Runnable action) {
         choices.add(new Choice(text, next, action));
     }
 
-    /**
-     * Викликається коли гравець натиснув на Choice
-     */
-    public void choose(Choice choice) {
-        if (choice.action != null)          // спершу виконуємо action
-            choice.action.run();
-
-    }
-
     public List<String> getTexts() { return texts; }
     public List<Choice> getChoices() { return choices; }
     public Runnable getAction() { return action; }
+    public boolean isForced(){ return isForced; }
 }

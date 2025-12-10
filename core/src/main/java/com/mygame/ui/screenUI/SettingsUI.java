@@ -1,7 +1,9 @@
 package com.mygame.ui.screenUI;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -9,17 +11,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygame.Assets;
 import com.mygame.Main;
 import com.mygame.managers.global.save.GameSettings;
 import com.mygame.managers.global.save.SettingsManager;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.managers.global.audio.SoundManager;
+import com.mygame.ui.UIFactory;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Settings UI screen for adjusting music and sound volumes and muting all audio.
@@ -112,41 +115,30 @@ public class SettingsUI extends Screen {
         });
         stage.addActor(muteAllCheckbox);
 
-        // --- Language Selection ---
+        // --- Language Selection using UIFactory ---
         Table langTable = new Table();
         langTable.setPosition(1300, 550);
-
-        TextButton englishButton = new TextButton("English", skin);
-        englishButton.getLabel().setFontScale(2f);
-        englishButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                setLanguage("en");
-            }
-        });
-
-        TextButton ukrainianButton = new TextButton("Українська", skin);
-        ukrainianButton.getLabel().setFontScale(2f);
-        ukrainianButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                setLanguage("ua");
-            }
-        });
-
-        TextButton germanButton = new TextButton("Deutsch", skin);
-        germanButton.getLabel().setFontScale(2f);
-        germanButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                setLanguage("de");
-            }
-        });
-
-        langTable.add(englishButton).width(350).height(90).padBottom(20).row();
-        langTable.add(ukrainianButton).width(350).height(90).padBottom(20).row();
-        langTable.add(germanButton).width(350).height(90).row();
         stage.addActor(langTable);
+
+        Map<String, Stage> stages = new HashMap<>();
+        stages.put("settingsStage", stage);
+
+        Map<String, InputListener> actionListeners = new HashMap<>();
+        actionListeners.put("SET_LANG_EN", createLanguageListener("en"));
+        actionListeners.put("SET_LANG_UA", createLanguageListener("ua"));
+        actionListeners.put("SET_LANG_DE", createLanguageListener("de"));
+
+        UIFactory.createButtonsFromJson(Gdx.files.internal("ui/buttons.json"), skin, stages, actionListeners, langTable);
+    }
+
+    private InputListener createLanguageListener(String languageCode) {
+        return new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                setLanguage(languageCode);
+                return true;
+            }
+        };
     }
 
     private void saveSoundSettings() {
