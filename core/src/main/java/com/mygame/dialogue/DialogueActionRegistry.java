@@ -1,128 +1,74 @@
 package com.mygame.dialogue;
 
 import com.mygame.Assets;
-import com.mygame.entity.npc.NPC;
+import com.mygame.dialogue.action.ActionContext;
+import com.mygame.dialogue.action.AddQuestAction;
+import com.mygame.dialogue.action.ChikitaCraftJointAction;
+import com.mygame.dialogue.action.CompleteEventAction;
+import com.mygame.dialogue.action.HasItemCondition;
+import com.mygame.dialogue.action.PoliceCheckAction;
+import com.mygame.dialogue.action.SetDialogueAction;
+import com.mygame.dialogue.action.TradeAction;
 import com.mygame.entity.player.Player;
 import com.mygame.entity.item.ItemRegistry;
-import com.mygame.managers.global.save.GameSettings;
 import com.mygame.entity.player.InventoryManager;
 import com.mygame.entity.npc.NpcManager;
 import com.mygame.managers.global.QuestManager;
 import com.mygame.managers.global.TimerManager;
-import com.mygame.managers.global.audio.SoundManager;
-import com.mygame.managers.global.save.SettingsManager;
 import com.mygame.ui.UIManager;
-import com.mygame.ui.screenUI.GameUI;
 
 public class DialogueActionRegistry {
 
     public static void registerAll(DialogueRegistry dialogueRegistry, Player player, UIManager uiManager, NpcManager npcManager) {
         InventoryManager inventory = player.getInventory();
-        GameUI gameUI = uiManager.getGameUI();
-        GameSettings settings = SettingsManager.load();
 
-        dialogueRegistry.registerAction("igo_give_vape", () -> {
-            if (inventory.trade(ItemRegistry.get("joint"), ItemRegistry.get("vape"), 1, 1)) {
+        ActionContext ctx = new ActionContext(player, uiManager, npcManager, dialogueRegistry);
 
-                QuestManager.removeQuest("igo");
-                settings.completedDialogueEvents.add("igo_gave_vape");
-                npcManager.findNpcByName(Assets.bundle.get("npc.igo.name")).setDialogue(dialogueRegistry.getDialogue("igo", "thanks"));
-                TimerManager.setAction(() -> npcManager.findNpcByName(Assets.bundle.get("npc.igo.name")).setTexture(Assets.getTexture("igo2")), 5f);
-                SettingsManager.save(settings);
-            }
-        });
+        dialogueRegistry.registerAction("baryga_buy_grass", () -> new TradeAction(ctx, "money", "grass", 10, 1).execute());
+        dialogueRegistry.registerAction("kioskman_buy_pape", () -> new TradeAction(ctx, "money", "pape", 5, 1).execute());
+        dialogueRegistry.registerAction("kioskman_buy_icetea", () -> new TradeAction(ctx, "money", "ice_tea", 10, 1).execute());
 
-        dialogueRegistry.registerAction("igo_add_quest", () -> {
-            if (!QuestManager.hasQuest("igo")) {
-                QuestManager.addQuest(new QuestManager.Quest("igo", "quest.igo.name", "quest.igo.description"));
-            }
-        });
+        dialogueRegistry.registerAction("murat_accept_quest", () -> new AddQuestAction(ctx, "chili", "quest.chili.name", "quest.chili.description").execute());
+        dialogueRegistry.registerAction("walter_accept_quest", () -> new AddQuestAction(ctx, "wallet", "quest.wallet.name", "quest.wallet.description").execute());
+        dialogueRegistry.registerAction("igo_add_quest", () -> new AddQuestAction(ctx, "igo", "quest.igo.name", "quest.igo.description").execute());
+
 
         dialogueRegistry.registerAction("ryzhyi_take_money", () -> {
-            inventory.addItemAndNotify(ItemRegistry.get("money"),20);
-            settings.completedDialogueEvents.add("ryzhyi_gave_money");
-            SettingsManager.save(settings);
-            npcManager.findNpcByName(Assets.bundle.get("npc.ryzhyi.name")).setDialogue(dialogueRegistry.getDialogue("ryzhyi", "after"));
-        });
-
-        dialogueRegistry.registerAction("baryga_buy_grass", () ->
-            inventory.trade(ItemRegistry.get("money"), ItemRegistry.get("grass"), 10, 1));
-
-        dialogueRegistry.registerAction("chikita_craft_joint", () -> {
-            if (!inventory.hasItem(ItemRegistry.get("grass"))) {
-                uiManager.showNotEnough(Assets.bundle.get("item.grass.name"));
-                return;
-            }
-            if (!inventory.hasItem(ItemRegistry.get("pape"))) {
-                uiManager.showNotEnough(Assets.bundle.get("item.pape.name"));
-                return;
-            }
-            inventory.removeItem(ItemRegistry.get("grass"), 1);
-            inventory.removeItem(ItemRegistry.get("pape"), 1);
-            player.setMovementLocked(true);
-            SoundManager.playSound(Assets.kosyakSound);
-            TimerManager.setAction(() -> {
-                inventory.addItem(ItemRegistry.get("joint"), 1);
-                uiManager.showEarned(1, Assets.bundle.get("item.joint.name"));
-                player.setMovementLocked(false);
-            }, 1f);
-        });
-
-        dialogueRegistry.registerAction("kioskman_buy_pape", () ->
-            inventory.trade(ItemRegistry.get("money"), ItemRegistry.get("pape"), 5, 1));
-
-        dialogueRegistry.registerAction("kioskman_buy_icetea", () ->
-            inventory.trade(ItemRegistry.get("money"), ItemRegistry.get("ice_tea"), 10, 1));
-
-
-        dialogueRegistry.registerAction("boss_accept_quest", () -> {
-            QuestManager.addQuest(new QuestManager.Quest("delivery", "quest.delivery.name", "quest.delivery.description"));
-            inventory.addItemAndNotify(ItemRegistry.get("grass"), 1000);
-            NPC bossRef = npcManager.findNpcByName(Assets.bundle.get("npc.boss.name"));
-            if (bossRef != null) bossRef.setDialogue(dialogueRegistry.getDialogue("boss", "after"));
-            settings.completedDialogueEvents.add("boss_gave_quest");
-        });
-
-        dialogueRegistry.registerAction("police_check", () -> {
-            if (inventory.getAmount(ItemRegistry.get("grass")) > 0 || inventory.getAmount(ItemRegistry.get("joint")) > 0 || inventory.getAmount(ItemRegistry.get("vape")) > 0) {
-                inventory.removeItem(ItemRegistry.get("grass"), 10000);
-                inventory.removeItem(ItemRegistry.get("joint"), 10000);
-                inventory.removeItem(ItemRegistry.get("vape"), 10000);
-
-                gameUI.showInfoMessage(Assets.bundle.get("message.police.stuffLost"), 1.5f);
-            } else {
-                gameUI.showInfoMessage(Assets.bundle.get("message.police.checkPassed"), 1.5f);
-            }
+            inventory.addItemAndNotify(ItemRegistry.get("money"), 20);
+            new SetDialogueAction(ctx, "npc.ryzhyi.name", "ryzhyi", "after").execute();
+            new CompleteEventAction(ctx, "ryzhyi_gave_money").execute();
         });
 
         dialogueRegistry.registerAction("jason_give_money", () -> {
-            inventory.addItemAndNotify(ItemRegistry.get("money"),20);
-            NPC jason = npcManager.findNpcByName(Assets.bundle.get("npc.jason.name"));
-            jason.setDialogue(dialogueRegistry.getDialogue("jason", "after"));
-            settings.completedDialogueEvents.add("jason_gave_money");
-            SettingsManager.save(settings);
+            inventory.addItemAndNotify(ItemRegistry.get("money"), 20);
+            new SetDialogueAction(ctx, "npc.ryzhyi.name", "ryzhyi", "after").execute();
+            new CompleteEventAction(ctx, "jason_gave_money").execute();
         });
 
-        dialogueRegistry.registerAction("murat_accept_quest", () ->
-            QuestManager.addQuest(new QuestManager.Quest("chili", "quest.chili.name", "quest.chili.description")));
-
-        dialogueRegistry.registerAction("walter_accept_quest", () ->
-            QuestManager.addQuest(new QuestManager.Quest("wallet", "quest.wallet.name", "quest.wallet.description")));
-
-        dialogueRegistry.registerAction("jamal_give_money", () -> {
-            if (inventory.getAmount(ItemRegistry.get("money")) >= 5) {
-                inventory.removeItem(ItemRegistry.get("money"), 5);
-                gameUI.showInfoMessage(Assets.bundle.get("message.jamal.thanks"), 2f);
-            } else {
-                uiManager.showNotEnough(Assets.bundle.get("item.money.name"));
+        dialogueRegistry.registerAction("igo_give_vape", () -> {
+            if (inventory.trade(ItemRegistry.get("joint"), ItemRegistry.get("vape"), 1, 1)) {
+                QuestManager.removeQuest("igo");
+                npcManager.findNpcByName(Assets.bundle.get("npc.igo.name")).setDialogue(dialogueRegistry.getDialogue("igo", "thanks"));
+                new CompleteEventAction(ctx, "igo_gave_vape").execute();
+                TimerManager.setAction(() -> npcManager.findNpcByName(Assets.bundle.get("npc.igo.name")).setTexture(Assets.getTexture("igo2")), 5f);
             }
         });
 
+        dialogueRegistry.registerAction("chikita_craft_joint", () -> new ChikitaCraftJointAction(ctx).execute());
+
+        dialogueRegistry.registerAction("boss_accept_quest", () -> {
+            inventory.addItemAndNotify(ItemRegistry.get("grass"), 1000);
+            new AddQuestAction(ctx, "delivery", "quest.delivery.name", "quest.delivery.description").execute();
+            new SetDialogueAction(ctx, "npc.boss.name", "boss", "after").execute();
+            new CompleteEventAction(ctx, "boss_gave_quest").execute();
+        });
+
+        dialogueRegistry.registerAction("police_check", () -> new PoliceCheckAction(ctx));
+
+
         dialogueRegistry.registerAction("give_vape_action", () -> {
-            if (inventory.hasItem(ItemRegistry.get("vape"))) {
-
+            if (new HasItemCondition(ctx, "vape", "item.vape.name").check()) {
                 npcManager.findNpcByName(Assets.bundle.get("npc.talahon2.name")).setDialogue(dialogueRegistry.getDialogue("talahon2", "accept"));
-
             }
         });
     }

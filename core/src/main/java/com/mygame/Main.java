@@ -77,7 +77,7 @@ public class Main extends ApplicationAdapter {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         gameInitializer.getManagerRegistry().update(delta);
-        WorldManager.drawEntities(batch, gameInitializer.getFont(), player); // Corrected method
+        WorldManager.drawEntities(batch, Assets.myFont, player); // Corrected method
         player.draw(batch);
         gameInitializer.getManagerRegistry().render();
         batch.end();

@@ -1,6 +1,5 @@
 package com.mygame.game;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygame.Assets;
 import com.mygame.entity.player.Player;
@@ -18,7 +17,6 @@ public class GameInitializer {
     private Player player;
 
     private SpriteBatch batch;
-    private BitmapFont font;
 
     private ManagerRegistry managerRegistry;
     private GameInputHandler gameInputHandler;
@@ -32,11 +30,11 @@ public class GameInitializer {
         QuestManager.reset();
 
         batch = new SpriteBatch();
-        font = Assets.myFont;
+
 
         GameSettings settings = SettingsManager.load();
         player = new Player(500, 80, 80, settings.playerX, settings.playerY, Assets.getTexture("zoe"), null);
-        managerRegistry = new ManagerRegistry(batch, font, player);
+        managerRegistry = new ManagerRegistry(batch, Assets.myFont, player);
 
         player.getInventory().setUI(managerRegistry.getUiManager());
 
@@ -61,7 +59,7 @@ public class GameInitializer {
     public ManagerRegistry getManagerRegistry() { return managerRegistry; }
     public Player getPlayer() { return player; }
     public SpriteBatch getBatch() { return batch; }
-    public BitmapFont getFont() {return font;}
+
 
     public void dispose() {
         if (managerRegistry != null) managerRegistry.dispose();
