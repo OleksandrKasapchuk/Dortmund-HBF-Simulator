@@ -33,9 +33,6 @@ public class DialogueNode {
     public DialogueNode(String... textKeys) {
         this(null, false, textKeys);
     }
-    public DialogueNode(boolean isForced, String... textKeys) {
-        this(null, isForced, textKeys);
-    }
 
     public DialogueNode(Runnable onFinish, boolean isForced, String... textKeys) {
         this.action = onFinish;

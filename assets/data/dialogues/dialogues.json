@@ -60,17 +60,6 @@
       }
     }
   },
-  "junky": {
-    "nodes": {
-      "start": {
-        "texts": ["dialogue.junky.start"],
-        "choices": [
-          { "text": "dialogue.junky.choice.give", "action": "junky_give_spoon" },
-          { "text": "dialogue.choice.leave", "action": "junky_add_quest" }
-        ]
-      }
-    }
-  },
   "boss": {
     "nodes": {
       "start": {

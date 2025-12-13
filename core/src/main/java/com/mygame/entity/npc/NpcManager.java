@@ -87,17 +87,14 @@ public class NpcManager {
         if (npcId.equalsIgnoreCase("igo") && completedEvents.contains("igo_gave_vape")) {
             npc.setDialogue(dialogueRegistry.getDialogue("igo", "thanks"));
             npc.setTexture(Assets.getTexture("igo2"));
-        }
-        if (npcId.equalsIgnoreCase("ryzhyi") && completedEvents.contains("ryzhyi_gave_money")) {
+        } else if (npcId.equalsIgnoreCase("ryzhyi") && completedEvents.contains("ryzhyi_gave_money")) {
             npc.setDialogue(dialogueRegistry.getDialogue("ryzhyi", "after"));
-        }
-        if (npcId.equalsIgnoreCase("boss")) {
+        } else if (npcId.equalsIgnoreCase("boss")) {
             this.boss = npc;
             if (completedEvents.contains("boss_gave_quest")) {
                 npc.setDialogue(dialogueRegistry.getDialogue("boss", "after"));
             }
-        }
-        if (npcId.equalsIgnoreCase("jason") && completedEvents.contains("jason_gave_money")) {
+        } else if (npcId.equalsIgnoreCase("jason") && completedEvents.contains("jason_gave_money")) {
             npc.setDialogue(dialogueRegistry.getDialogue("jason", "after"));
         }
 

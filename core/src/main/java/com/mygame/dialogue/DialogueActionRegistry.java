@@ -28,6 +28,7 @@ public class DialogueActionRegistry {
                 settings.completedDialogueEvents.add("igo_gave_vape");
                 npcManager.findNpcByName(Assets.bundle.get("npc.igo.name")).setDialogue(dialogueRegistry.getDialogue("igo", "thanks"));
                 TimerManager.setAction(() -> npcManager.findNpcByName(Assets.bundle.get("npc.igo.name")).setTexture(Assets.getTexture("igo2")), 5f);
+                SettingsManager.save(settings);
             }
         });
 
@@ -40,6 +41,7 @@ public class DialogueActionRegistry {
         dialogueRegistry.registerAction("ryzhyi_take_money", () -> {
             inventory.addItemAndNotify(ItemRegistry.get("money"),20);
             settings.completedDialogueEvents.add("ryzhyi_gave_money");
+            SettingsManager.save(settings);
             npcManager.findNpcByName(Assets.bundle.get("npc.ryzhyi.name")).setDialogue(dialogueRegistry.getDialogue("ryzhyi", "after"));
         });
 
@@ -72,24 +74,6 @@ public class DialogueActionRegistry {
         dialogueRegistry.registerAction("kioskman_buy_icetea", () ->
             inventory.trade(ItemRegistry.get("money"), ItemRegistry.get("ice_tea"), 10, 1));
 
-        dialogueRegistry.registerAction("junky_give_spoon", () -> {
-            if (!QuestManager.hasQuest("spoon")) {
-                QuestManager.addQuest(new QuestManager.Quest("spoon", "quest.spoon.name", "quest.spoon.description"));
-            }
-            if (inventory.getAmount(ItemRegistry.get("spoon")) >= 1) {
-                inventory.removeItem(ItemRegistry.get("spoon"), 1);
-                gameUI.showInfoMessage(Assets.bundle.get("message.junky.respect"), 1.5f);
-                QuestManager.removeQuest("spoon");
-            } else {
-                uiManager.showNotEnough(Assets.bundle.get("message.junky.noSpoon"));
-            }
-        });
-
-        dialogueRegistry.registerAction("junky_add_quest", () -> {
-            if (!QuestManager.hasQuest("spoon")) {
-                QuestManager.addQuest(new QuestManager.Quest("spoon", "quest.spoon.name", "quest.spoon.description"));
-            }
-        });
 
         dialogueRegistry.registerAction("boss_accept_quest", () -> {
             QuestManager.addQuest(new QuestManager.Quest("delivery", "quest.delivery.name", "quest.delivery.description"));
@@ -116,6 +100,7 @@ public class DialogueActionRegistry {
             NPC jason = npcManager.findNpcByName(Assets.bundle.get("npc.jason.name"));
             jason.setDialogue(dialogueRegistry.getDialogue("jason", "after"));
             settings.completedDialogueEvents.add("jason_gave_money");
+            SettingsManager.save(settings);
         });
 
         dialogueRegistry.registerAction("murat_accept_quest", () ->

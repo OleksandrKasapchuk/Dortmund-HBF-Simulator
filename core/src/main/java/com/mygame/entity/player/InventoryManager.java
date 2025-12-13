@@ -62,7 +62,7 @@ public class InventoryManager {
         if (type == ItemRegistry.get("money")) addMoney(amount);
         else addItem(type, amount);
 
-        uiManager.showEarned(amount, type.getKey());
+        uiManager.showEarned(amount, type.getNameKey());
     }
 
     public boolean trade(ItemType give, ItemType receive, int giveAmount, int receiveAmount) {

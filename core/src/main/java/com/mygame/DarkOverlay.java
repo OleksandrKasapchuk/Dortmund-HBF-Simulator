@@ -9,12 +9,7 @@ public class DarkOverlay {
 
     private final ShapeRenderer shapeRenderer;
 
-    private enum State {
-        HIDDEN,
-        FADING_IN,
-        VISIBLE,
-        FADING_OUT
-    }
+    private enum State {HIDDEN, FADING_IN, VISIBLE, FADING_OUT}
 
     private State currentState = State.HIDDEN;
     private float currentAlpha = 0f;
@@ -37,7 +32,7 @@ public class DarkOverlay {
         this.currentState = State.FADING_IN;
     }
     public void update(float delta) {
-        if (fadeDuration <= 0) return; // Запобігання діленню на нуль
+        if (fadeDuration <= 0) return;
 
         float alphaStep = (targetAlpha / fadeDuration) * delta;
 
