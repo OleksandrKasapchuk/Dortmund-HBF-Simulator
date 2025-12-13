@@ -54,10 +54,7 @@ public class Main extends ApplicationAdapter {
             case DEATH:
                 uiManager.render();
                 break;
-            case MAP:
-            case MENU:
-            case PAUSED:
-            case SETTINGS:
+            default:
                 uiManager.update(delta, player);
                 uiManager.render();
                 break;

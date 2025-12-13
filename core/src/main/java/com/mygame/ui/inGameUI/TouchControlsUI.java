@@ -82,7 +82,7 @@ public class TouchControlsUI {
         actionListeners.put("TOGGLE_SETTINGS", createFlagListener(() -> settingsButtonJustPressed = true));
 
         // Use the factory to create the buttons from the JSON file
-        UIFactory.createButtonsFromJson(Gdx.files.internal("data/ui/touch_controls.json"), skin, stages, actionListeners, null);
+        UIFactory.createButtonsFromJson(Gdx.files.internal("data/ui/touch_controls.json"), skin, stages, actionListeners);
     }
 
     private InputListener createFlagListener(Runnable flagSetter) {

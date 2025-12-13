@@ -1,16 +1,13 @@
 package com.mygame.ui.screenUI;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.mygame.Assets;
 import com.mygame.Main;
@@ -18,21 +15,15 @@ import com.mygame.managers.global.save.GameSettings;
 import com.mygame.managers.global.save.SettingsManager;
 import com.mygame.managers.global.audio.MusicManager;
 import com.mygame.managers.global.audio.SoundManager;
-import com.mygame.ui.UIFactory;
 
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Settings UI screen for adjusting music and sound volumes and muting all audio.
  */
 public class SettingsUI extends Screen {
-    private Label settingsLabel1;
     private Slider musicVolumeSlider;
-    private Label musicVolumeLabel;
     private Slider soundVolumeSlider;
-    private Label soundVolumeLabel;
     private CheckBox muteAllCheckbox;
     private float lastMusicVolume;
     private float lastSoundVolume;
@@ -47,50 +38,19 @@ public class SettingsUI extends Screen {
         stage.addActor(backgroundImage);
 
         // Settings title
-        settingsLabel1 = new Label(Assets.bundle.get("settings.title"), skin);
-        settingsLabel1.setPosition(800, 800);
-        settingsLabel1.setFontScale(2.5f);
-        stage.addActor(settingsLabel1);
+        createLabel(skin, Assets.bundle.get("settings.title"), 2.5f,800, 800);
 
         // Music volume label
-        musicVolumeLabel = new Label(Assets.bundle.get("settings.music"), skin);
-        musicVolumeLabel.setPosition(50, 650);
-        musicVolumeLabel.setFontScale(2f);
-        stage.addActor(musicVolumeLabel);
-
-        // Music volume slider
-        musicVolumeSlider = new Slider(0f, 1f, 0.1f, false, skin);
-        musicVolumeSlider.setValue(MusicManager.getVolume());
-        musicVolumeSlider.setPosition(250, 625);
-        musicVolumeSlider.setSize(400, 50);
-        musicVolumeSlider.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                MusicManager.setVolume(musicVolumeSlider.getValue());
-                saveSoundSettings();
-            }
-        });
-        stage.addActor(musicVolumeSlider);
+        createLabel(skin, Assets.bundle.get("settings.music"), 2f,50, 650);
 
         // Sound volume label
-        soundVolumeLabel = new Label(Assets.bundle.get("settings.sounds"), skin);
-        soundVolumeLabel.setPosition(50, 550);
-        soundVolumeLabel.setFontScale(2f);
-        stage.addActor(soundVolumeLabel);
+        createLabel(skin, Assets.bundle.get("settings.sounds"), 2f,50, 550);
+
+        // Music volume slider
+        musicVolumeSlider = createSlider(skin,400, 50, 250, 625, MusicManager.getVolume(), () -> MusicManager.setVolume(musicVolumeSlider.getValue()));
 
         // Sound volume slider
-        soundVolumeSlider = new Slider(0f, 1f, 0.1f, false, skin);
-        soundVolumeSlider.setValue(SoundManager.getVolume());
-        soundVolumeSlider.setPosition(250, 525);
-        soundVolumeSlider.setSize(400, 50);
-        soundVolumeSlider.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                SoundManager.setVolume(soundVolumeSlider.getValue());
-                saveSoundSettings();
-            }
-        });
-        stage.addActor(soundVolumeSlider);
+        soundVolumeSlider = createSlider(skin,400, 50, 250, 525, SoundManager.getVolume(), () -> SoundManager.setVolume(soundVolumeSlider.getValue()));
 
         // Mute all checkbox
         muteAllCheckbox = new CheckBox(Assets.bundle.get("settings.muteAll"), skin);
@@ -110,58 +70,30 @@ public class SettingsUI extends Screen {
                     musicVolumeSlider.setValue(lastMusicVolume);
                     soundVolumeSlider.setValue(lastSoundVolume);
                 }
-                saveSoundSettings();
             }
         });
         stage.addActor(muteAllCheckbox);
 
-        // --- Language Selection using UIFactory ---
+        // --- Language Selection ---
         Table langTable = new Table();
         langTable.setPosition(1300, 550);
+
+        TextButton englishButton = createButton(skin, "English", 2f, () -> setLanguage("en"));
+        TextButton ukrainianButton = createButton(skin, "Українська", 2f, () -> setLanguage("ua"));
+        TextButton germanButton = createButton(skin, "Deutsch", 2f, () -> setLanguage("de"));
+
+        langTable.add(englishButton).width(350).height(90).padBottom(20).row();
+        langTable.add(ukrainianButton).width(350).height(90).padBottom(20).row();
+        langTable.add(germanButton).width(350).height(90).row();
         stage.addActor(langTable);
-
-        Map<String, Stage> stages = new HashMap<>();
-        stages.put("settingsStage", stage);
-
-        Map<String, InputListener> actionListeners = new HashMap<>();
-        actionListeners.put("SET_LANG_EN", createLanguageListener("en"));
-        actionListeners.put("SET_LANG_UA", createLanguageListener("ua"));
-        actionListeners.put("SET_LANG_DE", createLanguageListener("de"));
-
-        UIFactory.createButtonsFromJson(Gdx.files.internal("ui/buttons.json"), skin, stages, actionListeners, langTable);
     }
 
-    private InputListener createLanguageListener(String languageCode) {
-        return new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                setLanguage(languageCode);
-                return true;
-            }
-        };
-    }
-
-    private void saveSoundSettings() {
-        GameSettings settings = SettingsManager.load();
-        settings.musicVolume = musicVolumeSlider.getValue();
-        settings.soundVolume = soundVolumeSlider.getValue();
-        settings.muteAll = muteAllCheckbox.isChecked();
-        SettingsManager.save(settings);
-    }
 
     private void setLanguage(String languageCode) {
         GameSettings settings = SettingsManager.load();
         settings.language = languageCode;
         SettingsManager.save(settings);
         Assets.loadBundle(new Locale(languageCode));
-        updateLabels();
         Main.restartGame();
-    }
-
-    private void updateLabels() {
-        settingsLabel1.setText(Assets.bundle.get("settings.title"));
-        musicVolumeLabel.setText(Assets.bundle.get("settings.music"));
-        soundVolumeLabel.setText(Assets.bundle.get("settings.sounds"));
-        muteAllCheckbox.setText(Assets.bundle.get("settings.muteAll"));
     }
 }

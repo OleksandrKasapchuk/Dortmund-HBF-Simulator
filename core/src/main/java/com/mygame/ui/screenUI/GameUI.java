@@ -28,31 +28,19 @@ public class GameUI extends Screen {
         Stage stage = getStage();
 
         // Money display
-        moneyLabel = new Label("", skin);
-        moneyLabel.setPosition(1700, 925);
-        moneyLabel.setFontScale(1.5f);
-        stage.addActor(moneyLabel);
+        moneyLabel = createLabel(skin, "", 1.5f,1700, 925);
 
         // Info message display (temporary messages)
-        infoLabel = new Label("", skin);
+        infoLabel = createLabel(skin, "", 2f,stage.getViewport().getWorldWidth() / 2f, 850);
+
         infoLabel.setColor(Color.GOLD);
         infoLabel.setAlignment(Align.center);
-        infoLabel.setFontScale(2f);
-        infoLabel.setPosition(stage.getViewport().getWorldWidth() / 2f, 850, Align.center);
-        stage.addActor(infoLabel);
         infoLabel.setVisible(false);
 
-        worldLabel = new Label("", skin);
-        worldLabel.setFontScale(1.5f);
-        worldLabel.setPosition(10, Gdx.graphics.getHeight() - 100);
-        stage.addActor(worldLabel);
+        worldLabel = createLabel(skin, "", 1.5f,10, Gdx.graphics.getHeight() - 100);
     }
 
-    /**
-     * Update the money display
-     *
-     * @param money Current player money
-     */
+
     public void updateMoney(int money) {
         moneyLabel.setText(Assets.bundle.format("ui.money", money));
     }
@@ -63,7 +51,6 @@ public class GameUI extends Screen {
 
     /**
      * Show a temporary info message
-     *
      * @param message  The message text
      * @param duration How long the message should be visible (seconds)
      */
@@ -76,7 +63,6 @@ public class GameUI extends Screen {
     /**
      * Update method to be called every frame.
      * Handles hiding the info message after its timer expires.
-     *
      * @param delta Time since last frame
      */
     public void update(float delta, Player player) {

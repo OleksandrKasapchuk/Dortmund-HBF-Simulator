@@ -1,7 +1,7 @@
 package com.mygame.ui.screenUI;
 
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygame.Assets;
 
@@ -10,27 +10,17 @@ import com.mygame.Assets;
  * It shows a "Game Paused" message and a prompt to resume the game.
  */
 public class PauseUI extends Screen {
-    private final Label pauseLabel1; // Main "GAME PAUSED" label
-    private final Label pauseLabel2; // Instruction to resume ("PRESS P TO RESUME")
-
     /**
      * Constructor sets up the pause UI elements.
      *
      * @param skin Skin used for the labels
      */
-    public PauseUI(Skin skin){
-        Stage stage = getStage();
-
+    public PauseUI(Skin skin) {
         // "GAME PAUSED" label
-        pauseLabel1 = new Label(Assets.bundle.get("pause.title"), skin);
-        pauseLabel1.setPosition(750, 600);
-        pauseLabel1.setFontScale(2.5f);
-        stage.addActor(pauseLabel1);
+        createLabel(skin, Assets.bundle.get("pause.title"), 2.5f,750, 600);
 
         // Instruction label to resume game
-        pauseLabel2 = new Label(Assets.bundle.get("pause.resume"), skin);
-        pauseLabel2.setPosition(775, 500);
-        pauseLabel2.setFontScale(1.5f);
-        stage.addActor(pauseLabel2);
+        if (Gdx.app.getType() != Application.ApplicationType.Android)
+            createLabel(skin, Assets.bundle.get("pause.resume"), 1.5f,775, 500);
     }
 }
