@@ -33,7 +33,7 @@ public class SettingsUI extends Screen {
         Stage stage = getStage();
 
         // Background image
-        backgroundImage = new Image(Assets.menuBlurBack);
+        backgroundImage = new Image(Assets.getTexture("menuBlurBack"));
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
 

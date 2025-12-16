@@ -26,10 +26,29 @@
       "width": 200,
       "height": 100,
       "x": 20,
-      "y": 300,
-      "y_from_top": true,
+      "y": 700,
       "fontScale": 1.0,
       "stage": "gameStage"
+    },
+    {
+      "action": "TOGGLE_MAP",
+      "textKey": "button.map.text",
+      "width": 200,
+      "height": 100,
+      "x": 250,
+      "y": 850,
+      "fontScale": 1.0,
+      "stage": "gameStage"
+    },
+    {
+      "action": "TOGGLE_MAP",
+      "textKey": "button.map.text",
+      "width": 200,
+      "height": 100,
+      "x": 20,
+      "y": 850,
+      "fontScale": 1.0,
+      "stage": "mapStage"
     },
     {
       "action": "TOGGLE_PAUSE",

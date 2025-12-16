@@ -56,6 +56,11 @@ public class Player extends Entity {
     @Override
     public void update(float delta) {
 
+        // If movement is locked, do nothing
+        if (isMovementLocked) {
+            return;
+        }
+
         // State-based movement speed
         if (currentState == State.STONED) {
             speed = 150;
@@ -63,10 +68,6 @@ public class Player extends Entity {
             speed = 500;
         }
 
-        // If movement is locked, do nothing
-        if (isMovementLocked) {
-            return;
-        }
 
         float moveSpeed = speed * delta;
         float dx = 0, dy = 0;

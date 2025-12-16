@@ -68,7 +68,7 @@ public class EventManager {
         if (pfandAutomat != null && pfandAutomat.isPlayerNear(player) && pfandAutomat.getWorld() == WorldManager.getCurrentWorld()) {
             font.draw(batch, Assets.bundle.get("interact.pfandAutomat"),
                 pfandAutomat.getX(),
-                pfandAutomat.getY() + 150);
+                pfandAutomat.getCenterY());
         }
     }
 
@@ -89,7 +89,7 @@ public class EventManager {
         // Create boss failure dialogue
         DialogueNode failureNode = new DialogueNode(() -> {
             gameStateManager.playerDied(); // Kill player
-            SoundManager.playSound(Assets.gunShot); // Play gunshot sound
+            SoundManager.playSound(Assets.getSound("gunShot")); // Play gunshot sound
         },
             true,"message.boss.failure.1",
             "message.boss.failure.2",
@@ -121,7 +121,7 @@ public class EventManager {
         // Remove items and quest
         player.getInventory().removeItem(ItemRegistry.get("grass"), 1000);
         QuestManager.removeQuest("delivery");
-        SoundManager.playSound(Assets.bushSound);
+        SoundManager.playSound(Assets.getSound("bushSound"));
         player.setMovementLocked(true);
 
         // Call police after 2 seconds
@@ -136,7 +136,7 @@ public class EventManager {
             Runnable chaseAction = () -> {
                 police.startChase(player); // Pass player to set initial chase coordinates
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.boss.chase.run"), 2f); // Show warning
-                MusicManager.playMusic(Assets.backMusic4);    // Change music to chase
+                MusicManager.playMusic(Assets.getMusic("backMusic4"));    // Change music to chase
                 police.setDialogue(caughtNode); // Assign caught dialogue
             };
 
@@ -158,14 +158,14 @@ public class EventManager {
                     player.getInventory().removeItem(ItemRegistry.get("pfand"),1);
                     triggerPfandAutomat();
                 } else {
-                    uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.generic.notEnoughPfand"),1f);
+                    uiManager.showNotEnough(("item.pfand.name"));
                 }
             }
         }
     }
 
     public void triggerPfandAutomat(){
-        SoundManager.playSound(Assets.pfandAutomatSound);
+        SoundManager.playSound(Assets.getSound("pfandAutomatSound"));
 
         // Timer to give money after 1.9 seconds
         TimerManager.setAction(() ->
@@ -200,7 +200,7 @@ public class EventManager {
         // Handle state changes (escaped, caught)
         switch (police.getState()) {
             case ESCAPED -> {
-                MusicManager.playMusic(Assets.backMusic1); // Change music back
+                MusicManager.playMusic(Assets.getMusic("backMusic1")); // Change music back
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.generic.ranAway"), 1.5f);
                 npcManager.kill(police);
 

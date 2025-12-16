@@ -2,6 +2,7 @@ package com.mygame.dialogue;
 
 import com.mygame.entity.npc.NPC;
 import com.mygame.entity.player.Player;
+import com.mygame.managers.global.QuestManager;
 import com.mygame.world.WorldManager;
 import com.mygame.ui.inGameUI.DialogueUI;
 
@@ -21,18 +22,10 @@ public class DialogueManager {
     private final DialogueUI dialogueUI;
     private final Player player;
 
-    // Dialogue state
-    private NPC activeNpc;
-    private DialogueNode activeDialogue;
+    private final DialogueState state = new DialogueState();
+    private final TypeWriterController typeWriter = new TypeWriterController();
+
     private NPC recentlyFinishedForcedNpc;
-
-    private boolean isForcedDialogue = false;
-    private boolean textCompleted = false;
-
-    // Typewriter animation
-    private int currentTextIndex;
-    private float textTimer;
-    private static final float TEXT_SPEED = 0.05f;
 
     // Prevents multiple interactions per frame
     private float interactCooldown = 0f;
@@ -43,11 +36,11 @@ public class DialogueManager {
      * Executes custom action + jumps to next dialogue node.
      */
     private final DialogueUI.ChoiceListener choiceListener = choice -> {
-        if (activeDialogue == null) return;
+        if (!state.isActive()) return;
 
         if (choice.action() != null) choice.action().run();
         if (choice.nextNode() != null) {
-            activeDialogue = choice.nextNode();
+            state.activeNode = choice.nextNode();
             displayCurrentNode();
         } else {
             endDialogue();
@@ -63,8 +56,8 @@ public class DialogueManager {
      * Starts a normal (non-forced) dialogue if player is close enough.
      */
     public void startDialogue(NPC npc) {
-        if (activeDialogue != null || !npc.isPlayerNear(player)) return;
-        isForcedDialogue = false;
+        if (state.isActive() || !npc.isPlayerNear(player)) return;
+        state.forced = false;
         beginDialogue(npc);
     }
 
@@ -72,8 +65,8 @@ public class DialogueManager {
      * Starts a forced dialogue (Police).
      */
     public void startForcedDialogue(NPC npc) {
-        if (activeDialogue != null) endDialogue();
-        isForcedDialogue = true;
+        if (state.isActive()) endDialogue();
+        state.forced = true;
         beginDialogue(npc);
     }
 
@@ -81,12 +74,12 @@ public class DialogueManager {
      * Internal function that resets dialogue state and opens the UI.
      */
     private void beginDialogue(NPC npc) {
-        activeNpc = npc;
-        activeDialogue = npc.getDialogue();
-        if (activeDialogue == null) return;
+        state.activeNpc = npc;
+        state.activeNode = npc.getDialogue();
+        if (!state.isActive()) return;
 
         // Forced dialogue → player cannot move
-        player.setMovementLocked(activeDialogue.isForced());
+        player.setMovementLocked(state.activeNode.isForced());
 
         displayCurrentNode();
     }
@@ -96,39 +89,34 @@ public class DialogueManager {
      * resets animation + updates UI.
      */
     private void displayCurrentNode() {
-        currentTextIndex = 0;
-        resetTimers();
+        state.resetNode();
+        typeWriter.reset();
+        interactCooldown = INTERACT_COOLDOWN_TIME;
 
-        dialogueUI.show(activeNpc.getName(), activeDialogue, choiceListener);
+        dialogueUI.show(state.activeNpc.getName(), state.activeNode, choiceListener);
 
         // Start with empty text for typewriter animation
         dialogueUI.updateText("");
-    }
-
-    private void resetTimers() {
-        textTimer = 0f;
-        textCompleted = false;
-        interactCooldown = INTERACT_COOLDOWN_TIME;
     }
 
     /**
      * Ends current dialogue and unlocks movement.
      */
     public void endDialogue() {
-        if (activeDialogue == null) return;
+        if (!state.isActive()) return;
 
         if (player != null) player.setMovementLocked(false);
 
         // Used to prevent re-triggering Police forced dialogue
-        if (isForcedDialogue && activeNpc != null) {
-            recentlyFinishedForcedNpc = activeNpc;
+        if (state.forced && state.activeNpc != null) {
+            recentlyFinishedForcedNpc = state.activeNpc;
         }
 
         dialogueUI.hide();
 
-        activeNpc = null;
-        activeDialogue = null;
-        isForcedDialogue = false;
+        state.activeNpc = null;
+        state.activeNode = null;
+        state.forced = false;
     }
 
     /**
@@ -147,7 +135,7 @@ public class DialogueManager {
         // ─────────────────────────────
         // NO DIALOGUE ACTIVE
         // ─────────────────────────────
-        if (activeDialogue == null) {
+        if (!state.isActive()) {
 
             if (player == null) return;
 
@@ -180,64 +168,58 @@ public class DialogueManager {
         // ─────────────────────────────
         // DIALOGUE IS ACTIVE
         // ─────────────────────────────
-//
         // If the player walks away → exit dialogue (unless forced)
-        if (!activeNpc.isPlayerNear(player) && !isForcedDialogue) {
+        if (!state.activeNpc.isPlayerNear(player) && !state.forced) {
             endDialogue();
             return;
         }
 
-        if (activeDialogue.getTexts().isEmpty()) {
+        if (state.activeNode.getTexts().isEmpty()) {
             dialogueUI.updateText("");
             dialogueUI.showChoices(true);
             return;
         }
 
-        String currentPhrase = activeDialogue.getTexts().get(currentTextIndex);
+        String currentPhrase = state.activeNode.getTexts().get(state.textIndex);
 
         // Typewriter animation
-        if (!textCompleted) {
-            textTimer += delta;
-            int lettersToShow = (int) (textTimer / TEXT_SPEED);
-
-            if (lettersToShow >= currentPhrase.length()) {
-                textCompleted = true;
-                dialogueUI.updateText(currentPhrase);
-            } else {
-                dialogueUI.updateText(currentPhrase.substring(0, lettersToShow));
+        if (!state.textCompleted) {
+            String animatedText = typeWriter.update(currentPhrase, delta);
+            dialogueUI.updateText(animatedText);
+            if(typeWriter.isFinished(currentPhrase)) {
+                state.textCompleted = true;
             }
         }
 
         // Interact to skip/continue
         if (interactPressed && interactCooldown <= 0) {
 
-            if (!textCompleted) {
+            if (!state.textCompleted) {
                 // Skip typewriter animation
-                textCompleted = true;
+                state.textCompleted = true;
                 dialogueUI.updateText(currentPhrase);
             } else {
-                boolean lastPhrase = currentTextIndex >= activeDialogue.getTexts().size() - 1;
-
-                if (lastPhrase) {
-                    if (activeDialogue.getAction() != null) {
-                        activeDialogue.getAction().run();
+                if (state.isLastPhrase()) {
+                    if (state.activeNode.getAction() != null) {
+                        state.activeNode.getAction().run();
                     }
-                    if (activeDialogue.getChoices().isEmpty()) {
+
+                    if (state.activeNode.getChoices().isEmpty()) {
                         endDialogue();
+                        if (QuestManager.getQuest("jason2") != null) QuestManager.getQuest("jason2").makeProgress();
                         return;
                     }
                 } else {
-                    currentTextIndex++;
-                    resetTimers();
+                    state.textIndex++;
+                    state.textCompleted = false;
+                    typeWriter.reset();
                 }
             }
 
             interactCooldown = INTERACT_COOLDOWN_TIME;
         }
 
-        boolean lastPhrase = currentTextIndex >= activeDialogue.getTexts().size() - 1;
-
         // Show choices only at the end of last phrase
-        dialogueUI.showChoices(textCompleted && lastPhrase && !activeDialogue.getChoices().isEmpty());
+        dialogueUI.showChoices(state.textCompleted && state.isLastPhrase() && !state.activeNode.getChoices().isEmpty());
     }
 }

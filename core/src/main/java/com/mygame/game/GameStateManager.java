@@ -34,14 +34,14 @@ public class GameStateManager {
     // --- Start the game ---
     public void startGame() {
         state = GameState.PLAYING;                // Switch state to PLAYING
-        MusicManager.playMusic(Assets.backMusic1); // Play game background music
+        MusicManager.playMusic(Assets.getMusic("backMusic1")); // Play game background music
         uiManager.setCurrentStage("GAME");         // Set UI to game stage
     }
 
     // --- Handle player death ---
     public void playerDied() {
         state = GameState.DEATH;                  // Switch state to DEATH
-        MusicManager.playMusic(Assets.backMusic4); // Play death music
+        MusicManager.playMusic(Assets.getMusic("backMusic4")); // Play death music
         uiManager.setCurrentStage("DEATH");        // Set UI to death stage
 
         // Reset player progress and save it
@@ -89,7 +89,7 @@ public class GameStateManager {
 
     public void handleStonedPlayer(Player player, NpcManager npcManager) {
         if (player.getState() == Player.State.STONED && state == GameState.PLAYING) {
-            MusicManager.playMusic(Assets.kaifMusic);
+            MusicManager.playMusic(Assets.getMusic("kaifMusic"));
             npcManager.getPolice().setDialogue(
                 new DialogueNode(this::playerDied, true, "dialogue.police.stoned.1",
                     "dialogue.police.stoned.2")

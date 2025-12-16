@@ -1,6 +1,7 @@
-package com.mygame.dialogue.action;
+package com.mygame.dialogue.action.condition;
 
 import com.mygame.Assets;
+import com.mygame.dialogue.action.ActionContext;
 import com.mygame.entity.item.ItemRegistry;
 
 public class HasItemCondition implements ConditionAction {

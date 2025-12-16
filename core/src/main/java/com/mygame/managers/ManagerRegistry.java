@@ -122,7 +122,6 @@ public class ManagerRegistry {
         uiManager.update(delta, player);
         pfandManager.update(delta);
         eventManager.update(delta);
-        uiManager.resetButtons();
     }
 
     public void render() {

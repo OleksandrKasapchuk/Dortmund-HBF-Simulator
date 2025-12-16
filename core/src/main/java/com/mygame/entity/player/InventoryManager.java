@@ -54,7 +54,7 @@ public class InventoryManager {
     public int getMoney() {return getAmount(ItemRegistry.get("money"));}
 
     public void addMoney(int amount) {
-        SoundManager.playSound(Assets.moneySound);
+        SoundManager.playSound(Assets.getSound("moneySound"));
         addItem(ItemRegistry.get("money"), amount);
     }
 

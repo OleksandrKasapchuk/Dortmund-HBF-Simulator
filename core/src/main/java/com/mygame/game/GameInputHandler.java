@@ -34,7 +34,7 @@ public class GameInputHandler {
         if (Gdx.input.isKeyJustPressed(Input.Keys.Q) || (touchControlsUI != null && touchControlsUI.isQuestButtonJustPressed()))
             uiManager.toggleQuestTable();
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.M))
+        if (Gdx.input.isKeyJustPressed(Input.Keys.M) || (touchControlsUI != null && touchControlsUI.isMapButtonJustPressed()))
             gsm.toggleMap();
     }
 }

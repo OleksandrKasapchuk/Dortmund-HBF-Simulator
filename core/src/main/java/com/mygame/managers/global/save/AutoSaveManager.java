@@ -48,8 +48,10 @@ public class AutoSaveManager {
 
         // Save active quests
         settings.activeQuests = QuestManager.getQuests().stream()
-            .map(QuestManager.Quest::key)
-            .collect(Collectors.toList());
+            .collect(Collectors.toMap(
+                QuestManager.Quest::key,
+                quest -> new GameSettings.QuestSaveData(quest.progressable(), quest.progress(), quest.maxProgress())
+            ));
 
         SettingsManager.save(settings);
         System.out.println("Game state saved.");

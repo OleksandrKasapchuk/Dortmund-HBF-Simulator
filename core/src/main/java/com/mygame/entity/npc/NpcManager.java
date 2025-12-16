@@ -5,7 +5,7 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.mygame.Assets;
-import com.mygame.dialogue.DialogueActionRegistry;
+import com.mygame.dialogue.action.DialogueActionRegistry;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.player.Player;
 import com.mygame.managers.global.save.GameSettings;
@@ -75,13 +75,12 @@ public class NpcManager {
         float pauseTime = props.get("pauseTime", 0f, Float.class);
         float moveTime = props.get("moveTime", 0f, Float.class);
         int speed = props.get("speed", 50, Integer.class);
-        int distance = props.get("distance", 150, Integer.class);
 
         if (npcId.equalsIgnoreCase("police")) {
-            this.police = new Police(npcName, 100, 100, x, y, texture, world, 0, 100, initialDialogue);
+            this.police = new Police(npcName, 100, 100, x, y, texture, world, 0, initialDialogue);
             npc = this.police;
         } else {
-            npc = new NPC(npcName, 100, 100, x, y, texture, world, directionX, directionY, pauseTime, moveTime, speed, distance, initialDialogue);
+            npc = new NPC(npcName, 100, 100, x, y, texture, world, directionX, directionY, pauseTime, moveTime, speed, initialDialogue);
         }
 
         if (npcId.equalsIgnoreCase("igo") && completedEvents.contains("igo_gave_vape")) {
@@ -117,7 +116,7 @@ public class NpcManager {
     }
 
     public void callPolice() {
-        summonedPolice = new Police(Assets.bundle.get("npc.police.name"), 100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police"), WorldManager.getCurrentWorld(), 200, 100, new DialogueNode("dialogue.police.called"));
+        summonedPolice = new Police(Assets.bundle.get("npc.police.name"), 100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police"), WorldManager.getCurrentWorld(), 200, new DialogueNode("dialogue.police.called"));
         npcs.add(summonedPolice);
         WorldManager.getCurrentWorld().getNpcs().add(summonedPolice);
     }

@@ -1,0 +1,59 @@
+[
+  {
+    "key": "money",
+    "name": "item.money.name",
+    "description": "item.money.description"
+  },
+  {
+    "key": "grass",
+    "name": "item.grass.name",
+    "description": "item.grass.description"
+  },
+  {
+    "key": "grass_seed",
+    "name": "item.grass_seed.name",
+    "description": "item.grass_seed.description"
+  },
+  {
+    "key": "pape",
+    "name": "item.pape.name",
+    "description": "item.pape.description"
+  },
+  {
+    "key": "joint",
+    "name": "item.joint.name",
+    "description": "item.joint.description",
+    "effect": "applyJointEffect"
+  },
+  {
+    "key": "ice_tea",
+    "name": "item.ice_tea.name",
+    "description": "item.ice_tea.description",
+    "effect": "applyIceTeaEffect"
+  },
+  {
+    "key": "spoon",
+    "name": "item.spoon.name",
+    "description": "item.spoon.description"
+  },
+  {
+    "key": "pfand",
+    "name": "item.pfand.name",
+    "description": "item.pfand.description"
+  },
+  {
+    "key": "bush",
+    "name": "item.bush.name",
+    "description": "item.bush.description"
+  },
+  {
+    "key": "pfandAutomat",
+    "name": "item.pfandAutomat.name",
+    "description": "item.pfandAutomat.description"
+  },
+  {
+    "key": "vape",
+    "name": "item.vape.name",
+    "description": "item.vape.description"
+  }
+]

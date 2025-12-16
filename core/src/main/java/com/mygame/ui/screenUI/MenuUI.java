@@ -24,7 +24,7 @@ public class MenuUI extends Screen {
         Stage stage = getStage();
 
         // Background image
-        backgroundImage = new Image(Assets.menuBack);
+        backgroundImage = new Image(Assets.getTexture("menuBack"));
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
 

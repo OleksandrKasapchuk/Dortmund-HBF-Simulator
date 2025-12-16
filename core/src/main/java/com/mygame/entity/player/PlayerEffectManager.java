@@ -24,7 +24,7 @@ public class PlayerEffectManager {
     }
 
     public void applyJointEffect() {
-        SoundManager.playSound(Assets.lighterSound);
+        SoundManager.playSound(Assets.getSound("lighterSound"));
         TimerManager.setAction(() -> {
             if (player.getState() == Player.State.NORMAL)
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.joint"), 1.5f);
@@ -39,7 +39,7 @@ public class PlayerEffectManager {
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.ice_tea"), 1.5f);
 
             player.setNormal();
-            MusicManager.playMusic(Assets.backMusic1);
+            MusicManager.playMusic(Assets.getMusic("backMusic1"));
         }, 0.5f);
     }
 }

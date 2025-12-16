@@ -2,7 +2,6 @@ package com.mygame.entity.item;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.mygame.entity.Entity;
-import com.mygame.entity.player.Player;
 import com.mygame.world.World;
 
 /**
@@ -38,19 +37,12 @@ public class Item extends Entity {
         // Items do not move or update by default.
     }
 
-    // --- Player distance check ---
-    public boolean isPlayerNear(Player player) {
-        float dx = player.getX() - this.getX();
-        float dy = player.getY() - this.getY();
-        return Math.sqrt(dx * dx + dy * dy) < this.distance;
-    }
-
     // --- Basic getters ---
     public String getName() { return type.getNameKey(); }
     public ItemType getType() { return type; }
     public boolean canBePickedUp() { return canBePickedUp; }
     public boolean isSolid() { return solid; }
-
+    public int getDistance() { return distance; }
     // --- Cooldown logic ---
     /**
      * Updates cooldown timer.

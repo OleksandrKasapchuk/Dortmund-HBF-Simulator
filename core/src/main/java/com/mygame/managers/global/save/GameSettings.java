@@ -20,9 +20,23 @@ public class GameSettings {
     public float playerY;
     public String currentWorldName;
     public Map<String, Integer> inventory;
-    public List<String> activeQuests;
+    public Map<String, QuestSaveData> activeQuests;
     public List<String> completedDialogueEvents;
     public Player.State playerState;
+
+    public static class QuestSaveData {
+        public boolean progressable;
+        public int progress;
+        public int maxProgress;
+
+        public QuestSaveData(boolean progressable, int progress, int maxProgress) {
+            this.progressable = progressable;
+            this.progress = progress;
+            this.maxProgress = maxProgress;
+        }
+
+        public QuestSaveData() {}
+    }
 
     public GameSettings() {
         // Default settings
@@ -34,7 +48,7 @@ public class GameSettings {
         this.playerY = 200;
         this.currentWorldName = "main";
         this.inventory = new HashMap<>();
-        this.activeQuests = new ArrayList<>();
+        this.activeQuests = new HashMap<>();
         this.completedDialogueEvents = new ArrayList<>();
         this.playerState = Player.State.NORMAL;
     }

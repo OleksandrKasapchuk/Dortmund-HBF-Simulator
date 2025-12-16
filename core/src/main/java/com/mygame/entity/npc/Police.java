@@ -28,10 +28,10 @@ public class Police extends NPC {
     private static final float MAX_LOST_TIME = 5f; // якщо поліція не бачить 5 секунд — втеча
 
     public Police(String name, int width, int height, float x, float y,
-                  Texture texture, World world, int speed, int distance, DialogueNode dialogue) {
+                  Texture texture, World world, int speed, DialogueNode dialogue) {
         super(name, width, height, x, y, texture, world,
             0, 0, 0f, 0f, // Static patrol path, not used for police
-            speed, distance, dialogue);
+            speed, dialogue);
     }
 
     public Transition findTransitionToPlayer(World playerWorld) {

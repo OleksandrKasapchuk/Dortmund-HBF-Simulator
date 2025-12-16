@@ -36,7 +36,6 @@ public class WorldMapUI extends Screen {
         worldPositions.put("home", new com.badlogic.gdx.math.Vector2(1400, 300));
         worldPositions.put("subway", new com.badlogic.gdx.math.Vector2(1200, 500));
         worldPositions.put("kamp", new com.badlogic.gdx.math.Vector2(950, 300));
-        worldPositions.put("club", new com.badlogic.gdx.math.Vector2(650, 700));
 
         // Create labels for each world
         for (Map.Entry<String, com.badlogic.gdx.math.Vector2> entry : worldPositions.entrySet()) {

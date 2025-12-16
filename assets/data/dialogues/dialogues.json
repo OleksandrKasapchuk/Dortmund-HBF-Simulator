@@ -149,10 +149,10 @@
   "jamal": {
     "nodes": {
       "start": {
-        "texts": ["dialogue.jamal.start.1", "dialogue.jamal.start.2", "dialogue.jamal.start.3", "dialogue.jamal.start.4", "dialogue.jamal.start.5", "dialogue.jamal.start.6"],
+        "texts": ["dialogue.jamal.start.1", "dialogue.jamal.start.2"],
         "choices": [
-          { "text": "dialogue.jamal.choice.give_money", "action": "jamal_give_money" },
-          "dialogue.jamal.choice.ignore"
+          { "text": "dialogue.jamal.choice.buy", "action": "buy_seed" },
+          "dialogue.choice.leave"
         ]
       }
     }

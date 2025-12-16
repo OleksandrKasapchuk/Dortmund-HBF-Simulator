@@ -79,6 +79,7 @@ public class UIManager {
                 gameUI.getStage(),
                 pauseUI.getStage(),
                 settingsUI.getStage(),
+                worldMapUI.getStage(),
                 player
             );
             System.out.println("UIManager: TouchControlsUI created.");
@@ -124,6 +125,7 @@ public class UIManager {
         }
         // Update the current stage actors
         currentStage.act(delta);
+        resetButtons();
     }
 
     /** Draws the current stage */

@@ -47,12 +47,13 @@ public class GameInitializer {
         if (settings.inventory != null)
             settings.inventory.forEach((itemKey, amount) -> player.getInventory().addItem(ItemRegistry.get(itemKey), amount));
 
-        if (settings.activeQuests != null)
-            settings.activeQuests.forEach(key -> QuestManager.addQuest(new QuestManager.Quest(key, "quest." + key + ".name", "quest." + key + ".description")));
+        if (settings.activeQuests != null) {
+            settings.activeQuests.forEach((key, saveData) -> QuestManager.addQuest(new QuestManager.Quest(key, saveData.progressable, saveData.progress, saveData.maxProgress)));
+        }
 
         gameInputHandler = new GameInputHandler(managerRegistry.getGameStateManager(), managerRegistry.getUiManager());
 
-        MusicManager.playMusic(Assets.startMusic);
+        MusicManager.playMusic(Assets.getMusic("startMusic"));
     }
 
     public GameInputHandler getGameInputHandler() { return gameInputHandler; }

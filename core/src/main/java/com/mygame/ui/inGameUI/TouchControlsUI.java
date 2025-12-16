@@ -32,6 +32,7 @@ public class TouchControlsUI {
     private boolean questButtonJustPressed = false;
     private boolean settingsButtonJustPressed = false;
     private boolean pauseButtonJustPressed = false;
+    private boolean mapButtonJustPressed = false;
 
     /**
      * Initializes touch controls and attaches them to corresponding stages.
@@ -42,7 +43,7 @@ public class TouchControlsUI {
      * @param settingsStage Stage for settings buttons
      * @param player        Player to link the touchpad movement
      */
-    public TouchControlsUI(Skin skin, Stage gameStage, Stage pauseStage, Stage settingsStage, Player player) {
+    public TouchControlsUI(Skin skin, Stage gameStage, Stage pauseStage, Stage settingsStage, Stage mapStage, Player player) {
 
         // Create textures for the joystick knob and background
         Pixmap knobPixmap = new Pixmap(50, 50, Pixmap.Format.RGBA8888);
@@ -72,6 +73,7 @@ public class TouchControlsUI {
         stages.put("gameStage", gameStage);
         stages.put("pauseStage", pauseStage);
         stages.put("settingsStage", settingsStage);
+        stages.put("mapStage", mapStage);
 
         // Map action names to their specific listeners that set flags
         Map<String, InputListener> actionListeners = new HashMap<>();
@@ -80,6 +82,7 @@ public class TouchControlsUI {
         actionListeners.put("QUESTS", createFlagListener(() -> questButtonJustPressed = true));
         actionListeners.put("TOGGLE_PAUSE", createFlagListener(() -> pauseButtonJustPressed = true));
         actionListeners.put("TOGGLE_SETTINGS", createFlagListener(() -> settingsButtonJustPressed = true));
+        actionListeners.put("TOGGLE_MAP", createFlagListener(() -> mapButtonJustPressed = true));
 
         // Use the factory to create the buttons from the JSON file
         UIFactory.createButtonsFromJson(Gdx.files.internal("data/ui/touch_controls.json"), skin, stages, actionListeners);
@@ -101,6 +104,7 @@ public class TouchControlsUI {
     public boolean isQuestButtonJustPressed() { return questButtonJustPressed; }
     public boolean isSettingsButtonJustPressed() { return settingsButtonJustPressed; }
     public boolean isPauseButtonJustPressed() { return pauseButtonJustPressed; }
+    public boolean isMapButtonJustPressed() { return mapButtonJustPressed; }
 
     /** Resets all "just pressed" flags */
     public void resetButtons() {
@@ -109,6 +113,7 @@ public class TouchControlsUI {
         questButtonJustPressed = false;
         settingsButtonJustPressed = false;
         pauseButtonJustPressed = false;
+        mapButtonJustPressed = false;
     }
 
     /** Dispose textures when no longer needed */

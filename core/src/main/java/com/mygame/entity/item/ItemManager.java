@@ -84,7 +84,7 @@ public class ItemManager {
             Item item = it.next();
 
             // If item can be picked up and player is near, add to inventory and remove from world
-            if (item.canBePickedUp() && item.isPlayerNear(player)) {
+            if (item.canBePickedUp() && item.isPlayerNear(player, item.getDistance())) {
                 player.getInventory().addItem(item.getType(), 1);
 
                 if (item.getType().getKey().equals("pfand")) { // Use getKey() for safety

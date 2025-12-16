@@ -1,0 +1,12 @@
+[
+  { "key": "money", "path": "sound/money.ogg", "type": "SOUND" },
+  { "key": "kosyak", "path": "sound/kosyak.ogg", "type": "SOUND" },
+  { "key": "lighter", "path": "sound/lighter.ogg", "type": "SOUND" },
+  { "key": "bush", "path": "sound/bush.ogg", "type": "SOUND" },
+  { "key": "gunShot", "path": "sound/gunshots.ogg", "type": "SOUND" },
+  { "key": "pfandAutomat", "path": "sound/pfand_automat.ogg", "type": "SOUND" },
+  { "key": "startMusic", "path": "sound/menu.ogg", "type": "MUSIC" },
+  { "key": "backMusic1", "path": "sound/top.ogg", "type": "MUSIC" },
+  { "key": "backMusic4", "path": "sound/norm.ogg", "type": "MUSIC" },
+  { "key": "kaifMusic", "path": "sound/kaif.ogg", "type": "MUSIC" }
+]

@@ -75,7 +75,12 @@ public class QuestUI {
 
         // Display all quests
         for (QuestManager.Quest quest : QuestManager.getQuests()) {
-            Label qLabel = new Label("• " + Assets.bundle.get(quest.descriptionKey()), skin);
+            Label qLabel;
+            if (quest.progressable()){
+                qLabel = new Label("• " + Assets.bundle.format("quest." + quest.key() + ".description", quest.progress(), quest.maxProgress()), skin);
+            } else {
+                qLabel = new Label("• " + Assets.bundle.get("quest." + quest.key() + ".description"), skin);
+            }
             qLabel.setFontScale(1.5f);
             questTable.add(qLabel).left().pad(10).row();
         }

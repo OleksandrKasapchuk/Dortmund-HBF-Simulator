@@ -26,7 +26,7 @@ public class DeathUI extends Screen {
         Stage stage = getStage();
 
         // Background image filling the screen
-        backgroundImage = new Image(Assets.deathBack);
+        backgroundImage = new Image(Assets.getTexture("deathBack"));
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
 

@@ -31,6 +31,9 @@ public class QuestManager {
         return quests;
     }
 
+    public static Quest getQuest(String key) {
+        return quests.stream().filter(q -> q.key().equals(key)).findFirst().orElse(null);
+    }
     /**
      * Checks if a quest with the given key exists
      */
@@ -43,5 +46,37 @@ public class QuestManager {
      */
     public static void reset() {quests.clear();}
 
-    public record Quest(String key, String titleKey, String descriptionKey) {}
+    public static class Quest {
+        private final String key;
+        private final boolean progressable;
+        private int progress;
+        private final int maxProgress;
+
+        public Quest(String key, boolean progressable, int progress, int maxProgress) {
+            this.key = key;
+            this.progressable = progressable;
+            this.progress = progress;
+            this.maxProgress = maxProgress;
+        }
+
+        public String key() {
+            return key;
+        }
+
+        public boolean progressable() {
+            return progressable;
+        }
+
+        public int progress() {
+            return progress;
+        }
+
+        public int maxProgress() {
+            return maxProgress;
+        }
+
+        public void makeProgress() {
+            this.progress++;
+        }
+    }
 }
