@@ -205,8 +205,11 @@ public class DialogueManager {
                     }
 
                     if (state.activeNode.getChoices().isEmpty()) {
+                        if (QuestManager.getQuest("jason2") != null && !state.activeNpc.isTalked()) {
+                            QuestManager.getQuest("jason2").makeProgress();
+                            state.activeNpc.setTalked();
+                        }
                         endDialogue();
-                        if (QuestManager.getQuest("jason2") != null) QuestManager.getQuest("jason2").makeProgress();
                         return;
                     }
                 } else {
