@@ -10,8 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.mygame.Assets;
-import com.mygame.managers.global.QuestManager;
+import com.mygame.assets.Assets;
+import com.mygame.managers.QuestManager;
 
 /**
  * QuestUI displays the player's active quests in a table overlay.

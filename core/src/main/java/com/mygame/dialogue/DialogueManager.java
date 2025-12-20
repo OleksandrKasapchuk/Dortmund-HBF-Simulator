@@ -2,7 +2,8 @@ package com.mygame.dialogue;
 
 import com.mygame.entity.npc.NPC;
 import com.mygame.entity.player.Player;
-import com.mygame.managers.global.QuestManager;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
 import com.mygame.world.WorldManager;
 import com.mygame.ui.inGameUI.DialogueUI;
 
@@ -105,6 +106,8 @@ public class DialogueManager {
     public void endDialogue() {
         if (!state.isActive()) return;
 
+        String npcId = state.activeNpc.getId();
+
         if (player != null) player.setMovementLocked(false);
 
         // Used to prevent re-triggering Police forced dialogue
@@ -117,6 +120,9 @@ public class DialogueManager {
         state.activeNpc = null;
         state.activeNode = null;
         state.forced = false;
+
+        // Fire event when dialogue finishes
+        EventBus.fire(new Events.DialogueFinishedEvent(npcId));
     }
 
     /**
@@ -205,10 +211,6 @@ public class DialogueManager {
                     }
 
                     if (state.activeNode.getChoices().isEmpty()) {
-                        if (QuestManager.getQuest("jason2") != null && !state.activeNpc.isTalked()) {
-                            QuestManager.getQuest("jason2").makeProgress();
-                            state.activeNpc.setTalked();
-                        }
                         endDialogue();
                         return;
                     }

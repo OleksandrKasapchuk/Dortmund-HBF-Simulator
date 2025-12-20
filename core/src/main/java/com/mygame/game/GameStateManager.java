@@ -1,12 +1,12 @@
 package com.mygame.game;
 
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.npc.NpcManager;
 import com.mygame.entity.player.Player;
-import com.mygame.managers.global.save.GameSettings;
-import com.mygame.managers.global.save.SettingsManager;
-import com.mygame.managers.global.audio.MusicManager;
+import com.mygame.game.save.GameSettings;
+import com.mygame.game.save.SettingsManager;
+import com.mygame.assets.audio.MusicManager;
 import com.mygame.ui.UIManager;
 
 /**

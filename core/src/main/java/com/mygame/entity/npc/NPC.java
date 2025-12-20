@@ -21,19 +21,20 @@ public class NPC extends Entity {
     private float pauseTime;
     private float moveTime;
     private int speed;
-    private boolean talked;
+
     // --- Identity & interaction ---
-    private String name;
+    private final String id;
+    private final String name;
     private DialogueNode dialogue;
 
     public NPC(
-        String name,
+        String id, String name,
         int width, int height, float x, float y, Texture texture, World world,
         int directionX, int directionY, float pauseTime, float moveTime,
         int speed, DialogueNode dialogue
     ) {
         super(width, height, x, y, texture, world);
-
+        this.id = id;
         this.name = name;
         this.dialogue = dialogue;
 
@@ -44,7 +45,6 @@ public class NPC extends Entity {
         this.moveTime = moveTime;
 
         this.speed = speed;
-        this.talked = false;
     }
 
     @Override
@@ -102,10 +102,8 @@ public class NPC extends Entity {
     // --- Dialogue ---
     public DialogueNode getDialogue() { return dialogue; }
     public void setDialogue(DialogueNode dialogue) { this.dialogue = dialogue; }
-
+    public String getId(){ return id; }
     public String getName() { return this.name; }
     public void setTexture(Texture texture) { this.texture = texture; }
     public int getSpeed() { return speed; }
-    public boolean isTalked() { return talked;}
-    public void setTalked() { talked = true;}
 }

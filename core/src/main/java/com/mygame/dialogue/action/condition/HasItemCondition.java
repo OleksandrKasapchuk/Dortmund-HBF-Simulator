@@ -1,6 +1,6 @@
 package com.mygame.dialogue.action.condition;
 
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
 import com.mygame.dialogue.action.ActionContext;
 import com.mygame.entity.item.ItemRegistry;
 
@@ -17,7 +17,7 @@ public class HasItemCondition implements ConditionAction {
     }
     @Override
     public boolean check() {
-        if (!ctx.inventory.hasItem(ItemRegistry.get(itemId))) {
+        if (!ctx.getInventory().hasItem(ItemRegistry.get(itemId))) {
             ctx.ui.showNotEnough(Assets.bundle.get(nameKey));
             return false;
         }

@@ -1,6 +1,6 @@
 package com.mygame.dialogue;
 
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
 
 import java.util.ArrayList;
 import java.util.Arrays;

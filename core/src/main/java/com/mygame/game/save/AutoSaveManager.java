@@ -1,10 +1,10 @@
-package com.mygame.managers.global.save;
+package com.mygame.game.save;
 
 
 import com.mygame.Main;
 import com.mygame.entity.player.Player;
 import com.mygame.game.GameInitializer;
-import com.mygame.managers.global.QuestManager;
+import com.mygame.managers.QuestManager;
 import com.mygame.world.WorldManager;
 
 import java.util.Map;

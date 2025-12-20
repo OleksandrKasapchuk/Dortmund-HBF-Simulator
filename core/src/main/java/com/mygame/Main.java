@@ -6,10 +6,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.mygame.assets.Assets;
 import com.mygame.game.GameInitializer;
-import com.mygame.managers.global.save.AutoSaveManager;
+import com.mygame.game.save.AutoSaveManager;
 import com.mygame.world.WorldManager;
-import com.mygame.managers.global.audio.MusicManager;
+import com.mygame.assets.audio.MusicManager;
 import com.mygame.entity.player.Player;
 import com.mygame.ui.UIManager;
 

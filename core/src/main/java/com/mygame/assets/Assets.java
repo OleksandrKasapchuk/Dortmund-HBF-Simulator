@@ -1,4 +1,4 @@
-package com.mygame;
+package com.mygame.assets;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -11,10 +11,10 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.mygame.managers.global.save.GameSettings;
-import com.mygame.managers.global.save.SettingsManager;
-import com.mygame.managers.global.audio.MusicManager;
-import com.mygame.managers.global.audio.SoundManager;
+import com.mygame.game.save.GameSettings;
+import com.mygame.game.save.SettingsManager;
+import com.mygame.assets.audio.MusicManager;
+import com.mygame.assets.audio.SoundManager;
 
 import java.util.HashMap;
 import java.util.Locale;

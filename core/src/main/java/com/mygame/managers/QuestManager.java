@@ -1,4 +1,7 @@
-package com.mygame.managers.global;
+package com.mygame.managers;
+
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
 
 import java.util.ArrayList;
 
@@ -10,11 +13,11 @@ import java.util.ArrayList;
 public class QuestManager {
     private static ArrayList<Quest> quests = new ArrayList<>();
 
-    /**
-     * Adds a new quest to the quest list
-     */
+    /**Adds a new quest to the quest list*/
     public static void addQuest(Quest quest) {
+        if (hasQuest(quest.key())) return;
         quests.add(quest);
+        EventBus.fire(new Events.QuestStartedEvent(quest.key()));
     }
 
     /**
@@ -76,7 +79,13 @@ public class QuestManager {
         }
 
         public void makeProgress() {
+            if (!progressable) return;
             this.progress++;
+            EventBus.fire(new Events.QuestProgressEvent(key, progress, maxProgress));
+
+            if (this.progress >= maxProgress) {
+                EventBus.fire(new Events.QuestCompletedEvent(key));
+            }
         }
     }
 }

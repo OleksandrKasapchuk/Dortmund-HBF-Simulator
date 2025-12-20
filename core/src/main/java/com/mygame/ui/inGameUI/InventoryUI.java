@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
 import com.mygame.entity.player.Player;
 import com.mygame.entity.item.ItemType;
 

@@ -1,9 +1,9 @@
 package com.mygame.entity.player;
 
-import com.mygame.Assets;
-import com.mygame.managers.global.audio.MusicManager;
-import com.mygame.managers.global.audio.SoundManager;
-import com.mygame.managers.global.TimerManager;
+import com.mygame.assets.Assets;
+import com.mygame.assets.audio.MusicManager;
+import com.mygame.assets.audio.SoundManager;
+import com.mygame.managers.TimerManager;
 import com.mygame.ui.UIManager;
 
 /**

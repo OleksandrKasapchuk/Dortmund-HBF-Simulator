@@ -60,7 +60,6 @@ public class Item extends Entity {
     public boolean canInteract() {
         return cooldownTimer <= 0;
     }
-
     /**
      * Starts cooldown after interaction.
      */

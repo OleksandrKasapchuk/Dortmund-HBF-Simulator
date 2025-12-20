@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.mygame.entity.Entity;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemType;
-import com.mygame.managers.global.save.SettingsManager;
+import com.mygame.game.save.SettingsManager;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 

@@ -9,12 +9,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
 import com.mygame.Main;
-import com.mygame.managers.global.save.GameSettings;
-import com.mygame.managers.global.save.SettingsManager;
-import com.mygame.managers.global.audio.MusicManager;
-import com.mygame.managers.global.audio.SoundManager;
+import com.mygame.game.save.GameSettings;
+import com.mygame.game.save.SettingsManager;
+import com.mygame.assets.audio.MusicManager;
+import com.mygame.assets.audio.SoundManager;
 
 import java.util.Locale;
 

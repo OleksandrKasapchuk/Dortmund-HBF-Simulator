@@ -1,4 +1,4 @@
-package com.mygame.managers.global;
+package com.mygame.managers;
 
 import com.badlogic.gdx.utils.Timer;
 

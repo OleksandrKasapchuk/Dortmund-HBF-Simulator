@@ -1,6 +1,6 @@
 package com.mygame.dialogue.action;
 
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
 import com.mygame.entity.npc.NPC;
 
 public class SetDialogueAction implements DialogueAction {

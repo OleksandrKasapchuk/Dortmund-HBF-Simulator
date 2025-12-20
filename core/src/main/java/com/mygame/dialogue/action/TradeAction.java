@@ -19,6 +19,6 @@ public class TradeAction implements DialogueAction {
 
     @Override
     public void execute() {
-        ctx.inventory.trade(ItemRegistry.get(fromItem), ItemRegistry.get(toItem), fromAmount, toAmount);
+        ctx.getInventory().trade(ItemRegistry.get(fromItem), ItemRegistry.get(toItem), fromAmount, toAmount);
     }
 }

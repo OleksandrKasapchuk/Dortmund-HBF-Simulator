@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
 import com.mygame.entity.player.Player;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;

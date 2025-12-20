@@ -1,9 +1,11 @@
 package com.mygame.entity.player;
 
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.item.ItemType;
-import com.mygame.managers.global.audio.SoundManager;
+import com.mygame.assets.audio.SoundManager;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
 import com.mygame.ui.UIManager;
 
 import java.util.LinkedHashMap;
@@ -30,6 +32,7 @@ public class InventoryManager {
     public void addItem(ItemType type, int amount) {
         if (type == null) return; // Prevent adding null items
         items.put(type, items.getOrDefault(type, 0) + amount);
+        EventBus.fire(new Events.InventoryChangedEvent(type.getKey(), getAmount(type)));
     }
 
     public void removeItem(ItemType type, int count) {
@@ -37,6 +40,7 @@ public class InventoryManager {
         int current = items.get(type);
         if (current <= count) items.remove(type);
         else items.put(type, current - count);
+        EventBus.fire(new Events.InventoryChangedEvent(type.getKey(), getAmount(type)));
     }
 
     public boolean hasItem(ItemType type) {

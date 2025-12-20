@@ -4,12 +4,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
 import com.mygame.dialogue.action.DialogueActionRegistry;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.player.Player;
-import com.mygame.managers.global.save.GameSettings;
-import com.mygame.managers.global.save.SettingsManager;
+import com.mygame.game.save.GameSettings;
+import com.mygame.game.save.SettingsManager;
 import com.mygame.dialogue.DialogueRegistry;
 import com.mygame.ui.UIManager;
 import com.mygame.world.World;
@@ -77,10 +77,10 @@ public class NpcManager {
         int speed = props.get("speed", 50, Integer.class);
 
         if (npcId.equalsIgnoreCase("police")) {
-            this.police = new Police(npcName, 100, 100, x, y, texture, world, 0, initialDialogue);
+            this.police = new Police("police", npcName, 100, 100, x, y, texture, world, speed, initialDialogue);
             npc = this.police;
         } else {
-            npc = new NPC(npcName, 100, 100, x, y, texture, world, directionX, directionY, pauseTime, moveTime, speed, initialDialogue);
+            npc = new NPC(npcId.toLowerCase(), npcName, 100, 100, x, y, texture, world, directionX, directionY, pauseTime, moveTime, speed, initialDialogue);
         }
 
         if (npcId.equalsIgnoreCase("igo") && completedEvents.contains("igo_gave_vape")) {
@@ -116,7 +116,7 @@ public class NpcManager {
     }
 
     public void callPolice() {
-        summonedPolice = new Police(Assets.bundle.get("npc.police.name"), 100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police"), WorldManager.getCurrentWorld(), 200, new DialogueNode("dialogue.police.called"));
+        summonedPolice = new Police("summoned_police", Assets.bundle.get("npc.police.name"), 100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police"), WorldManager.getCurrentWorld(), 200, new DialogueNode("dialogue.police.called"));
         npcs.add(summonedPolice);
         WorldManager.getCurrentWorld().getNpcs().add(summonedPolice);
     }

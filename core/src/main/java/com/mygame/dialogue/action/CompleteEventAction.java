@@ -1,6 +1,6 @@
 package com.mygame.dialogue.action;
 
-import com.mygame.managers.global.save.SettingsManager;
+import com.mygame.game.save.SettingsManager;
 
 public class CompleteEventAction implements DialogueAction {
 
@@ -14,7 +14,7 @@ public class CompleteEventAction implements DialogueAction {
 
     @Override
     public void execute() {
-        ctx.settings.completedDialogueEvents.add(event);
-        SettingsManager.save(ctx.settings);
+        ctx.getSettings().completedDialogueEvents.add(event);
+        SettingsManager.save(ctx.getSettings());
     }
 }

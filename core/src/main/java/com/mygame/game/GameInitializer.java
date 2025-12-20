@@ -1,15 +1,16 @@
 package com.mygame.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
 import com.mygame.entity.player.Player;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.managers.ManagerRegistry;
-import com.mygame.managers.global.QuestManager;
-import com.mygame.managers.global.save.GameSettings;
-import com.mygame.managers.global.save.SettingsManager;
+import com.mygame.managers.QuestManager;
+import com.mygame.game.save.GameSettings;
+import com.mygame.game.save.SettingsManager;
+import com.mygame.managers.QuestObserver;
 import com.mygame.world.WorldManager;
-import com.mygame.managers.global.audio.MusicManager;
+import com.mygame.assets.audio.MusicManager;
 import com.mygame.world.World;
 
 public class GameInitializer {
@@ -34,7 +35,7 @@ public class GameInitializer {
 
         GameSettings settings = SettingsManager.load();
         player = new Player(500, 80, 80, settings.playerX, settings.playerY, Assets.getTexture("zoe"), null);
-        managerRegistry = new ManagerRegistry(batch, Assets.myFont, player);
+        managerRegistry = new ManagerRegistry(player);
 
         player.getInventory().setUI(managerRegistry.getUiManager());
 
@@ -43,6 +44,8 @@ public class GameInitializer {
         player.setWorld(startWorld);
         WorldManager.setCurrentWorld(startWorld);
 
+        QuestObserver.init();
+
         // 5. Load other game state data
         if (settings.inventory != null)
             settings.inventory.forEach((itemKey, amount) -> player.getInventory().addItem(ItemRegistry.get(itemKey), amount));
@@ -50,7 +53,6 @@ public class GameInitializer {
         if (settings.activeQuests != null) {
             settings.activeQuests.forEach((key, saveData) -> QuestManager.addQuest(new QuestManager.Quest(key, saveData.progressable, saveData.progress, saveData.maxProgress)));
         }
-
         gameInputHandler = new GameInputHandler(managerRegistry.getGameStateManager(), managerRegistry.getUiManager());
 
         MusicManager.playMusic(Assets.getMusic("startMusic"));

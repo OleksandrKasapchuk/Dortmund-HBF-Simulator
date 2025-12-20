@@ -1,7 +1,7 @@
 package com.mygame.entity.item;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
 import com.mygame.Main;
 import com.mygame.world.WorldManager;
 import com.mygame.world.World;

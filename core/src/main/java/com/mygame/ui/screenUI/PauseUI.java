@@ -3,7 +3,7 @@ package com.mygame.ui.screenUI;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
 
 /**
  * PauseUI displays the pause screen.

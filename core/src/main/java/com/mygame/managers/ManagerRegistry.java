@@ -2,17 +2,16 @@ package com.mygame.managers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
 import com.mygame.entity.player.Player;
 import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.item.ItemRegistry;
-
 import com.mygame.entity.npc.NpcManager;
 import com.mygame.entity.item.PfandManager;
 import com.mygame.entity.player.PlayerEffectManager;
 import com.mygame.game.GameStateManager;
+import com.mygame.scenario.ScenarioController;
 import com.mygame.ui.UIManager;
 import com.mygame.world.transition.TransitionManager;
 import com.mygame.world.World;
@@ -29,26 +28,21 @@ public class ManagerRegistry {
     private PlayerEffectManager playerEffectManager;
     private CameraManager cameraManager;
     private GameStateManager gameStateManager;
-    private EventManager eventManager;
 
     // --- Core game objects ---
     private Player player;
     private Skin skin;
 
-    public ManagerRegistry(SpriteBatch batch, BitmapFont font, Player player) {
+    public ManagerRegistry(Player player) {
         this.player = player;
 
         cameraManager = new CameraManager(player);
         pfandManager = new PfandManager();
 
         // --- Skin Loading ---
-        // Load the skin and then manually replace the font in all styles
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-
-        // The font is now generated in Assets.java, so we just get it
         BitmapFont cyrillicFont = Assets.myFont;
 
-        // Manually iterate through all styles and force them to use the new font.
         for (Label.LabelStyle style : skin.getAll(Label.LabelStyle.class).values()) {
             style.font = cyrillicFont;
         }
@@ -57,9 +51,7 @@ public class ManagerRegistry {
         }
         for (TextField.TextFieldStyle style : skin.getAll(TextField.TextFieldStyle.class).values()) {
             style.font = cyrillicFont;
-            if (style.messageFont != null) {
-                style.messageFont = cyrillicFont;
-            }
+            if (style.messageFont != null) style.messageFont = cyrillicFont;
         }
         for (SelectBox.SelectBoxStyle style : skin.getAll(SelectBox.SelectBoxStyle.class).values()) {
             style.font = cyrillicFont;
@@ -85,18 +77,11 @@ public class ManagerRegistry {
         WorldManager.addWorld(kampWorld);
         WorldManager.addWorld(clubWorld);
 
-        System.out.println("GameInitializer: All worlds created and loaded.");
-
-
-        // Pass the configured skin to the UIManager
         uiManager = new UIManager(player, skin);
-
         playerEffectManager = new PlayerEffectManager(player, uiManager);
 
         ItemRegistry.init(this);
-
         itemManager = new ItemManager();
-
         npcManager = new NpcManager(player, uiManager);
         transitionManager = new TransitionManager();
 
@@ -108,24 +93,23 @@ public class ManagerRegistry {
 
         gameStateManager = new GameStateManager(uiManager);
 
-        eventManager = new EventManager(player, npcManager, uiManager, itemManager, batch, font, gameStateManager);
-
-
+        // --- Initialize Observers and Scenarios ---
+        QuestObserver.init();
+        ScenarioController.init(gameStateManager,  npcManager, uiManager, itemManager, player);
         uiManager.setCurrentStage("MENU");
         resize();
     }
 
     public void update(float delta) {
         npcManager.update(delta);
-        cameraManager.update(delta,WorldManager.getCurrentWorld());
+        cameraManager.update(delta, WorldManager.getCurrentWorld());
         itemManager.update(player);
         uiManager.update(delta, player);
         pfandManager.update(delta);
-        eventManager.update(delta);
     }
 
     public void render() {
-        eventManager.render();
+        // EventManager render call is removed because rendering is now handled by GameUI (Stage-based)
     }
 
     public void resize() {
@@ -138,7 +122,6 @@ public class ManagerRegistry {
         if (skin != null) skin.dispose();
     }
 
-    // --- Getters ---
     public UIManager getUiManager() { return uiManager; }
     public GameStateManager getGameStateManager() { return gameStateManager; }
     public NpcManager getNpcManager() { return npcManager; }

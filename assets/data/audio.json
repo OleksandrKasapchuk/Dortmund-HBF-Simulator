@@ -6,7 +6,7 @@
   { "key": "gunShot", "path": "sound/gunshots.ogg", "type": "SOUND" },
   { "key": "pfandAutomat", "path": "sound/pfand_automat.ogg", "type": "SOUND" },
   { "key": "startMusic", "path": "sound/menu.ogg", "type": "MUSIC" },
-  { "key": "backMusic1", "path": "sound/top.ogg", "type": "MUSIC" },
+  { "key": "backMusic1", "path": "sound/epic_back1.ogg", "type": "MUSIC" },
   { "key": "backMusic4", "path": "sound/norm.ogg", "type": "MUSIC" },
   { "key": "kaifMusic", "path": "sound/kaif.ogg", "type": "MUSIC" }
 ]

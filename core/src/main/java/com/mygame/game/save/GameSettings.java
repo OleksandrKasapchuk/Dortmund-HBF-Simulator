@@ -1,4 +1,4 @@
-package com.mygame.managers.global.save;
+package com.mygame.game.save;
 
 import com.mygame.entity.player.Player;
 
