@@ -4,9 +4,11 @@ package com.mygame.game.save;
 import com.mygame.Main;
 import com.mygame.entity.player.Player;
 import com.mygame.game.GameInitializer;
-import com.mygame.managers.QuestManager;
+import com.mygame.quest.QuestManager;
+import com.mygame.quest.QuestObserver;
 import com.mygame.world.WorldManager;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -52,6 +54,9 @@ public class AutoSaveManager {
                 QuestManager.Quest::key,
                 quest -> new GameSettings.QuestSaveData(quest.progressable(), quest.progress(), quest.maxProgress())
             ));
+
+        settings.talkedNpcs = new HashSet<>(QuestObserver.getTalkedNpcs());
+        settings.visited = new HashSet<>(QuestObserver.getVisited());
 
         SettingsManager.save(settings);
         System.out.println("Game state saved.");

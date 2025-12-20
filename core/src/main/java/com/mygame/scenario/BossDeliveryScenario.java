@@ -12,7 +12,7 @@ import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.GameStateManager;
-import com.mygame.managers.QuestManager;
+import com.mygame.quest.QuestManager;
 import com.mygame.managers.TimerManager;
 import com.mygame.ui.UIManager;
 

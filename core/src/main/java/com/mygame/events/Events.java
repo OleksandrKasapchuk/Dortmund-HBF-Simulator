@@ -18,4 +18,6 @@ public class Events {
     // ───── World & Interaction ─────
     public record InteractionEvent(Item item, Player player) {}
     public record InventoryChangedEvent(String itemId, int newAmount) {}
+
+    public record WorldChangedEvent(String newWorldId) {}
 }

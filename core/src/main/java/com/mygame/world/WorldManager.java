@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.mygame.assets.Assets;
 import com.mygame.DarkOverlay;
 import com.mygame.entity.player.Player;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
 import com.mygame.world.transition.Transition;
 
 import java.util.HashMap;
@@ -87,6 +89,8 @@ public class WorldManager {
 
         if (inTransitionZone && interactPressed) {
             darkOverlay.show(1, 0.8f);
+            
+            EventBus.fire(new Events.WorldChangedEvent(activeTransition.targetWorldId));
 
             setCurrentWorld(activeTransition.targetWorldId);
             player.setX(activeTransition.targetX);

@@ -8,7 +8,7 @@ import com.mygame.dialogue.action.custom.PoliceCheckAction;
 import com.mygame.entity.player.Player;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.npc.NpcManager;
-import com.mygame.managers.QuestManager;
+import com.mygame.quest.QuestManager;
 import com.mygame.managers.TimerManager;
 import com.mygame.ui.UIManager;
 
@@ -60,7 +60,7 @@ public class DialogueActionRegistry {
             new CompleteEventAction(ctx, "boss_gave_quest").execute();
         });
 
-        dialogueRegistry.registerAction("police_check", () -> new PoliceCheckAction(ctx));
+        dialogueRegistry.registerAction("police_check", () -> new PoliceCheckAction(ctx).execute());
 
 
         dialogueRegistry.registerAction("give_vape_action", () -> {

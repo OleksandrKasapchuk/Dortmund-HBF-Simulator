@@ -11,6 +11,7 @@ import com.mygame.entity.npc.NpcManager;
 import com.mygame.entity.item.PfandManager;
 import com.mygame.entity.player.PlayerEffectManager;
 import com.mygame.game.GameStateManager;
+import com.mygame.quest.QuestObserver;
 import com.mygame.scenario.ScenarioController;
 import com.mygame.ui.UIManager;
 import com.mygame.world.transition.TransitionManager;

@@ -1,7 +1,7 @@
 package com.mygame.dialogue.action;
 
 
-import com.mygame.managers.QuestManager;
+import com.mygame.quest.QuestManager;
 
 public class AddQuestAction implements DialogueAction {
     private final String questId;

@@ -4,8 +4,10 @@ import com.mygame.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A simple data class to hold game settings.
@@ -23,6 +25,9 @@ public class GameSettings {
     public Map<String, QuestSaveData> activeQuests;
     public List<String> completedDialogueEvents;
     public Player.State playerState;
+
+    public Set<String> talkedNpcs;
+    public Set<String> visited;
 
     public static class QuestSaveData {
         public boolean progressable;
@@ -51,5 +56,8 @@ public class GameSettings {
         this.activeQuests = new HashMap<>();
         this.completedDialogueEvents = new ArrayList<>();
         this.playerState = Player.State.NORMAL;
+
+        this.talkedNpcs = new HashSet<>();
+        this.visited = new HashSet<>();
     }
 }

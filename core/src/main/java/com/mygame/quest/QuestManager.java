@@ -1,4 +1,4 @@
-package com.mygame.managers;
+package com.mygame.quest;
 
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
