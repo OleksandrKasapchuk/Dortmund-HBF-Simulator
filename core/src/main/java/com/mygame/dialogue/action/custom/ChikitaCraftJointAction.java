@@ -1,17 +1,17 @@
 package com.mygame.dialogue.action.custom;
 
 import com.mygame.assets.Assets;
-import com.mygame.dialogue.action.ActionContext;
 import com.mygame.dialogue.action.DialogueAction;
 import com.mygame.dialogue.action.condition.HasItemCondition;
 import com.mygame.entity.item.ItemRegistry;
+import com.mygame.game.GameContext;
 import com.mygame.managers.TimerManager;
 import com.mygame.assets.audio.SoundManager;
 
 public class ChikitaCraftJointAction implements DialogueAction {
-    private final ActionContext ctx;
+    private final GameContext ctx;
 
-    public ChikitaCraftJointAction(ActionContext ctx){
+    public ChikitaCraftJointAction(GameContext ctx){
         this.ctx = ctx;
     }
 

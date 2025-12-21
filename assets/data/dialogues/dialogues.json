@@ -69,7 +69,8 @@
           "dialogue.choice.leave"
         ]
       },
-      "after": ["dialogue.boss.after.1", "dialogue.boss.after.2"]
+      "after": ["dialogue.boss.after.1", "dialogue.boss.after.2"],
+      "failure": ["dialogue.boss.failure.1", "dialogue.boss.failure.2", "dialogue.boss.failure.3"]
     }
   },
   "police": {

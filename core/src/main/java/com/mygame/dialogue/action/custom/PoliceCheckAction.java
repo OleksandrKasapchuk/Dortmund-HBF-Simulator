@@ -1,15 +1,15 @@
 package com.mygame.dialogue.action.custom;
 
 import com.mygame.assets.Assets;
-import com.mygame.dialogue.action.ActionContext;
 import com.mygame.dialogue.action.DialogueAction;
 import com.mygame.entity.item.ItemRegistry;
+import com.mygame.game.GameContext;
 
 public class PoliceCheckAction implements DialogueAction {
 
-    private final ActionContext ctx;
+    private final GameContext ctx;
 
-    public PoliceCheckAction(ActionContext ctx) {
+    public PoliceCheckAction(GameContext ctx) {
         this.ctx = ctx;
     }
 

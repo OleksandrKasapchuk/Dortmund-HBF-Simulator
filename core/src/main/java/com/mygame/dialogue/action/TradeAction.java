@@ -2,14 +2,15 @@ package com.mygame.dialogue.action;
 
 
 import com.mygame.entity.item.ItemRegistry;
+import com.mygame.game.GameContext;
 
 public class TradeAction implements DialogueAction {
 
-    private final ActionContext ctx;
+    private final GameContext ctx;
     private String fromItem, toItem;
     private int fromAmount, toAmount;
 
-    public TradeAction(ActionContext ctx, String fromItem, String toItem, int fromAmount, int toAmount) {
+    public TradeAction(GameContext ctx, String fromItem, String toItem, int fromAmount, int toAmount) {
         this.ctx = ctx;
         this.fromItem = fromItem;
         this.toItem = toItem;

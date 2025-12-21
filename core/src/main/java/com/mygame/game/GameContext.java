@@ -1,6 +1,7 @@
-package com.mygame.dialogue.action;
+package com.mygame.game;
 
-import com.mygame.dialogue.DialogueRegistry;
+
+import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.npc.NpcManager;
 import com.mygame.entity.player.InventoryManager;
 import com.mygame.entity.player.Player;
@@ -9,18 +10,21 @@ import com.mygame.game.save.SettingsManager;
 import com.mygame.ui.UIManager;
 import com.mygame.ui.screenUI.GameUI;
 
+public class GameContext {
 
-public class ActionContext {
     public final Player player;
     public final UIManager ui;
     public final NpcManager npcManager;
-    public final DialogueRegistry registry;
+    public final GameStateManager gsm;
+    public final ItemManager itemManager;
 
-    public ActionContext(Player p, UIManager ui, NpcManager n, DialogueRegistry r) {
+
+    public GameContext(Player p, UIManager ui, NpcManager n, GameStateManager gsm, ItemManager i) {
         this.player = p;
         this.ui = ui;
         this.npcManager = n;
-        this.registry = r;
+        this.gsm = gsm;
+        this.itemManager = i;
     }
 
     // Always get the current inventory from the player

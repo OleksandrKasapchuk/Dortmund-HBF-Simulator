@@ -1,15 +1,13 @@
 package com.mygame.scenario;
 
-import com.mygame.entity.item.ItemManager;
-import com.mygame.entity.npc.NpcManager;
-import com.mygame.entity.player.Player;
-import com.mygame.game.GameStateManager;
-import com.mygame.ui.UIManager;
+
+import com.mygame.game.GameContext;
+
 
 public class ScenarioController {
-    public static void init(GameStateManager gsm, NpcManager npcManager, UIManager uiManager, ItemManager itemManager, Player player){
-        new BossDeliveryScenario(player, npcManager, uiManager, gsm).init();
-        new PfandAutomatScenario(uiManager, itemManager, player).init();
-        new PoliceChaseScenario(gsm, npcManager,uiManager, player).init();
+    public static void init(GameContext ctx){
+        new BossDeliveryScenario(ctx).init();
+        new PfandAutomatScenario(ctx).init();
+        new PoliceChaseScenario(ctx).init();
     }
 }

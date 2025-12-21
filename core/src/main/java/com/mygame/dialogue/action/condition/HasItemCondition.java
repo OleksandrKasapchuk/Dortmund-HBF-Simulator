@@ -1,16 +1,16 @@
 package com.mygame.dialogue.action.condition;
 
 import com.mygame.assets.Assets;
-import com.mygame.dialogue.action.ActionContext;
 import com.mygame.entity.item.ItemRegistry;
+import com.mygame.game.GameContext;
 
 public class HasItemCondition implements ConditionAction {
 
-    private final ActionContext ctx;
+    private final GameContext ctx;
     private final String itemId;
     private final String nameKey;
 
-    public HasItemCondition(ActionContext ctx, String itemId, String nameKey) {
+    public HasItemCondition(GameContext ctx, String itemId, String nameKey) {
         this.ctx = ctx;
         this.itemId = itemId;
         this.nameKey = nameKey;

@@ -9,11 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DialogueRegistry {
-    private final Map<String, Runnable> actions = new HashMap<>();
-    private final Map<String, JsonValue> npcDialogueData = new HashMap<>();
-    private final Map<String, DialogueNode> builtNodes = new HashMap<>();
+    private static Map<String, Runnable> actions = new HashMap<>();
+    private static Map<String, JsonValue> npcDialogueData = new HashMap<>();
+    private static Map<String, DialogueNode> builtNodes = new HashMap<>();
 
-    public DialogueRegistry() {
+    public static void init() {
+        npcDialogueData.clear();
+        builtNodes.clear();
         JsonReader jsonReader = new JsonReader();
         JsonValue base = jsonReader.parse(Gdx.files.internal("data/dialogues/dialogues.json"));
         for (JsonValue npcData : base) {
@@ -21,14 +23,20 @@ public class DialogueRegistry {
         }
     }
 
-    public void registerAction(String name, Runnable action) {
+    public static void reset() {
+        actions.clear();
+        npcDialogueData.clear();
+        builtNodes.clear();
+    }
+
+    public static void registerAction(String name, Runnable action) {
         if (actions.containsKey(name)) {
             System.err.println("DialogueRegistry: Overwriting action '" + name + "'");
         }
         actions.put(name, action);
     }
 
-    public DialogueNode getDialogue(String npcId, String nodeName) {
+    public static DialogueNode getDialogue(String npcId, String nodeName) {
         String fullNodeId = npcId + "." + nodeName;
         if (builtNodes.containsKey(fullNodeId)) {
             return builtNodes.get(fullNodeId);
@@ -107,7 +115,7 @@ public class DialogueRegistry {
         return node;
     }
 
-    public DialogueNode getInitialDialogue(String npcId) {
+    public static DialogueNode getInitialDialogue(String npcId) {
         JsonValue npcData = npcDialogueData.get(npcId);
         if (npcData == null) {
             System.err.println("DialogueRegistry: NPC '" + npcId + "' not found in dialogues.json");

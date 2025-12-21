@@ -5,13 +5,11 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.mygame.assets.Assets;
-import com.mygame.dialogue.action.DialogueActionRegistry;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.player.Player;
 import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.dialogue.DialogueRegistry;
-import com.mygame.ui.UIManager;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 
@@ -21,17 +19,14 @@ import java.util.List;
 public class NpcManager {
     private final ArrayList<NPC> npcs = new ArrayList<>();
     private final Player player;
-    private final DialogueRegistry dialogueRegistry;
 
     // Direct references for special NPCs if needed
     private Police police;
     private NPC boss;
     private Police summonedPolice;
 
-    public NpcManager(Player player, UIManager uiManager) {
+    public NpcManager(Player player) {
         this.player = player;
-        this.dialogueRegistry = new DialogueRegistry();
-        DialogueActionRegistry.registerAll(dialogueRegistry, player, uiManager, this);
     }
 
     public void loadNpcsFromMap(World world) {
@@ -61,7 +56,7 @@ public class NpcManager {
         GameSettings settings = SettingsManager.load();
         List<String> completedEvents = settings.completedDialogueEvents;
 
-        DialogueNode initialDialogue = dialogueRegistry.getInitialDialogue(npcId.toLowerCase());
+        DialogueNode initialDialogue = DialogueRegistry.getInitialDialogue(npcId.toLowerCase());
 
         String npcName;
         try {
@@ -84,17 +79,17 @@ public class NpcManager {
         }
 
         if (npcId.equalsIgnoreCase("igo") && completedEvents.contains("igo_gave_vape")) {
-            npc.setDialogue(dialogueRegistry.getDialogue("igo", "thanks"));
+            npc.setDialogue(DialogueRegistry.getDialogue("igo", "thanks"));
             npc.setTexture(Assets.getTexture("igo2"));
         } else if (npcId.equalsIgnoreCase("ryzhyi") && completedEvents.contains("ryzhyi_gave_money")) {
-            npc.setDialogue(dialogueRegistry.getDialogue("ryzhyi", "after"));
+            npc.setDialogue(DialogueRegistry.getDialogue("ryzhyi", "after"));
         } else if (npcId.equalsIgnoreCase("boss")) {
             this.boss = npc;
             if (completedEvents.contains("boss_gave_quest")) {
-                npc.setDialogue(dialogueRegistry.getDialogue("boss", "after"));
+                npc.setDialogue(DialogueRegistry.getDialogue("boss", "after"));
             }
         } else if (npcId.equalsIgnoreCase("jason") && completedEvents.contains("jason_gave_money")) {
-            npc.setDialogue(dialogueRegistry.getDialogue("jason", "after"));
+            npc.setDialogue(DialogueRegistry.getDialogue("jason", "after"));
         }
 
         npcs.add(npc);
@@ -108,9 +103,9 @@ public class NpcManager {
         }
     }
 
-    public NPC findNpcByName(String name) {
+    public NPC findNpcById(String id) {
         for (NPC npc : npcs) {
-            if (npc.getName().equals(name)) return npc;
+            if (npc.getId().equals(id)) return npc;
         }
         return null;
     }

@@ -7,12 +7,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygame.assets.Assets;
+import com.mygame.game.GameContext;
 import com.mygame.game.GameInitializer;
 import com.mygame.game.save.AutoSaveManager;
 import com.mygame.world.WorldManager;
 import com.mygame.assets.audio.MusicManager;
 import com.mygame.entity.player.Player;
-import com.mygame.ui.UIManager;
 
 
 public class Main extends ApplicationAdapter {
@@ -42,25 +42,24 @@ public class Main extends ApplicationAdapter {
         Player player = gameInitializer.getPlayer();
 
         gameInitializer.getGameInputHandler().handleInput();
+        GameContext ctx = gameInitializer.getContext();
 
-        UIManager uiManager = gameInitializer.getManagerRegistry().getUiManager();
-
-        gameInitializer.getManagerRegistry().getGameStateManager().handleStonedPlayer(player, gameInitializer.getManagerRegistry().getNpcManager());
+        ctx.gsm.handleStonedPlayer(player, gameInitializer.getContext().npcManager);
 
 
-        switch (gameInitializer.getManagerRegistry().getGameStateManager().getState()) {
+        switch (gameInitializer.getContext().gsm.getState()) {
             case PLAYING:
                 renderGame(delta);
                 break;
             case DEATH:
-                uiManager.render();
+                ctx.ui.render();
                 break;
             case SETTINGS:
             case MENU:
             case PAUSED:
             case MAP:
-                uiManager.update(delta, player);
-                uiManager.render();
+                ctx.ui.update(delta, player);
+                ctx.ui.render();
                 break;
         }
     }
@@ -69,7 +68,7 @@ public class Main extends ApplicationAdapter {
         Player player = gameInitializer.getPlayer();
         player.update(delta);
 
-        WorldManager.update(delta, player, gameInitializer.getManagerRegistry().getUiManager().isInteractPressed(), darkOverlay);
+        WorldManager.update(delta, player, gameInitializer.getContext().ui.isInteractPressed(), darkOverlay);
         darkOverlay.update(delta);
         OrthographicCamera camera = gameInitializer.getManagerRegistry().getCameraManager().getCamera();
 
@@ -83,7 +82,6 @@ public class Main extends ApplicationAdapter {
         gameInitializer.getManagerRegistry().update(delta);
         WorldManager.drawEntities(batch, Assets.myFont, player); // Corrected method
         player.draw(batch);
-        gameInitializer.getManagerRegistry().render();
         batch.end();
 
         // 3. Draw debug shapes
@@ -95,7 +93,7 @@ public class Main extends ApplicationAdapter {
         shapeRenderer.end();
 
         // 4. Draw UI
-        gameInitializer.getManagerRegistry().getUiManager().render();
+        gameInitializer.getContext().ui.render();
         darkOverlay.render();
     }
 
