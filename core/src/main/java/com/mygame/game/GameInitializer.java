@@ -50,7 +50,7 @@ public class GameInitializer {
         ctx = managerRegistry.createContext();
 
         ItemRegistry.init();
-        DialogueRegistry.reset(); // Очищуємо старі дії та дані перед ініціалізацією
+        DialogueRegistry.reset();
         DialogueActionRegistry.registerAll(ctx);
         DialogueRegistry.init();
         player.getInventory().setUI(managerRegistry.getUiManager());
@@ -61,17 +61,17 @@ public class GameInitializer {
             managerRegistry.getTransitionManager().loadTransitionsFromMap(world);
         }
 
-        scController = new ScenarioController();
-        scController.init(ctx);
-        QuestObserver.init();
-
-        // 3. Set the player's world and the current world
+        // --- ВАЖЛИВО: Спочатку встановлюємо світ ---
         World startWorld = WorldManager.getWorld(settings.currentWorldName != null ? settings.currentWorldName : "main");
         player.setWorld(startWorld);
         WorldManager.setCurrentWorld(startWorld);
 
+        // --- Потім ініціалізуємо сценарії та квести ---
+        scController = new ScenarioController();
+        scController.init(ctx);
+        QuestObserver.init();
 
-        // 5. Load other game state data
+        // Load other game state data
         if (settings.inventory != null)
             settings.inventory.forEach((itemKey, amount) -> player.getInventory().addItem(ItemRegistry.get(itemKey), amount));
 

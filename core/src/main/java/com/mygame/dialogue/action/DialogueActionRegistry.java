@@ -77,9 +77,7 @@ public class DialogueActionRegistry {
             SoundManager.playSound(Assets.getSound("gunShot"));
         });
 
-        DialogueRegistry.registerAction("player_died", () -> {
-            ctx.gsm.playerDied();
-        });
+        DialogueRegistry.registerAction("player_died", ctx.gsm::playerDied);
 
         DialogueRegistry.registerAction("start_police_chase", () -> {
             Police police = ctx.npcManager.getSummonedPolice();
@@ -89,6 +87,12 @@ public class DialogueActionRegistry {
                 MusicManager.playMusic(Assets.getMusic("backMusic4"));
                 new SetDialogueAction(ctx, "summoned_police", "caught").execute();
             }
+        });
+
+        DialogueRegistry.registerAction("boss_claim_reward", () -> {
+            ctx.getInventory().addItemAndNotify(ItemRegistry.get("money"), 50);
+            new SetDialogueAction(ctx, "boss", "finished").execute();
+            new CompleteEventAction(ctx, "boss_reward_claimed").execute();
         });
     }
 }

@@ -3,6 +3,7 @@ package com.mygame.game.save;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.SerializationException;
 
 /**
@@ -10,38 +11,42 @@ import com.badlogic.gdx.utils.SerializationException;
  */
 public class SettingsManager {
 
-    // The path is relative to the application's local storage directory.
     private static final String SETTINGS_FILE = "assets/data/saving/settings.json";
     private static final Json json = new Json();
 
-    /**
-     * Saves the given settings object to the JSON file.
-     */
+    static {
+        // Налаштовуємо стандартний JSON формат без тегів класів
+        json.setOutputType(JsonWriter.OutputType.json);
+        // Завжди зберігати значення за замовчуванням (щоб списки не зникали)
+        json.setIgnoreUnknownFields(true);
+    }
+
     public static void save(GameSettings settings) {
         FileHandle file = Gdx.files.local(SETTINGS_FILE);
         try {
-            file.writeString(json.toJson(settings), false);
+            // Використовуємо prettyPrint для читабельності
+            file.writeString(json.prettyPrint(settings), false);
         } catch (Exception e) {
             Gdx.app.error("SettingsManager", "Error saving settings", e);
         }
     }
 
-    /**
-     * Loads settings from the JSON file.
-     * If the file doesn't exist or is corrupt, returns a new default GameSettings object.
-     */
     public static GameSettings load() {
         FileHandle file = Gdx.files.local(SETTINGS_FILE);
         if (file.exists()) {
             try {
-                return json.fromJson(GameSettings.class, file);
+                GameSettings settings = json.fromJson(GameSettings.class, file);
+                // Гарантуємо, що списки не будуть null після завантаження
+                if (settings.completedDialogueEvents == null) settings.completedDialogueEvents = new java.util.ArrayList<>();
+                if (settings.talkedNpcs == null) settings.talkedNpcs = new java.util.HashSet<>();
+                if (settings.visited == null) settings.visited = new java.util.HashSet<>();
+                return settings;
             } catch (SerializationException e) {
-                Gdx.app.error("SettingsManager", "Error loading settings, file is corrupt or outdated. Deleting and creating new settings.", e);
-                file.delete(); // Delete the corrupt file
-                return new GameSettings(); // Return default settings
+                Gdx.app.error("SettingsManager", "Error loading settings, creating new.", e);
+                return new GameSettings();
             }
         } else {
-            return new GameSettings(); // Return default if no file
+            return new GameSettings();
         }
     }
 }

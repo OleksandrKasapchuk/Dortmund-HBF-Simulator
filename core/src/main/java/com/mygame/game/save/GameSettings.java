@@ -29,6 +29,12 @@ public class GameSettings {
     public Set<String> talkedNpcs;
     public Set<String> visited;
 
+    // Police chase save data
+    public boolean policeChaseActive;
+    public float policeX;
+    public float policeY;
+    public String policeWorldName;
+
     public static class QuestSaveData {
         public boolean progressable;
         public int progress;
@@ -59,5 +65,7 @@ public class GameSettings {
 
         this.talkedNpcs = new HashSet<>();
         this.visited = new HashSet<>();
+
+        this.policeChaseActive = false;
     }
 }

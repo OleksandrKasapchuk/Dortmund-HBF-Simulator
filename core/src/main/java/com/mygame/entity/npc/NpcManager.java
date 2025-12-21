@@ -85,7 +85,11 @@ public class NpcManager {
             npc.setDialogue(DialogueRegistry.getDialogue("ryzhyi", "after"));
         } else if (npcId.equalsIgnoreCase("boss")) {
             this.boss = npc;
-            if (completedEvents.contains("boss_gave_quest")) {
+            if (completedEvents.contains("boss_reward_claimed")) {
+                npc.setDialogue(DialogueRegistry.getDialogue("boss", "finished"));
+            } else if (completedEvents.contains("boss_quest_escaped")) {
+                npc.setDialogue(DialogueRegistry.getDialogue("boss", "wellDone"));
+            } else if (completedEvents.contains("boss_gave_quest")) {
                 npc.setDialogue(DialogueRegistry.getDialogue("boss", "after"));
             }
         } else if (npcId.equalsIgnoreCase("jason") && completedEvents.contains("jason_gave_money")) {
@@ -98,7 +102,9 @@ public class NpcManager {
     }
 
     public void update(float delta) {
-        for (NPC npc : new ArrayList<>(WorldManager.getCurrentWorld().getNpcs())) {
+        World currentWorld = WorldManager.getCurrentWorld();
+        if (currentWorld == null) return;
+        for (NPC npc : new ArrayList<>(currentWorld.getNpcs())) {
             npc.update(delta);
         }
     }
@@ -111,22 +117,27 @@ public class NpcManager {
     }
 
     public void callPolice() {
+        World currentWorld = WorldManager.getCurrentWorld();
+        if (currentWorld == null) {
+            System.err.println("NpcManager: Cannot call police, current world is null!");
+            return;
+        }
+
         summonedPolice = new Police("summoned_police", Assets.bundle.get("npc.police.name"),
             100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police"),
-            WorldManager.getCurrentWorld(), 200, DialogueRegistry.getDialogue("summoned_police", "beforeChase"));
+            currentWorld, 200, DialogueRegistry.getDialogue("summoned_police", "beforeChase"));
         npcs.add(summonedPolice);
-        WorldManager.getCurrentWorld().getNpcs().add(summonedPolice);
+        currentWorld.getNpcs().add(summonedPolice);
     }
 
     public void moveSummonedPoliceToNewWorld(World newWorld) {
-        if (summonedPolice != null) {
+        if (summonedPolice != null && newWorld != null) {
             World oldWorld = summonedPolice.getWorld();
             if (oldWorld != null) {
                 oldWorld.getNpcs().remove(summonedPolice);
             }
             summonedPolice.setWorld(newWorld);
             newWorld.getNpcs().add(summonedPolice);
-
         }
     }
 

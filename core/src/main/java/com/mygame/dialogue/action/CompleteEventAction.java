@@ -1,6 +1,7 @@
 package com.mygame.dialogue.action;
 
 import com.mygame.game.GameContext;
+import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;
 
 public class CompleteEventAction implements DialogueAction {
@@ -15,7 +16,15 @@ public class CompleteEventAction implements DialogueAction {
 
     @Override
     public void execute() {
-        ctx.getSettings().completedDialogueEvents.add(event);
-        SettingsManager.save(ctx.getSettings());
+        // Завантажуємо актуальні налаштування з файлу
+        GameSettings settings = SettingsManager.load();
+
+        // Додаємо подію, якщо її ще немає
+        if (!settings.completedDialogueEvents.contains(event)) {
+            settings.completedDialogueEvents.add(event);
+            // Одразу зберігаємо зміни у файл
+            SettingsManager.save(settings);
+            System.out.println("EVENT COMPLETED AND SAVED: " + event);
+        }
     }
 }

@@ -69,6 +69,11 @@
           "dialogue.choice.leave"
         ]
       },
+      "wellDone": {
+        "texts": ["dialogue.boss.wellDone"],
+        "onFinish": "boss_claim_reward"
+      },
+      "finished": ["dialogue.boss.whatDoYouWant"],
       "after": ["dialogue.boss.after.1", "dialogue.boss.after.2"],
       "failure": ["dialogue.boss.failure.1", "dialogue.boss.failure.2", "dialogue.boss.failure.3"]
     }

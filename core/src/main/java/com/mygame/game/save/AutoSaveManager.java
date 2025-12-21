@@ -2,6 +2,7 @@ package com.mygame.game.save;
 
 
 import com.mygame.Main;
+import com.mygame.entity.npc.Police;
 import com.mygame.entity.player.Player;
 import com.mygame.game.GameInitializer;
 import com.mygame.quest.QuestManager;
@@ -30,7 +31,7 @@ public class AutoSaveManager {
         timer = 0;
 
         GameInitializer gameInitializer = Main.getGameInitializer();
-        if (gameInitializer == null || gameInitializer.getPlayer() == null) return;
+        if (gameInitializer == null || gameInitializer.getPlayer() == null || gameInitializer.getContext() == null) return;
 
         GameSettings settings = SettingsManager.load();
 
@@ -57,6 +58,17 @@ public class AutoSaveManager {
 
         settings.talkedNpcs = new HashSet<>(QuestObserver.getTalkedNpcs());
         settings.visited = new HashSet<>(QuestObserver.getVisited());
+
+        // Save Police Chase State
+        Police summonedPolice = gameInitializer.getContext().npcManager.getSummonedPolice();
+        if (summonedPolice != null && summonedPolice.getState() == Police.PoliceState.CHASING) {
+            settings.policeChaseActive = true;
+            settings.policeX = summonedPolice.getX();
+            settings.policeY = summonedPolice.getY();
+            settings.policeWorldName = summonedPolice.getWorld().getName();
+        } else {
+            settings.policeChaseActive = false;
+        }
 
         SettingsManager.save(settings);
         System.out.println("Game state saved.");
