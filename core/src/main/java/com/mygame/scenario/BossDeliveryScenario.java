@@ -1,29 +1,28 @@
 package com.mygame.scenario;
 
 import com.mygame.assets.Assets;
-import com.mygame.assets.audio.MusicManager;
 import com.mygame.assets.audio.SoundManager;
-import com.mygame.dialogue.DialogueNode;
 import com.mygame.dialogue.action.SetDialogueAction;
+import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.npc.NPC;
-import com.mygame.entity.npc.Police;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.GameContext;
 import com.mygame.quest.QuestManager;
 import com.mygame.managers.TimerManager;
+import com.mygame.world.WorldManager;
 
-public class BossDeliveryScenario {
+public class BossDeliveryScenario implements Scenario {
 
     private GameContext ctx;
-
     private boolean bossFailureTriggered = false;
 
     public BossDeliveryScenario(GameContext ctx) {
         this.ctx = ctx;
     }
 
+    @Override
     public void init() {
         // Логіка провалу: якщо гравець викинув або втратив траву під час квесту
         EventBus.subscribe(Events.InventoryChangedEvent.class, event -> {
@@ -31,17 +30,36 @@ public class BossDeliveryScenario {
                 handleBossFail();
             }
         });
+    }
 
-        // Логіка успіху: взаємодія з кущем
-        EventBus.subscribe(Events.InteractionEvent.class, event -> {
-            if (QuestManager.hasQuest("delivery") && event.item().getType().getKey().equals("bush")) {
+    @Override
+    public void update() {
+        if (!QuestManager.hasQuest("delivery")) return;
+
+        Item bush = ctx.itemManager.getBush();
+        if (bush == null || bush.getWorld() != WorldManager.getCurrentWorld()) return;
+
+        if (bush.isPlayerNear(ctx.player, 250)) {
+            if (ctx.ui.isInteractPressed()) {
                 if (ctx.player.getInventory().getAmount(ItemRegistry.get("grass")) >= 1000) {
                     triggerQuestSuccess();
                 } else {
                     ctx.ui.getGameUI().showInfoMessage(Assets.bundle.get("message.boss.not_enough_grass"), 2f);
                 }
             }
-        });
+        }
+    }
+
+    @Override
+    public void draw() {
+        if (!QuestManager.hasQuest("delivery")) return;
+
+        Item bush = ctx.itemManager.getBush();
+        if (bush == null || bush.getWorld() != WorldManager.getCurrentWorld()) return;
+
+        if (bush.isPlayerNear(ctx.player, 250)) {
+            ctx.ui.drawText(Assets.bundle.get("interact.bush"), bush.getCenterX(), bush.getCenterY());
+        }
     }
 
     private void handleBossFail() {
@@ -52,7 +70,6 @@ public class BossDeliveryScenario {
 
     private void triggerBossFailure() {
         NPC boss = ctx.npcManager.getBoss();
-
         new SetDialogueAction(ctx, "boss", "failure").execute();
 
         TimerManager.setAction(() -> {
@@ -64,27 +81,18 @@ public class BossDeliveryScenario {
     }
 
     private void triggerQuestSuccess() {
-        ctx.player.getInventory().removeItem(ItemRegistry.get("grass"), 1000);
         QuestManager.removeQuest("delivery");
+        ctx.player.getInventory().removeItem(ItemRegistry.get("grass"), 1000);
         SoundManager.playSound(Assets.getSound("bushSound"));
         ctx.player.setMovementLocked(true);
 
         TimerManager.setAction(() -> {
             ctx.npcManager.callPolice();
-            Police police = ctx.npcManager.getSummonedPolice();
-            if (police == null) return;
 
-            DialogueNode caughtNode = new DialogueNode(ctx.gsm::playerDied, true, "message.boss.chase.caught");
+            EventBus.fire(new Events.QuestCompletedEvent("delivery"));
 
-            Runnable chaseAction = () -> {
-                police.startChase(ctx.player);
-                ctx.ui.getGameUI().showInfoMessage(Assets.bundle.get("message.boss.chase.run"), 2f);
-                MusicManager.playMusic(Assets.getMusic("backMusic4"));
-                police.setDialogue(caughtNode);
-            };
-
-            police.setDialogue(new DialogueNode(chaseAction, true, "message.boss.dialogue.beforeChase.1", "message.boss.dialogue.beforeChase.2"));
-            ctx.ui.getDialogueManager().startForcedDialogue(police);
+            new SetDialogueAction(ctx, "summoned_police", "beforeChase").execute();
+            ctx.ui.getDialogueManager().startForcedDialogue(ctx.npcManager.getSummonedPolice());
         }, 2f);
     }
 }

@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mygame.entity.player.Player;
-import com.mygame.ui.UIFactory;
+import com.mygame.ui.load.UIFactory;
 
 import java.util.HashMap;
 import java.util.Map;

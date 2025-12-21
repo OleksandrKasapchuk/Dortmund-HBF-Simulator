@@ -1,6 +1,7 @@
 package com.mygame.managers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.mygame.entity.player.Player;
 import com.mygame.entity.item.ItemManager;
@@ -27,13 +28,13 @@ public class ManagerRegistry {
     // --- Core game objects ---
     private Player player;
 
-    public ManagerRegistry(Player player, Skin skin) {
+    public ManagerRegistry(SpriteBatch batch, Player player, Skin skin) {
         this.player = player;
 
         cameraManager = new CameraManager(player);
         pfandManager = new PfandManager();
 
-        uiManager = new UIManager(player, skin);
+        uiManager = new UIManager(batch, player, skin);
         PlayerEffectManager.init(player, uiManager);
 
         itemManager = new ItemManager();

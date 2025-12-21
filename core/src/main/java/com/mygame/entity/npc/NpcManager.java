@@ -111,7 +111,9 @@ public class NpcManager {
     }
 
     public void callPolice() {
-        summonedPolice = new Police("summoned_police", Assets.bundle.get("npc.police.name"), 100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police"), WorldManager.getCurrentWorld(), 200, new DialogueNode("dialogue.police.called"));
+        summonedPolice = new Police("summoned_police", Assets.bundle.get("npc.police.name"),
+            100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police"),
+            WorldManager.getCurrentWorld(), 200, DialogueRegistry.getDialogue("summoned_police", "beforeChase"));
         npcs.add(summonedPolice);
         WorldManager.getCurrentWorld().getNpcs().add(summonedPolice);
     }

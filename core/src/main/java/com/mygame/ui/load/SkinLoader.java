@@ -1,4 +1,4 @@
-package com.mygame.ui;
+package com.mygame.ui.load;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;

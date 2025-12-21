@@ -1,4 +1,4 @@
-package com.mygame.ui;
+package com.mygame.ui.load;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -19,12 +19,12 @@ public class UIFactory {
 
     /**
      * Creates and adds buttons to stages based on a JSON configuration file.
-     *
      * @param jsonFile        The FileHandle for the JSON configuration.
      * @param skin            The skin to use for the buttons.
      * @param stages          A map of stage names to Stage objects.
      * @param actionListeners A map where keys are action names from JSON and values are their corresponding listeners.
      */
+
     public static void createButtonsFromJson(FileHandle jsonFile, Skin skin, Map<String, Stage> stages, Map<String, InputListener> actionListeners) {
         JsonReader jsonReader = new JsonReader();
         JsonValue base = jsonReader.parse(jsonFile);

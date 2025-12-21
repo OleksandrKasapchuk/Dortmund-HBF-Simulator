@@ -7,8 +7,6 @@ import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.player.Player;
-import com.mygame.events.EventBus;
-import com.mygame.events.Events;
 import com.mygame.game.GameContext;
 import com.mygame.managers.TimerManager;
 import com.mygame.world.WorldManager;
@@ -18,22 +16,18 @@ public class PfandAutomatScenario implements Scenario {
 
     private GameContext ctx;
 
-
     public PfandAutomatScenario(GameContext ctx){
         this.ctx = ctx;
     }
 
-    public void init() {
-        EventBus.subscribe(Events.InteractionEvent.class, event -> {
-            if (event.item().getType().getKey().equals("pfand_automat")) {
-                handlePfandAutomat();
-            }
-        });
-    }
+    @Override
+    public void init() {}
 
-    private void handlePfandAutomat(){
+    @Override
+    public void update(){
         Item pfandAutomat = ctx.itemManager.getPfandAutomat();
-        if (pfandAutomat == null || pfandAutomat.getWorld() != WorldManager.getCurrentWorld()) return;
+        if (pfandAutomat == null) return;
+
         pfandAutomat.updateCooldown(Gdx.graphics.getDeltaTime());
 
         if (pfandAutomat.isPlayerNear(ctx.player)) {
@@ -45,6 +39,16 @@ public class PfandAutomatScenario implements Scenario {
                     ctx.ui.showNotEnough(("item.pfand.name"));
                 }
             }
+        }
+    }
+
+    @Override
+    public void draw() {
+        Item pfandAutomat = ctx.itemManager.getPfandAutomat();
+        if (pfandAutomat == null || pfandAutomat.getWorld() != WorldManager.getCurrentWorld()) return;
+
+        if (pfandAutomat.isPlayerNear(ctx.player)) {
+            ctx.ui.drawText(Assets.bundle.get("interact.pfandAutomat"), pfandAutomat.getCenterX(), pfandAutomat.getCenterY());
         }
     }
 

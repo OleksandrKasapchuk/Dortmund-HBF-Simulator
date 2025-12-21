@@ -80,7 +80,7 @@ public class DialogueManager {
         if (!state.isActive()) return;
 
         // Forced dialogue → player cannot move
-        player.setMovementLocked(state.activeNode.isForced());
+        player.setMovementLocked(state.forced || state.activeNode.isForced());
 
         displayCurrentNode();
     }

@@ -79,6 +79,29 @@
         "onFinish": "police_check",
         "texts": ["dialogue.police.check"],
         "isForced": true
+      },
+      "stoned": {
+        "onFinish": "player_died",
+        "texts": ["dialogue.police.stoned.1", "dialogue.police.stoned.2"],
+        "isForced": true
+      }
+    }
+  },
+  "summoned_police": {
+    "nodes": {
+      "start": {
+        "onFinish": "police_check",
+        "texts": ["dialogue.police.check"],
+        "isForced": true
+      },
+      "beforeChase": {
+        "onFinish": "start_police_chase",
+        "texts": ["dialogue.police.beforeChase.1", "dialogue.police.beforeChase.2"],
+        "isForced": true
+      },
+      "caught": {
+          "onFinish": "player_died",
+          "texts": ["dialogue.police.caught"]
       }
     }
   },

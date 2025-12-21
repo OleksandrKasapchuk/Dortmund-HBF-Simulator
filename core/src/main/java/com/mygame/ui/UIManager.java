@@ -3,6 +3,8 @@ package com.mygame.ui;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygame.assets.Assets;
@@ -26,6 +28,7 @@ import com.mygame.ui.screenUI.*;
 public class UIManager {
 
     private final Skin skin;
+    private final SpriteBatch batch;
 
     private QuestUI questUI;
     private InventoryUI inventoryUI;
@@ -41,6 +44,7 @@ public class UIManager {
 
     private Stage currentStage;
     private final DialogueManager dialogueManager;
+    private final GlyphLayout layout = new GlyphLayout();
 
     /**
      * Initializes all UI screens and attaches them to their respective stages.
@@ -48,10 +52,12 @@ public class UIManager {
      *
      * @param player The player object to link HUD elements and touchpad
      * @param skin The fully configured skin to use for all UI components
+     * @param batch The SpriteBatch used for world rendering
      */
-    public UIManager(Player player, Skin skin) {
+    public UIManager(SpriteBatch batch,Player player, Skin skin) {
         System.out.println("UIManager: Initializing...");
         this.skin = skin;
+        this.batch = batch;
 
         // Initialize screens with the provided skin
         gameUI = new GameUI(skin);
@@ -182,5 +188,16 @@ public class UIManager {
 
     public void showNotEnough(String thing) {
         gameUI.showInfoMessage(Assets.bundle.format("message.generic.not_enough", Assets.bundle.get(thing)), 1f);
+    }
+
+    /**
+     * Draws centered text at world coordinates.
+     * @param text The text to draw
+     * @param x World X coordinate
+     * @param y World Y coordinate
+     */
+    public void drawText(String text, float x, float y) {
+        layout.setText(Assets.myFont, text);
+        Assets.myFont.draw(batch, text, x - layout.width / 2f, y + 60);
     }
 }

@@ -1,12 +1,14 @@
 package com.mygame.dialogue.action;
 
 import com.mygame.assets.Assets;
+import com.mygame.assets.audio.MusicManager;
 import com.mygame.assets.audio.SoundManager;
 import com.mygame.dialogue.DialogueRegistry;
 import com.mygame.dialogue.action.custom.ChikitaCraftJointAction;
 import com.mygame.dialogue.action.condition.HasItemCondition;
 import com.mygame.dialogue.action.custom.PoliceCheckAction;
 import com.mygame.entity.item.ItemRegistry;
+import com.mygame.entity.npc.Police;
 import com.mygame.game.GameContext;
 import com.mygame.quest.QuestManager;
 import com.mygame.managers.TimerManager;
@@ -68,10 +70,25 @@ public class DialogueActionRegistry {
             }
         });
 
+
         DialogueRegistry.registerAction("failure_action", () -> {
             new SetDialogueAction(ctx, "boss", "failure").execute();
             ctx.gsm.playerDied();
             SoundManager.playSound(Assets.getSound("gunShot"));
+        });
+
+        DialogueRegistry.registerAction("player_died", () -> {
+            ctx.gsm.playerDied();
+        });
+
+        DialogueRegistry.registerAction("start_police_chase", () -> {
+            Police police = ctx.npcManager.getSummonedPolice();
+            if (police != null) {
+                police.startChase(ctx.player);
+                ctx.ui.getGameUI().showInfoMessage(Assets.bundle.get("message.boss.chase.run"), 2f);
+                MusicManager.playMusic(Assets.getMusic("backMusic4"));
+                new SetDialogueAction(ctx, "summoned_police", "caught").execute();
+            }
         });
     }
 }

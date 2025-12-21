@@ -13,7 +13,7 @@ import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.quest.QuestObserver;
 import com.mygame.scenario.ScenarioController;
-import com.mygame.ui.SkinLoader;
+import com.mygame.ui.load.SkinLoader;
 import com.mygame.world.WorldManager;
 import com.mygame.assets.audio.MusicManager;
 import com.mygame.world.World;
@@ -27,6 +27,7 @@ public class GameInitializer {
     private ManagerRegistry managerRegistry;
     private GameInputHandler gameInputHandler;
     private GameContext ctx;
+    private ScenarioController scController;
 
     public void initGame() {
         if (managerRegistry != null) managerRegistry.dispose();
@@ -44,7 +45,7 @@ public class GameInitializer {
 
         GameSettings settings = SettingsManager.load();
         player = new Player(500, 80, 80, settings.playerX, settings.playerY, Assets.getTexture("zoe"), null);
-        managerRegistry = new ManagerRegistry(player, skin);
+        managerRegistry = new ManagerRegistry(batch, player, skin);
 
         ctx = managerRegistry.createContext();
 
@@ -60,7 +61,8 @@ public class GameInitializer {
             managerRegistry.getTransitionManager().loadTransitionsFromMap(world);
         }
 
-        ScenarioController.init(ctx);
+        scController = new ScenarioController();
+        scController.init(ctx);
         QuestObserver.init();
 
         // 3. Set the player's world and the current world
@@ -86,6 +88,7 @@ public class GameInitializer {
     public Player getPlayer() { return player; }
     public SpriteBatch getBatch() { return batch; }
     public GameContext getContext() { return ctx; }
+    public ScenarioController getScController(){ return scController; }
 
     public void dispose() {
         if (managerRegistry != null) managerRegistry.dispose();

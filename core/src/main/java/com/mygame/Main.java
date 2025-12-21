@@ -10,6 +10,7 @@ import com.mygame.assets.Assets;
 import com.mygame.game.GameContext;
 import com.mygame.game.GameInitializer;
 import com.mygame.game.save.AutoSaveManager;
+import com.mygame.world.DarkOverlay;
 import com.mygame.world.WorldManager;
 import com.mygame.assets.audio.MusicManager;
 import com.mygame.entity.player.Player;
@@ -44,7 +45,7 @@ public class Main extends ApplicationAdapter {
         gameInitializer.getGameInputHandler().handleInput();
         GameContext ctx = gameInitializer.getContext();
 
-        ctx.gsm.handleStonedPlayer(player, gameInitializer.getContext().npcManager);
+        ctx.gsm.handleStonedPlayer(gameInitializer.getContext());
 
 
         switch (gameInitializer.getContext().gsm.getState()) {
@@ -72,24 +73,28 @@ public class Main extends ApplicationAdapter {
         darkOverlay.update(delta);
         OrthographicCamera camera = gameInitializer.getManagerRegistry().getCameraManager().getCamera();
 
+        gameInitializer.getScController().update();
         // 1. Render the TMX map layer
         WorldManager.renderMap(camera);
 
         // 2. Draw sprites (entities) on top
         SpriteBatch batch = gameInitializer.getBatch();
         batch.setProjectionMatrix(camera.combined);
+
+
         batch.begin();
         gameInitializer.getManagerRegistry().update(delta);
-        WorldManager.drawEntities(batch, Assets.myFont, player); // Corrected method
+        WorldManager.drawEntities(batch, Assets.myFont, player);
         player.draw(batch);
+        gameInitializer.getScController().draw();
         batch.end();
 
         // 3. Draw debug shapes
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        if (WorldManager.getCurrentWorld() != null) {
-            WorldManager.getCurrentWorld().drawTransitions(shapeRenderer);
-        }
+
+        WorldManager.getCurrentWorld().drawTransitions(shapeRenderer);
+
         shapeRenderer.end();
 
         // 4. Draw UI

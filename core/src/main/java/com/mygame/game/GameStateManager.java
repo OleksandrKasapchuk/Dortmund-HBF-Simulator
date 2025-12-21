@@ -2,6 +2,7 @@ package com.mygame.game;
 
 import com.mygame.assets.Assets;
 import com.mygame.dialogue.DialogueNode;
+import com.mygame.dialogue.action.SetDialogueAction;
 import com.mygame.entity.npc.NpcManager;
 import com.mygame.entity.player.Player;
 import com.mygame.game.save.GameSettings;
@@ -87,13 +88,10 @@ public class GameStateManager {
         }
     }
 
-    public void handleStonedPlayer(Player player, NpcManager npcManager) {
-        if (player.getState() == Player.State.STONED && state == GameState.PLAYING) {
+    public void handleStonedPlayer(GameContext ctx) {
+        if (ctx.player.getState() == Player.State.STONED && state == GameState.PLAYING) {
             MusicManager.playMusic(Assets.getMusic("kaifMusic"));
-            npcManager.getPolice().setDialogue(
-                new DialogueNode(this::playerDied, true, "dialogue.police.stoned.1",
-                    "dialogue.police.stoned.2")
-            );
+            new SetDialogueAction(ctx, "police", "stoned").execute();
         }
     }
 }

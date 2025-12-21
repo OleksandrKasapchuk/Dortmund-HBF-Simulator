@@ -95,7 +95,6 @@ public class ItemManager {
         }
     }
 
-    // --- Getters for special items (Restored) ---
     public Item getBush() {
         return bush;
     }

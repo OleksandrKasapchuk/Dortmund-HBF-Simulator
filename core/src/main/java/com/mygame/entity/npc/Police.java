@@ -4,9 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.player.Player;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
 import com.mygame.world.World;
-import com.mygame.world.WorldManager;
 import com.mygame.world.transition.Transition;
+
+import java.util.Objects;
 
 /**
  * Police NPC that can chase the player and change states depending on distance.
@@ -20,7 +23,6 @@ public class Police extends NPC {
     private float targetX;
     private float targetY;
 
-    private World targetWorld; // Світ, куди поліція хоче дійти
     private boolean movingToTransition = false;
     private Transition activeTransition = null; // The transition the police is currently moving towards
 
@@ -52,55 +54,41 @@ public class Police extends NPC {
      */
     public Transition update(Player player) {
 
-        switch (state) {
-            case CHASING:
-                Gdx.app.log("Police", "State: CHASING. Current world: " + getWorld().getName());
-                if (player.getWorld() == this.getWorld()) {
-                    // Гравець у тому ж світі – звичайне переслідування
-                    targetX = player.getX();
-                    targetY = player.getY();
-                    movingToTransition = false;
-                    activeTransition = null;
-                    Gdx.app.log("Police", "Player in same world. Chasing to (" + targetX + ", " + targetY + ")");
-                } else {
-                    // Гравець в іншому світі
-                    Gdx.app.log("Police", "Player in different world: " + player.getWorld().getName());
-                    if (!movingToTransition) {
-                        activeTransition = findTransitionToPlayer(player.getWorld());
-                        if (activeTransition != null) {
-                            targetX = activeTransition.area.x + activeTransition.area.width / 2;
-                            targetY = activeTransition.area.y + activeTransition.area.height / 2;
-                            targetWorld = WorldManager.getWorld(activeTransition.targetWorldId);
-                            movingToTransition = true;
-                            Gdx.app.log("Police", "Found transition to " + targetWorld.getName() + ". Moving to transition zone at (" + targetX + ", " + targetY + ")");
-                        } else {
-                             Gdx.app.log("Police", "No transition found to player's world: " + player.getWorld().getName());
-                        }
-                    }
-
-                    if (movingToTransition && activeTransition != null) {
-                        // Якщо поліція досягла зони переходу
-                        if (activeTransition.area.contains(getX(), getY())) {
-                            Gdx.app.log("Police", "Reached transition zone. Requesting transition to " + activeTransition.targetWorldId);
-                            movingToTransition = false; // Reset for next chase
-                            Transition transitionToReturn = activeTransition;
-                            activeTransition = null;
-                            setState(PoliceState.TRANSITIONING);
-                            return transitionToReturn;
-                        }
+        if (Objects.requireNonNull(state) == PoliceState.CHASING) {
+            if (player.getWorld() == this.getWorld()) {
+                // Гравець у тому ж світі – звичайне переслідування
+                targetX = player.getX();
+                targetY = player.getY();
+                movingToTransition = false;
+                activeTransition = null;
+            } else {
+                // Гравець в іншому світі
+                if (!movingToTransition) {
+                    activeTransition = findTransitionToPlayer(player.getWorld());
+                    if (activeTransition != null) {
+                        targetX = activeTransition.area.x + activeTransition.area.width / 2;
+                        targetY = activeTransition.area.y + activeTransition.area.height / 2;
+                        movingToTransition = true;
                     }
                 }
 
-                chase();
+                if (movingToTransition && activeTransition != null) {
+                    // Якщо поліція досягла зони переходу
+                    if (activeTransition.area.contains(getX(), getY())) {
+                        movingToTransition = false; // Reset for next chase
+                        Transition transitionToReturn = activeTransition;
+                        activeTransition = null;
+                        setState(PoliceState.TRANSITIONING);
+                        return transitionToReturn;
+                    }
+                }
+            }
 
-                // Check for state changes
-                if (isPlayerCaught(player)) setState(PoliceState.CAUGHT);
-                if (isPlayerEscaped(player)) setState(PoliceState.ESCAPED);
+            chase();
 
-                break;
-
-            case TRANSITIONING:
-                Gdx.app.log("Police", "State: TRANSITIONING");
+            // Check for state changes
+            if (isPlayerCaught(player)) setState(PoliceState.CAUGHT);
+            if (isPlayerEscaped(player)) setState(PoliceState.ESCAPED);
         }
         return null; // No transition triggered
     }
@@ -144,8 +132,7 @@ public class Police extends NPC {
     }
 
     public void startChase(Player player) {
-        this.state = PoliceState.CHASING;
-        Gdx.app.log("Police", "Starting chase on player in world: " + player.getWorld().getName());
+        this.setState(PoliceState.CHASING);
         // Set initial target coordinates
         this.targetX = player.getX();
         this.targetY = player.getY();
@@ -156,7 +143,9 @@ public class Police extends NPC {
     }
 
     public void setState(PoliceState state) {
+        if (this.state == state) return;
         this.state = state;
         Gdx.app.log("Police", "State changed to: " + state);
+        EventBus.fire(new Events.PoliceStateChangedEvent(state));
     }
 }

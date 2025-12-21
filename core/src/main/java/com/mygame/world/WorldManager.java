@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygame.assets.Assets;
-import com.mygame.DarkOverlay;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
@@ -89,7 +88,7 @@ public class WorldManager {
 
         if (inTransitionZone && interactPressed) {
             darkOverlay.show(1, 0.8f);
-            
+
             EventBus.fire(new Events.WorldChangedEvent(activeTransition.targetWorldId));
 
             setCurrentWorld(activeTransition.targetWorldId);
