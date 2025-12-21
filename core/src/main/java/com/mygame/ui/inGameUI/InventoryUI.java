@@ -60,7 +60,6 @@ public class InventoryUI {
     /**
      * Toggles the inventory visibility.
      * If shown, updates the inventory contents.
-     *
      */
     public void toggle() {
         visible = !visible;
@@ -69,7 +68,6 @@ public class InventoryUI {
 
     /**
      * Updates the inventory UI with current items and player status.
-     *
      * @param player Player whose inventory is displayed
      */
     public void update(Player player) {

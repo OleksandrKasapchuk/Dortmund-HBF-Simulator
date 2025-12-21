@@ -82,6 +82,8 @@ public class DialogueActionRegistry {
         DialogueRegistry.registerAction("start_police_chase", () -> {
             Police police = ctx.npcManager.getSummonedPolice();
             if (police != null) {
+                new AddQuestAction("police_chase", false, 0,0).execute();
+
                 police.startChase(ctx.player);
                 ctx.ui.getGameUI().showInfoMessage(Assets.bundle.get("message.boss.chase.run"), 2f);
                 MusicManager.playMusic(Assets.getMusic("backMusic4"));

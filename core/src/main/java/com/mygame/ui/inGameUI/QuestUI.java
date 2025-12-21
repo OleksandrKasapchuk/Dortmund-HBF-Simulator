@@ -75,13 +75,16 @@ public class QuestUI {
 
         // Display all quests
         for (QuestManager.Quest quest : QuestManager.getQuests()) {
+            Label nameLabel = new Label(Assets.bundle.get("quest." + quest.key() + ".name"), skin);
             Label qLabel;
             if (quest.progressable()){
-                qLabel = new Label("• " + Assets.bundle.format("quest." + quest.key() + ".description", quest.progress(), quest.maxProgress()), skin);
+                qLabel = new Label("-- " + Assets.bundle.format("quest." + quest.key() + ".description", quest.progress(), quest.maxProgress()), skin);
             } else {
-                qLabel = new Label("• " + Assets.bundle.get("quest." + quest.key() + ".description"), skin);
+                qLabel = new Label("-- " + Assets.bundle.get("quest." + quest.key() + ".description"), skin);
             }
-            qLabel.setFontScale(1.5f);
+            nameLabel.setFontScale(2f);
+            qLabel.setFontScale(1f);
+            questTable.add(nameLabel).left().pad(5).row();
             questTable.add(qLabel).left().pad(10).row();
         }
     }

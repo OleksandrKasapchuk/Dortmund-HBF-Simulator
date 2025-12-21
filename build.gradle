@@ -1,42 +1,80 @@
 buildscript {
-  repositories {
-    mavenCentral()
-    gradlePluginPortal()
-    mavenLocal()
-    google()
-    maven { url 'https://central.sonatype.com/repository/maven-snapshots/' }
-  }
-  dependencies {
-    classpath 'com.android.tools.build:gradle:8.13.1'
-
-  }
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        mavenLocal()
+        google()
+        maven { url 'https://central.sonatype.com/repository/maven-snapshots/' }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.13.1'
+    }
 }
 
 allprojects {
-  apply plugin: 'eclipse'
-  apply plugin: 'idea'
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
 
-  // This allows you to "Build and run using IntelliJ IDEA", an option in IDEA's Settings.
-  idea {
-    module {
-      outputDir file('build/classes/java/main')
-      testOutputDir file('build/classes/java/test')
-    }
-  }
-}
-
-// Configuration for the :core project
-project(":core") {
-    apply plugin: 'java-library'
-    sourceCompatibility = 17
-
-    dependencies {
-        api "com.badlogicgames.gdx:gdx:$gdxVersion"
-        api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+    idea {
+        module {
+            outputDir file('build/classes/java/main')
+            testOutputDir file('build/classes/java/test')
+        }
     }
 }
 
-// Configuration for the :lwjgl3 project (for Desktop)
+// === Localization Validator ===
+task checkLocalization {
+    group = "verification"
+    description = "Checks if all localization files match strings_en.properties"
+
+    doLast {
+        def i18nDir = file("assets/i18n")
+        def mainFile = file("assets/i18n/strings_en.properties")
+
+        if (!mainFile.exists()) {
+            throw new GradleException("CRITICAL ERROR: Main localization file (strings_en.properties) not found!")
+        }
+
+        def mainProps = new Properties()
+        mainFile.withInputStream { mainProps.load(it) }
+        def mainKeys = mainProps.keySet().toSet()
+
+        def propFiles = i18nDir.listFiles().findAll { it.name.endsWith(".properties") && it.name != "strings_en.properties" }
+
+        def errors = []
+
+        propFiles.each { file ->
+            def currentProps = new Properties()
+            file.withInputStream { currentProps.load(it) }
+            def currentKeys = currentProps.keySet().toSet()
+
+            def missing = mainKeys - currentKeys
+            def extra = currentKeys - mainKeys
+
+            if (!missing.isEmpty()) {
+                errors << "File [${file.name}] is MISSING keys: ${missing}"
+            }
+            if (!extra.isEmpty()) {
+                errors << "File [${file.name}] has EXTRA keys (not in main): ${extra}"
+            }
+        }
+
+        if (!errors.isEmpty()) {
+            throw new GradleException("Localization Validation Failed:\n" + errors.join("\n"))
+        } else {
+            println "SUCCESS: Localization check passed for ${propFiles.size()} files."
+        }
+    }
+}
+
+// ПРИМУСОВА ПЕРЕВІРКА: Прив'язуємо до компіляції всіх проектів
+allprojects { project ->
+    tasks.withType(JavaCompile) {
+        dependsOn ":checkLocalization"
+    }
+}
+
 project(":lwjgl3") {
     apply plugin: 'application'
     sourceCompatibility = 17
@@ -47,34 +85,36 @@ project(":lwjgl3") {
 
     dependencies {
         implementation project(':core')
-        // Use 'implementation' for application modules
         implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
-
-        // Use 'runtimeOnly' with classifiers instead of the 'natives' keyword
         runtimeOnly "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         runtimeOnly "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
     }
 
-    // This task is needed to run the game from the command line
     run {
         workingDir = rootProject.file("assets/").path
         setIgnoreExitValue(true)
     }
 }
 
+project(":core") {
+    apply plugin: 'java-library'
+    sourceCompatibility = 17
+
+    dependencies {
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
+        api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+    }
+}
+
 subprojects {
-  version = "$projectVersion"
-  ext.appName = 'TravelToPast'
-  repositories {
-    mavenCentral()
-//    maven { url 'https://s01.oss.sonatype.org' }
-    // You may want to remove the following line if you have errors downloading dependencies.
-    mavenLocal()
-//    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-//    maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
-    maven { url 'https://central.sonatype.com/repository/maven-snapshots/' }
-    maven { url 'https://jitpack.io' }
-  }
+    version = "$projectVersion"
+    ext.appName = 'TravelToPast'
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        maven { url 'https://central.sonatype.com/repository/maven-snapshots/' }
+        maven { url 'https://jitpack.io' }
+    }
 }
 
 eclipse.project.name = 'TravelToPast' + '-parent'
