@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
 import com.mygame.entity.player.Player;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;
@@ -84,7 +84,7 @@ public class ItemManager {
             Item item = it.next();
 
             // If item can be picked up and player is near, add to inventory and remove from world
-            if (item.canBePickedUp() && item.isPlayerNear(player)) {
+            if (item.canBePickedUp() && item.isPlayerNear(player, item.getDistance())) {
                 player.getInventory().addItem(item.getType(), 1);
 
                 if (item.getType().getKey().equals("pfand")) { // Use getKey() for safety
@@ -95,7 +95,6 @@ public class ItemManager {
         }
     }
 
-    // --- Getters for special items (Restored) ---
     public Item getBush() {
         return bush;
     }

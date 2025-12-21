@@ -3,32 +3,40 @@ package com.mygame.dialogue;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class DialogueRegistry {
-    private final Map<String, Runnable> actions = new HashMap<>();
-    private final Map<String, JsonValue> npcDialogueData = new HashMap<>();
-    private final Map<String, DialogueNode> builtNodes = new HashMap<>();
+    private static Map<String, Runnable> actions = new HashMap<>();
+    private static Map<String, JsonValue> npcDialogueData = new HashMap<>();
+    private static Map<String, DialogueNode> builtNodes = new HashMap<>();
 
-    public DialogueRegistry() {
+    public static void init() {
+        npcDialogueData.clear();
+        builtNodes.clear();
         JsonReader jsonReader = new JsonReader();
-        JsonValue base = jsonReader.parse(Gdx.files.internal("data/dialogues.json"));
+        JsonValue base = jsonReader.parse(Gdx.files.internal("data/dialogues/dialogues.json"));
         for (JsonValue npcData : base) {
             npcDialogueData.put(npcData.name(), npcData);
         }
     }
 
-    public void registerAction(String name, Runnable action) {
+    public static void reset() {
+        actions.clear();
+        npcDialogueData.clear();
+        builtNodes.clear();
+    }
+
+    public static void registerAction(String name, Runnable action) {
         if (actions.containsKey(name)) {
             System.err.println("DialogueRegistry: Overwriting action '" + name + "'");
         }
         actions.put(name, action);
     }
 
-    public DialogueNode getDialogue(String npcId, String nodeName) {
+    public static DialogueNode getDialogue(String npcId, String nodeName) {
         String fullNodeId = npcId + "." + nodeName;
         if (builtNodes.containsKey(fullNodeId)) {
             return builtNodes.get(fullNodeId);
@@ -54,6 +62,8 @@ public class DialogueRegistry {
 
         Runnable onFinish = null;
         String[] textKeys;
+        boolean isForced = false;
+
         DialogueNode node;
 
         if (nodeData.isObject()) {
@@ -65,7 +75,10 @@ public class DialogueRegistry {
                 }
             }
             textKeys = nodeData.get("texts").asStringArray();
-            node = new DialogueNode(onFinish, textKeys);
+            if (nodeData.has("isForced")) {
+                isForced = nodeData.getBoolean("isForced");
+            }
+            node = new DialogueNode(onFinish, isForced, textKeys);
 
             if (nodeData.has("choices")) {
                 for (JsonValue choiceData : nodeData.get("choices")) {
@@ -95,14 +108,14 @@ public class DialogueRegistry {
             }
         } else { // isArray (simplified node)
             textKeys = nodeData.asStringArray();
-            node = new DialogueNode(null, textKeys);
+            node = new DialogueNode(null, false, textKeys);
         }
 
         builtNodes.put(fullNodeId, node);
         return node;
     }
 
-    public DialogueNode getInitialDialogue(String npcId) {
+    public static DialogueNode getInitialDialogue(String npcId) {
         JsonValue npcData = npcDialogueData.get(npcId);
         if (npcData == null) {
             System.err.println("DialogueRegistry: NPC '" + npcId + "' not found in dialogues.json");

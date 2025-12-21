@@ -2,6 +2,7 @@ package com.mygame.entity;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygame.entity.player.Player;
 import com.mygame.world.World;
 
 /**
@@ -44,6 +45,10 @@ public abstract class Entity {
     // --- Getters ---
     public float getX() { return x; }
     public float getY() { return y; }
+
+    public float getCenterX() { return x + width / 2f; }
+    public float getCenterY() { return y + height / 2f; }
+
     public int getWidth() { return width; }
     public int getHeight() { return height; }
 
@@ -52,4 +57,20 @@ public abstract class Entity {
     public void setY(float y) { this.y = y; }
 
     public World getWorld(){return world;}
+
+    public void setWorld(World world) {this.world = world;}
+
+    // --- Player distance check ---
+    public boolean isPlayerNear(Player player, int distance) {
+        return distanceTo(player, distance);
+    }
+    public boolean isPlayerNear(Player player) {
+        return distanceTo(player, 150);
+    }
+
+    public boolean distanceTo(Player player, int distance) {
+        float dx = player.getCenterX() - this.getCenterX();
+        float dy = player.getCenterY() - this.getCenterY();
+        return Math.sqrt(dx * dx + dy * dy) < distance;
+    }
 }

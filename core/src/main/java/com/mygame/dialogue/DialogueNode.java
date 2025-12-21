@@ -1,6 +1,6 @@
 package com.mygame.dialogue;
 
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,28 +22,19 @@ public class DialogueNode {
      * @param text     що показувати гравцю
      * @param nextNode куди переходимо
      * @param action   що виконати при виборі
-     */ // =============================================================
-        // CHOICE — варіант вибору
-        // =============================================================
-        public record Choice(String text, DialogueNode nextNode, Runnable action) {
-    }
+     */
+    public record Choice(String text, DialogueNode nextNode, Runnable action) {}
 
-    // =============================================================
-    // NODE DATA
-    // =============================================================
     private final List<String> texts;   // фрази вузла
     private final List<Choice> choices; // варіанти відповіді
     private final Runnable action;      // виконується коли вузол завершується
-
-    // =============================================================
-    // CONSTRUCTORS
-    // =============================================================
+    private boolean isForced;
 
     public DialogueNode(String... textKeys) {
-        this(null, textKeys);
+        this(null, false, textKeys);
     }
 
-    public DialogueNode(Runnable onFinish, String... textKeys) {
+    public DialogueNode(Runnable onFinish, boolean isForced, String... textKeys) {
         this.action = onFinish;
         this.texts = (textKeys == null || textKeys.length == 0) ?
                 List.of("") :
@@ -56,34 +47,15 @@ public class DialogueNode {
                     }
                 }).collect(Collectors.toList());
         this.choices = new ArrayList<>();
+        this.isForced = isForced;
     }
-
-    // =============================================================
-    // ADD CHOICES
-    // =============================================================
 
     public void addChoice(String text, DialogueNode next, Runnable action) {
         choices.add(new Choice(text, next, action));
     }
 
-    // =============================================================
-    // LOGIC — головне оновлення
-    // =============================================================
-
-    /**
-     * Викликається коли гравець натиснув на Choice
-     */
-    public void choose(Choice choice) {
-        if (choice.action != null)          // спершу виконуємо action
-            choice.action.run();
-
-    }
-
-    // =============================================================
-    // GETTERS
-    // =============================================================
     public List<String> getTexts() { return texts; }
     public List<Choice> getChoices() { return choices; }
     public Runnable getAction() { return action; }
-//    public void reset() {}
+    public boolean isForced(){ return isForced; }
 }

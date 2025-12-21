@@ -4,87 +4,126 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.player.Player;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
 import com.mygame.world.World;
+import com.mygame.world.transition.Transition;
+
+import java.util.Objects;
 
 /**
  * Police NPC that can chase the player and change states depending on distance.
  */
 public class Police extends NPC {
 
-    /** Possible states of police behaviour */
-    public enum PoliceState { IDLE, CHASING, ESCAPED, CAUGHT }
-
-    /** Current police state */
+    public enum PoliceState { IDLE, CHASING, ESCAPED, CAUGHT, TRANSITIONING }
     private PoliceState state = PoliceState.IDLE;
 
-    /** Constructor for Police NPC */
-    public Police(String name, int width, int height, float x, float y,
-                  Texture texture, World world, int speed, int distance, DialogueNode dialogue) {
+    // Target coordinates for the chase
+    private float targetX;
+    private float targetY;
 
-        // NPC constructor expects many params; most unused here (0,0,0f,0f)
-        super(name, width, height, x, y, texture, world,
-            0, 0, 0f, 0f,
-            speed, distance, dialogue);
+    private boolean movingToTransition = false;
+    private Transition activeTransition = null; // The transition the police is currently moving towards
+
+    private float lostTimer = 0f;
+    private static final float MAX_LOST_TIME = 5f; // якщо поліція не бачить 5 секунд — втеча
+
+    public Police(String id, String name, int width, int height, float x, float y,
+                  Texture texture, World world, int speed, DialogueNode dialogue) {
+        super(id, name, width, height, x, y, texture, world,
+            0, 0, 0f, 0f, // Static patrol path, not used for police
+            speed, dialogue);
     }
 
-    /** Updates police behaviour depending on its current state */
-    public void update(Player player) {
-        switch (state) {
+    public Transition findTransitionToPlayer(World playerWorld) {
+        for (Transition t : getWorld().getTransitions()) {
+            if (t.targetWorldId.equals(playerWorld.getName())) {
+                Gdx.app.log("Police", "Found a transition to " + playerWorld.getName() + " at " + t.area);
+                return t;
+            }
+        }
+        Gdx.app.log("Police", "Could not find a transition to " + playerWorld.getName());
+        return null;
+    }
 
-            case CHASING:
-                chasePlayer(player);
+    /**
+     * Updates police behaviour depending on its current state.
+     * @param player The player being chased.
+     * @return The Transition object if the police enters a transition zone, otherwise null.
+     */
+    public Transition update(Player player) {
 
-                // If player is close enough → caught
-                if (isPlayerCaught(player)) {
-                    state = PoliceState.CAUGHT;
+        if (Objects.requireNonNull(state) == PoliceState.CHASING) {
+            if (player.getWorld() == this.getWorld()) {
+                // Гравець у тому ж світі – звичайне переслідування
+                targetX = player.getX();
+                targetY = player.getY();
+                movingToTransition = false;
+                activeTransition = null;
+            } else {
+                // Гравець в іншому світі
+                if (!movingToTransition) {
+                    activeTransition = findTransitionToPlayer(player.getWorld());
+                    if (activeTransition != null) {
+                        targetX = activeTransition.area.x + activeTransition.area.width / 2;
+                        targetY = activeTransition.area.y + activeTransition.area.height / 2;
+                        movingToTransition = true;
+                    }
                 }
-                // If player escaped far enough → escaped
-                else if (isPlayerEscaped(player)) {
-                    state = PoliceState.ESCAPED;
-                }
-                break;
 
-            case ESCAPED:
-            case CAUGHT:
-            case IDLE:
-                // These states do nothing during update.
-                break;
+                if (movingToTransition && activeTransition != null) {
+                    // Якщо поліція досягла зони переходу
+                    if (activeTransition.area.contains(getX(), getY())) {
+                        movingToTransition = false; // Reset for next chase
+                        Transition transitionToReturn = activeTransition;
+                        activeTransition = null;
+                        setState(PoliceState.TRANSITIONING);
+                        return transitionToReturn;
+                    }
+                }
+            }
+
+            chase();
+
+            // Check for state changes
+            if (isPlayerCaught(player)) setState(PoliceState.CAUGHT);
+            if (isPlayerEscaped(player)) setState(PoliceState.ESCAPED);
+        }
+        return null; // No transition triggered
+    }
+
+    private boolean isPlayerCaught(Player player) {
+        // Caught only if in the same world and near the player
+        return player.getWorld() == this.getWorld() && isPlayerNear(player);
+    }
+
+   private boolean isPlayerEscaped(Player player) {
+        if (player.getWorld() != this.getWorld()) {
+            return !movingToTransition && activeTransition == null;
+        }
+        if (!isPlayerNear(player, 800)) {
+            lostTimer += Gdx.graphics.getDeltaTime();
+            return lostTimer >= MAX_LOST_TIME;
+        } else {
+            lostTimer = 0f;
+            return false;
         }
     }
 
-    /** Player considered caught when within default "near" distance */
-    private boolean isPlayerCaught(Player player) {
-        return isPlayerNear(player);
-    }
-
-    /**
-     * Player considered escaped if NOT near the police within a large radius.
-     * (1200 = escape distance)
-     */
-    private boolean isPlayerEscaped(Player player) {
-        return !isPlayerNear(player, 1200);
-    }
-
-    /**
-     * Moves police toward the player's current position.
-     * Only works if state == CHASING.
-     */
-    public void chasePlayer(Player player) {
+    private void chase() {
         if (state != PoliceState.CHASING) return;
 
         float delta = Gdx.graphics.getDeltaTime();
 
-        float targetX = player.getX();
-        float targetY = player.getY();
-
-        // Move horizontally
+        // Move horizontally toward targetX
         if (this.getX() > targetX) {
             this.setX(this.getX() - getSpeed() * delta);
         } else if (this.getX() < targetX) {
             this.setX(this.getX() + getSpeed() * delta);
         }
 
-        // Move vertically
+        // Move vertically toward targetY
         if (this.getY() > targetY) {
             this.setY(this.getY() - getSpeed() * delta);
         } else if (this.getY() < targetY) {
@@ -92,17 +131,21 @@ public class Police extends NPC {
         }
     }
 
-    /**
-     * Switches police to CHASING mode.
-     */
-    public void startChase() {
-        state = PoliceState.CHASING;
+    public void startChase(Player player) {
+        this.setState(PoliceState.CHASING);
+        // Set initial target coordinates
+        this.targetX = player.getX();
+        this.targetY = player.getY();
     }
 
-    /**
-     * Returns the current state.
-     */
     public PoliceState getState() {
         return state;
+    }
+
+    public void setState(PoliceState state) {
+        if (this.state == state) return;
+        this.state = state;
+        Gdx.app.log("Police", "State changed to: " + state);
+        EventBus.fire(new Events.PoliceStateChangedEvent(state));
     }
 }

@@ -4,10 +4,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.mygame.Assets;
-import com.mygame.DarkOverlay;
+import com.mygame.assets.Assets;
 import com.mygame.entity.player.Player;
-import com.mygame.managers.global.TimerManager;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
 import com.mygame.world.transition.Transition;
 
 import java.util.HashMap;
@@ -87,17 +87,16 @@ public class WorldManager {
         inTransitionZone = activeTransition != null;
 
         if (inTransitionZone && interactPressed) {
-            final Transition finalTransition = activeTransition;
+            darkOverlay.show(1, 0.8f);
 
-            darkOverlay.show(1, 0.7f);
-            TimerManager.setAction(() -> {
-                setCurrentWorld(finalTransition.targetWorldId);
-                player.setX(finalTransition.targetX);
-                player.setY(finalTransition.targetY);
-                player.setWorld(currentWorld);
-                inTransitionZone = false;
-                cooldownTimer = TRANSITION_COOLDOWN; // Start cooldown
-            }, 0.05f);
+            EventBus.fire(new Events.WorldChangedEvent(activeTransition.targetWorldId));
+
+            setCurrentWorld(activeTransition.targetWorldId);
+            player.setX(activeTransition.targetX);
+            player.setY(activeTransition.targetY);
+            player.setWorld(currentWorld);
+            inTransitionZone = false;
+            cooldownTimer = TRANSITION_COOLDOWN; // Start cooldown
         }
     }
 }

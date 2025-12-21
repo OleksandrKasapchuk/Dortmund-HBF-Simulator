@@ -1,8 +1,13 @@
 package com.mygame.game;
 
-import com.mygame.Assets;
-import com.mygame.managers.global.save.SettingsManager;
-import com.mygame.managers.global.audio.MusicManager;
+import com.mygame.assets.Assets;
+import com.mygame.dialogue.DialogueNode;
+import com.mygame.dialogue.action.SetDialogueAction;
+import com.mygame.entity.npc.NpcManager;
+import com.mygame.entity.player.Player;
+import com.mygame.game.save.GameSettings;
+import com.mygame.game.save.SettingsManager;
+import com.mygame.assets.audio.MusicManager;
 import com.mygame.ui.UIManager;
 
 /**
@@ -26,21 +31,18 @@ public class GameStateManager {
         return state;
     }
 
-    public void setGameState(GameState state) {
-        this.state = state;
-    }
 
     // --- Start the game ---
     public void startGame() {
         state = GameState.PLAYING;                // Switch state to PLAYING
-        MusicManager.playMusic(Assets.backMusic1); // Play game background music
+        MusicManager.playMusic(Assets.getMusic("backMusic1")); // Play game background music
         uiManager.setCurrentStage("GAME");         // Set UI to game stage
     }
 
     // --- Handle player death ---
     public void playerDied() {
         state = GameState.DEATH;                  // Switch state to DEATH
-        MusicManager.playMusic(Assets.backMusic4); // Play death music
+        MusicManager.playMusic(Assets.getMusic("backMusic4")); // Play death music
         uiManager.setCurrentStage("DEATH");        // Set UI to death stage
 
         // Reset player progress and save it
@@ -65,6 +67,15 @@ public class GameStateManager {
             uiManager.setCurrentStage("GAME");  // Show game UI
         }
     }
+    public void toggleMap() {
+        if (state == GameState.PLAYING) {
+            state = GameState.MAP;
+            uiManager.setCurrentStage("MAP");
+        } else if (state == GameState.MAP) {
+            state = GameState.PLAYING;
+            uiManager.setCurrentStage("GAME");
+        }
+    }
 
     // --- Toggle settings menu ---
     public void toggleSettings() {
@@ -74,6 +85,13 @@ public class GameStateManager {
         } else if (state == GameState.SETTINGS) {
             state = GameState.PLAYING;           // Close settings menu and return to game
             uiManager.setCurrentStage("GAME");
+        }
+    }
+
+    public void handleStonedPlayer(GameContext ctx) {
+        if (ctx.player.getState() == Player.State.STONED && state == GameState.PLAYING) {
+            MusicManager.playMusic(Assets.getMusic("kaifMusic"));
+            new SetDialogueAction(ctx, "police", "stoned").execute();
         }
     }
 }

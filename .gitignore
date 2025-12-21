@@ -173,4 +173,4 @@ android/build/
 desktop/build/
 core/build/
 
-settings.json
+assets/data/saving/settings.json

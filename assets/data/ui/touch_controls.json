@@ -1,0 +1,95 @@
+{
+  "buttons": [
+    {
+      "action": "ACT",
+      "textKey": "button.act.text",
+      "width": 150,
+      "height": 150,
+      "x": 1800,
+      "y": 150,
+      "fontScale": 2.0,
+      "stage": "gameStage"
+    },
+    {
+      "action": "INVENTORY",
+      "textKey": "button.inventory.text",
+      "width": 150,
+      "height": 150,
+      "x": 1800,
+      "y": 325,
+      "fontScale": 2.0,
+      "stage": "gameStage"
+    },
+    {
+      "action": "QUESTS",
+      "textKey": "button.quests.text",
+      "width": 200,
+      "height": 100,
+      "x": 20,
+      "y": 700,
+      "fontScale": 1.0,
+      "stage": "gameStage"
+    },
+    {
+      "action": "TOGGLE_MAP",
+      "textKey": "button.map.text",
+      "width": 200,
+      "height": 100,
+      "x": 250,
+      "y": 850,
+      "fontScale": 1.0,
+      "stage": "gameStage"
+    },
+    {
+      "action": "TOGGLE_MAP",
+      "textKey": "button.map.text",
+      "width": 200,
+      "height": 100,
+      "x": 20,
+      "y": 850,
+      "fontScale": 1.0,
+      "stage": "mapStage"
+    },
+    {
+      "action": "TOGGLE_PAUSE",
+      "textKey": "button.pause.text",
+      "width": 150,
+      "height": 75,
+      "x": 1750,
+      "y": 800,
+      "fontScale": 1.0,
+      "stage": "gameStage"
+    },
+    {
+      "action": "TOGGLE_PAUSE",
+      "textKey": "button.resume.text",
+      "width": 300,
+      "height": 150,
+      "x": -150,
+      "center_x": true,
+      "y": 250,
+      "fontScale": 1.0,
+      "stage": "pauseStage"
+    },
+    {
+      "action": "TOGGLE_SETTINGS",
+      "textKey": "button.settings.text",
+      "width": 200,
+      "height": 100,
+      "x": 20,
+      "y": 850,
+      "fontScale": 0.85,
+      "stage": "gameStage"
+    },
+    {
+      "action": "TOGGLE_SETTINGS",
+      "textKey": "button.back.text",
+      "width": 200,
+      "height": 100,
+      "x": 20,
+      "y": 850,
+      "fontScale": 1.0,
+      "stage": "settingsStage"
+    }
+  ]
+}

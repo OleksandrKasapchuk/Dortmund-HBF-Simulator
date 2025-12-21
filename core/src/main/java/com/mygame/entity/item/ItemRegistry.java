@@ -1,8 +1,9 @@
 package com.mygame.entity.item;
 
-
-import com.mygame.managers.ManagerRegistry;
-
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
+import com.mygame.entity.player.PlayerEffectManager;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,19 +11,41 @@ public class ItemRegistry {
 
     private static final Map<String, ItemType> types = new HashMap<>();
 
-    // --- викликається один раз при старті гри ---
-    public static void init(ManagerRegistry managerRegistry) {
+    public static void init() {
 
-        register(new ItemType("money", "item.money.name", "item.money.description", null));
-        register(new ItemType("grass", "item.grass.name", "item.grass.description", null));
-        register(new ItemType("pape", "item.pape.name", "item.pape.description", null));
-        register(new ItemType("joint", "item.joint.name", "item.joint.description", managerRegistry.getPlayerEffectManager()::applyJointEffect));
-        register(new ItemType("ice_tea", "item.ice_tea.name", "item.ice_tea.description", managerRegistry.getPlayerEffectManager()::applyIceTeaEffect));
-        register(new ItemType("spoon", "item.spoon.name", "item.spoon.description", null));
-        register(new ItemType("pfand", "item.pfand.name", "item.pfand.description", null));
-        register(new ItemType("bush", "item.bush.name", "item.bush.description", null));
-        register(new ItemType("pfandAutomat", "item.pfandAutomat.name", "item.pfandAutomat.description", null));
-        register(new ItemType("vape", "item.vape.name", "item.vape.description", null)); // Added vape
+        JsonReader reader = new JsonReader();
+        JsonValue itemsArray = reader.parse(Gdx.files.internal("data/items.json"));
+
+        for (JsonValue item : itemsArray) {
+
+            String key = item.getString("key");
+            String name = item.getString("name");
+            String description = item.getString("description");
+
+            Runnable effect = null;
+
+            if (item.has("effect")) {
+                effect = resolveEffect(
+                    item.getString("effect")
+                );
+            }
+
+            register(new ItemType(key, name, description, effect));
+        }
+    }
+
+    private static Runnable resolveEffect(String effectName) {
+
+        return switch (effectName) {
+            case "applyJointEffect" ->
+                PlayerEffectManager::applyJointEffect;
+
+            case "applyIceTeaEffect" ->
+                PlayerEffectManager::applyIceTeaEffect;
+
+            default ->
+                throw new RuntimeException("Unknown item effect: " + effectName);
+        };
     }
 
     private static void register(ItemType type) {
@@ -33,3 +56,4 @@ public class ItemRegistry {
         return types.get(key);
     }
 }
+

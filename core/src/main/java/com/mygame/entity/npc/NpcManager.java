@@ -4,14 +4,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
-import com.mygame.Assets;
-import com.mygame.dialogue.DialogueActionRegistry;
+import com.mygame.assets.Assets;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.player.Player;
-import com.mygame.game.GameSettings;
-import com.mygame.managers.global.save.SettingsManager;
+import com.mygame.game.save.GameSettings;
+import com.mygame.game.save.SettingsManager;
 import com.mygame.dialogue.DialogueRegistry;
-import com.mygame.ui.UIManager;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 
@@ -21,17 +19,14 @@ import java.util.List;
 public class NpcManager {
     private final ArrayList<NPC> npcs = new ArrayList<>();
     private final Player player;
-    private final DialogueRegistry dialogueRegistry;
 
     // Direct references for special NPCs if needed
     private Police police;
     private NPC boss;
     private Police summonedPolice;
 
-    public NpcManager(Player player, UIManager uiManager) {
+    public NpcManager(Player player) {
         this.player = player;
-        this.dialogueRegistry = new DialogueRegistry();
-        DialogueActionRegistry.registerAll(dialogueRegistry, player, uiManager, this);
     }
 
     public void loadNpcsFromMap(World world) {
@@ -61,7 +56,7 @@ public class NpcManager {
         GameSettings settings = SettingsManager.load();
         List<String> completedEvents = settings.completedDialogueEvents;
 
-        DialogueNode initialDialogue = dialogueRegistry.getInitialDialogue(npcId.toLowerCase());
+        DialogueNode initialDialogue = DialogueRegistry.getInitialDialogue(npcId.toLowerCase());
 
         String npcName;
         try {
@@ -75,30 +70,30 @@ public class NpcManager {
         float pauseTime = props.get("pauseTime", 0f, Float.class);
         float moveTime = props.get("moveTime", 0f, Float.class);
         int speed = props.get("speed", 50, Integer.class);
-        int distance = props.get("distance", 150, Integer.class);
 
         if (npcId.equalsIgnoreCase("police")) {
-            this.police = new Police(npcName, 100, 100, x, y, texture, world, 0, 100, initialDialogue);
+            this.police = new Police("police", npcName, 100, 100, x, y, texture, world, speed, initialDialogue);
             npc = this.police;
         } else {
-            npc = new NPC(npcName, 100, 100, x, y, texture, world, directionX, directionY, pauseTime, moveTime, speed, distance, initialDialogue);
+            npc = new NPC(npcId.toLowerCase(), npcName, 100, 100, x, y, texture, world, directionX, directionY, pauseTime, moveTime, speed, initialDialogue);
         }
 
         if (npcId.equalsIgnoreCase("igo") && completedEvents.contains("igo_gave_vape")) {
-            npc.setDialogue(dialogueRegistry.getDialogue("igo", "thanks"));
+            npc.setDialogue(DialogueRegistry.getDialogue("igo", "thanks"));
             npc.setTexture(Assets.getTexture("igo2"));
-        }
-        if (npcId.equalsIgnoreCase("ryzhyi") && completedEvents.contains("ryzhyi_gave_money")) {
-            npc.setDialogue(dialogueRegistry.getDialogue("ryzhyi", "after"));
-        }
-        if (npcId.equalsIgnoreCase("boss")) {
+        } else if (npcId.equalsIgnoreCase("ryzhyi") && completedEvents.contains("ryzhyi_gave_money")) {
+            npc.setDialogue(DialogueRegistry.getDialogue("ryzhyi", "after"));
+        } else if (npcId.equalsIgnoreCase("boss")) {
             this.boss = npc;
-            if (completedEvents.contains("boss_gave_quest")) {
-                npc.setDialogue(dialogueRegistry.getDialogue("boss", "after"));
+            if (completedEvents.contains("boss_reward_claimed")) {
+                npc.setDialogue(DialogueRegistry.getDialogue("boss", "finished"));
+            } else if (completedEvents.contains("boss_quest_escaped")) {
+                npc.setDialogue(DialogueRegistry.getDialogue("boss", "wellDone"));
+            } else if (completedEvents.contains("boss_gave_quest")) {
+                npc.setDialogue(DialogueRegistry.getDialogue("boss", "after"));
             }
-        }
-        if (npcId.equalsIgnoreCase("jason") && completedEvents.contains("jason_gave_money")) {
-            npc.setDialogue(dialogueRegistry.getDialogue("jason", "after"));
+        } else if (npcId.equalsIgnoreCase("jason") && completedEvents.contains("jason_gave_money")) {
+            npc.setDialogue(DialogueRegistry.getDialogue("jason", "after"));
         }
 
         npcs.add(npc);
@@ -107,22 +102,43 @@ public class NpcManager {
     }
 
     public void update(float delta) {
-        for (NPC npc : WorldManager.getCurrentWorld().getNpcs()) {
+        World currentWorld = WorldManager.getCurrentWorld();
+        if (currentWorld == null) return;
+        for (NPC npc : new ArrayList<>(currentWorld.getNpcs())) {
             npc.update(delta);
         }
     }
 
-    public NPC findNpcByName(String name) {
+    public NPC findNpcById(String id) {
         for (NPC npc : npcs) {
-            if (npc.getName().equals(name)) return npc;
+            if (npc.getId().equals(id)) return npc;
         }
         return null;
     }
 
     public void callPolice() {
-        summonedPolice = new Police(Assets.bundle.get("npc.police.name"), 100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police"), WorldManager.getWorld("main"), 200, 100, new DialogueNode("dialogue.police.called"));
+        World currentWorld = WorldManager.getCurrentWorld();
+        if (currentWorld == null) {
+            System.err.println("NpcManager: Cannot call police, current world is null!");
+            return;
+        }
+
+        summonedPolice = new Police("summoned_police", Assets.bundle.get("npc.police.name"),
+            100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police"),
+            currentWorld, 200, DialogueRegistry.getDialogue("summoned_police", "beforeChase"));
         npcs.add(summonedPolice);
-        WorldManager.getWorld("main").getNpcs().add(summonedPolice);
+        currentWorld.getNpcs().add(summonedPolice);
+    }
+
+    public void moveSummonedPoliceToNewWorld(World newWorld) {
+        if (summonedPolice != null && newWorld != null) {
+            World oldWorld = summonedPolice.getWorld();
+            if (oldWorld != null) {
+                oldWorld.getNpcs().remove(summonedPolice);
+            }
+            summonedPolice.setWorld(newWorld);
+            newWorld.getNpcs().add(summonedPolice);
+        }
     }
 
     public NPC getBoss() { return boss; }
@@ -130,8 +146,15 @@ public class NpcManager {
     public Police getSummonedPolice(){ return summonedPolice; }
 
     public void kill(NPC npc) {
+        if (npc == null) return;
+
         if (npc == summonedPolice) summonedPolice = null;
         if (npc == police) police = null;
         if (npc == boss) boss = null;
+
+        if (npc.getWorld() != null) {
+            npc.getWorld().getNpcs().remove(npc);
+        }
+        npcs.remove(npc);
     }
 }

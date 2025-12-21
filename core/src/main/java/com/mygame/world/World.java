@@ -8,7 +8,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
 import com.mygame.entity.npc.NPC;
 import com.mygame.entity.player.Player;
 import com.mygame.entity.item.Item;

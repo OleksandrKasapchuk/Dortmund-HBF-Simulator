@@ -3,9 +3,11 @@ package com.mygame.ui;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
 import com.mygame.dialogue.DialogueManager;
 import com.mygame.entity.player.Player;
 import com.mygame.ui.inGameUI.DialogueUI;
@@ -13,7 +15,6 @@ import com.mygame.ui.inGameUI.InventoryUI;
 import com.mygame.ui.inGameUI.QuestUI;
 import com.mygame.ui.inGameUI.TouchControlsUI;
 import com.mygame.ui.screenUI.*;
-import com.mygame.world.WorldManager;
 
 /**
  * UIManager is responsible for managing all UI components of the game.
@@ -27,6 +28,7 @@ import com.mygame.world.WorldManager;
 public class UIManager {
 
     private final Skin skin;
+    private final SpriteBatch batch;
 
     private QuestUI questUI;
     private InventoryUI inventoryUI;
@@ -42,6 +44,7 @@ public class UIManager {
 
     private Stage currentStage;
     private final DialogueManager dialogueManager;
+    private final GlyphLayout layout = new GlyphLayout();
 
     /**
      * Initializes all UI screens and attaches them to their respective stages.
@@ -49,10 +52,12 @@ public class UIManager {
      *
      * @param player The player object to link HUD elements and touchpad
      * @param skin The fully configured skin to use for all UI components
+     * @param batch The SpriteBatch used for world rendering
      */
-    public UIManager(Player player, Skin skin) {
+    public UIManager(SpriteBatch batch,Player player, Skin skin) {
         System.out.println("UIManager: Initializing...");
         this.skin = skin;
+        this.batch = batch;
 
         // Initialize screens with the provided skin
         gameUI = new GameUI(skin);
@@ -80,6 +85,7 @@ public class UIManager {
                 gameUI.getStage(),
                 pauseUI.getStage(),
                 settingsUI.getStage(),
+                worldMapUI.getStage(),
                 player
             );
             System.out.println("UIManager: TouchControlsUI created.");
@@ -108,46 +114,28 @@ public class UIManager {
     /**
      * Updates UI elements and handles input events.
      * This should be called every frame during the game.
-     *
      * @param delta Time elapsed since last frame
      * @param player Reference to the player
      */
     public void update(float delta, Player player) {
-        if (worldMapUI.isVisible()) {
+        if (currentStage == worldMapUI.getStage()) {
             worldMapUI.update();
         } else if (currentStage == gameUI.getStage()) {
-            gameUI.update(delta);
-            gameUI.updateMoney(player.getMoney());
-            gameUI.updateWorld(WorldManager.getCurrentWorld().getName());
-            // Update dialogue manager
+
+            gameUI.update(delta, player);
+
             dialogueManager.update(delta, isInteractPressed());
 
             if (questUI.isVisible()) questUI.update();
             if (inventoryUI.isVisible()) inventoryUI.update(player);
-
-            // Toggle inventory with Tab or touch button
-            if (Gdx.input.isKeyJustPressed(Input.Keys.TAB) || (touchControlsUI != null && touchControlsUI.isInvButtonJustPressed())) {
-                toggleInventoryTable();
-            }
-
-            // Toggle quests with Q or touch button
-            if (Gdx.input.isKeyJustPressed(Input.Keys.Q) || (touchControlsUI != null && touchControlsUI.isQuestButtonJustPressed())) {
-                toggleQuestTable();
-            }
         }
-
         // Update the current stage actors
         currentStage.act(delta);
+        resetButtons();
     }
 
     /** Draws the current stage */
-    public void render() {
-        if (worldMapUI.isVisible()) {
-            worldMapUI.render();
-        } else {
-            currentStage.draw();
-        }
-    }
+    public void render() { currentStage.draw();}
 
     /** Updates viewport size for current stage */
     public void resize(int width, int height) { currentStage.getViewport().update(width, height, true); }
@@ -184,13 +172,6 @@ public class UIManager {
         if (questUI.isVisible()) questUI.toggle();
         inventoryUI.toggle();
     }
-    public void toggleWorldMap() {
-        worldMapUI.toggle();
-    }
-
-    public boolean isMapVisible() {
-        return worldMapUI.isVisible();
-    }
 
     /** Resets the "just pressed" flags of touch buttons */
     public void resetButtons() {if (touchControlsUI != null) touchControlsUI.resetButtons();}
@@ -198,11 +179,25 @@ public class UIManager {
     // Getter methods for accessing UI components
     public DialogueManager getDialogueManager() { return dialogueManager; }
     public GameUI getGameUI() { return gameUI; }
+    public TouchControlsUI getTouchControlsUI() { return touchControlsUI; }
+
 
     public void showEarned(int amount, String thing){
-        gameUI.showInfoMessage(Assets.bundle.format("message.generic.got", amount, thing),1f);
+        gameUI.showInfoMessage(Assets.bundle.format("message.generic.got", amount, Assets.bundle.get(thing)),1f);
     }
+
     public void showNotEnough(String thing) {
-        gameUI.showInfoMessage(Assets.bundle.format("message.generic.not_enough", thing), 1f);
+        gameUI.showInfoMessage(Assets.bundle.format("message.generic.not_enough", Assets.bundle.get(thing)), 1f);
+    }
+
+    /**
+     * Draws centered text at world coordinates.
+     * @param text The text to draw
+     * @param x World X coordinate
+     * @param y World Y coordinate
+     */
+    public void drawText(String text, float x, float y) {
+        layout.setText(Assets.myFont, text);
+        Assets.myFont.draw(batch, text, x - layout.width / 2f, y + 60);
     }
 }

@@ -6,7 +6,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
+import com.mygame.entity.player.Player;
+import com.mygame.world.WorldManager;
 
 /**
  * GameUI handles the on-screen HUD elements during gameplay.
@@ -17,6 +19,7 @@ public class GameUI extends Screen {
     private Label infoLabel;        // Temporary info messages
     private float infoMessageTimer = 0f; // Timer to hide infoLabel automatically
     private Label worldLabel;
+
     /**
      * Constructor sets up the UI elements.
      *
@@ -26,42 +29,27 @@ public class GameUI extends Screen {
         Stage stage = getStage();
 
         // Money display
-        moneyLabel = new Label("", skin);
-        moneyLabel.setPosition(1700, 925);
-        moneyLabel.setFontScale(1.5f);
-        stage.addActor(moneyLabel);
+        moneyLabel = createLabel(skin, "", 1.5f, 1700, 925);
 
         // Info message display (temporary messages)
-        infoLabel = new Label("", skin);
+        infoLabel = createLabel(skin, "", 2f, stage.getViewport().getWorldWidth() / 2f, 850);
         infoLabel.setColor(Color.GOLD);
         infoLabel.setAlignment(Align.center);
-        infoLabel.setFontScale(2f);
-        infoLabel.setPosition(stage.getViewport().getWorldWidth() / 2f, 850, Align.center);
-        stage.addActor(infoLabel);
         infoLabel.setVisible(false);
 
-        worldLabel = new Label("", skin);
-        worldLabel.setFontScale(1.5f);
-        worldLabel.setPosition(10, Gdx.graphics.getHeight() - 100);
-        stage.addActor(worldLabel);
+        worldLabel = createLabel(skin, "", 1.5f, 10, Gdx.graphics.getHeight() - 100);
     }
 
-    /**
-     * Update the money display
-     *
-     * @param money Current player money
-     */
     public void updateMoney(int money) {
         moneyLabel.setText(Assets.bundle.format("ui.money", money));
     }
+
     public void updateWorld(String worldName) {
         worldLabel.setText(Assets.bundle.format("ui.world.name", Assets.bundle.get("ui.world.name." + worldName)));
     }
 
-
     /**
      * Show a temporary info message
-     *
      * @param message  The message text
      * @param duration How long the message should be visible (seconds)
      */
@@ -73,14 +61,16 @@ public class GameUI extends Screen {
 
     /**
      * Update method to be called every frame.
-     * Handles hiding the info message after its timer expires.
-     *
      * @param delta Time since last frame
      */
-    public void update(float delta) {
+    public void update(float delta, Player player) {
         if (infoMessageTimer > 0) {
             infoMessageTimer -= delta;
             if (infoMessageTimer <= 0) infoLabel.setVisible(false);
+        }
+        updateMoney(player.getInventory().getMoney());
+        if (WorldManager.getCurrentWorld() != null) {
+            updateWorld(WorldManager.getCurrentWorld().getName());
         }
     }
 }

@@ -15,7 +15,6 @@ public class WorldMapUI extends Screen {
 
     private final Table layout;
     private final ShapeRenderer shapeRenderer;
-    private boolean isVisible = false;
     private final Skin skin;
     private final Map<String, Label> worldLabels = new HashMap<>();
     private final Map<String, com.badlogic.gdx.math.Vector2> worldPositions = new HashMap<>();
@@ -37,7 +36,6 @@ public class WorldMapUI extends Screen {
         worldPositions.put("home", new com.badlogic.gdx.math.Vector2(1400, 300));
         worldPositions.put("subway", new com.badlogic.gdx.math.Vector2(1200, 500));
         worldPositions.put("kamp", new com.badlogic.gdx.math.Vector2(950, 300));
-        worldPositions.put("club", new com.badlogic.gdx.math.Vector2(650, 700));
 
         // Create labels for each world
         for (Map.Entry<String, com.badlogic.gdx.math.Vector2> entry : worldPositions.entrySet()) {
@@ -54,8 +52,6 @@ public class WorldMapUI extends Screen {
     }
 
     public void update() {
-        if (!isVisible) return;
-
         // Highlight the current world
         World currentWorld = WorldManager.getCurrentWorld();
         if (currentWorld != null) {
@@ -69,22 +65,6 @@ public class WorldMapUI extends Screen {
             }
         }
     }
-
-    public void render() {
-        if (!isVisible) return;
-
-        getStage().act();
-        getStage().draw();
-    }
-
-    public void toggle() {
-        this.isVisible = !this.isVisible;
-    }
-
-    public boolean isVisible() {
-        return isVisible;
-    }
-
     @Override
     public void dispose() {
         super.dispose();

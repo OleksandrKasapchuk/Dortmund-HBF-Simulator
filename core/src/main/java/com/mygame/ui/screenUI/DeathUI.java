@@ -1,15 +1,13 @@
 package com.mygame.ui.screenUI;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
 import com.mygame.Main;
 
 /**
@@ -28,7 +26,7 @@ public class DeathUI extends Screen {
         Stage stage = getStage();
 
         // Background image filling the screen
-        backgroundImage = new Image(Assets.deathBack);
+        backgroundImage = new Image(Assets.getTexture("deathBack"));
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
 
@@ -42,19 +40,8 @@ public class DeathUI extends Screen {
         deathLabel.setColor(Color.RED);
         deathLabel.setFontScale(3f);
 
-        // Restart button
-        TextButton restartButton = new TextButton(Assets.bundle.get("death.restart"), skin);
-        restartButton.getLabel().setFontScale(2f);
-        restartButton.addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                // Restart the game when the button is pressed
-                Main.restartGame();
-                return true;
-            }
-        });
+        TextButton restartButton = createButton(skin, Assets.bundle.get("death.restart"), 2f, Main::restartGame);
 
-        // Add elements to the table with layout
         table.add(deathLabel).padBottom(50).row();
         table.add(restartButton).width(300).height(100);
     }

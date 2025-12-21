@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="60" tilewidth="100" tileheight="100" infinite="0" nextlayerid="7" nextobjectid="36">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="60" tilewidth="100" tileheight="100" infinite="0" nextlayerid="7" nextobjectid="38">
  <tileset firstgid="1" source="plate.tsx"/>
  <tileset firstgid="2" source="brick.tsx"/>
  <tileset firstgid="3" source="npc.tsx"/>
- <layer id="1" name="background" width="50" height="60">
+ <layer id="1" name="background" width="50" height="60" opacity="0.95">
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -67,7 +67,7 @@
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 </data>
  </layer>
- <layer id="2" name="collision" width="50" height="60">
+ <layer id="2" name="collision" width="50" height="60" tintcolor="#afacaf">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,0,0,
@@ -165,9 +165,14 @@
     <property name="textureKey" value="boss"/>
    </properties>
   </object>
-  <object id="35" gid="3" x="2109" y="4095.33" width="70" height="100">
+  <object id="36" gid="3" x="1117" y="2642" width="70" height="100">
    <properties>
-    <property name="name" value="jamal"/>
+    <property name="name" value="jan"/>
+   </properties>
+  </object>
+  <object id="37" gid="3" x="3665" y="1950" width="70" height="100">
+   <properties>
+    <property name="name" value="filip"/>
    </properties>
   </object>
  </objectgroup>

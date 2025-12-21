@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.mygame.Assets;
+import com.mygame.assets.Assets;
 import com.mygame.entity.player.Player;
 import com.mygame.entity.item.ItemType;
 
@@ -81,14 +81,7 @@ public class InventoryUI {
         titleLabel.setColor(Color.GOLD);
         inventoryTable.add(titleLabel).colspan(4).expandX().center().row();
 
-        // Player status (DIAGNOSTIC CODE)
-        String statusKey;
-        if (player.getState() == Player.State.NORMAL) {
-            statusKey = "player.state.normal";
-        } else {
-            statusKey = "player.state.stoned";
-        }
-        Label statusLabel = new Label(Assets.bundle.get("inventory.status") + Assets.bundle.get(statusKey), skin);
+        Label statusLabel = new Label(Assets.bundle.get("inventory.status") + Assets.bundle.get(player.getState().getLocalizationKey()), skin);
         statusLabel.setFontScale(1.5f);
         inventoryTable.add(statusLabel).left().padBottom(40).colspan(4).row();
 
