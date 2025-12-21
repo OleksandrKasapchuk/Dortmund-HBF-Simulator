@@ -24,55 +24,57 @@ allprojects {
 }
 
 // === Localization Validator ===
-task checkLocalization {
-    group = "verification"
-    description = "Checks if all localization files match strings_en.properties"
+tasks.register('checkLocalization') {
+  group = "verification"
+  description = "Checks if all localization files match strings_en.properties"
 
-    doLast {
-        def i18nDir = file("assets/i18n")
-        def mainFile = file("assets/i18n/strings_en.properties")
+  doLast {
+    def i18nDir = file("assets/i18n")
+    def mainFile = file("assets/i18n/strings_en.properties")
 
-        if (!mainFile.exists()) {
-            throw new GradleException("CRITICAL ERROR: Main localization file (strings_en.properties) not found!")
-        }
-
-        def mainProps = new Properties()
-        mainFile.withInputStream { mainProps.load(it) }
-        def mainKeys = mainProps.keySet().toSet()
-
-        def propFiles = i18nDir.listFiles().findAll { it.name.endsWith(".properties") && it.name != "strings_en.properties" }
-
-        def errors = []
-
-        propFiles.each { file ->
-            def currentProps = new Properties()
-            file.withInputStream { currentProps.load(it) }
-            def currentKeys = currentProps.keySet().toSet()
-
-            def missing = mainKeys - currentKeys
-            def extra = currentKeys - mainKeys
-
-            if (!missing.isEmpty()) {
-                errors << "File [${file.name}] is MISSING keys: ${missing}"
-            }
-            if (!extra.isEmpty()) {
-                errors << "File [${file.name}] has EXTRA keys (not in main): ${extra}"
-            }
-        }
-
-        if (!errors.isEmpty()) {
-            throw new GradleException("Localization Validation Failed:\n" + errors.join("\n"))
-        } else {
-            println "SUCCESS: Localization check passed for ${propFiles.size()} files."
-        }
+    if (!mainFile.exists()) {
+      throw new GradleException("CRITICAL ERROR: Main localization file (strings_en.properties) not found!")
     }
+
+    def mainProps = new Properties()
+    mainFile.withInputStream { mainProps.load(it) }
+    def mainKeys = mainProps.keySet().toSet()
+
+    def propFiles = i18nDir.listFiles().findAll { it.name.endsWith(".properties") && it.name != "strings_en.properties" }
+
+    def errors = []
+
+    propFiles.each { file ->
+      def currentProps = new Properties()
+      file.withInputStream { currentProps.load(it) }
+      def currentKeys = currentProps.keySet().toSet()
+
+      def missing = mainKeys - currentKeys
+      def extra = currentKeys - mainKeys
+
+      if (!missing.isEmpty()) {
+        errors << "File [${file.name}] is MISSING keys: ${missing}"
+      }
+      if (!extra.isEmpty()) {
+        errors << "File [${file.name}] has EXTRA keys (not in main): ${extra}"
+      }
+    }
+
+    if (!errors.isEmpty()) {
+      throw new GradleException("Localization Validation Failed:\n" + errors.join("\n"))
+    } else {
+      println "SUCCESS: Localization check passed for ${propFiles.size()} files."
+    }
+  }
 }
 
 // ПРИМУСОВА ПЕРЕВІРКА: Прив'язуємо до компіляції всіх проектів
 allprojects { project ->
-    tasks.withType(JavaCompile) {
-        dependsOn ":checkLocalization"
+  tasks.withType(JavaCompile).tap {
+    configureEach {
+      dependsOn ":checkLocalization"
     }
+  }
 }
 
 project(":lwjgl3") {
@@ -101,7 +103,9 @@ project(":core") {
     sourceCompatibility = 17
 
     dependencies {
+        //noinspection NewerVersionAvailable
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
+        //noinspection NewerVersionAvailable
         api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
     }
 }

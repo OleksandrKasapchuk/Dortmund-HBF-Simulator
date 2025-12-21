@@ -23,7 +23,7 @@ public class ChikitaCraftJointAction implements DialogueAction {
         ctx.getInventory().removeItem(ItemRegistry.get("grass"), 1);
         ctx.getInventory().removeItem(ItemRegistry.get("pape"), 1);
         ctx.player.setMovementLocked(true);
-        SoundManager.playSound(Assets.getSound("kosyakSound"));
+        SoundManager.playSound(Assets.getSound("kosyak"));
         TimerManager.setAction(() -> {
             ctx.getInventory().addItemAndNotify(ItemRegistry.get("joint"), 1);
             ctx.player.setMovementLocked(false);

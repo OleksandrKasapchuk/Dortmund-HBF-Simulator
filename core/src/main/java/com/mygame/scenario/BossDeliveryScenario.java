@@ -83,7 +83,7 @@ public class BossDeliveryScenario implements Scenario {
     private void triggerQuestSuccess() {
         QuestManager.removeQuest("delivery");
         ctx.player.getInventory().removeItem(ItemRegistry.get("grass"), 1000);
-        SoundManager.playSound(Assets.getSound("bushSound"));
+        SoundManager.playSound(Assets.getSound("bush"));
         ctx.player.setMovementLocked(true);
 
         TimerManager.setAction(() -> {

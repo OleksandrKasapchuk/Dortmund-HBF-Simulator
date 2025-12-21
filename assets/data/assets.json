@@ -25,5 +25,6 @@
   { "key": "spoon", "path": "images/item/spoon.png" },
   { "key": "pfand", "path": "images/item/pfand.png" },
   { "key": "pfandAutomat", "path": "images/item/pfand_automat.png" },
-  { "key": "bush", "path": "images/block/bush.jpg" }
+  { "key": "bush", "path": "images/block/bush.jpg" },
+  { "key": "wood", "path": "images/block/wood.jpeg" }
 ]

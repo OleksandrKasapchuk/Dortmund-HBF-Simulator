@@ -20,6 +20,7 @@ public class ItemManager {
     // --- Fields for specific, important items (Restored) ---
     private Item bush;
     private Item pfandAutomat;
+    private Item table;
 
     /**
      * Loads items from a specific world's Tiled map layer named "items".
@@ -73,6 +74,9 @@ public class ItemManager {
             if ("pfandAutomat".equalsIgnoreCase(itemKey)) {
                 this.pfandAutomat = item;
             }
+            if ("table".equalsIgnoreCase(itemKey)) {
+                this.table = item;
+            }
 
             System.out.println("SUCCESS: ItemManager loaded item '" + itemKey + "' into world '" + world.getName() + "'");
         }
@@ -102,4 +106,5 @@ public class ItemManager {
     public Item getPfandAutomat() {
         return pfandAutomat;
     }
+    public Item getTable(){ return table;}
 }
