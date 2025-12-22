@@ -2,6 +2,7 @@ package com.mygame.scenario;
 
 import com.mygame.assets.Assets;
 import com.mygame.assets.audio.MusicManager;
+import com.mygame.dialogue.action.AddQuestAction;
 import com.mygame.dialogue.action.CompleteEventAction;
 import com.mygame.dialogue.action.SetDialogueAction;
 import com.mygame.entity.npc.NPC;
@@ -12,6 +13,7 @@ import com.mygame.game.GameContext;
 import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.managers.TimerManager;
+import com.mygame.quest.QuestManager;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 import com.mygame.world.transition.Transition;
@@ -70,6 +72,8 @@ public class PoliceChaseScenario implements Scenario {
                     if (boss != null) {
                         new SetDialogueAction(ctx, "boss", "wellDone").execute();
                         new CompleteEventAction(ctx, "boss_quest_escaped").execute();
+                        QuestManager.removeQuest("chase");
+                        new AddQuestAction("boss_end",false,0,0).execute();
                     }
                     ctx.npcManager.kill(police);
                 }

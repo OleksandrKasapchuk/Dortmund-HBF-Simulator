@@ -52,7 +52,7 @@ public class GrassSeedTableScenario implements Scenario {
     }
 
     private void triggerTable(){
-        SoundManager.playSound(Assets.getSound("pfandAutomat"));
+        SoundManager.playSound(Assets.getSound("bush"));
 
         // Timer to give money after 1.9 seconds
         TimerManager.setAction(() ->

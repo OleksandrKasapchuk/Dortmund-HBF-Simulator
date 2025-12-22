@@ -1,0 +1,100 @@
+{
+  "baryga_buy_grass": { "type": "trade", "from": "money", "to": "grass", "fromAmount": 10, "toAmount": 1 },
+  "kioskman_buy_pape": { "type": "trade", "from": "money", "to": "pape", "fromAmount": 5, "toAmount": 1 },
+  "kioskman_buy_icetea": { "type": "trade", "from": "money", "to": "ice_tea", "fromAmount": 10, "toAmount": 1 },
+  "buy_seed": { "type": "trade", "from": "money", "to": "grass_seed", "fromAmount": 5, "toAmount": 1 },
+
+  "murat_accept_quest": { "type": "add_quest", "id": "chili" },
+  "walter_accept_quest": { "type": "add_quest", "id": "wallet" },
+  "igo_add_quest": { "type": "add_quest", "id": "igo" },
+
+  "ryzhyi_take_money": {
+    "type": "composite",
+    "actions": [
+      { "type": "add_item", "id": "money", "amount": 20 },
+      { "type": "set_dialogue", "npc": "ryzhyi", "node": "after" },
+      { "type": "complete_event", "id": "ryzhyi_gave_money" }
+    ]
+  },
+
+  "jason_give_money": {
+    "type": "composite",
+    "actions": [
+      { "type": "add_item", "id": "money", "amount": 20 },
+      { "type": "add_quest", "id": "jason1", "progressable": true, "progress": 1, "max": 6 },
+      { "type": "add_quest", "id": "jason2", "progressable": true, "progress": 0, "max": 10 },
+      { "type": "set_dialogue", "npc": "jason", "node": "after" },
+      { "type": "complete_event", "id": "jason_gave_money" }
+    ]
+  },
+
+  "igo_give_vape": {
+    "type": "conditional_trade",
+    "from": "joint",
+    "to": "vape",
+    "fromAmount": 1,
+    "toAmount": 1,
+    "onSuccess": {
+      "type": "composite",
+      "actions": [
+        { "type": "remove_quest", "id": "igo" },
+        { "type": "set_dialogue", "npc": "igo", "node": "thanks" },
+        { "type": "complete_event", "id": "igo_gave_vape" },
+        {
+          "type": "timer",
+          "delay": 5.0,
+          "action": {
+            "type": "set_texture",
+            "npcNameKey": "npc.igo.name",
+            "texture": "igo2"
+          }
+        }
+      ]
+    }
+  },
+
+  "give_vape_action": {
+    "type": "if_has_item",
+    "itemId": "vape",
+    "itemNameKey": "item.vape.name",
+    "action": {
+      "type": "set_dialogue",
+      "npc": "talahon2",
+      "node": "accept"
+    }
+  },
+
+  "boss_accept_quest": {
+    "type": "composite",
+    "actions": [
+      { "type": "add_item", "id": "grass", "amount": 1000 },
+      { "type": "add_quest", "id": "delivery" },
+      { "type": "set_dialogue", "npc": "boss", "node": "after" },
+      { "type": "complete_event", "id": "boss_gave_quest" }
+    ]
+  },
+
+  "boss_claim_reward": {
+    "type": "composite",
+    "actions": [
+      { "type": "add_item", "id": "money", "amount": 50 },
+      { "type": "set_dialogue", "npc": "boss", "node": "finished" },
+      { "type": "complete_event", "id": "boss_reward_claimed" },
+      { "type": "remove_quest", "id": "boss_end" }
+    ]
+  },
+
+  "failure": {
+    "type": "composite",
+    "actions": [
+      { "type": "set_dialogue", "npc": "boss", "node": "failure" },
+      { "type": "player_died" },
+      { "type": "play_sound", "id": "gunShot" }
+    ]
+  },
+
+  "chikita_craft_joint": { "type": "chikita_craft" },
+  "police_check": { "type": "police_check" },
+  "player_died": { "type": "player_died" },
+  "start_police_chase": { "type": "start_police_chase" }
+}

@@ -75,7 +75,7 @@ public class InventoryManager {
             addItemAndNotify(receive, receiveAmount);
             return true;
         }
-        uiManager.showNotEnough(give.getKey());
+        uiManager.showNotEnough(give.getNameKey());
         return false;
     }
 
