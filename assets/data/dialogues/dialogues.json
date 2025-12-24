@@ -75,7 +75,11 @@
       },
       "finished": ["dialogue.boss.whatDoYouWant"],
       "after": ["dialogue.boss.after.1", "dialogue.boss.after.2"],
-      "failure": ["dialogue.boss.failure.1", "dialogue.boss.failure.2", "dialogue.boss.failure.3"]
+      "failure": {
+        "texts": ["dialogue.boss.failure.1", "dialogue.boss.failure.2", "dialogue.boss.failure.3"],
+        "onFinish": "failure"
+
+}
     }
   },
   "police": {
@@ -162,11 +166,7 @@
   "walter": {
     "nodes": {
       "start": {
-        "texts": ["dialogue.walter.start.1", "dialogue.walter.start.2", "dialogue.walter.start.3", "dialogue.walter.start.4", "dialogue.walter.start.5", "dialogue.walter.start.6"],
-        "choices": [
-          { "text": "dialogue.walter.choice.help", "action": "walter_accept_quest" },
-          "dialogue.walter.choice.ignore"
-        ]
+        "texts": ["dialogue.walter.start.1", "dialogue.walter.start.2"]
       }
     }
   },

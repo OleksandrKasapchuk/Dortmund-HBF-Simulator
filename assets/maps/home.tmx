@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="100" tileheight="100" infinite="0" nextlayerid="6" nextobjectid="5">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="100" tileheight="100" infinite="0" nextlayerid="6" nextobjectid="6">
  <tileset firstgid="1" source="plate.tsx"/>
  <tileset firstgid="2" source="brick.tsx"/>
  <tileset firstgid="3" source="npc.tsx"/>
  <tileset firstgid="4" source="wooden_floor.tsx"/>
  <tileset firstgid="5" source="wood.tsx"/>
- <layer id="1" name="background" width="30" height="30" opacity="0.95">
+ <layer id="1" name="background" width="30" height="30" opacity="0.93">
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -96,6 +96,14 @@
     <property name="isPickupable" type="bool" value="false"/>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="bush"/>
+   </properties>
+  </object>
+  <object id="5" gid="5" x="2033" y="1381.79" width="249" height="135">
+   <properties>
+    <property name="isPickupable" type="bool" value="false"/>
+    <property name="isSolid" type="bool" value="true"/>
+    <property name="itemKey" value="table"/>
+    <property name="textureKey" value="wood"/>
    </properties>
   </object>
  </objectgroup>

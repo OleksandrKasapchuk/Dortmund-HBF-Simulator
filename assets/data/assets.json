@@ -7,7 +7,6 @@
   { "key": "chikita", "path": "images/npc/chikita.png" },
   { "key": "police", "path": "images/npc/police.png" },
   { "key": "kioskman", "path": "images/npc/kioskman.png" },
-  { "key": "junky", "path": "images/npc/junky.png" },
   { "key": "zoe", "path": "images/npc/zoe.png" },
   { "key": "boss", "path": "images/npc/boss.png" },
   { "key": "kamil", "path": "images/npc/kamil.png" },
@@ -26,5 +25,6 @@
   { "key": "spoon", "path": "images/item/spoon.png" },
   { "key": "pfand", "path": "images/item/pfand.png" },
   { "key": "pfandAutomat", "path": "images/item/pfand_automat.png" },
-  { "key": "bush", "path": "images/block/bush.jpg" }
+  { "key": "bush", "path": "images/block/bush.jpg" },
+  { "key": "wood", "path": "images/block/wood.jpeg" }
 ]

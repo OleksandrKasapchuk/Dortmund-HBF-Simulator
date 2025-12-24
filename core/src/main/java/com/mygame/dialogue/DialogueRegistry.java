@@ -14,8 +14,6 @@ public class DialogueRegistry {
     private static Map<String, DialogueNode> builtNodes = new HashMap<>();
 
     public static void init() {
-        npcDialogueData.clear();
-        builtNodes.clear();
         JsonReader jsonReader = new JsonReader();
         JsonValue base = jsonReader.parse(Gdx.files.internal("data/dialogues/dialogues.json"));
         for (JsonValue npcData : base) {

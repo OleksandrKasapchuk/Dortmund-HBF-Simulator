@@ -24,7 +24,7 @@ public class PlayerEffectManager {
     }
 
     public static void applyJointEffect() {
-        SoundManager.playSound(Assets.getSound("lighterSound"));
+        SoundManager.playSound(Assets.getSound("lighter"));
         TimerManager.setAction(() -> {
             if (player.getState() == Player.State.NORMAL)
                 uiManager.getGameUI().showInfoMessage(Assets.bundle.get("message.joint"), 1.5f);

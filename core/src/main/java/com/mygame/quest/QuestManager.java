@@ -13,23 +13,19 @@ import java.util.ArrayList;
 public class QuestManager {
     private static ArrayList<Quest> quests = new ArrayList<>();
 
-    /**Adds a new quest to the quest list*/
+    /** Adds a new quest to the quest list */
     public static void addQuest(Quest quest) {
         if (hasQuest(quest.key())) return;
         quests.add(quest);
         EventBus.fire(new Events.QuestStartedEvent(quest.key()));
     }
 
-    /**
-     * Removes a quest by its key
-     */
+    /** Removes a quest by its key */
     public static void removeQuest(String key) {
         quests.removeIf(q -> q.key().equals(key));
     }
 
-    /**
-     * Returns the list of all quests
-     */
+    /** Returns the list of all quests */
     public static ArrayList<Quest> getQuests() {
         return quests;
     }
@@ -37,16 +33,12 @@ public class QuestManager {
     public static Quest getQuest(String key) {
         return quests.stream().filter(q -> q.key().equals(key)).findFirst().orElse(null);
     }
-    /**
-     * Checks if a quest with the given key exists
-     */
+    /** Checks if a quest with the given key exists */
     public static boolean hasQuest(String key) {
         return quests.stream().anyMatch(q -> q.key().equals(key));
     }
 
-    /**
-     * Clears all quests from the quest list
-     */
+    /** Clears all quests from the quest list */
     public static void reset() {quests.clear();}
 
     public static class Quest {
@@ -79,7 +71,9 @@ public class QuestManager {
         }
 
         public void makeProgress() {
+            System.out.println("Quest " + key + " is in progress");
             if (!progressable) return;
+            System.out.println("Quest " + key + " made progress");
             this.progress++;
             EventBus.fire(new Events.QuestProgressEvent(key, progress, maxProgress));
 

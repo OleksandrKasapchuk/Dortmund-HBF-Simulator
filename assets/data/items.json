@@ -32,9 +32,9 @@
     "effect": "applyIceTeaEffect"
   },
   {
-    "key": "spoon",
-    "name": "item.spoon.name",
-    "description": "item.spoon.description"
+    "key": "table",
+    "name": "item.table.name",
+    "description": "item.table.description"
   },
   {
     "key": "pfand",

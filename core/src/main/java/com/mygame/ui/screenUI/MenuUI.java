@@ -9,6 +9,7 @@ import com.mygame.assets.Assets;
 import com.mygame.Main;
 import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;
+import com.mygame.quest.QuestObserver;
 
 /**
  * MenuUI displays the main menu screen.
@@ -33,9 +34,15 @@ public class MenuUI extends Screen {
         stage.addActor(startButton);
 
         TextButton newGameButton = createButton(skin, Assets.bundle.get("button.newGame.text"), 1.5f, 300, 125, 200, 300, () -> {
-                SettingsManager.save(new GameSettings());
-                Main.restartGame();
-                Main.getGameInitializer().getManagerRegistry().getGameStateManager().startGame();
+            GameSettings newSettings = new GameSettings();
+            newSettings.language = SettingsManager.load().language;
+            SettingsManager.save(newSettings);
+
+            // Sync QuestObserver with the new empty save
+            QuestObserver.refresh();
+
+            Main.restartGame();
+            Main.getGameInitializer().getManagerRegistry().getGameStateManager().startGame();
             });
         stage.addActor(newGameButton);
     }
