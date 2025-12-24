@@ -71,7 +71,9 @@ public class QuestManager {
         }
 
         public void makeProgress() {
+            System.out.println("Quest " + key + " is in progress");
             if (!progressable) return;
+            System.out.println("Quest " + key + " made progress");
             this.progress++;
             EventBus.fire(new Events.QuestProgressEvent(key, progress, maxProgress));
 

@@ -71,9 +71,11 @@ public class BossDeliveryScenario implements Scenario {
     private void triggerBossFailure() {
         NPC boss = ctx.npcManager.getBoss();
         new SetDialogueAction(ctx, "boss", "failure").execute();
+        boss.getWorld().getNpcs().remove(boss);
 
         TimerManager.setAction(() -> {
-            boss.setWorld(ctx.player.getWorld());
+            WorldManager.getCurrentWorld().getNpcs().add(boss);
+
             boss.setX(ctx.player.getX() - 100);
             boss.setY(ctx.player.getY());
             ctx.ui.getDialogueManager().startForcedDialogue(boss);
