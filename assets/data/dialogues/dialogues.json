@@ -124,7 +124,12 @@
         "onFinish": "jason_give_money",
         "texts": ["dialogue.jason.start.1", "dialogue.jason.start.2", "dialogue.jason.start.3", "dialogue.jason.start.4", "dialogue.jason.start.5"]
       },
-      "after": ["dialogue.jason.after.1", "dialogue.jason.after.2"]
+      "after": ["dialogue.jason.after.1", "dialogue.jason.after.2"],
+      "finished": {
+        "onFinish": "jason_completed",
+        "texts": ["dialogue.jason.finished"]
+      },
+      "completed": ["dialogue.jason.completed"]
     }
   },
   "murat": {

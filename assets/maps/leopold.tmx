@@ -140,8 +140,8 @@
   <object id="1" gid="2" x="2177.76" y="5956.91" width="715.152" height="200">
    <properties>
     <property name="targetWorldId" value="main"/>
-    <property name="targetX" type="float" value="3000"/>
-    <property name="targetY" type="float" value="6200"/>
+    <property name="targetX" type="float" value="1750"/>
+    <property name="targetY" type="float" value="5300"/>
    </properties>
   </object>
  </objectgroup>

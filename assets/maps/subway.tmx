@@ -102,8 +102,8 @@
   <object id="2" gid="2" x="2610" y="3598" width="800" height="460">
    <properties>
     <property name="targetWorldId" value="main"/>
-    <property name="targetX" type="float" value="5200"/>
-    <property name="targetY" type="float" value="5000"/>
+    <property name="targetX" type="float" value="3700"/>
+    <property name="targetY" type="float" value="3900"/>
    </properties>
   </object>
  </objectgroup>

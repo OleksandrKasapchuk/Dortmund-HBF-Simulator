@@ -61,7 +61,7 @@ public class WorldManager {
         if (currentWorld != null) currentWorld.draw(batch, font, player);
 
         if (inTransitionZone) {
-            font.draw(batch, Assets.bundle.get("world.pressEToTransition"), player.getX(), player.getY() + player.getHeight() + 30);
+            font.draw(batch, Assets.ui.get("world.pressEToTransition"), player.getX(), player.getY() + player.getHeight() + 30);
         }
 
     }

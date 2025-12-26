@@ -60,7 +60,7 @@ public class NpcManager {
 
         String npcName;
         try {
-            npcName = Assets.bundle.get("npc." + npcId.toLowerCase() + ".name");
+            npcName = Assets.npcs.get("npc." + npcId.toLowerCase() + ".name");
         } catch (Exception e) {
             npcName = npcId; // Fallback to id
         }
@@ -123,7 +123,7 @@ public class NpcManager {
             return;
         }
 
-        summonedPolice = new Police("summoned_police", Assets.bundle.get("npc.police.name"),
+        summonedPolice = new Police("summoned_police", Assets.npcs.get("npc.police.name"),
             100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police"),
             currentWorld, 200, DialogueRegistry.getDialogue("summoned_police", "beforeChase"));
         npcs.add(summonedPolice);

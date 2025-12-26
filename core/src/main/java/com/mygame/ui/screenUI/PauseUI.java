@@ -17,10 +17,10 @@ public class PauseUI extends Screen {
      */
     public PauseUI(Skin skin) {
         // "GAME PAUSED" label
-        createLabel(skin, Assets.bundle.get("pause.title"), 2.5f,750, 600);
+        createLabel(skin, Assets.ui.get("pause.title"), 2.5f,750, 600);
 
         // Instruction label to resume game
         if (Gdx.app.getType() != Application.ApplicationType.Android)
-            createLabel(skin, Assets.bundle.get("pause.resume"), 1.5f,775, 500);
+            createLabel(skin, Assets.ui.get("pause.resume"), 1.5f,775, 500);
     }
 }

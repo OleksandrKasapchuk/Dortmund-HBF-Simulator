@@ -67,7 +67,7 @@ public class DialogueActionRegistry {
         });
 
         creators.put("set_texture", (ctx, data) -> () -> {
-            var npc = ctx.npcManager.findNpcById(Assets.bundle.get(data.getString("npcNameKey")));
+            var npc = ctx.npcManager.findNpcById(Assets.npcs.get(data.getString("npcNameKey")));
             if (npc != null) npc.setTexture(Assets.getTexture(data.getString("texture")));
         });
 
@@ -97,7 +97,7 @@ public class DialogueActionRegistry {
             if (police != null) {
                 new AddQuestAction("chase", false, 0, 0).execute();
                 police.startChase(ctx.player);
-                ctx.ui.getGameUI().showInfoMessage(Assets.bundle.get("message.boss.chase.run"), 2f);
+                ctx.ui.getGameUI().showInfoMessage(Assets.messages.get("message.boss.chase.run"), 2f);
                 MusicManager.playMusic(Assets.getMusic("backMusic4"));
                 new SetDialogueAction(ctx, "summoned_police", "caught").execute();
             }

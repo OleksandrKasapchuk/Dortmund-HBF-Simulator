@@ -46,7 +46,7 @@ public class PfandAutomatScenario implements Scenario {
         if (pfandAutomat == null || pfandAutomat.getWorld() != WorldManager.getCurrentWorld()) return;
 
         if (pfandAutomat.isPlayerNear(ctx.player)) {
-            ctx.ui.drawText(Assets.bundle.get("interact.pfandAutomat"), pfandAutomat.getCenterX(), pfandAutomat.getCenterY());
+            ctx.ui.drawText(Assets.ui.get("interact.pfandAutomat"), pfandAutomat.getCenterX(), pfandAutomat.getCenterY());
         }
     }
 

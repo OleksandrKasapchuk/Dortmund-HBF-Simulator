@@ -126,7 +126,6 @@ public class UIManager {
 
             dialogueManager.update(delta, isInteractPressed());
 
-            if (questUI.isVisible()) questUI.update();
             if (inventoryUI.isVisible()) inventoryUI.update(player);
         }
         // Update the current stage actors
@@ -183,11 +182,11 @@ public class UIManager {
 
 
     public void showEarned(int amount, String thing){
-        gameUI.showInfoMessage(Assets.bundle.format("message.generic.got", amount, Assets.bundle.get(thing)),1f);
+        gameUI.showInfoMessage(Assets.messages.format("message.generic.got", amount, Assets.items.get(thing)),1f);
     }
 
     public void showNotEnough(String thing) {
-        gameUI.showInfoMessage(Assets.bundle.format("message.generic.not_enough", Assets.bundle.get(thing)), 1f);
+        gameUI.showInfoMessage(Assets.messages.format("message.generic.not_enough", Assets.items.get(thing)), 1f);
     }
 
     /**

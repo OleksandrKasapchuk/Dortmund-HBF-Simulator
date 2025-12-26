@@ -44,7 +44,7 @@ public class BossDeliveryScenario implements Scenario {
                 if (ctx.player.getInventory().getAmount(ItemRegistry.get("grass")) >= 1000) {
                     triggerQuestSuccess();
                 } else {
-                    ctx.ui.getGameUI().showInfoMessage(Assets.bundle.get("message.boss.not_enough_grass"), 2f);
+                    ctx.ui.getGameUI().showInfoMessage(Assets.messages.get("message.boss.not_enough_grass"), 2f);
                 }
             }
         }
@@ -58,7 +58,7 @@ public class BossDeliveryScenario implements Scenario {
         if (bush == null || bush.getWorld() != WorldManager.getCurrentWorld()) return;
 
         if (bush.isPlayerNear(ctx.player, 250)) {
-            ctx.ui.drawText(Assets.bundle.get("interact.bush"), bush.getCenterX(), bush.getCenterY());
+            ctx.ui.drawText(Assets.ui.get("interact.bush"), bush.getCenterX(), bush.getCenterY());
         }
     }
 

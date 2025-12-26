@@ -21,10 +21,16 @@
     "type": "composite",
     "actions": [
       { "type": "add_item", "id": "money", "amount": 20 },
-      { "type": "add_quest", "id": "jason1", "progressable": true, "progress": 1, "max": 6 },
+      { "type": "add_quest", "id": "jason1", "progressable": true, "progress": 0, "max": 5 },
       { "type": "add_quest", "id": "jason2", "progressable": true, "progress": 0, "max": 10 },
       { "type": "set_dialogue", "npc": "jason", "node": "after" },
       { "type": "complete_event", "id": "jason_gave_money" }
+    ]
+  },
+  "jason_completed": {
+    "type": "composite",
+    "actions": [
+      { "type": "set_dialogue", "npc": "jason", "node": "completed" }
     ]
   },
 
@@ -37,7 +43,6 @@
     "onSuccess": {
       "type": "composite",
       "actions": [
-        { "type": "remove_quest", "id": "igo" },
         { "type": "set_dialogue", "npc": "igo", "node": "thanks" },
         { "type": "complete_event", "id": "igo_gave_vape" },
         {

@@ -69,7 +69,7 @@ public class World {
         for (NPC npc : npcs) {
             npc.draw(batch);
             if (npc.isPlayerNear(player)) {
-                font.draw(batch, Assets.bundle.get("interact.npc"), npc.getX() - 100, npc.getY() + npc.getHeight() + 40);
+                font.draw(batch, Assets.ui.get("interact.npc"), npc.getX() - 100, npc.getY() + npc.getHeight() + 40);
             }
         }
         for (Item item : items)
@@ -78,7 +78,7 @@ public class World {
         for (Transition transition : transitions) {
             float textX = transition.area.x + transition.area.width / 2 - 50;
             float textY = transition.area.y + transition.area.height / 2;
-            font.draw(batch, Assets.bundle.get("ui.world.name." + transition.targetWorldId), textX, textY);
+            font.draw(batch, Assets.ui.get("ui.world.name." + transition.targetWorldId), textX, textY);
         }
     }
 

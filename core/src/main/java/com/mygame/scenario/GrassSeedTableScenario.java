@@ -47,7 +47,7 @@ public class GrassSeedTableScenario implements Scenario {
         if (table == null || table.getWorld() != WorldManager.getCurrentWorld()) return;
 
         if (table.isPlayerNear(ctx.player) && ctx.player.getInventory().hasItem(ItemRegistry.get("grass_seed"))) {
-            ctx.ui.drawText(Assets.bundle.get("interact.npc"), table.getCenterX(), table.getCenterY());
+            ctx.ui.drawText(Assets.ui.get("interact.npc"), table.getCenterX(), table.getCenterY());
         }
     }
 

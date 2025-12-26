@@ -66,7 +66,7 @@ public class PoliceChaseScenario implements Scenario {
                     ctx.ui.getDialogueManager().startForcedDialogue(police);
                 case ESCAPED -> {
                     MusicManager.playMusic(Assets.getMusic("backMusic1"));
-                    ctx.ui.getGameUI().showInfoMessage(Assets.bundle.get("message.generic.ranAway"), 1.5f);
+                    ctx.ui.getGameUI().showInfoMessage(Assets.messages.get("message.generic.ranAway"), 1.5f);
 
                     NPC boss = ctx.npcManager.getBoss();
                     if (boss != null) {
