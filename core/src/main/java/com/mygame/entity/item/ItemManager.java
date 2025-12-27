@@ -41,7 +41,7 @@ public class ItemManager {
                 continue;
             }
 
-            ItemType itemType = ItemRegistry.get(itemKey);
+            ItemDefinition itemType = ItemRegistry.get(itemKey);
             if (itemType == null) {
                 System.err.println("Skipping item: ItemType with key '" + itemKey + "' not found in ItemRegistry.");
                 continue;

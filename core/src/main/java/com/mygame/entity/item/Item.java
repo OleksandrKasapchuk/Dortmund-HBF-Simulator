@@ -11,7 +11,7 @@ import com.mygame.world.World;
 public class Item extends Entity {
 
     // --- Item properties ---
-    private ItemType type;
+    private ItemDefinition type;
     private boolean canBePickedUp;
     private boolean solid;
     private int distance;           // distance at which player can interact/pick up
@@ -20,7 +20,7 @@ public class Item extends Entity {
     private float cooldownTimer = 0f;
 
     public Item(
-        ItemType type, int width, int height,
+        ItemDefinition type, int width, int height,
         float x, float y, int distance,
         Texture texture, World world,
         boolean canBePickedUp, boolean solid
@@ -39,7 +39,7 @@ public class Item extends Entity {
 
     // --- Basic getters ---
     public String getName() { return type.getNameKey(); }
-    public ItemType getType() { return type; }
+    public ItemDefinition getType() { return type; }
     public boolean canBePickedUp() { return canBePickedUp; }
     public boolean isSolid() { return solid; }
     public int getDistance() { return distance; }

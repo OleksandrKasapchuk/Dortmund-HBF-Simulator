@@ -65,7 +65,7 @@
       "start": {
         "texts": ["dialogue.boss.start.1", "dialogue.boss.start.2", "dialogue.boss.start.3", "dialogue.boss.start.4"],
         "choices": [
-          { "text": "dialogue.boss.choice.accept", "action": "boss_accept_quest" },
+          { "text": "dialogue.choice.accept", "action": "boss_accept_quest" },
           "dialogue.choice.leave"
         ]
       },
@@ -115,7 +115,17 @@
     }
   },
   "kamil": { "nodes": { "start": ["dialogue.kamil.start"] } },
-  "jan": { "nodes": { "start": ["dialogue.jan.start"] } },
+  "jan": {
+    "nodes": {
+      "start": {
+        "texts":["dialogue.jan.start"],
+        "choices":  [
+        { "text": "dialogue.choice.accept", "action": "jan_give_quest" },
+        "dialogue.choice.leave"
+        ]
+      }
+    }
+  },
   "filip": {"nodes": { "start": ["dialogue.filip.start.1", "dialogue.filip.start.2", "dialogue.filip.start.3", "dialogue.filip.start.4"]}
   },
   "jason": {

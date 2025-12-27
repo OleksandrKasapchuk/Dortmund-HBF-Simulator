@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.mygame.assets.Assets;
 import com.mygame.entity.player.Player;
-import com.mygame.entity.item.ItemType;
+import com.mygame.entity.item.ItemDefinition;
 
 import java.util.Map;
 
@@ -84,8 +84,8 @@ public class InventoryUI {
         inventoryTable.add(statusLabel).left().padBottom(40).colspan(4).row();
 
         // Iterate through all items
-        for (Map.Entry<ItemType, Integer> entry : player.getInventory().getItems().entrySet()) {
-            ItemType itemType = entry.getKey();
+        for (Map.Entry<ItemDefinition, Integer> entry : player.getInventory().getItems().entrySet()) {
+            ItemDefinition itemType = entry.getKey();
             int amount = entry.getValue();
 
             String itemName = Assets.items.get(itemType.getNameKey());

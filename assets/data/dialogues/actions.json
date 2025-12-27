@@ -101,5 +101,6 @@
   "chikita_craft_joint": { "type": "chikita_craft" },
   "police_check": { "type": "police_check" },
   "player_died": { "type": "player_died" },
-  "start_police_chase": { "type": "start_police_chase" }
+  "start_police_chase": { "type": "start_police_chase" },
+  "jan_give_quest": { "type": "add_quest", "id": "jan" }
 }

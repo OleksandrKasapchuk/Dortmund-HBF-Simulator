@@ -165,11 +165,6 @@
     <property name="textureKey" value="boss"/>
    </properties>
   </object>
-  <object id="36" gid="3" x="1117" y="2642" width="70" height="100">
-   <properties>
-    <property name="name" value="jan"/>
-   </properties>
-  </object>
   <object id="37" gid="3" x="3665" y="1950" width="70" height="100">
    <properties>
     <property name="name" value="filip"/>

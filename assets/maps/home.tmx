@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="100" tileheight="100" infinite="0" nextlayerid="6" nextobjectid="6">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="100" tileheight="100" infinite="0" nextlayerid="6" nextobjectid="13">
  <tileset firstgid="1" source="plate.tsx"/>
  <tileset firstgid="2" source="brick.tsx"/>
  <tileset firstgid="3" source="npc.tsx"/>
  <tileset firstgid="4" source="wooden_floor.tsx"/>
  <tileset firstgid="5" source="wood.tsx"/>
- <layer id="1" name="background" width="30" height="30" opacity="0.93">
+ <tileset firstgid="6" source="wardrobe.tsx"/>
+ <layer id="1" name="background" width="30" height="30">
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -90,7 +91,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="5" name="items">
+ <objectgroup id="5" name="items" opacity="0.98">
   <object id="4" gid="3" x="845" y="1693" width="150" height="150">
    <properties>
     <property name="isPickupable" type="bool" value="false"/>
@@ -98,12 +99,35 @@
     <property name="itemKey" value="bush"/>
    </properties>
   </object>
-  <object id="5" gid="5" x="2033" y="1381.79" width="249" height="135">
+  <object id="6" gid="7" x="2207" y="460" width="190" height="258">
+   <properties>
+    <property name="isSolid" type="bool" value="true"/>
+    <property name="itemKey" value="bed"/>
+   </properties>
+  </object>
+  <object id="7" gid="6" x="919.667" y="1200.67" width="180" height="200">
+   <properties>
+    <property name="isSolid" type="bool" value="true"/>
+    <property name="itemKey" value="wardrobe"/>
+   </properties>
+  </object>
+  <object id="10" gid="8" x="2104.33" y="299.997" width="91" height="100">
+   <properties>
+    <property name="isSolid" type="bool" value="true"/>
+    <property name="itemKey" value="nightstand"/>
+   </properties>
+  </object>
+  <object id="11" gid="10" x="2045" y="1357" width="229" height="114">
    <properties>
     <property name="isPickupable" type="bool" value="false"/>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="table"/>
-    <property name="textureKey" value="wood"/>
+   </properties>
+  </object>
+  <object id="12" gid="6" x="605" y="402.03" width="180" height="200">
+   <properties>
+    <property name="isSolid" type="bool" value="true"/>
+    <property name="itemKey" value="wardrobe"/>
    </properties>
   </object>
  </objectgroup>

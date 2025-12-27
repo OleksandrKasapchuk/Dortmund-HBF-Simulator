@@ -26,5 +26,10 @@
   { "key": "pfand", "path": "images/item/pfand.png" },
   { "key": "pfandAutomat", "path": "images/item/pfand_automat.png" },
   { "key": "bush", "path": "images/block/bush.jpg" },
-  { "key": "wood", "path": "images/block/wood.jpeg" }
+  { "key": "wood", "path": "images/block/wood.jpeg" },
+  { "key": "wardrobe", "path": "images/block/wardrobe.png" },
+  { "key": "bed", "path": "images/block/bed.png"},
+  { "key": "drawer", "path": "images/block/drawer.png"},
+  { "key": "nightstand", "path": "images/block/nightstand.png"},
+  { "key": "table", "path": "images/block/table.png"}
 ]

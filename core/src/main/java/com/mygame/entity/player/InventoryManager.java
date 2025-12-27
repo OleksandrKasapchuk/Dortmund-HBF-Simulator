@@ -2,7 +2,7 @@ package com.mygame.entity.player;
 
 import com.mygame.assets.Assets;
 import com.mygame.entity.item.ItemRegistry;
-import com.mygame.entity.item.ItemType;
+import com.mygame.entity.item.ItemDefinition;
 import com.mygame.assets.audio.SoundManager;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
@@ -20,7 +20,7 @@ public class InventoryManager {
     UIManager uiManager;
 
     // --- Stores items and their quantities ---
-    private final Map<ItemType, Integer> items;
+    private final Map<ItemDefinition, Integer> items;
 
     // --- Constructor: initializes empty inventory and effect maps ---
     public InventoryManager() {
@@ -29,13 +29,13 @@ public class InventoryManager {
 
     public void setUI(UIManager uiManager) {this.uiManager = uiManager;}
 
-    public void addItem(ItemType type, int amount) {
+    public void addItem(ItemDefinition type, int amount) {
         if (type == null) return; // Prevent adding null items
         items.put(type, items.getOrDefault(type, 0) + amount);
         EventBus.fire(new Events.InventoryChangedEvent(type.getKey(), getAmount(type)));
     }
 
-    public void removeItem(ItemType type, int count) {
+    public void removeItem(ItemDefinition type, int count) {
         if (type == null || !items.containsKey(type)) return;
         int current = items.get(type);
         if (current <= count) items.remove(type);
@@ -43,17 +43,17 @@ public class InventoryManager {
         EventBus.fire(new Events.InventoryChangedEvent(type.getKey(), getAmount(type)));
     }
 
-    public boolean hasItem(ItemType type) {
+    public boolean hasItem(ItemDefinition type) {
         if (type == null) return false;
         return items.containsKey(type);
     }
 
-    public int getAmount(ItemType type) {
+    public int getAmount(ItemDefinition type) {
         if (type == null) return 0;
         return items.getOrDefault(type, 0);
     }
 
-    public Map<ItemType, Integer> getItems() {return items;}
+    public Map<ItemDefinition, Integer> getItems() {return items;}
 
     public int getMoney() {return getAmount(ItemRegistry.get("money"));}
 
@@ -62,14 +62,14 @@ public class InventoryManager {
         addItem(ItemRegistry.get("money"), amount);
     }
 
-    public void addItemAndNotify(ItemType type, int amount) {
+    public void addItemAndNotify(ItemDefinition type, int amount) {
         if (type == ItemRegistry.get("money")) addMoney(amount);
         else addItem(type, amount);
 
         uiManager.showEarned(amount, type.getNameKey());
     }
 
-    public boolean trade(ItemType give, ItemType receive, int giveAmount, int receiveAmount) {
+    public boolean trade(ItemDefinition give, ItemDefinition receive, int giveAmount, int receiveAmount) {
         if (getAmount(give) >= giveAmount) {
             removeItem(give, giveAmount);
             addItemAndNotify(receive, receiveAmount);
@@ -80,5 +80,5 @@ public class InventoryManager {
     }
 
     // --- Check if an item is usable (has an effect) ---
-    public boolean isUsable(ItemType item) {return item != null && item.isUsable();}
+    public boolean isUsable(ItemDefinition item) {return item != null && item.isUsable();}
 }
