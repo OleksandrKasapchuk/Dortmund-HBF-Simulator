@@ -69,12 +69,12 @@ public class AutoSaveManager {
             .collect(Collectors.toSet());
 
         // Save NPC dialogue states
-        settings.npcDialogues = WorldManager.getWorlds().values().stream()
+        settings.npcStates = WorldManager.getWorlds().values().stream()
             .flatMap(world -> world.getNpcs().stream())
             .collect(Collectors.toMap(
                 NPC::getId,
-                NPC::getCurrentDialogueNodeId,
-                (existing, replacement) -> existing // Handle duplicates if any
+                npc -> new GameSettings.NpcSaveData(npc.getCurrentDialogueNodeId(), npc.getCurrentTextureKey()),
+                (existing, replacement) -> existing
             ));
 
         // Save Police Chase State

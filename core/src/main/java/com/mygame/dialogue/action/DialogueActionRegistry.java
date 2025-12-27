@@ -64,7 +64,7 @@ public class DialogueActionRegistry {
         });
 
         creators.put("set_texture", (ctx, data) -> () -> {
-            var npc = ctx.npcManager.findNpcById(Assets.npcs.get(data.getString("npcNameKey")));
+            var npc = ctx.npcManager.findNpcById((data.getString("npc")));
             if (npc != null) npc.setTexture(Assets.getTexture(data.getString("texture")));
         });
 

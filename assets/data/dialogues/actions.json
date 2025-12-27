@@ -42,12 +42,13 @@
       "type": "composite",
       "actions": [
         { "type": "set_dialogue", "npc": "igo", "node": "thanks" },
+        { "type": "play_sound", "id": "lighter" },
         {
           "type": "timer",
           "delay": 5.0,
           "action": {
             "type": "set_texture",
-            "npcNameKey": "npc.igo.name",
+            "npc": "igo",
             "texture": "igo2"
           }
         }

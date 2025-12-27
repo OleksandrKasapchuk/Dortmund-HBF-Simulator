@@ -102,6 +102,7 @@
   </object>
   <object id="6" gid="7" x="2207" y="460" width="190" height="258">
    <properties>
+    <property name="interactionDistance" type="int" value="100"/>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="bed"/>
     <property name="questId" value="jan"/>

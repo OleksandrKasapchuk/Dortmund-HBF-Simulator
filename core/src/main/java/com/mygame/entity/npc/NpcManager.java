@@ -14,16 +14,10 @@ import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class NpcManager {
     private final ArrayList<NPC> npcs = new ArrayList<>();
     private final Player player;
-
-    // Direct references for special NPCs if needed
-    private Police police;
-    private NPC boss;
-    private Police summonedPolice;
 
     public NpcManager(Player player) {
         this.player = player;
@@ -54,7 +48,6 @@ public class NpcManager {
 
         NPC npc;
         GameSettings settings = SettingsManager.load();
-        List<String> completedEvents = settings.completedDialogueEvents;
 
         DialogueNode initialDialogue = DialogueRegistry.getInitialDialogue(npcId.toLowerCase());
 
@@ -72,29 +65,30 @@ public class NpcManager {
         int speed = props.get("speed", 50, Integer.class);
 
         if (npcId.equalsIgnoreCase("police")) {
-            this.police = new Police("police", npcName, 100, 100, x, y, texture, world, speed, initialDialogue);
-            npc = this.police;
+            npc = new Police("police", npcName, 100, 100, x, y, texture, world, speed, initialDialogue);
         } else {
             npc = new NPC(npcId.toLowerCase(), npcName, 100, 100, x, y, texture, world, directionX, directionY, pauseTime, moveTime, speed, initialDialogue);
         }
 
-        // --- RESTORE NPC DIALOGUE STATE ---
-        if (settings.npcDialogues != null && settings.npcDialogues.containsKey(npc.getId())) {
-            String savedNode = settings.npcDialogues.get(npc.getId());
-            npc.setDialogue(DialogueRegistry.getDialogue(npc.getId(), savedNode));
-            npc.setCurrentDialogueNodeId(savedNode);
-        }
+        // --- RESTORE NPC STATE (Dialogue & Texture) ---
+        if (settings.npcStates != null && settings.npcStates.containsKey(npc.getId())) {
+            GameSettings.NpcSaveData state = settings.npcStates.get(npc.getId());
 
-        // --- SPECIFIC TEXTURE CHANGES (Still needed for now) ---
-        if (npcId.equalsIgnoreCase("igo") && completedEvents.contains("igo_gave_vape")) {
-            npc.setTexture(Assets.getTexture("igo2"));
-        } else if (npcId.equalsIgnoreCase("boss")) {
-            this.boss = npc;
+            // Restore dialogue
+            if (state.currentNode != null) {
+                npc.setDialogue(DialogueRegistry.getDialogue(npc.getId(), state.currentNode));
+                npc.setCurrentDialogueNodeId(state.currentNode);
+            }
+
+            // Restore texture
+            if (state.currentTexture != null) {
+                npc.setTexture(state.currentTexture);
+            }
         }
 
         npcs.add(npc);
         world.getNpcs().add(npc);
-        System.out.println("SUCCESS: Loaded '" + npcId + "' from map in world '" + world.getName() + "' (Node: " + npc.getCurrentDialogueNodeId() + ")");
+        System.out.println("SUCCESS: Loaded '" + npcId + "' from map (Node: " + npc.getCurrentDialogueNodeId() + ", Tex: " + npc.getCurrentTextureKey() + ")");
     }
 
     public void update(float delta) {
@@ -114,12 +108,8 @@ public class NpcManager {
 
     public void callPolice() {
         World currentWorld = WorldManager.getCurrentWorld();
-        if (currentWorld == null) {
-            System.err.println("NpcManager: Cannot call police, current world is null!");
-            return;
-        }
 
-        summonedPolice = new Police("summoned_police", Assets.npcs.get("npc.police.name"),
+        Police summonedPolice = new Police("summoned_police", Assets.npcs.get("npc.police.name"),
             100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police"),
             currentWorld, 200, DialogueRegistry.getDialogue("summoned_police", "beforeChase"));
         npcs.add(summonedPolice);
@@ -127,6 +117,7 @@ public class NpcManager {
     }
 
     public void moveSummonedPoliceToNewWorld(World newWorld) {
+        Police summonedPolice = getSummonedPolice();
         if (summonedPolice != null && newWorld != null) {
             World oldWorld = summonedPolice.getWorld();
             if (oldWorld != null) {
@@ -137,16 +128,12 @@ public class NpcManager {
         }
     }
 
-    public NPC getBoss() { return boss; }
-    public Police getPolice() { return police; }
-    public Police getSummonedPolice(){ return summonedPolice; }
+    public NPC getBoss() { return findNpcById("boss"); }
+    public Police getPolice() { return (Police) findNpcById("police"); }
+    public Police getSummonedPolice(){ return (Police) findNpcById("summoned_police"); }
 
     public void kill(NPC npc) {
         if (npc == null) return;
-
-        if (npc == summonedPolice) summonedPolice = null;
-        if (npc == police) police = null;
-        if (npc == boss) boss = null;
 
         if (npc.getWorld() != null) {
             npc.getWorld().getNpcs().remove(npc);
