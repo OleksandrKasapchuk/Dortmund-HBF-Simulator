@@ -102,5 +102,12 @@
   "police_check": { "type": "police_check" },
   "player_died": { "type": "player_died" },
   "start_police_chase": { "type": "start_police_chase" },
-  "jan_give_quest": { "type": "add_quest", "id": "jan" }
+  "jan_give_quest": {
+    "type": "composite",
+    "actions": [
+      { "type": "set_dialogue", "npc": "jan", "node": "after" },
+      { "type": "complete_event", "id": "jan_gave_questd" },
+      { "type": "add_quest", "id": "jan", "progressable": true, "progress": 0, "max": 2 }
+    ]
+  }
 }

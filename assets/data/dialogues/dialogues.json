@@ -118,12 +118,13 @@
   "jan": {
     "nodes": {
       "start": {
-        "texts":["dialogue.jan.start"],
+        "texts":["dialogue.jan.start.1", "dialogue.jan.start.2"],
         "choices":  [
         { "text": "dialogue.choice.accept", "action": "jan_give_quest" },
         "dialogue.choice.leave"
         ]
-      }
+      },
+      "after": ["dialogue.jan.after"]
     }
   },
   "filip": {"nodes": { "start": ["dialogue.filip.start.1", "dialogue.filip.start.2", "dialogue.filip.start.3", "dialogue.filip.start.4"]}

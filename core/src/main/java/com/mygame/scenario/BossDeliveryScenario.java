@@ -26,7 +26,7 @@ public class BossDeliveryScenario implements Scenario {
     public void init() {
         // Логіка провалу: якщо гравець викинув або втратив траву під час квесту
         EventBus.subscribe(Events.InventoryChangedEvent.class, event -> {
-            if (QuestManager.hasQuest("delivery") && event.itemId().equals("grass") && event.newAmount() < 1000) {
+            if (QuestManager.hasQuest("delivery") && event.item().getKey().equals("grass") && event.newAmount() < 1000) {
                 handleBossFail();
             }
         });

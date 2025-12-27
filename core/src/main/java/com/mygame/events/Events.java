@@ -16,7 +16,7 @@ public class Events {
     public record QuestCompletedEvent(String questId) {}
 
     // ───── World & Interaction ─────
-    public record InventoryChangedEvent(String itemId, int newAmount) {}
+    public record InventoryChangedEvent(ItemDefinition item, int newAmount) {}
     public record WorldChangedEvent(String newWorldId) {}
 
     // ───── Police ─────

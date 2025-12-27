@@ -1,5 +1,7 @@
 package com.mygame.quest;
 
+import com.mygame.entity.item.ItemDefinition;
+import com.mygame.entity.item.ItemRegistry;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.save.GameSettings;
@@ -20,6 +22,7 @@ public class QuestObserver {
         refresh();
         EventBus.subscribe(Events.DialogueFinishedEvent.class, event -> handleNpcDialogue(event.npcId()));
         EventBus.subscribe(Events.WorldChangedEvent.class, event -> handleWorldChange(event.newWorldId()));
+        EventBus.subscribe(Events.InventoryChangedEvent.class, event -> handleJanQuest((event.item())));
     }
 
     /**
@@ -30,6 +33,12 @@ public class QuestObserver {
         GameSettings settings = SettingsManager.load();
         talkedNpcs = settings.talkedNpcs;
         visited = settings.visited;
+    }
+    public static void handleJanQuest(ItemDefinition item) {
+        QuestManager.Quest quest = QuestManager.getQuest("jan");
+        if (quest != null && item == ItemRegistry.get("firework")) {
+            quest.makeProgress();
+        }
     }
 
     private static void handleNpcDialogue(String npcId) {

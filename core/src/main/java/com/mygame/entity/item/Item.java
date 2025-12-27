@@ -80,13 +80,21 @@ public class Item extends Entity {
             if (rewardItemKey != null && !rewardItemKey.isEmpty()) {
                 ItemDefinition reward = ItemRegistry.get(rewardItemKey);
                 if (reward != null) {
-                    player.getInventory().addItemAndNotify(reward, rewardAmount);
+                    player.getInventory().addItem(reward, rewardAmount);
+                    EventBus.fire(new Events.MessageEvent(rewardAmount + " " + Assets.ui.format("ui.found", Assets.items.get(reward.getNameKey()) ), 2));
                 }
             } else {
-                EventBus.fire(new Events.MessageEvent("Nothing found" , 2f));
+                EventBus.fire(new Events.MessageEvent(Assets.ui.get("ui.not_found") , 2f));
             }
         }, 2);
 
+    }
+
+    /**
+     * Generates a unique identifier for this item based on its location and world.
+     */
+    public String getUniqueId() {
+        return world.getName() + "_" + (int)getX() + "_" + (int)getY();
     }
 
     public void setOnInteract(Consumer<Player> onInteract) {
@@ -126,4 +134,5 @@ public class Item extends Entity {
 
     public String getQuestId(){ return questId; }
     public boolean isSearched() { return searched; }
+    public void setSearched(boolean searched) { this.searched = searched; }
 }

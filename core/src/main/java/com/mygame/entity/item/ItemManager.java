@@ -6,6 +6,8 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.mygame.assets.Assets;
 import com.mygame.entity.player.Player;
+import com.mygame.game.save.GameSettings;
+import com.mygame.game.save.SettingsManager;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 
@@ -73,6 +75,12 @@ public class ItemManager {
             }
 
             Item item = new Item(itemType, (int) width, (int) height, x, y, interactionDistance, texture, world, isPickupable, isSolid, searchable, questId, rewardItemKey, rewardAmount);
+
+            GameSettings settings = SettingsManager.load();
+            // Restore searched state from save data
+            if (settings.searchedItems != null && settings.searchedItems.contains(item.getUniqueId())) {
+                item.setSearched(true);
+            }
             world.getItems().add(item);
 
             // --- Editor-driven identification ---

@@ -32,7 +32,7 @@ public class InventoryManager {
     public void addItem(ItemDefinition type, int amount) {
         if (type == null) return; // Prevent adding null items
         items.put(type, items.getOrDefault(type, 0) + amount);
-        EventBus.fire(new Events.InventoryChangedEvent(type.getKey(), getAmount(type)));
+        EventBus.fire(new Events.InventoryChangedEvent(type, getAmount(type)));
     }
 
     public void removeItem(ItemDefinition type, int count) {
@@ -40,7 +40,7 @@ public class InventoryManager {
         int current = items.get(type);
         if (current <= count) items.remove(type);
         else items.put(type, current - count);
-        EventBus.fire(new Events.InventoryChangedEvent(type.getKey(), getAmount(type)));
+        EventBus.fire(new Events.InventoryChangedEvent(type, getAmount(type)));
     }
 
     public boolean hasItem(ItemDefinition type) {
