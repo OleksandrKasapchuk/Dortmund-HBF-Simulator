@@ -40,8 +40,6 @@ public class Main extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         AutoSaveManager.update(delta);
 
-        Player player = gameInitializer.getPlayer();
-
         gameInitializer.getGameInputHandler().handleInput();
         GameContext ctx = gameInitializer.getContext();
 
@@ -53,13 +51,10 @@ public class Main extends ApplicationAdapter {
                 renderGame(delta);
                 break;
             case DEATH:
-                ctx.ui.render();
-                break;
             case SETTINGS:
             case MENU:
             case PAUSED:
             case MAP:
-                ctx.ui.update(delta, player);
                 ctx.ui.render();
                 break;
         }
@@ -83,8 +78,8 @@ public class Main extends ApplicationAdapter {
 
 
         batch.begin();
-        gameInitializer.getManagerRegistry().update(delta);
         WorldManager.drawEntities(batch, Assets.myFont, player);
+        gameInitializer.getManagerRegistry().update(delta);
         player.draw(batch);
         gameInitializer.getScController().draw();
         batch.end();

@@ -62,7 +62,7 @@ public class PfandManager {
             if (isTooCloseToOtherPfands(x, y)) continue;
 
             // Add new pfand to the world
-            Item pfand = new Item(ItemRegistry.get("pfand"), itemWidth, itemHeight, x, y, 75, Assets.getTexture("pfand"), WorldManager.getCurrentWorld(), true, false);
+            Item pfand = new Item(ItemRegistry.get("pfand"), itemWidth, itemHeight, x, y, 75, Assets.getTexture("pfand"), WorldManager.getCurrentWorld(), true, false, false, null, null, 0);
             WorldManager.getCurrentWorld().getItems().add(pfand);
             WorldManager.getCurrentWorld().getPfands().add(pfand);
             break;

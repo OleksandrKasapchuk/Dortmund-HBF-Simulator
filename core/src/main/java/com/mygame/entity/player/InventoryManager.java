@@ -65,8 +65,7 @@ public class InventoryManager {
     public void addItemAndNotify(ItemDefinition type, int amount) {
         if (type == ItemRegistry.get("money")) addMoney(amount);
         else addItem(type, amount);
-
-        uiManager.showEarned(amount, type.getNameKey());
+        EventBus.fire(new Events.AddItemMessageEvent(type, amount));
     }
 
     public boolean trade(ItemDefinition give, ItemDefinition receive, int giveAmount, int receiveAmount) {
@@ -75,7 +74,7 @@ public class InventoryManager {
             addItemAndNotify(receive, receiveAmount);
             return true;
         }
-        uiManager.showNotEnough(give.getNameKey());
+        EventBus.fire(new Events.NotEnoughMessageEvent(give));
         return false;
     }
 

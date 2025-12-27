@@ -1,8 +1,15 @@
 package com.mygame.entity.item;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.mygame.assets.Assets;
+import com.mygame.assets.audio.SoundManager;
 import com.mygame.entity.Entity;
+import com.mygame.entity.player.Player;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
+import com.mygame.managers.TimerManager;
 import com.mygame.world.World;
+import java.util.function.Consumer;
 
 /**
  * Represents a world item (e.g., spoon, pfand).
@@ -14,27 +21,76 @@ public class Item extends Entity {
     private ItemDefinition type;
     private boolean canBePickedUp;
     private boolean solid;
+    private boolean searchable;
+    private boolean searched = false;
     private int distance;           // distance at which player can interact/pick up
+    private String questId;
 
-    // --- Interaction cooldown ---
+    // --- Search reward properties ---
+    private String rewardItemKey;
+    private int rewardAmount;
+
+    // --- Interaction ---
     private float cooldownTimer = 0f;
+    private Consumer<Player> onInteract;
 
     public Item(
         ItemDefinition type, int width, int height,
         float x, float y, int distance,
         Texture texture, World world,
-        boolean canBePickedUp, boolean solid
+        boolean canBePickedUp, boolean solid, boolean searchable, String questId,
+        String rewardItemKey, int rewardAmount
     ) {
         super(width, height, x, y, texture, world);
         this.type = type;
         this.canBePickedUp = canBePickedUp;
+        this.searchable = searchable;
         this.solid = solid;
         this.distance = distance;
+        this.questId = questId;
+        this.rewardItemKey = rewardItemKey;
+        this.rewardAmount = rewardAmount;
     }
 
     @Override
     public void update(float delta) {
         // Items do not move or update by default.
+    }
+
+    /**
+     * Executes the interaction logic.
+     */
+    public void interact(Player player) {
+        if (onInteract != null) {
+            System.out.println("interactiong " + this);
+            onInteract.accept(player);
+        } else if (searchable && !searched) {
+            System.out.println("serching " + this);
+            search(player);
+        }
+    }
+
+    private void search(Player player) {
+        searched = true;
+        SoundManager.playSound(Assets.getSound("search"));
+        player.setMovementLocked(true);
+        // Determine item and amount
+        TimerManager.setAction(() -> {
+            player.setMovementLocked(false);
+            if (rewardItemKey != null && !rewardItemKey.isEmpty()) {
+                ItemDefinition reward = ItemRegistry.get(rewardItemKey);
+                if (reward != null) {
+                    player.getInventory().addItemAndNotify(reward, rewardAmount);
+                }
+            } else {
+                EventBus.fire(new Events.MessageEvent("Nothing found" , 2f));
+            }
+        }, 2);
+
+    }
+
+    public void setOnInteract(Consumer<Player> onInteract) {
+        this.onInteract = onInteract;
     }
 
     // --- Basic getters ---
@@ -43,6 +99,7 @@ public class Item extends Entity {
     public boolean canBePickedUp() { return canBePickedUp; }
     public boolean isSolid() { return solid; }
     public int getDistance() { return distance; }
+
     // --- Cooldown logic ---
     /**
      * Updates cooldown timer.
@@ -66,4 +123,7 @@ public class Item extends Entity {
     public void startCooldown(float seconds) {
         cooldownTimer = seconds;
     }
+
+    public String getQuestId(){ return questId; }
+    public boolean isSearched() { return searched; }
 }

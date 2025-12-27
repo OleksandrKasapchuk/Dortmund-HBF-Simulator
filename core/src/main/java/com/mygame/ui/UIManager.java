@@ -9,12 +9,18 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygame.assets.Assets;
 import com.mygame.dialogue.DialogueManager;
+import com.mygame.entity.item.Item;
+import com.mygame.entity.npc.NPC;
 import com.mygame.entity.player.Player;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
+import com.mygame.quest.QuestManager;
 import com.mygame.ui.inGameUI.DialogueUI;
 import com.mygame.ui.inGameUI.InventoryUI;
 import com.mygame.ui.inGameUI.QuestUI;
 import com.mygame.ui.inGameUI.TouchControlsUI;
 import com.mygame.ui.screenUI.*;
+import com.mygame.world.WorldManager;
 
 /**
  * UIManager is responsible for managing all UI components of the game.
@@ -77,15 +83,17 @@ public class UIManager {
         dialogueUI = new DialogueUI(skin, gameUI.getStage(), 1950, 250, 25f, 10f);
         dialogueManager = new DialogueManager(dialogueUI, player);
 
+        EventBus.subscribe(Events.MessageEvent.class, event -> gameUI.showInfoMessage(event.message(), 2f));
+        EventBus.subscribe(Events.AddItemMessageEvent.class, event -> showEarned(event.item().getNameKey(), event.amount()));
+        EventBus.subscribe(Events.NotEnoughMessageEvent.class, event -> showNotEnough(event.item().getNameKey()));
+
         // Initialize touch controls only on Android
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
             System.out.println("UIManager: Android detected, creating TouchControlsUI...");
             touchControlsUI = new TouchControlsUI(
                 skin,
-                gameUI.getStage(),
-                pauseUI.getStage(),
-                settingsUI.getStage(),
-                worldMapUI.getStage(),
+                gameUI.getStage(), pauseUI.getStage(),
+                settingsUI.getStage(), worldMapUI.getStage(),
                 player
             );
             System.out.println("UIManager: TouchControlsUI created.");
@@ -127,6 +135,28 @@ public class UIManager {
             dialogueManager.update(delta, isInteractPressed());
 
             if (inventoryUI.isVisible()) inventoryUI.update(player);
+        }
+
+        for (NPC npc : WorldManager.getCurrentWorld().getNpcs()) {
+            if (npc.isPlayerNear(player)) {
+                Assets.myFont.draw(batch, Assets.ui.get("interact.npc"), npc.getX() - 100, npc.getY() + npc.getHeight() + 40);
+            }
+        }
+
+        for (Item item : WorldManager.getCurrentWorld().getItems()) {
+            // Check if it's a quest item and if the quest is active
+            if(item.getQuestId() != null && !QuestManager.hasQuest(item.getQuestId())) {
+                continue;
+            }
+
+            if (item.isPlayerNear(player, item.getDistance())) {
+                if (item.isSearched()) return;
+                drawText(Assets.ui.get("interact.npc"), item.getCenterX(), item.getCenterY());
+
+                if (isInteractPressed()) {
+                    item.interact(player);
+                }
+            }
         }
         // Update the current stage actors
         currentStage.act(delta);
@@ -181,7 +211,7 @@ public class UIManager {
     public TouchControlsUI getTouchControlsUI() { return touchControlsUI; }
 
 
-    public void showEarned(int amount, String thing){
+    public void showEarned(String thing, int amount){
         gameUI.showInfoMessage(Assets.messages.format("message.generic.got", amount, Assets.items.get(thing)),1f);
     }
 

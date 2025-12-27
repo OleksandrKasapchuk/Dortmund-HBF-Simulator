@@ -30,36 +30,23 @@ public class BossDeliveryScenario implements Scenario {
                 handleBossFail();
             }
         });
-    }
 
-    @Override
-    public void update() {
-        if (!QuestManager.hasQuest("delivery")) return;
-
+        // Налаштовуємо взаємодію з кущем
         Item bush = ctx.itemManager.getBush();
-        if (bush == null || bush.getWorld() != WorldManager.getCurrentWorld()) return;
-
-        if (bush.isPlayerNear(ctx.player, 250)) {
-            if (ctx.ui.isInteractPressed()) {
-                if (ctx.player.getInventory().getAmount(ItemRegistry.get("grass")) >= 1000) {
+        if (bush != null) {
+            bush.setOnInteract(player -> {
+                if (player.getInventory().getAmount(ItemRegistry.get("grass")) >= 1000) {
                     triggerQuestSuccess();
                 } else {
                     ctx.ui.getGameUI().showInfoMessage(Assets.messages.get("message.boss.not_enough_grass"), 2f);
                 }
-            }
+            });
         }
     }
 
     @Override
-    public void draw() {
-        if (!QuestManager.hasQuest("delivery")) return;
-
-        Item bush = ctx.itemManager.getBush();
-        if (bush == null || bush.getWorld() != WorldManager.getCurrentWorld()) return;
-
-        if (bush.isPlayerNear(ctx.player, 250)) {
-            ctx.ui.drawText(Assets.ui.get("interact.bush"), bush.getCenterX(), bush.getCenterY());
-        }
+    public void update() {
+        // Тепер логіка взаємодії обробляється через UIManager та Item.onInteract
     }
 
     private void handleBossFail() {

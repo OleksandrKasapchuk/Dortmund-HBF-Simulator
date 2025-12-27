@@ -7,8 +7,6 @@ import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.game.GameContext;
 import com.mygame.managers.TimerManager;
-import com.mygame.world.WorldManager;
-
 
 public class PfandAutomatScenario implements Scenario {
 
@@ -19,44 +17,37 @@ public class PfandAutomatScenario implements Scenario {
     }
 
     @Override
-    public void init() {}
+    public void init() {
+        Item pfandAutomat = ctx.itemManager.getPfandAutomat();
+        if (pfandAutomat != null) {
+            pfandAutomat.setOnInteract(player -> {
+                if (!pfandAutomat.canInteract()) return;
+
+                if (player.getInventory().getAmount(ItemRegistry.get("pfand")) >= 1) {
+                    player.getInventory().removeItem(ItemRegistry.get("pfand"), 1);
+                    triggerPfandAutomat(pfandAutomat);
+                } else {
+                    ctx.ui.showNotEnough("item.pfand.name");
+                }
+            });
+        }
+    }
 
     @Override
     public void update(){
         Item pfandAutomat = ctx.itemManager.getPfandAutomat();
-        if (pfandAutomat == null) return;
-
-        pfandAutomat.updateCooldown(Gdx.graphics.getDeltaTime());
-
-        if (pfandAutomat.isPlayerNear(ctx.player)) {
-            if (ctx.ui.isInteractPressed() && pfandAutomat.canInteract()) {
-                if(ctx.player.getInventory().getAmount(ItemRegistry.get("pfand")) >= 1){
-                    ctx.player.getInventory().removeItem(ItemRegistry.get("pfand"),1);
-                    triggerPfandAutomat();
-                } else {
-                    ctx.ui.showNotEnough(("item.pfand.name"));
-                }
-            }
+        if (pfandAutomat != null) {
+            pfandAutomat.updateCooldown(Gdx.graphics.getDeltaTime());
         }
     }
 
-    @Override
-    public void draw() {
-        Item pfandAutomat = ctx.itemManager.getPfandAutomat();
-        if (pfandAutomat == null || pfandAutomat.getWorld() != WorldManager.getCurrentWorld()) return;
-
-        if (pfandAutomat.isPlayerNear(ctx.player)) {
-            ctx.ui.drawText(Assets.ui.get("interact.pfandAutomat"), pfandAutomat.getCenterX(), pfandAutomat.getCenterY());
-        }
-    }
-
-    private void triggerPfandAutomat(){
+    private void triggerPfandAutomat(Item pfandAutomat){
         SoundManager.playSound(Assets.getSound("pfandAutomat"));
 
         // Timer to give money after 1.9 seconds
         TimerManager.setAction(() ->
-            ctx.player.getInventory().addItemAndNotify(ItemRegistry.get("money"),1), 1.9f);
+            ctx.player.getInventory().addItemAndNotify(ItemRegistry.get("money"), 1), 1.9f);
 
-        ctx.itemManager.getPfandAutomat().startCooldown(1.9f);
+        pfandAutomat.startCooldown(1.9f);
     }
 }

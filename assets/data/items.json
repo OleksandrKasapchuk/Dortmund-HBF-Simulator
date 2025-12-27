@@ -7,9 +7,10 @@
   {"key": "ice_tea", "pickupable": true, "effect": "applyIceTeaEffect"},
   {"key": "table", "pickupable": false},
   {"key": "pfand", "pickupable": true},
+  {"key": "vape", "pickupable": true},
+  {"key": "firework", "pickupable": true},
   {"key": "bush", "pickupable": false},
   {"key": "pfandAutomat", "pickupable": false},
-  {"key": "vape", "pickupable": true},
   {"key": "wardrobe", "pickupable": false},
   {"key": "bed", "pickupable": false},
   {"key": "nightstand", "pickupable": false}
