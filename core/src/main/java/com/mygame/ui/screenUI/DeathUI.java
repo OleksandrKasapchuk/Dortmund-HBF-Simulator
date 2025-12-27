@@ -36,11 +36,11 @@ public class DeathUI extends Screen {
         stage.addActor(table);
 
         // Main death label
-        Label deathLabel = new Label(Assets.bundle.get("death.title"), skin);
+        Label deathLabel = new Label(Assets.ui.get("death.title"), skin);
         deathLabel.setColor(Color.RED);
         deathLabel.setFontScale(3f);
 
-        TextButton restartButton = createButton(skin, Assets.bundle.get("death.restart"), 2f, Main::restartGame);
+        TextButton restartButton = createButton(skin, Assets.ui.get("death.restart"), 2f, Main::restartGame);
 
         table.add(deathLabel).padBottom(50).row();
         table.add(restartButton).width(300).height(100);

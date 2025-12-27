@@ -1,6 +1,6 @@
 package com.mygame.events;
 
-
+import com.mygame.entity.item.ItemDefinition;
 import com.mygame.entity.npc.Police;
 
 public class Events {
@@ -16,10 +16,12 @@ public class Events {
     public record QuestCompletedEvent(String questId) {}
 
     // ───── World & Interaction ─────
-    public record InventoryChangedEvent(String itemId, int newAmount) {}
+    public record InventoryChangedEvent(ItemDefinition item, int newAmount) {}
     public record WorldChangedEvent(String newWorldId) {}
 
     // ───── Police ─────
     public record PoliceStateChangedEvent(Police.PoliceState newState) {}
-
+    public record MessageEvent(String message, float duration) {}
+    public record NotEnoughMessageEvent(ItemDefinition item) {}
+    public record AddItemMessageEvent(ItemDefinition item, int amount) {}
 }

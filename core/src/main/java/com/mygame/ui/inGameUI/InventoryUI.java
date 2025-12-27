@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.mygame.assets.Assets;
 import com.mygame.entity.player.Player;
-import com.mygame.entity.item.ItemType;
+import com.mygame.entity.item.ItemDefinition;
 
 import java.util.Map;
 
@@ -74,21 +74,21 @@ public class InventoryUI {
         inventoryTable.clear();
 
         // Title
-        Label titleLabel = new Label(Assets.bundle.get("inventory.title"), skin);
+        Label titleLabel = new Label(Assets.ui.get("inventory.title"), skin);
         titleLabel.setFontScale(2.5f);
         titleLabel.setColor(Color.GOLD);
         inventoryTable.add(titleLabel).colspan(4).expandX().center().row();
 
-        Label statusLabel = new Label(Assets.bundle.get("inventory.status") + Assets.bundle.get(player.getState().getLocalizationKey()), skin);
+        Label statusLabel = new Label(Assets.ui.get("inventory.status") + Assets.ui.get(player.getState().getLocalizationKey()), skin);
         statusLabel.setFontScale(1.5f);
         inventoryTable.add(statusLabel).left().padBottom(40).colspan(4).row();
 
         // Iterate through all items
-        for (Map.Entry<ItemType, Integer> entry : player.getInventory().getItems().entrySet()) {
-            ItemType itemType = entry.getKey();
+        for (Map.Entry<ItemDefinition, Integer> entry : player.getInventory().getItems().entrySet()) {
+            ItemDefinition itemType = entry.getKey();
             int amount = entry.getValue();
 
-            String itemName = Assets.bundle.get(itemType.getNameKey());
+            String itemName = Assets.items.get(itemType.getNameKey());
             Label itemLabel = new Label(itemName + ": ", skin);
             itemLabel.setFontScale(1.5f);
             Label countLabel = new Label(String.valueOf(amount), skin);
@@ -100,7 +100,7 @@ public class InventoryUI {
 
             // Add USE button if item is usable
             if (player.getInventory().isUsable(itemType)) {
-                TextButton useButton = new TextButton(Assets.bundle.get("ui.use"), skin);
+                TextButton useButton = new TextButton(Assets.ui.get("ui.use"), skin);
                 useButton.getLabel().setFontScale(1.5f);
                 useButton.addListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
                     @Override
@@ -117,7 +117,7 @@ public class InventoryUI {
 
             // --- Description ---
             String descriptionKey = itemType.getDescriptionKey();
-            String description = Assets.bundle.get(descriptionKey);
+            String description = Assets.items.get(descriptionKey);
             Label descriptionLabel = new Label(description, skin);
             descriptionLabel.setFontScale(1.2f); // Smaller font for description
             inventoryTable.add(descriptionLabel).expandX().right().padRight(20);

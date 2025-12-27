@@ -41,11 +41,11 @@ public class GameUI extends Screen {
     }
 
     public void updateMoney(int money) {
-        moneyLabel.setText(Assets.bundle.format("ui.money", money));
+        moneyLabel.setText(Assets.ui.format("ui.money", money));
     }
 
     public void updateWorld(String worldName) {
-        worldLabel.setText(Assets.bundle.format("ui.world.name", Assets.bundle.get("ui.world.name." + worldName)));
+        worldLabel.setText(Assets.ui.format("ui.world.name", Assets.ui.get("ui.world.name." + worldName)));
     }
 
     /**

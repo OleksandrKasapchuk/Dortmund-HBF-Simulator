@@ -1,7 +1,6 @@
 package com.mygame.world;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -10,7 +9,6 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.mygame.assets.Assets;
 import com.mygame.entity.npc.NPC;
-import com.mygame.entity.player.Player;
 import com.mygame.entity.item.Item;
 import com.mygame.world.transition.Transition;
 
@@ -65,20 +63,14 @@ public class World {
         mapRenderer.render();
     }
 
-    public void draw(SpriteBatch batch, BitmapFont font, Player player) {
-        for (NPC npc : npcs) {
-            npc.draw(batch);
-            if (npc.isPlayerNear(player)) {
-                font.draw(batch, Assets.bundle.get("interact.npc"), npc.getX() - 100, npc.getY() + npc.getHeight() + 40);
-            }
-        }
-        for (Item item : items)
-            item.draw(batch);
+    public void draw(SpriteBatch batch) {
+        for (NPC npc : npcs) npc.draw(batch);
+        for (Item item : items) item.draw(batch);
 
         for (Transition transition : transitions) {
             float textX = transition.area.x + transition.area.width / 2 - 50;
             float textY = transition.area.y + transition.area.height / 2;
-            font.draw(batch, Assets.bundle.get("ui.world.name." + transition.targetWorldId), textX, textY);
+            Assets.myFont.draw(batch, Assets.ui.get("ui.world.name." + transition.targetWorldId), textX, textY);
         }
     }
 

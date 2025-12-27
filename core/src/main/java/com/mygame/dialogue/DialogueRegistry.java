@@ -100,7 +100,7 @@ public class DialogueRegistry {
                             }
                         }
                     }
-                    String choiceText = Assets.bundle.get(choiceTextKey);
+                    String choiceText = Assets.dialogues.get(choiceTextKey);
                     node.addChoice(choiceText, nextNode, choiceAction);
                 }
             }

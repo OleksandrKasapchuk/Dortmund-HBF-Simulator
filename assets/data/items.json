@@ -1,59 +1,17 @@
 [
-  {
-    "key": "money",
-    "name": "item.money.name",
-    "description": "item.money.description"
-  },
-  {
-    "key": "grass",
-    "name": "item.grass.name",
-    "description": "item.grass.description"
-  },
-  {
-    "key": "grass_seed",
-    "name": "item.grass_seed.name",
-    "description": "item.grass_seed.description"
-  },
-  {
-    "key": "pape",
-    "name": "item.pape.name",
-    "description": "item.pape.description"
-  },
-  {
-    "key": "joint",
-    "name": "item.joint.name",
-    "description": "item.joint.description",
-    "effect": "applyJointEffect"
-  },
-  {
-    "key": "ice_tea",
-    "name": "item.ice_tea.name",
-    "description": "item.ice_tea.description",
-    "effect": "applyIceTeaEffect"
-  },
-  {
-    "key": "table",
-    "name": "item.table.name",
-    "description": "item.table.description"
-  },
-  {
-    "key": "pfand",
-    "name": "item.pfand.name",
-    "description": "item.pfand.description"
-  },
-  {
-    "key": "bush",
-    "name": "item.bush.name",
-    "description": "item.bush.description"
-  },
-  {
-    "key": "pfandAutomat",
-    "name": "item.pfandAutomat.name",
-    "description": "item.pfandAutomat.description"
-  },
-  {
-    "key": "vape",
-    "name": "item.vape.name",
-    "description": "item.vape.description"
-  }
+  {"key": "money", "pickupable": true},
+  {"key": "grass", "pickupable": true},
+  {"key": "grass_seed", "pickupable": true},
+  {"key": "pape", "pickupable": true},
+  {"key": "joint", "pickupable": true, "effect": "applyJointEffect"},
+  {"key": "ice_tea", "pickupable": true, "effect": "applyIceTeaEffect"},
+  {"key": "table", "pickupable": false},
+  {"key": "pfand", "pickupable": true},
+  {"key": "vape", "pickupable": true},
+  {"key": "firework", "pickupable": true},
+  {"key": "bush", "pickupable": false},
+  {"key": "pfandAutomat", "pickupable": false},
+  {"key": "wardrobe", "pickupable": false},
+  {"key": "bed", "pickupable": false},
+  {"key": "nightstand", "pickupable": false}
 ]

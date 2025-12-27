@@ -29,11 +29,11 @@ public class MenuUI extends Screen {
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
 
-        TextButton startButton = createButton(skin, Assets.bundle.get("button.start.text"), 1.5f, 300, 125, 200, 100, () ->
+        TextButton startButton = createButton(skin, Assets.ui.get("button.start.text"), 1.5f, 300, 125, 200, 100, () ->
             Main.getGameInitializer().getManagerRegistry().getGameStateManager().startGame());
         stage.addActor(startButton);
 
-        TextButton newGameButton = createButton(skin, Assets.bundle.get("button.newGame.text"), 1.5f, 300, 125, 200, 300, () -> {
+        TextButton newGameButton = createButton(skin, Assets.ui.get("button.newGame.text"), 1.5f, 300, 125, 200, 300, () -> {
             GameSettings newSettings = new GameSettings();
             newSettings.language = SettingsManager.load().language;
             SettingsManager.save(newSettings);

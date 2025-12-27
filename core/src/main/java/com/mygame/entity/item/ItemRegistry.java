@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class ItemRegistry {
 
-    private static final Map<String, ItemType> types = new HashMap<>();
+    private static final Map<String, ItemDefinition> types = new HashMap<>();
 
     public static void init() {
 
@@ -19,8 +19,15 @@ public class ItemRegistry {
         for (JsonValue item : itemsArray) {
 
             String key = item.getString("key");
-            String name = item.getString("name");
-            String description = item.getString("description");
+            boolean pickupable = item.getBoolean("pickupable", false);
+
+            String name = null;
+            String description = null;
+
+            if (pickupable) {
+                name = "item." + key + ".name";
+                description = "item." + key + ".description";
+            }
 
             Runnable effect = null;
 
@@ -30,7 +37,7 @@ public class ItemRegistry {
                 );
             }
 
-            register(new ItemType(key, name, description, effect));
+            register(new ItemDefinition(key, name, description, pickupable, effect));
         }
     }
 
@@ -48,12 +55,11 @@ public class ItemRegistry {
         };
     }
 
-    private static void register(ItemType type) {
+    private static void register(ItemDefinition type) {
         types.put(type.getKey(), type);
     }
 
-    public static ItemType get(String key) {
+    public static ItemDefinition get(String key) {
         return types.get(key);
     }
 }
-

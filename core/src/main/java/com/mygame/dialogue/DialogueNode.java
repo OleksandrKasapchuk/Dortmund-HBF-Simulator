@@ -40,7 +40,7 @@ public class DialogueNode {
                 List.of("") :
                 Arrays.stream(textKeys).map(key -> {
                     try {
-                        return Assets.bundle.get(key);
+                        return Assets.dialogues.get(key);
                     } catch (java.util.MissingResourceException e) {
                         System.err.println("DialogueNode: Missing bundle key: \"" + key + "\"");
                         return key;

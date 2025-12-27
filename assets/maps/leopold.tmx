@@ -140,8 +140,8 @@
   <object id="1" gid="2" x="2177.76" y="5956.91" width="715.152" height="200">
    <properties>
     <property name="targetWorldId" value="main"/>
-    <property name="targetX" type="float" value="3000"/>
-    <property name="targetY" type="float" value="6200"/>
+    <property name="targetX" type="float" value="1750"/>
+    <property name="targetY" type="float" value="5300"/>
    </properties>
   </object>
  </objectgroup>
@@ -163,11 +163,6 @@
    <properties>
     <property name="name" value="boss"/>
     <property name="textureKey" value="boss"/>
-   </properties>
-  </object>
-  <object id="36" gid="3" x="1117" y="2642" width="70" height="100">
-   <properties>
-    <property name="name" value="jan"/>
    </properties>
   </object>
   <object id="37" gid="3" x="3665" y="1950" width="70" height="100">

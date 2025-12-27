@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.mygame.entity.Entity;
 import com.mygame.entity.item.Item;
-import com.mygame.entity.item.ItemType;
+import com.mygame.entity.item.ItemDefinition;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;
@@ -144,7 +144,7 @@ public class Player extends Entity {
         return inventory;
     }
 
-    public void useItem(ItemType item) {
+    public void useItem(ItemDefinition item) {
         if (inventory.isUsable(item) && inventory.hasItem(item)) {
             item.apply();
             inventory.removeItem(item, 1);

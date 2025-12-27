@@ -26,40 +26,27 @@ public class BossDeliveryScenario implements Scenario {
     public void init() {
         // Логіка провалу: якщо гравець викинув або втратив траву під час квесту
         EventBus.subscribe(Events.InventoryChangedEvent.class, event -> {
-            if (QuestManager.hasQuest("delivery") && event.itemId().equals("grass") && event.newAmount() < 1000) {
+            if (QuestManager.hasQuest("delivery") && event.item().getKey().equals("grass") && event.newAmount() < 1000) {
                 handleBossFail();
             }
         });
+
+        // Налаштовуємо взаємодію з кущем
+        Item bush = ctx.itemManager.getBush();
+        if (bush != null) {
+            bush.setOnInteract(player -> {
+                if (player.getInventory().getAmount(ItemRegistry.get("grass")) >= 1000) {
+                    triggerQuestSuccess();
+                } else {
+                    ctx.ui.getGameUI().showInfoMessage(Assets.messages.get("message.boss.not_enough_grass"), 2f);
+                }
+            });
+        }
     }
 
     @Override
     public void update() {
-        if (!QuestManager.hasQuest("delivery")) return;
-
-        Item bush = ctx.itemManager.getBush();
-        if (bush == null || bush.getWorld() != WorldManager.getCurrentWorld()) return;
-
-        if (bush.isPlayerNear(ctx.player, 250)) {
-            if (ctx.ui.isInteractPressed()) {
-                if (ctx.player.getInventory().getAmount(ItemRegistry.get("grass")) >= 1000) {
-                    triggerQuestSuccess();
-                } else {
-                    ctx.ui.getGameUI().showInfoMessage(Assets.bundle.get("message.boss.not_enough_grass"), 2f);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void draw() {
-        if (!QuestManager.hasQuest("delivery")) return;
-
-        Item bush = ctx.itemManager.getBush();
-        if (bush == null || bush.getWorld() != WorldManager.getCurrentWorld()) return;
-
-        if (bush.isPlayerNear(ctx.player, 250)) {
-            ctx.ui.drawText(Assets.bundle.get("interact.bush"), bush.getCenterX(), bush.getCenterY());
-        }
+        // Тепер логіка взаємодії обробляється через UIManager та Item.onInteract
     }
 
     private void handleBossFail() {

@@ -65,7 +65,7 @@
       "start": {
         "texts": ["dialogue.boss.start.1", "dialogue.boss.start.2", "dialogue.boss.start.3", "dialogue.boss.start.4"],
         "choices": [
-          { "text": "dialogue.boss.choice.accept", "action": "boss_accept_quest" },
+          { "text": "dialogue.choice.accept", "action": "boss_accept_quest" },
           "dialogue.choice.leave"
         ]
       },
@@ -115,7 +115,18 @@
     }
   },
   "kamil": { "nodes": { "start": ["dialogue.kamil.start"] } },
-  "jan": { "nodes": { "start": ["dialogue.jan.start"] } },
+  "jan": {
+    "nodes": {
+      "start": {
+        "texts":["dialogue.jan.start.1", "dialogue.jan.start.2"],
+        "choices":  [
+        { "text": "dialogue.choice.accept", "action": "jan_give_quest" },
+        "dialogue.choice.leave"
+        ]
+      },
+      "after": ["dialogue.jan.after"]
+    }
+  },
   "filip": {"nodes": { "start": ["dialogue.filip.start.1", "dialogue.filip.start.2", "dialogue.filip.start.3", "dialogue.filip.start.4"]}
   },
   "jason": {
@@ -124,7 +135,12 @@
         "onFinish": "jason_give_money",
         "texts": ["dialogue.jason.start.1", "dialogue.jason.start.2", "dialogue.jason.start.3", "dialogue.jason.start.4", "dialogue.jason.start.5"]
       },
-      "after": ["dialogue.jason.after.1", "dialogue.jason.after.2"]
+      "after": ["dialogue.jason.after.1", "dialogue.jason.after.2"],
+      "finished": {
+        "onFinish": "jason_completed",
+        "texts": ["dialogue.jason.finished"]
+      },
+      "completed": ["dialogue.jason.completed"]
     }
   },
   "murat": {

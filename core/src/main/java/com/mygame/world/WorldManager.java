@@ -58,10 +58,10 @@ public class WorldManager {
     }
 
     public static void drawEntities(SpriteBatch batch, BitmapFont font, Player player) {
-        if (currentWorld != null) currentWorld.draw(batch, font, player);
+        if (currentWorld != null) currentWorld.draw(batch);
 
         if (inTransitionZone) {
-            font.draw(batch, Assets.bundle.get("world.pressEToTransition"), player.getX(), player.getY() + player.getHeight() + 30);
+            font.draw(batch, Assets.ui.get("world.pressEToTransition"), player.getX(), player.getY() + player.getHeight() + 30);
         }
 
     }

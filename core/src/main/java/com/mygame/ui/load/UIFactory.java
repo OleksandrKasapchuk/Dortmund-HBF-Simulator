@@ -56,7 +56,7 @@ public class UIFactory {
     }
 
     private static TextButton createButton(String text, float fontScale, Skin skin, InputListener listener) {
-        TextButton button = new TextButton(text.startsWith("button.") || text.startsWith("settings.") ? Assets.bundle.get(text) : text, skin);
+        TextButton button = new TextButton(text.startsWith("button.") || text.startsWith("settings.") ? Assets.ui.get(text) : text, skin);
         button.getLabel().setFontScale(fontScale);
         button.addListener(listener);
         return button;

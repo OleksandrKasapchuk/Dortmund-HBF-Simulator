@@ -38,13 +38,13 @@ public class SettingsUI extends Screen {
         stage.addActor(backgroundImage);
 
         // Settings title
-        createLabel(skin, Assets.bundle.get("settings.title"), 2.5f,800, 800);
+        createLabel(skin, Assets.ui.get("settings.title"), 2.5f,800, 800);
 
         // Music volume label
-        createLabel(skin, Assets.bundle.get("settings.music"), 2f,50, 650);
+        createLabel(skin, Assets.ui.get("settings.music"), 2f,50, 650);
 
         // Sound volume label
-        createLabel(skin, Assets.bundle.get("settings.sounds"), 2f,50, 550);
+        createLabel(skin, Assets.ui.get("settings.sounds"), 2f,50, 550);
 
         // Music volume slider
         musicVolumeSlider = createSlider(skin,400, 50, 250, 625, MusicManager.getVolume(), () -> MusicManager.setVolume(musicVolumeSlider.getValue()));
@@ -53,7 +53,7 @@ public class SettingsUI extends Screen {
         soundVolumeSlider = createSlider(skin,400, 50, 250, 525, SoundManager.getVolume(), () -> SoundManager.setVolume(soundVolumeSlider.getValue()));
 
         // Mute all checkbox
-        muteAllCheckbox = new CheckBox(Assets.bundle.get("settings.muteAll"), skin);
+        muteAllCheckbox = new CheckBox(Assets.ui.get("settings.muteAll"), skin);
         muteAllCheckbox.setPosition(50, 425);
         muteAllCheckbox.getLabel().setFontScale(2f);
         muteAllCheckbox.getImageCell().size(80, 80);
