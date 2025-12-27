@@ -12,8 +12,7 @@
     "type": "composite",
     "actions": [
       { "type": "add_item", "id": "money", "amount": 20 },
-      { "type": "set_dialogue", "npc": "ryzhyi", "node": "after" },
-      { "type": "complete_event", "id": "ryzhyi_gave_money" }
+      { "type": "set_dialogue", "npc": "ryzhyi", "node": "after" }
     ]
   },
 
@@ -23,8 +22,7 @@
       { "type": "add_item", "id": "money", "amount": 20 },
       { "type": "add_quest", "id": "jason1", "progressable": true, "progress": 0, "max": 5 },
       { "type": "add_quest", "id": "jason2", "progressable": true, "progress": 0, "max": 10 },
-      { "type": "set_dialogue", "npc": "jason", "node": "after" },
-      { "type": "complete_event", "id": "jason_gave_money" }
+      { "type": "set_dialogue", "npc": "jason", "node": "after" }
     ]
   },
   "jason_completed": {
@@ -44,7 +42,6 @@
       "type": "composite",
       "actions": [
         { "type": "set_dialogue", "npc": "igo", "node": "thanks" },
-        { "type": "complete_event", "id": "igo_gave_vape" },
         {
           "type": "timer",
           "delay": 5.0,
@@ -74,8 +71,7 @@
     "actions": [
       { "type": "add_item", "id": "grass", "amount": 1000 },
       { "type": "add_quest", "id": "delivery" },
-      { "type": "set_dialogue", "npc": "boss", "node": "after" },
-      { "type": "complete_event", "id": "boss_gave_quest" }
+      { "type": "set_dialogue", "npc": "boss", "node": "after" }
     ]
   },
 
@@ -84,7 +80,6 @@
     "actions": [
       { "type": "add_item", "id": "money", "amount": 50 },
       { "type": "set_dialogue", "npc": "boss", "node": "finished" },
-      { "type": "complete_event", "id": "boss_reward_claimed" },
       { "type": "remove_quest", "id": "boss_end" }
     ]
   },
@@ -106,7 +101,6 @@
     "type": "composite",
     "actions": [
       { "type": "set_dialogue", "npc": "jan", "node": "after" },
-      { "type": "complete_event", "id": "jan_gave_questd" },
       { "type": "add_quest", "id": "jan", "progressable": true, "progress": 0, "max": 2 }
     ]
   }

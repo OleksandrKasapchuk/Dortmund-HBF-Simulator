@@ -43,9 +43,6 @@ public class DialogueActionRegistry {
         creators.put("set_dialogue", (ctx, data) -> () -> new SetDialogueAction(ctx,
                 data.getString("npc"), data.getString("node")).execute());
 
-        creators.put("complete_event", (ctx, data) -> () -> new CompleteEventAction(ctx,
-                data.getString("id")).execute());
-
         creators.put("add_item", (ctx, data) -> () -> ctx.getInventory().addItemAndNotify(
                 ItemRegistry.get(data.getString("id")),
                 data.getInt("amount", 1)));

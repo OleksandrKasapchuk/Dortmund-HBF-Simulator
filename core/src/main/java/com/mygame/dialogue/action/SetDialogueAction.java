@@ -22,6 +22,7 @@ public class SetDialogueAction implements DialogueAction {
         NPC npc = ctx.npcManager.findNpcById(npcId);
         if (npc != null) {
             npc.setDialogue(DialogueRegistry.getDialogue(npcId, newDialogueId));
+            npc.setCurrentDialogueNodeId(newDialogueId);
         }
     }
 }

@@ -3,6 +3,7 @@ package com.mygame.game.save;
 
 import com.mygame.Main;
 import com.mygame.entity.item.Item;
+import com.mygame.entity.npc.NPC;
 import com.mygame.entity.npc.Police;
 import com.mygame.entity.player.Player;
 import com.mygame.game.GameInitializer;
@@ -60,12 +61,21 @@ public class AutoSaveManager {
         settings.talkedNpcs = new HashSet<>(QuestObserver.getTalkedNpcs());
         settings.visited = new HashSet<>(QuestObserver.getVisited());
 
-        // Save searched items from all loaded worlds
+        // Save searched items
         settings.searchedItems = WorldManager.getWorlds().values().stream()
             .flatMap(world -> world.getItems().stream())
             .filter(Item::isSearched)
             .map(Item::getUniqueId)
             .collect(Collectors.toSet());
+
+        // Save NPC dialogue states
+        settings.npcDialogues = WorldManager.getWorlds().values().stream()
+            .flatMap(world -> world.getNpcs().stream())
+            .collect(Collectors.toMap(
+                NPC::getId,
+                NPC::getCurrentDialogueNodeId,
+                (existing, replacement) -> existing // Handle duplicates if any
+            ));
 
         // Save Police Chase State
         Police summonedPolice = gameInitializer.getContext().npcManager.getSummonedPolice();

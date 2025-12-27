@@ -30,6 +30,9 @@ public class GameSettings {
     public Set<String> visited;
     public Set<String> searchedItems;
 
+    // NPC State: Mapping NPC ID to their current dialogue node
+    public Map<String, String> npcDialogues;
+
     // Police chase save data
     public boolean policeChaseActive;
     public float policeX;
@@ -67,6 +70,7 @@ public class GameSettings {
         this.talkedNpcs = new HashSet<>();
         this.visited = new HashSet<>();
         this.searchedItems = new HashSet<>();
+        this.npcDialogues = new HashMap<>();
 
         this.policeChaseActive = false;
     }

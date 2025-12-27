@@ -26,6 +26,7 @@ public class NPC extends Entity {
     private final String id;
     private final String name;
     private DialogueNode dialogue;
+    private String currentDialogueNodeId = "start";
 
     public NPC(
         String id, String name,
@@ -102,6 +103,10 @@ public class NPC extends Entity {
     // --- Dialogue ---
     public DialogueNode getDialogue() { return dialogue; }
     public void setDialogue(DialogueNode dialogue) { this.dialogue = dialogue; }
+
+    public String getCurrentDialogueNodeId() { return currentDialogueNodeId; }
+    public void setCurrentDialogueNodeId(String nodeId) { this.currentDialogueNodeId = nodeId; }
+
     public String getId(){ return id; }
     public String getName() { return this.name; }
     public void setTexture(Texture texture) { this.texture = texture; }

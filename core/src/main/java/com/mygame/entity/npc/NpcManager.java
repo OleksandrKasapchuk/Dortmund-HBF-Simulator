@@ -78,27 +78,23 @@ public class NpcManager {
             npc = new NPC(npcId.toLowerCase(), npcName, 100, 100, x, y, texture, world, directionX, directionY, pauseTime, moveTime, speed, initialDialogue);
         }
 
+        // --- RESTORE NPC DIALOGUE STATE ---
+        if (settings.npcDialogues != null && settings.npcDialogues.containsKey(npc.getId())) {
+            String savedNode = settings.npcDialogues.get(npc.getId());
+            npc.setDialogue(DialogueRegistry.getDialogue(npc.getId(), savedNode));
+            npc.setCurrentDialogueNodeId(savedNode);
+        }
+
+        // --- SPECIFIC TEXTURE CHANGES (Still needed for now) ---
         if (npcId.equalsIgnoreCase("igo") && completedEvents.contains("igo_gave_vape")) {
-            npc.setDialogue(DialogueRegistry.getDialogue("igo", "thanks"));
             npc.setTexture(Assets.getTexture("igo2"));
-        } else if (npcId.equalsIgnoreCase("ryzhyi") && completedEvents.contains("ryzhyi_gave_money")) {
-            npc.setDialogue(DialogueRegistry.getDialogue("ryzhyi", "after"));
         } else if (npcId.equalsIgnoreCase("boss")) {
             this.boss = npc;
-            if (completedEvents.contains("boss_reward_claimed")) {
-                npc.setDialogue(DialogueRegistry.getDialogue("boss", "finished"));
-            } else if (completedEvents.contains("boss_quest_escaped")) {
-                npc.setDialogue(DialogueRegistry.getDialogue("boss", "wellDone"));
-            } else if (completedEvents.contains("boss_gave_quest")) {
-                npc.setDialogue(DialogueRegistry.getDialogue("boss", "after"));
-            }
-        } else if (npcId.equalsIgnoreCase("jason") && completedEvents.contains("jason_gave_money")) {
-            npc.setDialogue(DialogueRegistry.getDialogue("jason", "after"));
         }
 
         npcs.add(npc);
         world.getNpcs().add(npc);
-        System.out.println("SUCCESS: Loaded '" + npcId + "' from map in world '" + world.getName() + "'");
+        System.out.println("SUCCESS: Loaded '" + npcId + "' from map in world '" + world.getName() + "' (Node: " + npc.getCurrentDialogueNodeId() + ")");
     }
 
     public void update(float delta) {
