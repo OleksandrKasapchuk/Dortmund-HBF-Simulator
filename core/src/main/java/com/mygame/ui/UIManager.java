@@ -41,13 +41,13 @@ public class UIManager {
     private InventoryUI inventoryUI;
     private DialogueUI dialogueUI;
     private TouchControlsUI touchControlsUI;
-    private WorldMapUI worldMapUI;
+    private MapScreen mapScreen;
 
-    private GameUI gameUI;
-    private MenuUI menuUI;
-    private PauseUI pauseUI;
-    private SettingsUI settingsUI;
-    private DeathUI deathUI;
+    private GameScreen gameScreen;
+    private MenuScreen menuScreen;
+    private PauseScreen pauseScreen;
+    private SettingsScreen settingsScreen;
+    private DeathScreen deathScreen;
 
     private Stage currentStage;
     private final DialogueManager dialogueManager;
@@ -68,24 +68,24 @@ public class UIManager {
 
         this.player = player;
         // Initialize screens with the provided skin
-        gameUI = new GameUI(skin);
-        menuUI = new MenuUI(skin);
-        pauseUI = new PauseUI(skin);
-        settingsUI = new SettingsUI(skin);
-        deathUI = new DeathUI(skin);
-        worldMapUI = new WorldMapUI(skin);
+        gameScreen = new GameScreen(skin);
+        menuScreen = new MenuScreen(skin);
+        pauseScreen = new PauseScreen(skin);
+        settingsScreen = new SettingsScreen(skin);
+        deathScreen = new DeathScreen(skin);
+        mapScreen = new MapScreen(skin);
 
         // Set initial stage to menu
-        currentStage = menuUI.getStage();
+        currentStage = menuScreen.getStage();
         Gdx.input.setInputProcessor(currentStage);
 
         // Initialize in-game UI elements
-        questUI = new QuestUI(skin, gameUI.getStage(), 1200, 900);
-        inventoryUI = new InventoryUI(gameUI.getStage(), skin);
-        dialogueUI = new DialogueUI(skin, gameUI.getStage(), 1950, 250, 25f, 10f);
+        questUI = new QuestUI(skin, gameScreen.getStage(), 1200, 900);
+        inventoryUI = new InventoryUI(gameScreen.getStage(), skin);
+        dialogueUI = new DialogueUI(skin, gameScreen.getStage(), 1950, 250, 25f, 10f);
         dialogueManager = new DialogueManager(dialogueUI, player);
 
-        EventBus.subscribe(Events.MessageEvent.class, event -> gameUI.showInfoMessage(event.message(), 2f));
+        EventBus.subscribe(Events.MessageEvent.class, event -> gameScreen.showInfoMessage(event.message(), 2f));
         EventBus.subscribe(Events.AddItemMessageEvent.class, event -> showEarned(event.item().getNameKey(), event.amount()));
         EventBus.subscribe(Events.NotEnoughMessageEvent.class, event -> showNotEnough(event.item().getNameKey()));
 
@@ -94,8 +94,8 @@ public class UIManager {
             System.out.println("UIManager: Android detected, creating TouchControlsUI...");
             touchControlsUI = new TouchControlsUI(
                 skin,
-                gameUI.getStage(), pauseUI.getStage(),
-                settingsUI.getStage(), worldMapUI.getStage(),
+                gameScreen.getStage(), pauseScreen.getStage(),
+                settingsScreen.getStage(), mapScreen.getStage(),
                 player
             );
             System.out.println("UIManager: TouchControlsUI created.");
@@ -111,12 +111,12 @@ public class UIManager {
      */
     public void setCurrentStage(String stageName) {
         switch (stageName) {
-            case "MENU": currentStage = menuUI.getStage(); break;
-            case "GAME": currentStage = gameUI.getStage(); break;
-            case "PAUSE": currentStage = pauseUI.getStage(); break;
-            case "SETTINGS": currentStage = settingsUI.getStage(); break;
-            case "DEATH": currentStage = deathUI.getStage(); break;
-            case "MAP": currentStage = worldMapUI.getStage(); break;
+            case "MENU": currentStage = menuScreen.getStage(); break;
+            case "GAME": currentStage = gameScreen.getStage(); break;
+            case "PAUSE": currentStage = pauseScreen.getStage(); break;
+            case "SETTINGS": currentStage = settingsScreen.getStage(); break;
+            case "DEATH": currentStage = deathScreen.getStage(); break;
+            case "MAP": currentStage = mapScreen.getStage(); break;
         }
         Gdx.input.setInputProcessor(currentStage);
     }
@@ -127,11 +127,11 @@ public class UIManager {
      * @param delta Time elapsed since last frame
      */
     public void update(float delta) {
-        if (currentStage == worldMapUI.getStage()) {
-            worldMapUI.update();
-        } else if (currentStage == gameUI.getStage()) {
+        if (currentStage == mapScreen.getStage()) {
+            mapScreen.update();
+        } else if (currentStage == gameScreen.getStage()) {
 
-            gameUI.update(delta, player);
+            gameScreen.update(delta, player);
 
             dialogueManager.update(delta, isInteractPressed());
 
@@ -178,12 +178,12 @@ public class UIManager {
 
     /** Dispose all UI resources to free memory */
     public void dispose() {
-        menuUI.dispose();
-        gameUI.dispose();
-        pauseUI.dispose();
-        deathUI.dispose();
-        settingsUI.dispose();
-        worldMapUI.dispose();
+        menuScreen.dispose();
+        gameScreen.dispose();
+        pauseScreen.dispose();
+        deathScreen.dispose();
+        settingsScreen.dispose();
+        mapScreen.dispose();
         skin.dispose();
         dialogueUI.dispose();
         inventoryUI.dispose();
@@ -214,16 +214,16 @@ public class UIManager {
 
     // Getter methods for accessing UI components
     public DialogueManager getDialogueManager() { return dialogueManager; }
-    public GameUI getGameUI() { return gameUI; }
+    public GameScreen getGameScreen() { return gameScreen; }
     public TouchControlsUI getTouchControlsUI() { return touchControlsUI; }
 
 
     public void showEarned(String thing, int amount){
-        gameUI.showInfoMessage(Assets.messages.format("message.generic.got", amount, Assets.items.get(thing)),1f);
+        gameScreen.showInfoMessage(Assets.messages.format("message.generic.got", amount, Assets.items.get(thing)),1f);
     }
 
     public void showNotEnough(String thing) {
-        gameUI.showInfoMessage(Assets.messages.format("message.generic.not_enough", Assets.items.get(thing)), 1f);
+        gameScreen.showInfoMessage(Assets.messages.format("message.generic.not_enough", Assets.items.get(thing)), 1f);
     }
 
     /**

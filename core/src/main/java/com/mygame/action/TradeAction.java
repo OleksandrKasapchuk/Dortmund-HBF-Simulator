@@ -1,10 +1,10 @@
-package com.mygame.dialogue.action;
+package com.mygame.action;
 
 
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.game.GameContext;
 
-public class TradeAction implements DialogueAction {
+public class TradeAction implements GameAction {
 
     private final GameContext ctx;
     private String fromItem, toItem;

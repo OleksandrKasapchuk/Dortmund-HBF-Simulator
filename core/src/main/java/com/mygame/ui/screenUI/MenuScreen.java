@@ -15,13 +15,13 @@ import com.mygame.quest.QuestObserver;
  * MenuUI displays the main menu screen.
  * It shows a background image and a "Press Enter to Start" prompt on non-Android platforms.
  */
-public class MenuUI extends Screen {
+public class MenuScreen extends Screen {
     private Image backgroundImage; // Background image for the menu
     /**
      * Constructor sets up the menu UI elements.
      * @param skin Skin for labels and UI elements
      */
-    public MenuUI(Skin skin){
+    public MenuScreen(Skin skin){
         Stage stage = getStage();
 
         // Background image

@@ -20,23 +20,13 @@ public class QuestManager {
         EventBus.fire(new Events.QuestStartedEvent(quest.key()));
     }
 
-    /** Removes a quest by its key */
-    public static void removeQuest(String key) {
-        quests.removeIf(q -> q.key().equals(key));
-    }
-
     /** Completes a quest by its key */
     public static void completeQuest(String key) {
         Quest quest = getQuest(key);
         if (quest != null) {
             quest.complete();
+            EventBus.fire(new Events.QuestCompletedEvent(key));
         }
-    }
-
-    /** Checks if a quest with the given key is completed */
-    public static boolean isQuestCompleted(String key) {
-        Quest quest = getQuest(key);
-        return quest != null && quest.isCompleted();
     }
 
     /** Returns the list of all quests */
@@ -50,7 +40,7 @@ public class QuestManager {
 
     /** Checks if a quest with the given key exists */
     public static boolean hasQuest(String key) {
-        return quests.stream().anyMatch(q -> q.key().equals(key));
+        return quests.stream().anyMatch(q -> q.key().equals(key) && !q.isCompleted());
     }
 
     /** Clears all quests from the quest list */

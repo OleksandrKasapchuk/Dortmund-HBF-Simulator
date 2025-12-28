@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygame.assets.Assets;
 import com.mygame.dialogue.DialogueRegistry;
-import com.mygame.dialogue.action.DialogueActionRegistry;
+import com.mygame.action.ActionRegistry;
 import com.mygame.entity.item.ItemInteractionSystem;
 import com.mygame.entity.player.Player;
 import com.mygame.entity.item.ItemRegistry;
@@ -52,7 +52,7 @@ public class GameInitializer {
 
         ItemRegistry.init();
         DialogueRegistry.reset();
-        DialogueActionRegistry.registerAll(ctx);
+        ActionRegistry.registerAll(ctx);
         DialogueRegistry.init();
         player.getInventory().setUI(managerRegistry.getUiManager());
 

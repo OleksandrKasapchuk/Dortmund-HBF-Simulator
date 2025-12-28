@@ -1,14 +1,14 @@
-package com.mygame.dialogue.action.custom;
+package com.mygame.action.custom;
 
 import com.mygame.assets.Assets;
-import com.mygame.dialogue.action.DialogueAction;
-import com.mygame.dialogue.action.condition.HasItemCondition;
+import com.mygame.action.GameAction;
+import com.mygame.action.condition.HasItemCondition;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.game.GameContext;
 import com.mygame.managers.TimerManager;
 import com.mygame.assets.audio.SoundManager;
 
-public class ChikitaCraftJointAction implements DialogueAction {
+public class ChikitaCraftJointAction implements GameAction {
     private final GameContext ctx;
 
     public ChikitaCraftJointAction(GameContext ctx){

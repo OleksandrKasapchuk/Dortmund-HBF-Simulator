@@ -1,4 +1,4 @@
-package com.mygame.dialogue.action.condition;
+package com.mygame.action.condition;
 
 import com.mygame.assets.Assets;
 import com.mygame.entity.item.ItemRegistry;

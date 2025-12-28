@@ -3,13 +3,13 @@ package com.mygame.dialogue;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.mygame.action.ActionRegistry;
 import com.mygame.assets.Assets;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class DialogueRegistry {
-    private static Map<String, Runnable> actions = new HashMap<>();
     private static Map<String, JsonValue> npcDialogueData = new HashMap<>();
     private static Map<String, DialogueNode> builtNodes = new HashMap<>();
 
@@ -22,16 +22,8 @@ public class DialogueRegistry {
     }
 
     public static void reset() {
-        actions.clear();
         npcDialogueData.clear();
         builtNodes.clear();
-    }
-
-    public static void registerAction(String name, Runnable action) {
-        if (actions.containsKey(name)) {
-            System.err.println("DialogueRegistry: Overwriting action '" + name + "'");
-        }
-        actions.put(name, action);
     }
 
     public static DialogueNode getDialogue(String npcId, String nodeName) {
@@ -67,7 +59,7 @@ public class DialogueRegistry {
         if (nodeData.isObject()) {
             if (nodeData.has("onFinish")) {
                 String actionName = nodeData.getString("onFinish");
-                onFinish = actions.get(actionName);
+                onFinish = ActionRegistry.getAction(actionName);
                 if (onFinish == null) {
                     System.err.println("DialogueRegistry: onFinish action '" + actionName + "' not registered.");
                 }
@@ -94,7 +86,7 @@ public class DialogueRegistry {
                         }
                         if (choiceData.has("action")) {
                             String actionName = choiceData.getString("action");
-                            choiceAction = actions.get(actionName);
+                            choiceAction = ActionRegistry.getAction(actionName);
                             if (choiceAction == null) {
                                 System.err.println("DialogueRegistry: choice action '" + actionName + "' not registered.");
                             }

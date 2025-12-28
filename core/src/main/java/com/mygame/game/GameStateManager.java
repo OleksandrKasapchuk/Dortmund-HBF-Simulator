@@ -1,9 +1,7 @@
 package com.mygame.game;
 
 import com.mygame.assets.Assets;
-import com.mygame.dialogue.DialogueNode;
-import com.mygame.dialogue.action.SetDialogueAction;
-import com.mygame.entity.npc.NpcManager;
+import com.mygame.action.SetDialogueAction;
 import com.mygame.entity.player.Player;
 import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;

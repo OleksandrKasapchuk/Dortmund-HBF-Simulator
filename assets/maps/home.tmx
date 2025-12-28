@@ -97,6 +97,7 @@
     <property name="isPickupable" type="bool" value="false"/>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="bush"/>
+    <property name="onInteractAction" value="bush_interaction"/>
     <property name="questId" value="delivery"/>
    </properties>
   </object>
@@ -135,6 +136,7 @@
     <property name="isPickupable" type="bool" value="false"/>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="table"/>
+    <property name="onInteractAction" value="table_plant_grass"/>
    </properties>
   </object>
   <object id="12" gid="6" x="605" y="402.03" width="180" height="200">

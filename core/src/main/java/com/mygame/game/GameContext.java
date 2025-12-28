@@ -5,11 +5,7 @@ import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.npc.NpcManager;
 import com.mygame.entity.player.InventoryManager;
 import com.mygame.entity.player.Player;
-import com.mygame.game.save.GameSettings;
-import com.mygame.game.save.SettingsManager;
 import com.mygame.ui.UIManager;
-import com.mygame.ui.screenUI.GameUI;
-
 public class GameContext {
 
     public final Player player;
@@ -30,15 +26,5 @@ public class GameContext {
     // Always get the current inventory from the player
     public InventoryManager getInventory() {
         return player.getInventory();
-    }
-
-    // Always get the latest UI component
-    public GameUI getGameUI() {
-        return ui.getGameUI();
-    }
-
-    // Always load the most recent settings
-    public GameSettings getSettings() {
-        return SettingsManager.load();
     }
 }

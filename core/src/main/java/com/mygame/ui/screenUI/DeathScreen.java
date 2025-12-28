@@ -14,7 +14,7 @@ import com.mygame.Main;
  * DeathUI represents the screen shown when the player dies.
  * It displays a "WASTED" message and a button to restart the game.
  */
-public class DeathUI extends Screen {
+public class DeathScreen extends Screen {
     private final Image backgroundImage;
 
     /**
@@ -22,7 +22,7 @@ public class DeathUI extends Screen {
      *
      * @param skin The Skin used for labels and buttons
      */
-    public DeathUI(Skin skin) {
+    public DeathScreen(Skin skin) {
         Stage stage = getStage();
 
         // Background image filling the screen

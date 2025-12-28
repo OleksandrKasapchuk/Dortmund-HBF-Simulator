@@ -67,6 +67,9 @@ public class ItemManager {
             String rewardItemKey = props.get("rewardItemKey", null, String.class);
             int rewardAmount = props.get("rewardAmount", 0, Integer.class);
 
+            // New property for generic actions from actions.json
+            String interactionActionId = props.get("onInteractAction", null, String.class);
+
             String textureKey = props.get("textureKey", itemKey, String.class);
             Texture texture = Assets.getTexture(textureKey);
             if (texture == null) {
@@ -74,7 +77,7 @@ public class ItemManager {
                 continue;
             }
 
-            Item item = new Item(itemType, (int) width, (int) height, x, y, interactionDistance, texture, world, isPickupable, isSolid, searchable, questId, rewardItemKey, rewardAmount);
+            Item item = new Item(itemType, (int) width, (int) height, x, y, interactionDistance, texture, world, isPickupable, isSolid, searchable, questId, rewardItemKey, rewardAmount, interactionActionId);
 
             GameSettings settings = SettingsManager.load();
             // Restore searched state from save data
@@ -84,31 +87,31 @@ public class ItemManager {
             world.getItems().add(item);
 
             // --- Editor-driven identification ---
-            // 1. If the object has a "Name" in Tiled, use it (highest priority)
             String objectName = object.getName();
             if (objectName != null && !objectName.isEmpty()) {
                 namedItems.put(objectName, item);
             }
-
-            // 2. Also map it by its itemKey for generic access (e.g. getItem("bush"))
-            // Note: If multiple bushes exist, this will store the LAST one loaded.
             namedItems.put(itemKey, item);
-
-            System.out.println("SUCCESS: ItemManager loaded item '" + itemKey + "' (Name: " + objectName + ") into world '" + world.getName() + "'");
         }
     }
 
-    // --- Update items: handle pickups by the player ---
-    public void update(Player player) {
-        for (Iterator<Item> it = WorldManager.getCurrentWorld().getItems().iterator(); it.hasNext(); ) {
+    // --- Update items: handle pickups by the player and cooldowns ---
+    public void update(float delta, Player player) {
+        World currentWorld = WorldManager.getCurrentWorld();
+        if (currentWorld == null) return;
+
+        for (Iterator<Item> it = currentWorld.getItems().iterator(); it.hasNext(); ) {
             Item item = it.next();
+
+            // Update item cooldowns automatically
+            item.updateCooldown(delta);
 
             // If item can be picked up and player is near, add to inventory and remove from world
             if (item.canBePickedUp() && item.isPlayerNear(player, item.getDistance())) {
                 player.getInventory().addItem(item.getType(), 1);
 
-                if (item.getType().getKey().equals("pfand")) { // Use getKey() for safety
-                    WorldManager.getCurrentWorld().getPfands().remove(item);
+                if (item.getType().getKey().equals("pfand")) {
+                    currentWorld.getPfands().remove(item);
                 }
                 it.remove(); // Remove item from the world
             }
@@ -123,9 +126,4 @@ public class ItemManager {
     public Item getItem(String identifier) {
         return namedItems.get(identifier);
     }
-
-    // --- Compatibility methods for existing scenarios ---
-    public Item getBush() { return getItem("bush"); }
-    public Item getPfandAutomat() { return getItem("pfandAutomat"); }
-    public Item getTable() { return getItem("table"); }
 }

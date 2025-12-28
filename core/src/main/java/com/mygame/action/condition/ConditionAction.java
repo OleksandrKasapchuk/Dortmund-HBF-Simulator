@@ -1,4 +1,4 @@
-package com.mygame.dialogue.action.condition;
+package com.mygame.action.condition;
 
 public interface ConditionAction {
     boolean check();

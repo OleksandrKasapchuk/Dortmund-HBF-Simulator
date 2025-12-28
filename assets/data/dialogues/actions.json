@@ -59,7 +59,7 @@
   "give_vape_action": {
     "type": "if_has_item",
     "itemId": "vape",
-    "itemNameKey": "item.vape.name",
+    "item": "vape",
     "action": {
       "type": "set_dialogue",
       "npc": "talahon2",
@@ -81,7 +81,98 @@
     "actions": [
       { "type": "add_item", "id": "money", "amount": 50 },
       { "type": "set_dialogue", "npc": "boss", "node": "finished" },
-      { "type": "remove_quest", "id": "boss_end" }
+      { "type": "complete_quest", "id": "boss_end" }
+    ]
+  },
+
+  "pfand_automat_interact": {
+    "type": "if_has_item",
+    "itemId": "pfand",
+    "amount": 1,
+    "action": "pfand_success",
+    "onFail": { "type": "not_enough_message", "item": "pfand" }
+  },
+
+  "pfand_success": {
+    "type": "composite",
+    "actions": [
+      { "type": "remove_item", "id": "pfand", "amount": 1 },
+      { "type": "play_sound", "id": "pfandAutomat" },
+      { "type": "start_cooldown", "id": "pfandAutomat", "seconds": 1.9 },
+      {
+        "type": "timer",
+        "delay": 1.9,
+        "action": { "type": "add_item", "id": "money", "amount": 1 }
+      }
+    ]
+  },
+
+  "table_plant_grass": {
+    "type": "if_has_item",
+    "itemId": "grass_seed",
+    "amount": 1,
+    "action": "table_success",
+    "onFail": { "type": "not_enough_message", "item": "grass_seed" }
+  },
+
+  "table_success": {
+    "type": "composite",
+    "actions": [
+      { "type": "remove_item", "id": "grass_seed", "amount": 1 },
+      { "type": "play_sound", "id": "bush" },
+      {
+        "type": "timer",
+        "delay": 1.9,
+        "action": { "type": "message", "text": "You planted grass", "duration": 1.0 }
+      }
+    ]
+  },
+
+  "bush_interaction": {
+    "type": "if_has_item",
+    "itemId": "grass",
+    "amount": 1000,
+    "action": "bush_success",
+    "onFail": { "type": "not_enough_message", "item": "grass" }
+  },
+
+  "bush_success": {
+    "type": "composite",
+    "actions": [
+      { "type": "complete_quest", "id": "delivery" },
+      { "type": "remove_item", "id": "grass", "amount": 1000 },
+      { "type": "play_sound", "id": "bush" },
+      {
+        "type": "timer",
+        "delay": 2.0,
+        "action": {
+          "type": "composite",
+          "actions": [
+            { "type":  "call_police"},
+            { "type": "set_dialogue", "npc": "summoned_police", "node": "beforeChase" },
+            { "type": "force_dialogue", "npc": "summoned_police" }
+          ]
+        }
+      }
+    ]
+  },
+
+  "handle_boss_fail": {
+    "type": "composite",
+    "actions": [
+      { "type": "set_dialogue", "npc": "boss", "node": "failure" },
+      { "type": "remove_npc", "npc": "boss" },
+      {
+        "type": "timer",
+        "delay": 2.0,
+        "action": {
+          "type": "composite",
+          "actions": [
+            { "type": "spawn_npc_near_player", "npc": "boss", "offsetX": -100 },
+            { "type": "force_dialogue", "npc": "boss" }
+          ]
+        }
+      }
     ]
   },
 

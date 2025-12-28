@@ -82,7 +82,6 @@ public class Main extends ApplicationAdapter {
         WorldManager.drawEntities(batch, Assets.myFont, player);
         gameInitializer.getContext().ui.renderWorldElements();
         player.draw(batch);
-        gameInitializer.getScController().draw();
         batch.end();
 
         // 3. Draw debug shapes

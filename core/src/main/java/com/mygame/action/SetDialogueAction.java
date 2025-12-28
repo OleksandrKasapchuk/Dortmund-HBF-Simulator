@@ -1,10 +1,10 @@
-package com.mygame.dialogue.action;
+package com.mygame.action;
 
 import com.mygame.dialogue.DialogueRegistry;
 import com.mygame.entity.npc.NPC;
 import com.mygame.game.GameContext;
 
-public class SetDialogueAction implements DialogueAction {
+public class SetDialogueAction implements GameAction {
     private final GameContext ctx;
 
     private String npcId;
