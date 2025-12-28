@@ -76,10 +76,11 @@ public class Main extends ApplicationAdapter {
         SpriteBatch batch = gameInitializer.getBatch();
         batch.setProjectionMatrix(camera.combined);
 
+        gameInitializer.getManagerRegistry().update(delta);
 
         batch.begin();
         WorldManager.drawEntities(batch, Assets.myFont, player);
-        gameInitializer.getManagerRegistry().update(delta);
+        gameInitializer.getContext().ui.renderWorldElements();
         player.draw(batch);
         gameInitializer.getScController().draw();
         batch.end();

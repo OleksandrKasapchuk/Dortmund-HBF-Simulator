@@ -134,5 +134,8 @@ public class Item extends Entity {
 
     public String getQuestId(){ return questId; }
     public boolean isSearched() { return searched; }
+
+    public boolean isSearchable() {return searchable;}
+
     public void setSearched(boolean searched) { this.searched = searched; }
 }

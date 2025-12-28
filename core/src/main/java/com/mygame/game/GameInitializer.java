@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygame.assets.Assets;
 import com.mygame.dialogue.DialogueRegistry;
 import com.mygame.dialogue.action.DialogueActionRegistry;
+import com.mygame.entity.item.ItemInteractionSystem;
 import com.mygame.entity.player.Player;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.managers.ManagerRegistry;
@@ -70,6 +71,7 @@ public class GameInitializer {
         scController = new ScenarioController();
         scController.init(ctx);
         QuestObserver.init();
+        ItemInteractionSystem.init();
 
         // Load other game state data
         if (settings.inventory != null)

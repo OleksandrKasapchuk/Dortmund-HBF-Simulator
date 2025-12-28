@@ -35,6 +35,7 @@ public class UIManager {
 
     private final Skin skin;
     private final SpriteBatch batch;
+    private Player player;
 
     private QuestUI questUI;
     private InventoryUI inventoryUI;
@@ -65,6 +66,7 @@ public class UIManager {
         this.skin = skin;
         this.batch = batch;
 
+        this.player = player;
         // Initialize screens with the provided skin
         gameUI = new GameUI(skin);
         menuUI = new MenuUI(skin);
@@ -123,9 +125,8 @@ public class UIManager {
      * Updates UI elements and handles input events.
      * This should be called every frame during the game.
      * @param delta Time elapsed since last frame
-     * @param player Reference to the player
      */
-    public void update(float delta, Player player) {
+    public void update(float delta) {
         if (currentStage == worldMapUI.getStage()) {
             worldMapUI.update();
         } else if (currentStage == gameUI.getStage()) {
@@ -136,35 +137,41 @@ public class UIManager {
 
             if (inventoryUI.isVisible()) inventoryUI.update(player);
         }
-
-        for (NPC npc : WorldManager.getCurrentWorld().getNpcs()) {
-            if (npc.isPlayerNear(player)) {
-                Assets.myFont.draw(batch, Assets.ui.get("interact.npc"), npc.getX() - 100, npc.getY() + npc.getHeight() + 40);
-            }
-        }
-
-        for (Item item : WorldManager.getCurrentWorld().getItems()) {
-            // Check if it's a quest item and if the quest is active
-            if(item.getQuestId() != null && !QuestManager.hasQuest(item.getQuestId())) {
-                continue;
-            }
-
-            if (item.isPlayerNear(player, item.getDistance())) {
-                if (item.isSearched()) return;
-                drawText(Assets.ui.get("interact.npc"), item.getCenterX(), item.getCenterY());
-
-                if (isInteractPressed()) {
-                    item.interact(player);
-                }
-            }
-        }
         // Update the current stage actors
         currentStage.act(delta);
         resetButtons();
     }
 
-    /** Draws the current stage */
-    public void render() { currentStage.draw();}
+    /** Draws UI elements that are positioned in the game world (e.g., interaction labels) */
+    public void renderWorldElements() {
+        for (NPC npc : WorldManager.getCurrentWorld().getNpcs()) {
+            if (npc.isPlayerNear(player)) {
+                Assets.myFont.draw(batch, Assets.ui.get("interact"), npc.getX() - 100, npc.getY() + npc.getHeight() + 40);
+            }
+        }
+
+        for (Item item : WorldManager.getCurrentWorld().getItems()) {
+            // Check if it's a quest item and if the quest is active
+            if (item.getQuestId() != null && !QuestManager.hasQuest(item.getQuestId())) continue;
+
+            if (item.isPlayerNear(player, item.getDistance()) && !item.isSearched()) {
+                if (item.isSearchable()){
+                    drawText(Assets.ui.get("interact.search"), item.getCenterX(), item.getCenterY());
+                } else {
+                    drawText(Assets.ui.get("interact"), item.getCenterX(), item.getCenterY());
+                }
+                if (isInteractPressed()) {
+                    EventBus.fire(new Events.ItemInteractionEvent(item, player));
+                    break;
+                }
+            }
+        }
+    }
+
+    /** Draws the current stage (HUD, Menus) in screen space */
+    public void render() {
+        currentStage.draw();
+    }
 
     /** Updates viewport size for current stage */
     public void resize(int width, int height) { currentStage.getViewport().update(width, height, true); }

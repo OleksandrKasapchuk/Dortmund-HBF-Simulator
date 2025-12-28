@@ -49,7 +49,7 @@ public class ManagerRegistry {
         npcManager.update(delta);
         cameraManager.update(delta, WorldManager.getCurrentWorld());
         itemManager.update(player);
-        uiManager.update(delta, player);
+        uiManager.update(delta);
         pfandManager.update(delta);
     }
 
