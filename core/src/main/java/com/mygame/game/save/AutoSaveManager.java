@@ -55,7 +55,7 @@ public class AutoSaveManager {
         settings.activeQuests = QuestManager.getQuests().stream()
             .collect(Collectors.toMap(
                 QuestManager.Quest::key,
-                quest -> new GameSettings.QuestSaveData(quest.progressable(), quest.progress(), quest.maxProgress())
+                quest -> new GameSettings.QuestSaveData(quest.progressable(), quest.progress(), quest.maxProgress(), quest.isCompleted())
             ));
 
         settings.talkedNpcs = new HashSet<>(QuestObserver.getTalkedNpcs());

@@ -78,7 +78,7 @@ public class GameInitializer {
             settings.inventory.forEach((itemKey, amount) -> player.getInventory().addItem(ItemRegistry.get(itemKey), amount));
 
         if (settings.activeQuests != null) {
-            settings.activeQuests.forEach((key, saveData) -> QuestManager.addQuest(new QuestManager.Quest(key, saveData.progressable, saveData.progress, saveData.maxProgress)));
+            settings.activeQuests.forEach((key, saveData) -> QuestManager.addQuest(new QuestManager.Quest(key, saveData.progressable, saveData.progress, saveData.maxProgress, saveData.completed)));
         }
         gameInputHandler = new GameInputHandler(managerRegistry.getGameStateManager(), managerRegistry.getUiManager());
 

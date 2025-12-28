@@ -43,11 +43,13 @@ public class GameSettings {
         public boolean progressable;
         public int progress;
         public int maxProgress;
+        public boolean completed;
 
-        public QuestSaveData(boolean progressable, int progress, int maxProgress) {
+        public QuestSaveData(boolean progressable, int progress, int maxProgress, boolean completed) {
             this.progressable = progressable;
             this.progress = progress;
             this.maxProgress = maxProgress;
+            this.completed = completed;
         }
 
         public QuestSaveData() {}

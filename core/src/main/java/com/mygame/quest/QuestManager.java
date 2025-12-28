@@ -56,12 +56,17 @@ public class QuestManager {
         private boolean completed;
 
         public Quest(String key, boolean progressable, int progress, int maxProgress) {
+            this(key, progressable, progress, maxProgress, progress >= maxProgress);
+        }
+
+        public Quest(String key, boolean progressable, int progress, int maxProgress, boolean completed) {
             this.key = key;
             this.progressable = progressable;
             this.progress = progress;
             this.maxProgress = maxProgress;
-            this.completed = progressable && progress >= maxProgress;
+            this.completed = completed;
         }
+
 
         public String key() {
             return key;
