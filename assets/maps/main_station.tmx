@@ -159,7 +159,7 @@
     <property name="textureKey" value="kamil"/>
    </properties>
   </object>
-  <object id="18" gid="3" x="2813" y="3702" width="70" height="100">
+  <object id="18" gid="3" x="2804" y="3702" width="70" height="100">
    <properties>
     <property name="name" value="igo"/>
     <property name="textureKey" value="igo"/>
@@ -205,6 +205,7 @@
     <property name="isPickupable" type="bool" value="false"/>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="pfandAutomat"/>
+    <property name="onInteractAction" value="pfand_automat_interact"/>
    </properties>
   </object>
  </objectgroup>

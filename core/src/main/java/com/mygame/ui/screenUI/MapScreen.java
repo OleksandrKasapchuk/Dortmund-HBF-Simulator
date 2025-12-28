@@ -11,7 +11,7 @@ import com.mygame.world.WorldManager;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WorldMapUI extends Screen {
+public class MapScreen extends Screen {
 
     private final Table layout;
     private final ShapeRenderer shapeRenderer;
@@ -19,7 +19,7 @@ public class WorldMapUI extends Screen {
     private final Map<String, Label> worldLabels = new HashMap<>();
     private final Map<String, com.badlogic.gdx.math.Vector2> worldPositions = new HashMap<>();
 
-    public WorldMapUI(Skin skin) {
+    public MapScreen(Skin skin) {
         this.skin = skin;
         this.shapeRenderer = new ShapeRenderer();
         this.layout = new Table();

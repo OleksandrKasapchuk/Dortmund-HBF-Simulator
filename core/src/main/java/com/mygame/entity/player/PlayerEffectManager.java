@@ -27,7 +27,7 @@ public class PlayerEffectManager {
         SoundManager.playSound(Assets.getSound("lighter"));
         TimerManager.setAction(() -> {
             if (player.getState() == Player.State.NORMAL)
-                uiManager.getGameUI().showInfoMessage(Assets.messages.get("message.joint"), 1.5f);
+                uiManager.getGameScreen().showInfoMessage(Assets.messages.get("message.joint"), 1.5f);
 
             player.setStone();
         }, 4f);
@@ -36,7 +36,7 @@ public class PlayerEffectManager {
     public static void applyIceTeaEffect() {
         TimerManager.setAction(() -> {
             if (player.getState() == Player.State.STONED)
-                uiManager.getGameUI().showInfoMessage(Assets.messages.get("message.ice_tea"), 1.5f);
+                uiManager.getGameScreen().showInfoMessage(Assets.messages.get("message.ice_tea"), 1.5f);
 
             player.setNormal();
             MusicManager.playMusic(Assets.getMusic("backMusic1"));

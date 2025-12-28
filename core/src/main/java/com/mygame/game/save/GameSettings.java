@@ -30,6 +30,9 @@ public class GameSettings {
     public Set<String> visited;
     public Set<String> searchedItems;
 
+    // NPC State: Mapping NPC ID to their current status (dialogue and texture)
+    public Map<String, NpcSaveData> npcStates;
+
     // Police chase save data
     public boolean policeChaseActive;
     public float policeX;
@@ -50,6 +53,17 @@ public class GameSettings {
         public QuestSaveData() {}
     }
 
+    public static class NpcSaveData {
+        public String currentNode;
+        public String currentTexture;
+
+        public NpcSaveData() {}
+        public NpcSaveData(String currentNode, String currentTexture) {
+            this.currentNode = currentNode;
+            this.currentTexture = currentTexture;
+        }
+    }
+
     public GameSettings() {
         // Default settings
         this.language = "en";
@@ -67,6 +81,7 @@ public class GameSettings {
         this.talkedNpcs = new HashSet<>();
         this.visited = new HashSet<>();
         this.searchedItems = new HashSet<>();
+        this.npcStates = new HashMap<>();
 
         this.policeChaseActive = false;
     }

@@ -103,7 +103,7 @@ public class QuestUI {
             .toList();
 
         if (filteredQuests.isEmpty()) {
-            String emptyMsg = showCompleted ? "No completed quests yet." : Assets.ui.get("ui.quest.empty");
+            String emptyMsg = showCompleted ? Assets.ui.get("ui.quest.completed.empty") : Assets.ui.get("ui.quest.empty");
             Label noQuest = new Label(emptyMsg, skin);
             noQuest.setFontScale(1.2f);
             questTable.add(noQuest).expand().center().colspan(2);

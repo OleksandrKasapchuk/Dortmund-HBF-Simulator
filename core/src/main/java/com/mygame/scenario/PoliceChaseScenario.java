@@ -2,9 +2,8 @@ package com.mygame.scenario;
 
 import com.mygame.assets.Assets;
 import com.mygame.assets.audio.MusicManager;
-import com.mygame.dialogue.action.AddQuestAction;
-import com.mygame.dialogue.action.CompleteEventAction;
-import com.mygame.dialogue.action.SetDialogueAction;
+import com.mygame.action.AddQuestAction;
+import com.mygame.action.SetDialogueAction;
 import com.mygame.entity.npc.NPC;
 import com.mygame.entity.npc.Police;
 import com.mygame.events.EventBus;
@@ -66,13 +65,12 @@ public class PoliceChaseScenario implements Scenario {
                     ctx.ui.getDialogueManager().startForcedDialogue(police);
                 case ESCAPED -> {
                     MusicManager.playMusic(Assets.getMusic("backMusic1"));
-                    ctx.ui.getGameUI().showInfoMessage(Assets.messages.get("message.generic.ranAway"), 1.5f);
+                    ctx.ui.getGameScreen().showInfoMessage(Assets.messages.get("message.generic.ranAway"), 1.5f);
 
                     NPC boss = ctx.npcManager.getBoss();
                     if (boss != null) {
                         new SetDialogueAction(ctx, "boss", "wellDone").execute();
-                        new CompleteEventAction(ctx, "boss_quest_escaped").execute();
-                        QuestManager.removeQuest("chase");
+                        QuestManager.completeQuest("chase");
                         new AddQuestAction("boss_end",false,0,0).execute();
                     }
                     ctx.npcManager.kill(police);

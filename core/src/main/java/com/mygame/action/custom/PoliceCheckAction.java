@@ -1,11 +1,11 @@
-package com.mygame.dialogue.action.custom;
+package com.mygame.action.custom;
 
 import com.mygame.assets.Assets;
-import com.mygame.dialogue.action.DialogueAction;
+import com.mygame.action.GameAction;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.game.GameContext;
 
-public class PoliceCheckAction implements DialogueAction {
+public class PoliceCheckAction implements GameAction {
 
     private final GameContext ctx;
 
@@ -24,11 +24,11 @@ public class PoliceCheckAction implements DialogueAction {
             ctx.getInventory().removeItem(ItemRegistry.get("grass"), 9999);
             ctx.getInventory().removeItem(ItemRegistry.get("joint"), 9999);
             ctx.getInventory().removeItem(ItemRegistry.get("vape"), 9999);
-            ctx.getGameUI().showInfoMessage(
+            ctx.ui.getGameScreen().showInfoMessage(
                 Assets.messages.get("message.police.stuffLost"), 1.5f
             );
         } else {
-            ctx.getGameUI().showInfoMessage(
+            ctx.ui.getGameScreen().showInfoMessage(
                 Assets.messages.get("message.police.checkPassed"), 1.5f
             );
         }

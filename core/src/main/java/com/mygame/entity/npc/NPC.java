@@ -1,6 +1,7 @@
 package com.mygame.entity.npc;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.mygame.assets.Assets;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.Entity;
 import com.mygame.world.World;
@@ -26,6 +27,8 @@ public class NPC extends Entity {
     private final String id;
     private final String name;
     private DialogueNode dialogue;
+    private String currentDialogueNodeId = "start";
+    private String currentTextureKey;
 
     public NPC(
         String id, String name,
@@ -37,6 +40,7 @@ public class NPC extends Entity {
         this.id = id;
         this.name = name;
         this.dialogue = dialogue;
+        this.currentTextureKey = id.toLowerCase();
 
         this.directionX = directionX;
         this.directionY = directionY;
@@ -102,8 +106,24 @@ public class NPC extends Entity {
     // --- Dialogue ---
     public DialogueNode getDialogue() { return dialogue; }
     public void setDialogue(DialogueNode dialogue) { this.dialogue = dialogue; }
+
+    public String getCurrentDialogueNodeId() { return currentDialogueNodeId; }
+    public void setCurrentDialogueNodeId(String nodeId) { this.currentDialogueNodeId = nodeId; }
+
+    // --- Texture ---
+    public void setTexture(String textureKey) {
+        this.currentTextureKey = textureKey;
+        Texture tex = Assets.getTexture(textureKey);
+        if (tex != null) {
+            super.setTexture(tex);
+        }
+    }
+
+    public String getCurrentTextureKey() {
+        return currentTextureKey;
+    }
+
     public String getId(){ return id; }
     public String getName() { return this.name; }
-    public void setTexture(Texture texture) { this.texture = texture; }
     public int getSpeed() { return speed; }
 }

@@ -1,4 +1,4 @@
-package com.mygame.dialogue.action;
+package com.mygame.action;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.JsonReader;
@@ -6,26 +6,30 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.mygame.assets.Assets;
 import com.mygame.assets.audio.MusicManager;
 import com.mygame.assets.audio.SoundManager;
-import com.mygame.dialogue.DialogueRegistry;
-import com.mygame.dialogue.action.condition.HasItemCondition;
-import com.mygame.dialogue.action.custom.ChikitaCraftJointAction;
-import com.mygame.dialogue.action.custom.PoliceCheckAction;
+import com.mygame.action.custom.ChikitaCraftJointAction;
+import com.mygame.action.custom.PoliceCheckAction;
+import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemRegistry;
+import com.mygame.entity.npc.NPC;
 import com.mygame.entity.npc.Police;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
 import com.mygame.game.GameContext;
 import com.mygame.quest.QuestManager;
 import com.mygame.managers.TimerManager;
+import com.mygame.world.WorldManager;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class DialogueActionRegistry {
+public class ActionRegistry {
 
     private interface ActionCreator {
         Runnable create(GameContext ctx, JsonValue data);
     }
 
     private static final Map<String, ActionCreator> creators = new HashMap<>();
+    private static final Map<String, Runnable> registeredActions = new HashMap<>();
 
     static {
         creators.put("trade", (ctx, data) -> () -> new TradeAction(ctx,
@@ -38,17 +42,18 @@ public class DialogueActionRegistry {
                 data.getInt("progress", 0),
                 data.getInt("max", 0)).execute());
 
-        creators.put("remove_quest", (ctx, data) -> () -> QuestManager.removeQuest(data.getString("id")));
+        creators.put("complete_quest", (ctx, data) -> () -> QuestManager.completeQuest(data.getString("id")));
 
         creators.put("set_dialogue", (ctx, data) -> () -> new SetDialogueAction(ctx,
                 data.getString("npc"), data.getString("node")).execute());
 
-        creators.put("complete_event", (ctx, data) -> () -> new CompleteEventAction(ctx,
-                data.getString("id")).execute());
-
         creators.put("add_item", (ctx, data) -> () -> ctx.getInventory().addItemAndNotify(
                 ItemRegistry.get(data.getString("id")),
                 data.getInt("amount", 1)));
+
+        creators.put("remove_item", (ctx, data) -> () -> ctx.getInventory().removeItem(
+            ItemRegistry.get(data.getString("id")),
+            data.getInt("amount", 1)));
 
         creators.put("play_sound", (ctx, data) -> () -> SoundManager.playSound(Assets.getSound(data.getString("id"))));
 
@@ -66,8 +71,13 @@ public class DialogueActionRegistry {
             TimerManager.setAction(() -> createAction(ctx, actionData).run(), delay);
         });
 
+        creators.put("start_cooldown", (ctx, data) -> () -> {
+            Item item = ctx.itemManager.getItem(data.getString("id"));
+            if (item != null) item.startCooldown(data.getFloat("seconds", 1f));
+        });
+
         creators.put("set_texture", (ctx, data) -> () -> {
-            var npc = ctx.npcManager.findNpcById(Assets.npcs.get(data.getString("npcNameKey")));
+            var npc = ctx.npcManager.findNpcById((data.getString("npc")));
             if (npc != null) npc.setTexture(Assets.getTexture(data.getString("texture")));
         });
 
@@ -78,18 +88,51 @@ public class DialogueActionRegistry {
                 if (data.has("onSuccess")) {
                     createAction(ctx, data.get("onSuccess")).run();
                 }
-            }
-        });
-
-        creators.put("if_has_item", (ctx, data) -> () -> {
-            if (new HasItemCondition(ctx, data.getString("itemId"), data.getString("itemNameKey")).check()) {
-                if (data.has("action")) {
-                    createAction(ctx, data.get("action")).run();
+            } else {
+                if (data.has("onFail")) {
+                    createAction(ctx, data.get("onFail")).run();
                 }
             }
         });
 
-        // Specific complex ones mapped to types
+        creators.put("if_has_item", (ctx, data) -> () -> {
+            int amount = data.getInt("amount", 1);
+            if (ctx.getInventory().getAmount(ItemRegistry.get(data.getString("itemId"))) >= amount) {
+                if (data.has("action")) {
+                    createAction(ctx, data.get("action")).run();
+                }
+            } else {
+                if (data.has("onFail")) {
+                    createAction(ctx, data.get("onFail")).run();
+                }
+            }
+        });
+
+        creators.put("not_enough_message", (ctx, data) -> () -> EventBus.fire(new Events.NotEnoughMessageEvent(ItemRegistry.get(data.getString("item")))));
+
+        creators.put("message", (ctx, data) -> () -> ctx.ui.getGameScreen().showInfoMessage(data.getString("text"), data.getFloat("duration", 2f)));
+
+        creators.put("remove_npc", (ctx, data) -> () -> {
+            NPC npc = ctx.npcManager.findNpcById(data.getString("npc"));
+            if (npc != null) npc.getWorld().getNpcs().remove(npc);
+        });
+
+        creators.put("spawn_npc_near_player", (ctx, data) -> () -> {
+            NPC npc = ctx.npcManager.findNpcById(data.getString("npc"));
+            if (npc != null) {
+                WorldManager.getCurrentWorld().getNpcs().add(npc);
+                npc.setX(ctx.player.getX() + data.getFloat("offsetX", 0f));
+                npc.setY(ctx.player.getY() + data.getFloat("offsetY", 0f));
+            }
+        });
+
+        creators.put("call_police", (ctx, data) -> ctx.npcManager::callPolice);
+
+        creators.put("force_dialogue", (ctx, data) -> () -> {
+            NPC npc = ctx.npcManager.findNpcById(data.getString("npc"));
+            if (npc != null) ctx.ui.getDialogueManager().startForcedDialogue(npc);
+        });
+
         creators.put("chikita_craft", (ctx, data) -> () -> new ChikitaCraftJointAction(ctx).execute());
         creators.put("police_check", (ctx, data) -> () -> new PoliceCheckAction(ctx).execute());
         creators.put("start_police_chase", (ctx, data) -> () -> {
@@ -97,7 +140,7 @@ public class DialogueActionRegistry {
             if (police != null) {
                 new AddQuestAction("chase", false, 0, 0).execute();
                 police.startChase(ctx.player);
-                ctx.ui.getGameUI().showInfoMessage(Assets.messages.get("message.boss.chase.run"), 2f);
+                ctx.ui.getGameScreen().showInfoMessage(Assets.messages.get("message.boss.chase.run"), 2f);
                 MusicManager.playMusic(Assets.getMusic("backMusic4"));
                 new SetDialogueAction(ctx, "summoned_police", "caught").execute();
             }
@@ -105,6 +148,7 @@ public class DialogueActionRegistry {
     }
 
     public static void registerAll(GameContext ctx) {
+        registeredActions.clear();
         loadActionsFromJson(ctx);
     }
 
@@ -113,20 +157,36 @@ public class DialogueActionRegistry {
             JsonReader reader = new JsonReader();
             JsonValue root = reader.parse(Gdx.files.internal("data/dialogues/actions.json"));
             for (JsonValue entry : root) {
-                DialogueRegistry.registerAction(entry.name(), createAction(ctx, entry));
+                registeredActions.put(entry.name(), createAction(ctx, entry));
             }
         } catch (Exception e) {
-            Gdx.app.log("DialogueActionRegistry", "Could not load actions.json: " + e.getMessage());
+            Gdx.app.log("ActionRegistry", "Could not load actions.json: " + e.getMessage());
         }
     }
 
     public static Runnable createAction(GameContext ctx, JsonValue data) {
         if (data == null) return () -> {};
+        if (data.isString()) {
+            return registeredActions.getOrDefault(data.asString(), () -> {});
+        }
         String type = data.getString("type", "");
         ActionCreator creator = creators.get(type);
         if (creator != null) {
             return creator.create(ctx, data);
         }
         return () -> {};
+    }
+
+    public static Runnable getAction(String name) {
+        return registeredActions.get(name);
+    }
+
+    public static void executeAction(String name) {
+        Runnable action = registeredActions.get(name);
+        if (action != null) {
+            action.run();
+        } else {
+            Gdx.app.log("ActionRegistry", "Action '" + name + "' not found!");
+        }
     }
 }

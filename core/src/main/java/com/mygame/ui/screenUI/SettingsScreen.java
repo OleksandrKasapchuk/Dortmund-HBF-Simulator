@@ -21,7 +21,7 @@ import java.util.Locale;
 /**
  * Settings UI screen for adjusting music and sound volumes and muting all audio.
  */
-public class SettingsUI extends Screen {
+public class SettingsScreen extends Screen {
     private Slider musicVolumeSlider;
     private Slider soundVolumeSlider;
     private CheckBox muteAllCheckbox;
@@ -29,7 +29,7 @@ public class SettingsUI extends Screen {
     private float lastSoundVolume;
     private Image backgroundImage;
 
-    public SettingsUI(Skin skin) {
+    public SettingsScreen(Skin skin) {
         Stage stage = getStage();
 
         // Background image

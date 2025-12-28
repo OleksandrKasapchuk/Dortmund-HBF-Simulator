@@ -14,7 +14,7 @@ import com.mygame.world.WorldManager;
  * GameUI handles the on-screen HUD elements during gameplay.
  * It displays player money and temporary info messages.
  */
-public class GameUI extends Screen {
+public class GameScreen extends Screen {
     private Label moneyLabel;       // Shows player's current money
     private Label infoLabel;        // Temporary info messages
     private float infoMessageTimer = 0f; // Timer to hide infoLabel automatically
@@ -25,7 +25,7 @@ public class GameUI extends Screen {
      *
      * @param skin   The Skin used for labels
      */
-    public GameUI(Skin skin){
+    public GameScreen(Skin skin){
         Stage stage = getStage();
 
         // Money display
