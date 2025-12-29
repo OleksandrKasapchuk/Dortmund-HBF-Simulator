@@ -10,9 +10,10 @@ import com.mygame.entity.player.Player;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.managers.ManagerRegistry;
 import com.mygame.quest.QuestManager;
+import com.mygame.quest.QuestRegistry;
 import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;
-import com.mygame.quest.QuestObserver;
+import com.mygame.quest.QuestProgressTriggers;
 import com.mygame.scenario.ScenarioController;
 import com.mygame.ui.load.SkinLoader;
 import com.mygame.world.WorldManager;
@@ -36,7 +37,6 @@ public class GameInitializer {
         if (batch != null) batch.dispose();
 
         MusicManager.stopAll();
-        QuestManager.reset();
 
         batch = new SpriteBatch();
 
@@ -50,7 +50,11 @@ public class GameInitializer {
 
         ctx = managerRegistry.createContext();
 
+        // --- Ініціалізація реєстрів ---
         ItemRegistry.init();
+        QuestRegistry.init();   // Спочатку реєструємо квести з JSON
+        QuestManager.init();    // Потім створюємо об'єкти квестів у менеджері
+
         DialogueRegistry.reset();
         ActionRegistry.registerAll(ctx);
         DialogueRegistry.init();
@@ -62,7 +66,7 @@ public class GameInitializer {
             managerRegistry.getTransitionManager().loadTransitionsFromMap(world);
         }
 
-        // --- ВАЖЛИВО: Спочатку встановлюємо світ ---
+        // --- Спочатку встановлюємо світ ---
         World startWorld = WorldManager.getWorld(settings.currentWorldName != null ? settings.currentWorldName : "main");
         player.setWorld(startWorld);
         WorldManager.setCurrentWorld(startWorld);
@@ -70,16 +74,24 @@ public class GameInitializer {
         // --- Потім ініціалізуємо сценарії та квести ---
         scController = new ScenarioController();
         scController.init(ctx);
-        QuestObserver.init();
+        QuestProgressTriggers.init();
         ItemInteractionSystem.init();
 
         // Load other game state data
         if (settings.inventory != null)
             settings.inventory.forEach((itemKey, amount) -> player.getInventory().addItem(ItemRegistry.get(itemKey), amount));
 
+        // Відновлюємо прогрес квестів зі збереження
         if (settings.activeQuests != null) {
-            settings.activeQuests.forEach((key, saveData) -> QuestManager.addQuest(new QuestManager.Quest(key, saveData.progressable, saveData.progress, saveData.maxProgress, saveData.completed)));
+            settings.activeQuests.forEach((key, saveData) -> {
+                QuestManager.Quest q = QuestManager.getQuest(key);
+                if (q != null) {
+                    q.setStatus(saveData.status);
+                    q.setProgress(saveData.progress);
+                }
+            });
         }
+
         gameInputHandler = new GameInputHandler(managerRegistry.getGameStateManager(), managerRegistry.getUiManager());
 
         MusicManager.playMusic(Assets.getMusic("startMusic"));

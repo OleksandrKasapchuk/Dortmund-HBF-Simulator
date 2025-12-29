@@ -68,7 +68,7 @@ public class QuestUI {
         TextButton activeBtn = new TextButton(Assets.ui.get("ui.quest.active"), skin);
         TextButton completedBtn = new TextButton(Assets.ui.get("ui.quest.completed"), skin);
 
-        // Styling
+        // Styling tabs based on selection
         if (!showCompleted) {
             activeBtn.setColor(Color.YELLOW);
             completedBtn.setColor(Color.LIGHT_GRAY);
@@ -76,6 +76,9 @@ public class QuestUI {
             activeBtn.setColor(Color.LIGHT_GRAY);
             completedBtn.setColor(Color.YELLOW);
         }
+
+        // Logic for filtering quests
+        List<QuestManager.Quest> quests = showCompleted ? QuestManager.getCompletedQuests() : QuestManager.getActiveQuests();
 
         activeBtn.addListener(new ClickListener() {
             @Override
@@ -97,12 +100,8 @@ public class QuestUI {
         tabsTable.add(completedBtn).pad(10).width(200).height(50);
         questTable.add(tabsTable).padBottom(20).colspan(2).row();
 
-        // --- Content ---
-        List<QuestManager.Quest> filteredQuests = QuestManager.getQuests().stream()
-            .filter(q -> q.isCompleted() == showCompleted)
-            .toList();
 
-        if (filteredQuests.isEmpty()) {
+        if (quests.isEmpty()) {
             String emptyMsg = showCompleted ? Assets.ui.get("ui.quest.completed.empty") : Assets.ui.get("ui.quest.empty");
             Label noQuest = new Label(emptyMsg, skin);
             noQuest.setFontScale(1.2f);
@@ -111,7 +110,7 @@ public class QuestUI {
             Table listTable = new Table();
             listTable.align(Align.topLeft);
 
-            for (QuestManager.Quest quest : filteredQuests) {
+            for (QuestManager.Quest quest : quests) {
                 Label nameLabel = new Label(Assets.quests.get("quest." + quest.key() + ".name"), skin);
                 nameLabel.setFontScale(1.8f);
                 nameLabel.setColor(quest.isCompleted() ? Color.GREEN : Color.CYAN);

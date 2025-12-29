@@ -13,13 +13,6 @@ public class EventBus {
         listeners.computeIfAbsent(eventType, k -> new ArrayList<>()).add(listener);
     }
 
-    public static <T> void unsubscribe(Class<T> eventType, Consumer<T> listener) {
-        List<Consumer<?>> list = listeners.get(eventType);
-        if (list != null) {
-            list.remove(listener);
-        }
-    }
-
     @SuppressWarnings("unchecked")
     public static <T> void fire(T event) {
         List<Consumer<?>> list = listeners.get(event.getClass());

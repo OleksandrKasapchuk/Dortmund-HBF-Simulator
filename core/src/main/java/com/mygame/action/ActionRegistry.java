@@ -37,10 +37,7 @@ public class ActionRegistry {
             data.getInt("fromAmount"), data.getInt("toAmount")).execute());
 
         creators.put("add_quest", (ctx, data) -> () -> new AddQuestAction(
-            data.getString("id"),
-            data.getBoolean("progressable", false),
-            data.getInt("progress", 0),
-            data.getInt("max", 0)).execute());
+            data.getString("id")).execute());
 
         creators.put("complete_quest", (ctx, data) -> () -> QuestManager.completeQuest(data.getString("id")));
 

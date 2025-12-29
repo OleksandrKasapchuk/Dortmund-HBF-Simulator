@@ -4,20 +4,40 @@ import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * QuestManager handles all quests in the game.
- * It allows adding, removing, checking, and retrieving quests.
- * All quests are stored statically so they persist globally.
+ * It manages their status and progress.
  */
 public class QuestManager {
     private static ArrayList<Quest> quests = new ArrayList<>();
 
-    /** Adds a new quest to the quest list */
-    public static void addQuest(Quest quest) {
-        if (hasQuest(quest.key())) return;
-        quests.add(quest);
-        EventBus.fire(new Events.QuestStartedEvent(quest.key()));
+    public enum Status {
+        NOT_STARTED,
+        ACTIVE,
+        COMPLETED
+    }
+
+    /**
+     * Initializes the manager by creating all quests from Registry
+     * with NOT_STARTED status.
+     */
+    public static void init() {
+        quests.clear();
+        for (QuestRegistry.QuestDefinition def : QuestRegistry.getDefinitions()) {
+            quests.add(new Quest(def.key(), def.progressable(), 0, def.maxProgress()));
+        }
+    }
+
+    /** Sets quest status to ACTIVE */
+    public static void startQuest(String key) {
+        Quest quest = getQuest(key);
+        if (quest != null && quest.getStatus() == Status.NOT_STARTED) {
+            quest.setStatus(Status.ACTIVE);
+            EventBus.fire(new Events.QuestStartedEvent(key));
+        }
     }
 
     /** Completes a quest by its key */
@@ -25,7 +45,6 @@ public class QuestManager {
         Quest quest = getQuest(key);
         if (quest != null) {
             quest.complete();
-            EventBus.fire(new Events.QuestCompletedEvent(key));
         }
     }
 
@@ -34,39 +53,44 @@ public class QuestManager {
         return quests;
     }
 
+    /** Returns only active quests */
+    public static List<Quest> getActiveQuests() {
+        return quests.stream()
+                .filter(q -> q.getStatus() == Status.ACTIVE)
+                .collect(Collectors.toList());
+    }
+
+    /** Returns only completed quests */
+    public static List<Quest> getCompletedQuests() {
+        return quests.stream()
+            .filter(Quest::isCompleted)
+            .collect(Collectors.toList());
+    }
+
     public static Quest getQuest(String key) {
         return quests.stream().filter(q -> q.key().equals(key)).findFirst().orElse(null);
     }
 
-    /** Checks if a quest with the given key exists */
+    /** Checks if a quest is active */
     public static boolean hasQuest(String key) {
-        return quests.stream().anyMatch(q -> q.key().equals(key) && !q.isCompleted());
-    }
-
-    /** Clears all quests from the quest list */
-    public static void reset() {
-        quests.clear();
+        Quest q = getQuest(key);
+        return q != null && q.getStatus() == Status.ACTIVE;
     }
 
     public static class Quest {
         private final String key;
-        private final boolean progressable;
+        private boolean progressable;
         private int progress;
-        private final int maxProgress;
-        private boolean completed;
+        private int maxProgress;
+        private Status status;
 
         public Quest(String key, boolean progressable, int progress, int maxProgress) {
-            this(key, progressable, progress, maxProgress, progress >= maxProgress && progressable);
-        }
-
-        public Quest(String key, boolean progressable, int progress, int maxProgress, boolean completed) {
             this.key = key;
             this.progressable = progressable;
             this.progress = progress;
             this.maxProgress = maxProgress;
-            this.completed = completed;
+            this.status = (progress >= maxProgress && maxProgress > 0) ? Status.COMPLETED : Status.NOT_STARTED;
         }
-
 
         public String key() {
             return key;
@@ -84,19 +108,36 @@ public class QuestManager {
             return maxProgress;
         }
 
+        public Status getStatus() {
+            return status;
+        }
+
+        public void setStatus(Status status) {
+            this.status = status;
+        }
+
+        public void setProgress(int progress) {
+            this.progress = progress;
+        }
+
+        public String getOnComplete() {
+            QuestRegistry.QuestDefinition def = QuestRegistry.get(key);
+            return def != null ? def.onComplete() : null;
+        }
+
         public boolean isCompleted() {
-            return completed;
+            return status == Status.COMPLETED;
         }
 
         public void complete() {
-            if (completed) return;
-            this.completed = true;
+            if (this.isCompleted()) return;
+            this.status = Status.COMPLETED;
             if (progressable) this.progress = maxProgress;
             EventBus.fire(new Events.QuestCompletedEvent(key));
         }
 
         public void makeProgress() {
-            if (!progressable || completed) return;
+            if (!progressable || status != Status.ACTIVE) return;
             this.progress++;
             EventBus.fire(new Events.QuestProgressEvent(key, progress, maxProgress));
 
