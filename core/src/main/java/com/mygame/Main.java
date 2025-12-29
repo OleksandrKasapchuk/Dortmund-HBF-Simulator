@@ -102,7 +102,6 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void dispose() {
-        AutoSaveManager.saveGame();
         Assets.dispose();
         if (gameInitializer != null) gameInitializer.dispose();
         if (shapeRenderer != null) shapeRenderer.dispose();

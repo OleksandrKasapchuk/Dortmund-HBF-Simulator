@@ -62,12 +62,12 @@ public class Assets {
         generator.dispose();
 
         JsonReader json = new JsonReader();
-        JsonValue textureBase = json.parse(Gdx.files.internal("data/assets.json"));
+        JsonValue textureBase = json.parse(Gdx.files.internal("data/assets/assets.json"));
         for (JsonValue val = textureBase.child; val != null; val = val.next) {
             textureMap.put(val.getString("key"), new Texture(Gdx.files.internal(val.getString("path"))));
         }
 
-        JsonValue audioBase = json.parse(Gdx.files.internal("data/audio.json"));
+        JsonValue audioBase = json.parse(Gdx.files.internal("data/assets/audio.json"));
         for (JsonValue val = audioBase.child; val != null; val = val.next) {
             String type = val.getString("type");
             String key = val.getString("key");

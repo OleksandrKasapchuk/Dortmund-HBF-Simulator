@@ -1,0 +1,24 @@
+[
+  {
+    "key": "jan",
+    "progressable": true,
+    "maxProgress": 2,
+    "onComplete": "some_action_for_jan"
+  },
+  {
+    "key": "jason1",
+    "progressable": true,
+    "maxProgress": 5
+  },
+  {
+    "key": "jason2",
+    "progressable": true,
+    "maxProgress": 10
+  },
+  {"key": "delivery"},
+  {"key": "chase"},
+  {"key": "boss_end"},
+  {"key": "chili"},
+  {"key": "wallet"},
+  {"key": "igo"}
+]

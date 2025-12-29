@@ -1,10 +1,6 @@
 package com.mygame.scenario;
 
-import com.mygame.assets.Assets;
-import com.mygame.assets.audio.MusicManager;
-import com.mygame.action.AddQuestAction;
-import com.mygame.action.SetDialogueAction;
-import com.mygame.entity.npc.NPC;
+import com.mygame.action.ActionRegistry;
 import com.mygame.entity.npc.Police;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
@@ -12,7 +8,6 @@ import com.mygame.game.GameContext;
 import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.managers.TimerManager;
-import com.mygame.quest.QuestManager;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 import com.mygame.world.transition.Transition;
@@ -32,7 +27,7 @@ public class PoliceChaseScenario implements Scenario {
         // Відновлення погоні зі збереження
         if (settings.policeChaseActive) {
             completed = true;
-            ctx.npcManager.callPolice();
+            ActionRegistry.executeAction("call_police");
             Police police = ctx.npcManager.getSummonedPolice();
             if (police != null) {
                 police.setX(settings.policeX);
@@ -41,40 +36,24 @@ public class PoliceChaseScenario implements Scenario {
                 if (world != null) {
                     ctx.npcManager.moveSummonedPoliceToNewWorld(world);
                 }
-                police.startChase(ctx.player);
-                MusicManager.playMusic(Assets.getMusic("backMusic4"));
-                new SetDialogueAction(ctx, "summoned_police", "caught").execute();
+                // Використовуємо екшени для запуску музики та встановлення стану без повторного повідомлення
+                ActionRegistry.executeAction("start_chase");
+                ActionRegistry.executeAction("restore_chase_ui");
             }
         }
 
-        // Слухаємо завершення квесту
+        // Слухаємо завершення квесту доставки (який запускає погоню)
         EventBus.subscribe(Events.QuestCompletedEvent.class, event -> {
-            if (event.questId().equals("delivery")) {
-                completed = true;
-            }
+            if (event.questId().equals("delivery")) completed = true;
         });
 
         // Слухаємо зміну стану поліції
         EventBus.subscribe(Events.PoliceStateChangedEvent.class, event -> {
             if (!completed) return;
-            Police police = ctx.npcManager.getSummonedPolice();
-            if (police == null) return;
 
             switch (event.newState()) {
-                case CAUGHT ->
-                    ctx.ui.getDialogueManager().startForcedDialogue(police);
-                case ESCAPED -> {
-                    MusicManager.playMusic(Assets.getMusic("backMusic1"));
-                    ctx.ui.getGameScreen().showInfoMessage(Assets.messages.get("message.generic.ranAway"), 1.5f);
-
-                    NPC boss = ctx.npcManager.getBoss();
-                    if (boss != null) {
-                        new SetDialogueAction(ctx, "boss", "wellDone").execute();
-                        QuestManager.completeQuest("chase");
-                        new AddQuestAction("boss_end",false,0,0).execute();
-                    }
-                    ctx.npcManager.kill(police);
-                }
+                case CAUGHT -> ActionRegistry.executeAction("police_caught");
+                case ESCAPED -> ActionRegistry.executeAction("police_escaped");
             }
         });
     }

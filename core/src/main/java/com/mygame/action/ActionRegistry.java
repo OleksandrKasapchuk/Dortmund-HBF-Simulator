@@ -33,29 +33,28 @@ public class ActionRegistry {
 
     static {
         creators.put("trade", (ctx, data) -> () -> new TradeAction(ctx,
-                data.getString("from"), data.getString("to"),
-                data.getInt("fromAmount"), data.getInt("toAmount")).execute());
+            data.getString("from"), data.getString("to"),
+            data.getInt("fromAmount"), data.getInt("toAmount")).execute());
 
         creators.put("add_quest", (ctx, data) -> () -> new AddQuestAction(
-                data.getString("id"),
-                data.getBoolean("progressable", false),
-                data.getInt("progress", 0),
-                data.getInt("max", 0)).execute());
+            data.getString("id")).execute());
 
         creators.put("complete_quest", (ctx, data) -> () -> QuestManager.completeQuest(data.getString("id")));
 
         creators.put("set_dialogue", (ctx, data) -> () -> new SetDialogueAction(ctx,
-                data.getString("npc"), data.getString("node")).execute());
+            data.getString("npc"), data.getString("node")).execute());
 
         creators.put("add_item", (ctx, data) -> () -> ctx.getInventory().addItemAndNotify(
-                ItemRegistry.get(data.getString("id")),
-                data.getInt("amount", 1)));
+            ItemRegistry.get(data.getString("id")),
+            data.getInt("amount", 1)));
 
         creators.put("remove_item", (ctx, data) -> () -> ctx.getInventory().removeItem(
             ItemRegistry.get(data.getString("id")),
             data.getInt("amount", 1)));
 
         creators.put("play_sound", (ctx, data) -> () -> SoundManager.playSound(Assets.getSound(data.getString("id"))));
+
+        creators.put("play_music", (ctx, data) -> () -> MusicManager.playMusic(Assets.getMusic(data.getString("id"))));
 
         creators.put("player_died", (ctx, data) -> ctx.gsm::playerDied);
 
@@ -83,8 +82,8 @@ public class ActionRegistry {
 
         creators.put("conditional_trade", (ctx, data) -> () -> {
             if (ctx.getInventory().trade(ItemRegistry.get(data.getString("from")),
-                    ItemRegistry.get(data.getString("to")),
-                    data.getInt("fromAmount"), data.getInt("toAmount"))) {
+                ItemRegistry.get(data.getString("to")),
+                data.getInt("fromAmount"), data.getInt("toAmount"))) {
                 if (data.has("onSuccess")) {
                     createAction(ctx, data.get("onSuccess")).run();
                 }
@@ -110,7 +109,7 @@ public class ActionRegistry {
 
         creators.put("not_enough_message", (ctx, data) -> () -> EventBus.fire(new Events.NotEnoughMessageEvent(ItemRegistry.get(data.getString("item")))));
 
-        creators.put("message", (ctx, data) -> () -> ctx.ui.getGameScreen().showInfoMessage(data.getString("text"), data.getFloat("duration", 2f)));
+        creators.put("message", (ctx, data) -> () -> ctx.ui.getGameScreen().showInfoMessage(Assets.messages.get(data.getString("key")), data.getFloat("duration", 2f)));
 
         creators.put("remove_npc", (ctx, data) -> () -> {
             NPC npc = ctx.npcManager.findNpcById(data.getString("npc"));
@@ -134,16 +133,12 @@ public class ActionRegistry {
         });
 
         creators.put("chikita_craft", (ctx, data) -> () -> new ChikitaCraftJointAction(ctx).execute());
+
         creators.put("police_check", (ctx, data) -> () -> new PoliceCheckAction(ctx).execute());
-        creators.put("start_police_chase", (ctx, data) -> () -> {
+
+        creators.put("start_chase", (ctx, data) -> () -> {
             Police police = ctx.npcManager.getSummonedPolice();
-            if (police != null) {
-                new AddQuestAction("chase", false, 0, 0).execute();
-                police.startChase(ctx.player);
-                ctx.ui.getGameScreen().showInfoMessage(Assets.messages.get("message.boss.chase.run"), 2f);
-                MusicManager.playMusic(Assets.getMusic("backMusic4"));
-                new SetDialogueAction(ctx, "summoned_police", "caught").execute();
-            }
+            if (police != null) police.startChase(ctx.player);
         });
     }
 
@@ -155,7 +150,7 @@ public class ActionRegistry {
     private static void loadActionsFromJson(GameContext ctx) {
         try {
             JsonReader reader = new JsonReader();
-            JsonValue root = reader.parse(Gdx.files.internal("data/dialogues/actions.json"));
+            JsonValue root = reader.parse(Gdx.files.internal("data/actions/actions.json"));
             for (JsonValue entry : root) {
                 registeredActions.put(entry.name(), createAction(ctx, entry));
             }

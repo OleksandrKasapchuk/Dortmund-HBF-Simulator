@@ -8,7 +8,7 @@ import com.mygame.entity.npc.Police;
 import com.mygame.entity.player.Player;
 import com.mygame.game.GameInitializer;
 import com.mygame.quest.QuestManager;
-import com.mygame.quest.QuestObserver;
+import com.mygame.quest.QuestProgressTriggers;
 import com.mygame.world.WorldManager;
 
 import java.util.HashSet;
@@ -51,15 +51,15 @@ public class AutoSaveManager {
         settings.inventory = player.getInventory().getItems().entrySet().stream()
             .collect(Collectors.toMap(entry -> entry.getKey().getKey(), Map.Entry::getValue));
 
-        // Save active quests
+        // Save active quests with status
         settings.activeQuests = QuestManager.getQuests().stream()
             .collect(Collectors.toMap(
                 QuestManager.Quest::key,
-                quest -> new GameSettings.QuestSaveData(quest.progressable(), quest.progress(), quest.maxProgress())
+                quest -> new GameSettings.QuestSaveData(quest.progress(), quest.getStatus())
             ));
 
-        settings.talkedNpcs = new HashSet<>(QuestObserver.getTalkedNpcs());
-        settings.visited = new HashSet<>(QuestObserver.getVisited());
+        settings.talkedNpcs = new HashSet<>(QuestProgressTriggers.getTalkedNpcs());
+        settings.visited = new HashSet<>(QuestProgressTriggers.getVisited());
 
         // Save searched items
         settings.searchedItems = WorldManager.getWorlds().values().stream()

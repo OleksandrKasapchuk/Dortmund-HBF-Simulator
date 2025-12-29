@@ -1,6 +1,7 @@
 package com.mygame.game.save;
 
 import com.mygame.entity.player.Player;
+import com.mygame.quest.QuestManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,14 +41,12 @@ public class GameSettings {
     public String policeWorldName;
 
     public static class QuestSaveData {
-        public boolean progressable;
         public int progress;
-        public int maxProgress;
+        public QuestManager.Status status;
 
-        public QuestSaveData(boolean progressable, int progress, int maxProgress) {
-            this.progressable = progressable;
+        public QuestSaveData(int progress, QuestManager.Status status) {
             this.progress = progress;
-            this.maxProgress = maxProgress;
+            this.status = status;
         }
 
         public QuestSaveData() {}
