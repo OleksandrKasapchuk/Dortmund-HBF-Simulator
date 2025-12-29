@@ -123,7 +123,7 @@
       {
         "type": "timer",
         "delay": 1.9,
-        "action": { "type": "message", "text": "You planted grass", "duration": 1.0 }
+        "action": { "type": "message", "text": "message.grass_planted", "duration": 1.0 }
       }
     ]
   },
@@ -179,16 +179,52 @@
   "failure": {
     "type": "composite",
     "actions": [
-      { "type": "set_dialogue", "npc": "boss", "node": "failure" },
       { "type": "player_died" },
       { "type": "play_sound", "id": "gunShot" }
     ]
   },
 
   "chikita_craft_joint": { "type": "chikita_craft" },
-  "police_check": { "type": "police_check" },
   "player_died": { "type": "player_died" },
-  "start_police_chase": { "type": "start_police_chase" },
+  "police_check": { "type": "police_check" },
+
+  "start_police_chase": {
+    "type": "composite",
+    "actions": [
+      { "type":  "add_quest", "id": "chase", "progressable": false },
+      { "type":  "message", "key": "message.boss.chase.run", "duration": 2 },
+      { "type":  "play_music", "id": "backMusic4" },
+      { "type": "set_dialogue", "npc":  "summoned_police", "node": "caught"},
+      { "type": "start_chase"}
+    ]
+  },
+
+  "police_caught": {
+    "type": "force_dialogue",
+    "npc": "summoned_police"
+  },
+
+  "police_escaped": {
+    "type": "composite",
+    "actions": [
+      { "type": "play_music", "id": "backMusic1" },
+      { "type": "message", "key": "message.generic.ranAway", "duration": 1.5 },
+      { "type": "set_dialogue", "npc": "boss", "node": "wellDone" },
+      { "type": "complete_quest", "id": "chase" },
+      { "type": "add_quest", "id": "boss_end", "progressable": false },
+      { "type": "remove_npc", "npc": "summoned_police" }
+    ]
+  },
+
+  "restore_chase_ui": {
+    "type": "composite",
+    "actions": [
+      { "type": "play_music", "id": "backMusic4" },
+      { "type": "set_dialogue", "npc": "summoned_police", "node": "caught"}
+    ]
+  },
+
+
   "jan_give_quest": {
     "type": "composite",
     "actions": [

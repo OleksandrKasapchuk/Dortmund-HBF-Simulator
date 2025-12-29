@@ -57,7 +57,6 @@ public class QuestObserver {
             if (jasonQuest != null) {
                 jasonQuest.makeProgress();
                 talkedNpcs.add(npcId);
-                save();
             }
         }
     }
@@ -68,16 +67,8 @@ public class QuestObserver {
             if (jasonQuest != null) {
                 jasonQuest.makeProgress();
                 visited.add(worldId);
-                save();
             }
         }
-    }
-
-    private static void save() {
-        GameSettings settings = SettingsManager.load();
-        settings.talkedNpcs = talkedNpcs;
-        settings.visited = visited;
-        SettingsManager.save(settings);
     }
 
     public static Set<String> getTalkedNpcs() {

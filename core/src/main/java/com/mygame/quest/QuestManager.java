@@ -56,7 +56,7 @@ public class QuestManager {
         private boolean completed;
 
         public Quest(String key, boolean progressable, int progress, int maxProgress) {
-            this(key, progressable, progress, maxProgress, progress >= maxProgress);
+            this(key, progressable, progress, maxProgress, progress >= maxProgress && progressable);
         }
 
         public Quest(String key, boolean progressable, int progress, int maxProgress, boolean completed) {
