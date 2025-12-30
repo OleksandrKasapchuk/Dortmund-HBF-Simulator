@@ -111,7 +111,7 @@ public class NpcManager {
 
         Police summonedPolice = new Police("summoned_police", Assets.npcs.get("npc.police.name"),
             100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police"),
-            currentWorld, 200, DialogueRegistry.getDialogue("summoned_police", "beforeChase"));
+            currentWorld, 200, DialogueRegistry.getDialogue("summoned_police", "chase.offer"));
         npcs.add(summonedPolice);
         currentWorld.getNpcs().add(summonedPolice);
     }

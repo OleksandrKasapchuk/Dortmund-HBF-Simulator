@@ -50,6 +50,11 @@ public class DialogueRegistry {
             return new DialogueNode("Error: Node '" + nodeName + "' not found.");
         }
 
+        // ПІДТРИМКА АЛІАСІВ: якщо нода — це рядок, рекурсивно шукаємо ту ноду, на яку він вказує
+        if (nodeData.isString()) {
+            return getDialogue(npcId, nodeData.asString());
+        }
+
         Runnable onFinish = null;
         String[] textKeys;
         boolean isForced = false;
@@ -60,9 +65,6 @@ public class DialogueRegistry {
             if (nodeData.has("onFinish")) {
                 String actionName = nodeData.getString("onFinish");
                 onFinish = ActionRegistry.getAction(actionName);
-                if (onFinish == null) {
-                    System.err.println("DialogueRegistry: onFinish action '" + actionName + "' not registered.");
-                }
             }
             textKeys = nodeData.get("texts").asStringArray();
             if (nodeData.has("isForced")) {
@@ -81,22 +83,17 @@ public class DialogueRegistry {
                     } else { // isObject
                         choiceTextKey = choiceData.getString("text");
                         if (choiceData.has("next")) {
-                            String nextNodeName = choiceData.getString("next");
-                            nextNode = getDialogue(npcId, nextNodeName);
+                            nextNode = getDialogue(npcId, choiceData.getString("next"));
                         }
                         if (choiceData.has("action")) {
-                            String actionName = choiceData.getString("action");
-                            choiceAction = ActionRegistry.getAction(actionName);
-                            if (choiceAction == null) {
-                                System.err.println("DialogueRegistry: choice action '" + actionName + "' not registered.");
-                            }
+                            choiceAction = ActionRegistry.getAction(choiceData.getString("action"));
                         }
                     }
                     String choiceText = Assets.dialogues.get(choiceTextKey);
                     node.addChoice(choiceText, nextNode, choiceAction);
                 }
             }
-        } else { // isArray (simplified node)
+        } else { // isArray
             textKeys = nodeData.asStringArray();
             node = new DialogueNode(null, false, textKeys);
         }
@@ -106,12 +103,7 @@ public class DialogueRegistry {
     }
 
     public static DialogueNode getInitialDialogue(String npcId) {
-        JsonValue npcData = npcDialogueData.get(npcId);
-        if (npcData == null) {
-            System.err.println("DialogueRegistry: NPC '" + npcId + "' not found in dialogues.json");
-            return new DialogueNode("Error: NPC '" + npcId + "' not found.");
-        }
-        String startNodeName = npcData.getString("startNode", "start"); // Default to "start"
-        return getDialogue(npcId, startNodeName);
+        // Завжди починаємо з ноди "start", яка в JSON може бути аліасом
+        return getDialogue(npcId, "start");
     }
 }

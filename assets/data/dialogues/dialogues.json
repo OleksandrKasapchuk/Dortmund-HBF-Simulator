@@ -1,45 +1,50 @@
 {
   "igo": {
     "nodes": {
-      "start": {
+      "start": "vape.offer",
+      "vape.offer": {
         "texts": ["dialogue.igo.start"],
         "choices": [
           { "text": "dialogue.igo.choice.give", "action": "igo_give_vape" },
           { "text": "dialogue.choice.leave", "action": "igo_add_quest" }
         ]
       },
-      "thanks": ["dialogue.igo.thanks"]
+      "vape.completed": ["dialogue.igo.thanks"]
     }
   },
   "ryzhyi": {
     "nodes": {
-      "start": {
+      "start": "money.offer",
+      "money.offer": {
         "texts": ["dialogue.ryzhyi.start"],
         "choices": [{ "text": "dialogue.ryzhyi.choice.take", "action": "ryzhyi_take_money" }]
       },
-      "after": ["dialogue.ryzhyi.after"]
+      "money.completed": ["dialogue.ryzhyi.after"]
     }
   },
   "denys": {
     "nodes": {
-      "start": ["dialogue.denys.start", "dialogue.denys.declined"]
+      "start": "idle",
+      "idle": ["dialogue.denys.start", "dialogue.denys.declined"]
     }
   },
   "baryga": {
     "nodes": {
-      "start": {
+      "start": "trade.offer",
+      "trade.offer": {
         "texts": ["dialogue.baryga.start.1", "dialogue.baryga.start.2"],
         "choices": [
           { "text": "dialogue.baryga.choice.buy", "action": "baryga_buy_grass" },
-          { "text": "dialogue.choice.leave", "next": "bye" }
+          { "text": "dialogue.choice.leave", "next": "idle" }
         ]
       },
-      "bye": ["dialogue.baryga.bye"]
+      "idle": ["dialogue.baryga.bye"]
     }
   },
   "chikita": {
     "nodes": {
-      "start": {
+      "start": "craft.offer",
+      "craft.offer": {
         "texts": ["dialogue.chikita.start"],
         "choices": [
           { "text": "dialogue.chikita.choice.give", "action": "chikita_craft_joint" },
@@ -50,7 +55,8 @@
   },
   "kioskman": {
     "nodes": {
-      "start": {
+      "start": "trade.offer",
+      "trade.offer": {
         "texts": ["dialogue.kioskman.start"],
         "choices": [
           { "text": "dialogue.kioskman.choice.buyPape", "action": "kioskman_buy_pape" },
@@ -62,34 +68,35 @@
   },
   "boss": {
     "nodes": {
-      "start": {
+      "start": "delivery.offer",
+      "delivery.offer": {
         "texts": ["dialogue.boss.start.1", "dialogue.boss.start.2", "dialogue.boss.start.3", "dialogue.boss.start.4"],
         "choices": [
           { "text": "dialogue.choice.accept", "action": "boss_accept_quest" },
           "dialogue.choice.leave"
         ]
       },
-      "wellDone": {
+      "chase.completed": {
         "texts": ["dialogue.boss.wellDone"],
         "onFinish": "boss_claim_reward"
       },
-      "finished": ["dialogue.boss.whatDoYouWant"],
-      "after": ["dialogue.boss.after.1", "dialogue.boss.after.2"],
-      "failure": {
+      "idle": ["dialogue.boss.whatDoYouWant"],
+      "delivery.active": ["dialogue.boss.after.1", "dialogue.boss.after.2"],
+      "delivery.failed": {
         "texts": ["dialogue.boss.failure.1", "dialogue.boss.failure.2", "dialogue.boss.failure.3"],
         "onFinish": "failure"
-
-}
+      }
     }
   },
   "police": {
     "nodes": {
-      "start": {
+      "start": "check.active",
+      "check.active": {
         "onFinish": "police_check",
         "texts": ["dialogue.police.check"],
         "isForced": true
       },
-      "stoned": {
+      "check.failed": {
         "onFinish": "player_died",
         "texts": ["dialogue.police.stoned.1", "dialogue.police.stoned.2"],
         "isForced": true
@@ -98,54 +105,63 @@
   },
   "summoned_police": {
     "nodes": {
-      "start": {
+      "start": "check.active",
+      "check.active": {
         "onFinish": "police_check",
         "texts": ["dialogue.police.check"],
         "isForced": true
       },
-      "beforeChase": {
+      "chase.offer": {
         "onFinish": "start_police_chase",
         "texts": ["dialogue.police.beforeChase.1", "dialogue.police.beforeChase.2"],
         "isForced": true
       },
-      "caught": {
+      "chase.failed": {
           "onFinish": "player_died",
           "texts": ["dialogue.police.caught"]
       }
     }
   },
-  "kamil": { "nodes": { "start": ["dialogue.kamil.start"] } },
+  "kamil": { "nodes": { "start": "idle", "idle": ["dialogue.kamil.start"] } },
+
   "jan": {
     "nodes": {
-      "start": {
+      "start": "fireworks.offer",
+      "fireworks.offer": {
         "texts":["dialogue.jan.start.1", "dialogue.jan.start.2"],
         "choices":  [
         { "text": "dialogue.choice.accept", "action": "jan_give_quest" },
         "dialogue.choice.leave"
         ]
       },
-      "after": ["dialogue.jan.after"]
+      "fireworks.active": ["dialogue.jan.after"],
+      "fireworks.completed": {
+        "onFinish": "jan_complete",
+        "texts": ["dialogue.choice.leave"]
+      }
     }
   },
-  "filip": {"nodes": { "start": ["dialogue.filip.start.1", "dialogue.filip.start.2", "dialogue.filip.start.3", "dialogue.filip.start.4"]}
+  "filip": { "nodes": { "start": "idle", "idle": ["dialogue.filip.start.1", "dialogue.filip.start.2", "dialogue.filip.start.3", "dialogue.filip.start.4"]}
   },
   "jason": {
     "nodes": {
-      "start": {
+      "start": "tour.offer",
+      "tour.offer": {
         "onFinish": "jason_give_money",
         "texts": ["dialogue.jason.start.1", "dialogue.jason.start.2", "dialogue.jason.start.3", "dialogue.jason.start.4", "dialogue.jason.start.5"]
       },
-      "after": ["dialogue.jason.after.1", "dialogue.jason.after.2"],
-      "finished": {
+      "tour.active": ["dialogue.jason.after.1", "dialogue.jason.after.2"],
+      "tour.completed": {
         "onFinish": "jason_completed",
         "texts": ["dialogue.jason.finished"]
       },
-      "completed": ["dialogue.jason.completed"]
+      "idle": ["dialogue.jason.completed"]
     }
   },
   "murat": {
     "nodes": {
-      "start": {
+      "start": "revenge.offer",
+      "revenge.offer": {
         "texts": ["dialogue.murat.start.1", "dialogue.murat.start.2", "dialogue.murat.start.3", "dialogue.murat.start.4", "dialogue.murat.start.5", "dialogue.murat.start.6"],
         "choices": [
           { "text": "dialogue.murat.choice.accept", "action": "murat_accept_quest" },
@@ -156,44 +172,50 @@
   },
   "talahon1": {
     "nodes": {
-      "start": ["dialogue.talahon1.start.1", "dialogue.talahon1.start.2", "dialogue.talahon1.start.3"],
-
-      "isForced": true
+      "start": "idle",
+      "idle": {
+        "texts": ["dialogue.talahon1.start.1", "dialogue.talahon1.start.2", "dialogue.talahon1.start.3"],
+        "isForced": true
+      }
     }
   },
   "talahon2": {
     "nodes": {
-      "start": {
+      "start": "vape.offer",
+      "vape.offer": {
         "texts": ["dialogue.talahon2.start.1", "dialogue.talahon2.start.2"],
         "isForced": true,
         "choices": [
           { "text": "dialogue.talahon2.choice.accept", "action": "give_vape_action" },
-          { "text": "dialogue.choice.leave", "next": "decline" }
+          { "text": "dialogue.choice.leave", "next": "vape.failed" }
         ]
       },
-      "accept": {
+      "vape.completed": {
         "texts": ["dialogue.talahon2.yes"]
       },
-      "decline": {
+      "vape.failed": {
         "texts": ["dialogue.talahon2.no"]
       }
     }
   },
   "walter": {
     "nodes": {
-      "start": {
+      "start": "wallet.offer",
+      "wallet.offer": {
         "texts": ["dialogue.walter.start.1", "dialogue.walter.start.2"]
       }
     }
   },
   "dmitri": {
     "nodes": {
-      "start": ["dialogue.dmitri.start.1", "dialogue.dmitri.start.2", "dialogue.dmitri.start.3", "dialogue.dmitri.start.4", "dialogue.dmitri.start.5", "dialogue.dmitri.start.6", "dialogue.dmitri.start.7"]
+      "start": "idle",
+      "idle": ["dialogue.dmitri.start.1", "dialogue.dmitri.start.2", "dialogue.dmitri.start.3", "dialogue.dmitri.start.4", "dialogue.dmitri.start.5", "dialogue.dmitri.start.6", "dialogue.dmitri.start.7"]
     }
   },
   "jamal": {
     "nodes": {
-      "start": {
+      "start": "trade.offer",
+      "trade.offer": {
         "texts": ["dialogue.jamal.start.1", "dialogue.jamal.start.2"],
         "choices": [
           { "text": "dialogue.jamal.choice.buy", "action": "buy_seed" },

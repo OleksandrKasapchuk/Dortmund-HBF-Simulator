@@ -5,9 +5,9 @@
   { "key": "bush", "path": "sound/bush.ogg", "type": "SOUND" },
   { "key": "gunShot", "path": "sound/gunshots.ogg", "type": "SOUND" },
   { "key": "pfandAutomat", "path": "sound/pfand_automat.ogg", "type": "SOUND" },
-  { "key": "startMusic", "path": "sound/menu.ogg", "type": "MUSIC" },
-  { "key": "backMusic1", "path": "sound/epic_back1.mp3", "type": "MUSIC" },
-  { "key": "backMusic4", "path": "sound/norm.ogg", "type": "MUSIC" },
-  { "key": "kaifMusic", "path": "sound/kaif.ogg", "type": "MUSIC" },
+  { "key": "start", "path": "sound/menu.ogg", "type": "MUSIC" },
+  { "key": "back", "path": "sound/epic_back1.mp3", "type": "MUSIC" },
+  { "key": "back4", "path": "sound/norm.ogg", "type": "MUSIC" },
+  { "key": "kaif", "path": "sound/kaif.ogg", "type": "MUSIC" },
   { "key": "search", "path": "sound/search.ogg", "type": "SOUND" }
 ]

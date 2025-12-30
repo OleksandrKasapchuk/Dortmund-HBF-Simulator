@@ -22,6 +22,10 @@ public class Events {
     public record WorldChangedEvent(String newWorldId) {}
     public record ItemInteractionEvent(Item item, Player player){}
 
+    public record ItemUsedEvent(ItemDefinition item) {}
+    public record PlayerStateChangedEvent(Player.State newState) {}
+
+    // ───── Player)
     // ───── Police ─────
     public record PoliceStateChangedEvent(Police.PoliceState newState) {}
 

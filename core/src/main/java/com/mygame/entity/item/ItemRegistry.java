@@ -3,7 +3,6 @@ package com.mygame.entity.item;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.mygame.entity.player.PlayerEffectManager;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,30 +28,14 @@ public class ItemRegistry {
                 description = "item." + key + ".description";
             }
 
-            Runnable effect = null;
+            String effect = null;
 
             if (item.has("effect")) {
-                effect = resolveEffect(
-                    item.getString("effect")
-                );
+                effect = item.getString("effect");
             }
 
-            register(new ItemDefinition(key, name, description, pickupable, effect));
+            register(new ItemDefinition(key, name, description, effect));
         }
-    }
-
-    private static Runnable resolveEffect(String effectName) {
-
-        return switch (effectName) {
-            case "applyJointEffect" ->
-                PlayerEffectManager::applyJointEffect;
-
-            case "applyIceTeaEffect" ->
-                PlayerEffectManager::applyIceTeaEffect;
-
-            default ->
-                throw new RuntimeException("Unknown item effect: " + effectName);
-        };
     }
 
     private static void register(ItemDefinition type) {

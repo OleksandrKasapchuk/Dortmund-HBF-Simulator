@@ -3,8 +3,9 @@
     "key": "jan",
     "progressable": true,
     "maxProgress": 2,
-    "onComplete": "some_action_for_jan"
+    "onComplete": "jan_complete"
   },
+  {"key": "jan2"},
   {
     "key": "jason1",
     "progressable": true,

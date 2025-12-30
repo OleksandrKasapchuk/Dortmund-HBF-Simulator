@@ -12,6 +12,7 @@ import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.npc.NPC;
 import com.mygame.entity.npc.Police;
+import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.GameContext;
@@ -111,9 +112,19 @@ public class ActionRegistry {
 
         creators.put("message", (ctx, data) -> () -> ctx.ui.getGameScreen().showInfoMessage(Assets.messages.get(data.getString("key")), data.getFloat("duration", 2f)));
 
+        creators.put("player.set_state", (ctx, data) -> () -> {
+            String stateName = data.getString("key").toUpperCase();
+            try {
+                Player.State state = Player.State.valueOf(stateName);
+                ctx.player.setState(state);
+            } catch (IllegalArgumentException e) {
+                Gdx.app.log("ActionRegistry", "Unknown player state: " + stateName);
+            }
+        });
+
         creators.put("remove_npc", (ctx, data) -> () -> {
             NPC npc = ctx.npcManager.findNpcById(data.getString("npc"));
-            if (npc != null) npc.getWorld().getNpcs().remove(npc);
+            if (npc != null) ctx.npcManager.kill(npc);
         });
 
         creators.put("spawn_npc_near_player", (ctx, data) -> () -> {

@@ -94,7 +94,7 @@ public class GameInitializer {
 
         gameInputHandler = new GameInputHandler(managerRegistry.getGameStateManager(), managerRegistry.getUiManager());
 
-        MusicManager.playMusic(Assets.getMusic("startMusic"));
+        MusicManager.playMusic(Assets.getMusic("start"));
     }
 
     public GameInputHandler getGameInputHandler() { return gameInputHandler; }

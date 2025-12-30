@@ -10,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.mygame.entity.Entity;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemDefinition;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;
@@ -146,15 +148,16 @@ public class Player extends Entity {
 
     public void useItem(ItemDefinition item) {
         if (inventory.isUsable(item) && inventory.hasItem(item)) {
-            item.apply();
             inventory.removeItem(item, 1);
-            System.out.println("Used " + item.getNameKey());
+            EventBus.fire(new Events.ItemUsedEvent(item));
         }
     }
 
     // State setters
-    public void setStone() { currentState = State.STONED; }
-    public void setNormal() { currentState = State.NORMAL; }
+    public void setState(Player.State state) {
+        this.currentState = state;
+        EventBus.fire(new Events.PlayerStateChangedEvent(state));
+    }
 
     public State getState() { return currentState; }
 }

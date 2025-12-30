@@ -1,8 +1,6 @@
 package com.mygame.game;
 
 import com.mygame.assets.Assets;
-import com.mygame.action.SetDialogueAction;
-import com.mygame.entity.player.Player;
 import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.assets.audio.MusicManager;
@@ -33,14 +31,14 @@ public class GameStateManager {
     // --- Start the game ---
     public void startGame() {
         state = GameState.PLAYING;                // Switch state to PLAYING
-        MusicManager.playMusic(Assets.getMusic("backMusic1")); // Play game background music
+        MusicManager.playMusic(Assets.getMusic("back1")); // Play game background music
         uiManager.setCurrentStage("GAME");         // Set UI to game stage
     }
 
     // --- Handle player death ---
     public void playerDied() {
         state = GameState.DEATH;                  // Switch state to DEATH
-        MusicManager.playMusic(Assets.getMusic("backMusic4")); // Play death music
+        MusicManager.playMusic(Assets.getMusic("back4")); // Play death music
         uiManager.setCurrentStage("DEATH");        // Set UI to death stage
 
         // Reset player progress and save it
@@ -83,13 +81,6 @@ public class GameStateManager {
         } else if (state == GameState.SETTINGS) {
             state = GameState.PLAYING;           // Close settings menu and return to game
             uiManager.setCurrentStage("GAME");
-        }
-    }
-
-    public void handleStonedPlayer(GameContext ctx) {
-        if (ctx.player.getState() == Player.State.STONED && state == GameState.PLAYING) {
-            MusicManager.playMusic(Assets.getMusic("kaifMusic"));
-            new SetDialogueAction(ctx, "police", "stoned").execute();
         }
     }
 }
