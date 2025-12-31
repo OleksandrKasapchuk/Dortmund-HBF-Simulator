@@ -15,19 +15,21 @@ import java.util.Set;
  */
 public class QuestProgressTriggers {
 
-    private static final String QUEST_FIREWORKS = "jan";
-    private static final String QUEST_VISIT_LOCATIONS = "jason1";
-    private static final String QUEST_TALK_NPCS = "jason2";
-    private static final String ITEM_FIREWORK = "firework";
+    private  final String QUEST_FIREWORKS = "jan";
+    private  final String QUEST_VISIT_LOCATIONS = "jason1";
+    private  final String QUEST_TALK_NPCS = "jason2";
+    private  final String ITEM_FIREWORK = "firework";
 
-    private static Set<String> talkedNpcs;
-    private static Set<String> visited;
-    private static int lastFireworkCount = 0;
+    private Set<String> talkedNpcs;
+    private Set<String> visited;
+    private int lastFireworkCount = 0;
 
-    public static void init() {
-        refresh();
-
+    public QuestProgressTriggers() {
         // Прогрес квестів
+        GameSettings settings = SettingsManager.load();
+        talkedNpcs = settings.talkedNpcs;
+        visited = settings.visited;
+
         EventBus.subscribe(Events.DialogueFinishedEvent.class, event -> handleNpcDialogue(event.npcId()));
         EventBus.subscribe(Events.WorldChangedEvent.class, event -> handleWorldChange(event.newWorldId()));
         EventBus.subscribe(Events.InventoryChangedEvent.class, event -> handleInventoryQuest(event.item(), event.newAmount()));
@@ -42,14 +44,7 @@ public class QuestProgressTriggers {
         });
     }
 
-    public static void refresh() {
-        GameSettings settings = SettingsManager.load();
-        talkedNpcs = settings.talkedNpcs;
-        visited = settings.visited;
-        lastFireworkCount = 0;
-    }
-
-    private static void handleInventoryQuest(ItemDefinition item, int newAmount) {
+    private void handleInventoryQuest(ItemDefinition item, int newAmount) {
         if (item == ItemRegistry.get(ITEM_FIREWORK)) {
             if (newAmount > lastFireworkCount) {
                 progress(QUEST_FIREWORKS);
@@ -58,25 +53,25 @@ public class QuestProgressTriggers {
         }
     }
 
-    private static void handleNpcDialogue(String npcId) {
+    private void handleNpcDialogue(String npcId) {
         if (talkedNpcs.add(npcId)) {
             progress(QUEST_TALK_NPCS);
         }
     }
 
-    private static void handleWorldChange(String worldId) {
+    private void handleWorldChange(String worldId) {
         if (visited.add(worldId)) {
             progress(QUEST_VISIT_LOCATIONS);
         }
     }
 
-    private static void progress(String questKey) {
+    private void progress(String questKey) {
         QuestManager.Quest quest = QuestManager.getQuest(questKey);
         if (quest != null && quest.getStatus() == QuestManager.Status.ACTIVE) {
             quest.makeProgress();
         }
     }
 
-    public static Set<String> getTalkedNpcs() { return talkedNpcs; }
-    public static Set<String> getVisited() { return visited; }
+    public Set<String> getTalkedNpcs() { return talkedNpcs; }
+    public Set<String> getVisited() { return visited; }
 }

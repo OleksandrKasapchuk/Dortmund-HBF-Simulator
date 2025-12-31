@@ -43,8 +43,6 @@ public class Main extends ApplicationAdapter {
         gameInitializer.getGameInputHandler().handleInput();
         GameContext ctx = gameInitializer.getContext();
 
-        ctx.gsm.handleStonedPlayer(gameInitializer.getContext());
-
 
         switch (gameInitializer.getContext().gsm.getState()) {
             case PLAYING:

@@ -8,15 +8,16 @@ import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.npc.NpcManager;
 import com.mygame.entity.item.PfandManager;
 import com.mygame.entity.player.PlayerEffectManager;
+import com.mygame.events.EventBus;
 import com.mygame.game.GameContext;
 import com.mygame.game.GameStateManager;
+import com.mygame.quest.QuestProgressTriggers;
 import com.mygame.ui.UIManager;
 import com.mygame.world.transition.TransitionManager;
 import com.mygame.world.WorldManager;
 
 public class ManagerRegistry {
 
-    // --- Managers ---
     private UIManager uiManager;
     private NpcManager npcManager;
     private PfandManager pfandManager;
@@ -24,24 +25,27 @@ public class ManagerRegistry {
     private TransitionManager transitionManager;
     private CameraManager cameraManager;
     private GameStateManager gameStateManager;
+    private PlayerEffectManager playerEffectManager;
+    private QuestProgressTriggers questProgressTriggers;
 
-    // --- Core game objects ---
     private Player player;
 
     public ManagerRegistry(SpriteBatch batch, Player player, Skin skin) {
+        EventBus.clear();
         this.player = player;
 
         cameraManager = new CameraManager(player);
         pfandManager = new PfandManager();
 
         uiManager = new UIManager(batch, player, skin);
-        PlayerEffectManager.init(player, uiManager);
+
+        playerEffectManager = new PlayerEffectManager();
+
+        questProgressTriggers = new QuestProgressTriggers();
 
         itemManager = new ItemManager();
-
         npcManager = new NpcManager(player);
         transitionManager = new TransitionManager();
-
         gameStateManager = new GameStateManager(uiManager);
     }
 
@@ -68,6 +72,7 @@ public class ManagerRegistry {
     public CameraManager getCameraManager() { return cameraManager; }
     public ItemManager getItemManager() { return itemManager; }
     public TransitionManager getTransitionManager() { return transitionManager; }
+    public QuestProgressTriggers getQuestProgressTriggers() { return questProgressTriggers; }
 
     public GameContext createContext(){ return new GameContext(player, uiManager, npcManager, gameStateManager, itemManager); }
 }

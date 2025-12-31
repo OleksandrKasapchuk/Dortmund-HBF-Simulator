@@ -13,7 +13,6 @@ import com.mygame.quest.QuestManager;
 import com.mygame.quest.QuestRegistry;
 import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;
-import com.mygame.quest.QuestProgressTriggers;
 import com.mygame.scenario.ScenarioController;
 import com.mygame.ui.load.SkinLoader;
 import com.mygame.world.WorldManager;
@@ -74,7 +73,7 @@ public class GameInitializer {
         // --- Потім ініціалізуємо сценарії та квести ---
         scController = new ScenarioController();
         scController.init(ctx);
-        QuestProgressTriggers.init();
+
         ItemInteractionSystem.init();
 
         // Load other game state data
@@ -94,7 +93,7 @@ public class GameInitializer {
 
         gameInputHandler = new GameInputHandler(managerRegistry.getGameStateManager(), managerRegistry.getUiManager());
 
-        MusicManager.playMusic(Assets.getMusic("startMusic"));
+        MusicManager.playMusic(Assets.getMusic("start"));
     }
 
     public GameInputHandler getGameInputHandler() { return gameInputHandler; }

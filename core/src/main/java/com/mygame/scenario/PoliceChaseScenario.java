@@ -27,7 +27,7 @@ public class PoliceChaseScenario implements Scenario {
         // Відновлення погоні зі збереження
         if (settings.policeChaseActive) {
             completed = true;
-            ActionRegistry.executeAction("call_police");
+            ActionRegistry.executeAction("npc.callPolice");
             Police police = ctx.npcManager.getSummonedPolice();
             if (police != null) {
                 police.setX(settings.policeX);
@@ -36,13 +36,12 @@ public class PoliceChaseScenario implements Scenario {
                 if (world != null) {
                     ctx.npcManager.moveSummonedPoliceToNewWorld(world);
                 }
-                // Використовуємо екшени для запуску музики та встановлення стану без повторного повідомлення
-                ActionRegistry.executeAction("start_chase");
-                ActionRegistry.executeAction("restore_chase_ui");
+                ActionRegistry.executeAction("quest.chase.start");
+                ActionRegistry.executeAction("quest.chase.restore_ui");
             }
         }
 
-        // Слухаємо завершення квесту доставки (який запускає погоню)
+        // Слухаємо завершення квесту доставки
         EventBus.subscribe(Events.QuestCompletedEvent.class, event -> {
             if (event.questId().equals("delivery")) completed = true;
         });
@@ -52,8 +51,8 @@ public class PoliceChaseScenario implements Scenario {
             if (!completed) return;
 
             switch (event.newState()) {
-                case CAUGHT -> ActionRegistry.executeAction("police_caught");
-                case ESCAPED -> ActionRegistry.executeAction("police_escaped");
+                case CAUGHT -> ActionRegistry.executeAction("npc.summoned_police.force_dialogue");
+                case ESCAPED -> ActionRegistry.executeAction("quest.chase.complete");
             }
         });
     }

@@ -9,7 +9,6 @@ import com.mygame.assets.Assets;
 import com.mygame.Main;
 import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;
-import com.mygame.quest.QuestProgressTriggers;
 
 /**
  * MenuUI displays the main menu screen.
@@ -37,10 +36,6 @@ public class MenuScreen extends Screen {
             GameSettings newSettings = new GameSettings();
             newSettings.language = SettingsManager.load().language;
             SettingsManager.save(newSettings);
-
-            // Sync QuestObserver with the new empty save
-            QuestProgressTriggers.refresh();
-
             Main.restartGame();
             Main.getGameInitializer().getManagerRegistry().getGameStateManager().startGame();
             });

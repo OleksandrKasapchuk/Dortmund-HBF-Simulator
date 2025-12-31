@@ -1,6 +1,5 @@
 package com.mygame.game.save;
 
-
 import com.mygame.Main;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.npc.NPC;
@@ -15,12 +14,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
 public class AutoSaveManager {
 
     private static float timer = 0f;
-
-    private static final float SAVE_INTERVAL = 5f; // раз на 5 секунд
+    private static final float SAVE_INTERVAL = 5f;
 
     public static void update(float delta) {
         timer += delta;
@@ -33,42 +30,40 @@ public class AutoSaveManager {
         timer = 0;
 
         GameInitializer gameInitializer = Main.getGameInitializer();
-        if (gameInitializer == null || gameInitializer.getPlayer() == null || gameInitializer.getContext() == null) return;
+        if (gameInitializer == null || gameInitializer.getPlayer() == null || gameInitializer.getManagerRegistry() == null) return;
 
         GameSettings settings = SettingsManager.load();
-
         Player player = gameInitializer.getPlayer();
-        settings.playerState = player.getState();
+        QuestProgressTriggers triggers = gameInitializer.getManagerRegistry().getQuestProgressTriggers();
 
-        // Save player data
+        settings.playerState = player.getState();
         settings.playerX = player.getX();
         settings.playerY = player.getY();
         if (WorldManager.getCurrentWorld() != null) {
             settings.currentWorldName = WorldManager.getCurrentWorld().getName();
         }
 
-        // Save inventory
         settings.inventory = player.getInventory().getItems().entrySet().stream()
             .collect(Collectors.toMap(entry -> entry.getKey().getKey(), Map.Entry::getValue));
 
-        // Save active quests with status
         settings.activeQuests = QuestManager.getQuests().stream()
             .collect(Collectors.toMap(
                 QuestManager.Quest::key,
                 quest -> new GameSettings.QuestSaveData(quest.progress(), quest.getStatus())
             ));
 
-        settings.talkedNpcs = new HashSet<>(QuestProgressTriggers.getTalkedNpcs());
-        settings.visited = new HashSet<>(QuestProgressTriggers.getVisited());
+        // Використовуємо нестатичні методи екземпляра
+        if (triggers != null) {
+            settings.talkedNpcs = new HashSet<>(triggers.getTalkedNpcs());
+            settings.visited = new HashSet<>(triggers.getVisited());
+        }
 
-        // Save searched items
         settings.searchedItems = WorldManager.getWorlds().values().stream()
             .flatMap(world -> world.getItems().stream())
             .filter(Item::isSearched)
             .map(Item::getUniqueId)
             .collect(Collectors.toSet());
 
-        // Save NPC dialogue states
         settings.npcStates = WorldManager.getWorlds().values().stream()
             .flatMap(world -> world.getNpcs().stream())
             .collect(Collectors.toMap(
@@ -77,7 +72,6 @@ public class AutoSaveManager {
                 (existing, replacement) -> existing
             ));
 
-        // Save Police Chase State
         Police summonedPolice = gameInitializer.getContext().npcManager.getSummonedPolice();
         if (summonedPolice != null && summonedPolice.getState() == Police.PoliceState.CHASING) {
             settings.policeChaseActive = true;
@@ -89,6 +83,5 @@ public class AutoSaveManager {
         }
 
         SettingsManager.save(settings);
-        System.out.println("Game state saved.");
     }
 }
