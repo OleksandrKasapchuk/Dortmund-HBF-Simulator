@@ -38,7 +38,7 @@ public class GameStateManager {
     // --- Handle player death ---
     public void playerDied() {
         state = GameState.DEATH;                  // Switch state to DEATH
-        MusicManager.playMusic(Assets.getMusic("back4")); // Play death music
+        MusicManager.playMusic(Assets.getMusic("back2")); // Play death music
         uiManager.setCurrentStage("DEATH");        // Set UI to death stage
 
         // Reset player progress and save it

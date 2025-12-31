@@ -33,55 +33,55 @@ public class ActionRegistry {
     private static final Map<String, Runnable> registeredActions = new HashMap<>();
 
     static {
-        creators.put("trade", (ctx, data) -> () -> new TradeAction(ctx,
+        creators.put("inventory.trade", (ctx, data) -> () -> new TradeAction(ctx,
             data.getString("from"), data.getString("to"),
             data.getInt("fromAmount"), data.getInt("toAmount")).execute());
 
-        creators.put("add_quest", (ctx, data) -> () -> new AddQuestAction(
+        creators.put("quest.add", (ctx, data) -> () -> new AddQuestAction(
             data.getString("id")).execute());
 
-        creators.put("complete_quest", (ctx, data) -> () -> QuestManager.completeQuest(data.getString("id")));
+        creators.put("quest.complete", (ctx, data) -> () -> QuestManager.completeQuest(data.getString("id")));
 
-        creators.put("set_dialogue", (ctx, data) -> () -> new SetDialogueAction(ctx,
+        creators.put("dialogue.set", (ctx, data) -> () -> new SetDialogueAction(ctx,
             data.getString("npc"), data.getString("node")).execute());
 
-        creators.put("add_item", (ctx, data) -> () -> ctx.getInventory().addItemAndNotify(
+        creators.put("inventory.add", (ctx, data) -> () -> ctx.getInventory().addItemAndNotify(
             ItemRegistry.get(data.getString("id")),
             data.getInt("amount", 1)));
 
-        creators.put("remove_item", (ctx, data) -> () -> ctx.getInventory().removeItem(
+        creators.put("inventory.remove", (ctx, data) -> () -> ctx.getInventory().removeItem(
             ItemRegistry.get(data.getString("id")),
             data.getInt("amount", 1)));
 
-        creators.put("play_sound", (ctx, data) -> () -> SoundManager.playSound(Assets.getSound(data.getString("id"))));
+        creators.put("audio.playSound", (ctx, data) -> () -> SoundManager.playSound(Assets.getSound(data.getString("id"))));
 
-        creators.put("play_music", (ctx, data) -> () -> MusicManager.playMusic(Assets.getMusic(data.getString("id"))));
+        creators.put("audio.playMusic", (ctx, data) -> () -> MusicManager.playMusic(Assets.getMusic(data.getString("id"))));
 
-        creators.put("player_died", (ctx, data) -> ctx.gsm::playerDied);
+        creators.put("player.die", (ctx, data) -> ctx.gsm::playerDied);
 
-        creators.put("composite", (ctx, data) -> () -> {
+        creators.put("system.composite", (ctx, data) -> () -> {
             for (JsonValue subAction : data.get("actions")) {
                 createAction(ctx, subAction).run();
             }
         });
 
-        creators.put("timer", (ctx, data) -> () -> {
+        creators.put("system.timer", (ctx, data) -> () -> {
             float delay = data.getFloat("delay", 1f);
             JsonValue actionData = data.get("action");
             TimerManager.setAction(() -> createAction(ctx, actionData).run(), delay);
         });
 
-        creators.put("start_cooldown", (ctx, data) -> () -> {
+        creators.put("item.startCooldown", (ctx, data) -> () -> {
             Item item = ctx.itemManager.getItem(data.getString("id"));
             if (item != null) item.startCooldown(data.getFloat("seconds", 1f));
         });
 
-        creators.put("set_texture", (ctx, data) -> () -> {
+        creators.put("npc.setTexture", (ctx, data) -> () -> {
             var npc = ctx.npcManager.findNpcById((data.getString("npc")));
             if (npc != null) npc.setTexture(Assets.getTexture(data.getString("texture")));
         });
 
-        creators.put("conditional_trade", (ctx, data) -> () -> {
+        creators.put("inventory.conditionalTrade", (ctx, data) -> () -> {
             if (ctx.getInventory().trade(ItemRegistry.get(data.getString("from")),
                 ItemRegistry.get(data.getString("to")),
                 data.getInt("fromAmount"), data.getInt("toAmount"))) {
@@ -95,7 +95,7 @@ public class ActionRegistry {
             }
         });
 
-        creators.put("if_has_item", (ctx, data) -> () -> {
+        creators.put("inventory.check", (ctx, data) -> () -> {
             int amount = data.getInt("amount", 1);
             if (ctx.getInventory().getAmount(ItemRegistry.get(data.getString("itemId"))) >= amount) {
                 if (data.has("action")) {
@@ -108,11 +108,24 @@ public class ActionRegistry {
             }
         });
 
-        creators.put("not_enough_message", (ctx, data) -> () -> EventBus.fire(new Events.NotEnoughMessageEvent(ItemRegistry.get(data.getString("item")))));
+        creators.put("player.checkState", (ctx, data) -> () -> {
+            String requiredState = data.getString("state").toUpperCase();
+            if (ctx.player.getState().name().equals(requiredState)) {
+                if (data.has("action")) {
+                    createAction(ctx, data.get("action")).run();
+                }
+            } else {
+                if (data.has("onFail")) {
+                    createAction(ctx, data.get("onFail")).run();
+                }
+            }
+        });
 
-        creators.put("message", (ctx, data) -> () -> ctx.ui.getGameScreen().showInfoMessage(Assets.messages.get(data.getString("key")), data.getFloat("duration", 2f)));
+        creators.put("ui.notEnoughMessage", (ctx, data) -> () -> EventBus.fire(new Events.NotEnoughMessageEvent(ItemRegistry.get(data.getString("item")))));
 
-        creators.put("player.set_state", (ctx, data) -> () -> {
+        creators.put("ui.message", (ctx, data) -> () -> ctx.ui.getGameScreen().showInfoMessage(Assets.messages.get(data.getString("key")), data.getFloat("duration", 2f)));
+
+        creators.put("player.setState", (ctx, data) -> () -> {
             String stateName = data.getString("key").toUpperCase();
             try {
                 Player.State state = Player.State.valueOf(stateName);
@@ -122,12 +135,15 @@ public class ActionRegistry {
             }
         });
 
-        creators.put("remove_npc", (ctx, data) -> () -> {
+        creators.put("npc.remove", (ctx, data) -> () -> {
             NPC npc = ctx.npcManager.findNpcById(data.getString("npc"));
-            if (npc != null) ctx.npcManager.kill(npc);
+            // ПОВЕРНУТО ПРАВИЛЬНУ ЛОГІКУ: прибираємо тільки зі світу, а не вбиваємо назавжди
+            if (npc != null && npc.getWorld() != null) {
+                npc.getWorld().getNpcs().remove(npc);
+            }
         });
 
-        creators.put("spawn_npc_near_player", (ctx, data) -> () -> {
+        creators.put("npc.spawnNearPlayer", (ctx, data) -> () -> {
             NPC npc = ctx.npcManager.findNpcById(data.getString("npc"));
             if (npc != null) {
                 WorldManager.getCurrentWorld().getNpcs().add(npc);
@@ -136,21 +152,39 @@ public class ActionRegistry {
             }
         });
 
-        creators.put("call_police", (ctx, data) -> ctx.npcManager::callPolice);
+        creators.put("npc.callPolice", (ctx, data) -> ctx.npcManager::callPolice);
 
-        creators.put("force_dialogue", (ctx, data) -> () -> {
+        creators.put("dialogue.force", (ctx, data) -> () -> {
             NPC npc = ctx.npcManager.findNpcById(data.getString("npc"));
             if (npc != null) ctx.ui.getDialogueManager().startForcedDialogue(npc);
         });
 
-        creators.put("chikita_craft", (ctx, data) -> () -> new ChikitaCraftJointAction(ctx).execute());
+        creators.put("custom.chikitaCraft", (ctx, data) -> () -> new ChikitaCraftJointAction(ctx).execute());
 
-        creators.put("police_check", (ctx, data) -> () -> new PoliceCheckAction(ctx).execute());
+        creators.put("custom.policeCheck", (ctx, data) -> () -> new PoliceCheckAction(ctx).execute());
 
-        creators.put("start_chase", (ctx, data) -> () -> {
+        creators.put("custom.startChase", (ctx, data) -> () -> {
             Police police = ctx.npcManager.getSummonedPolice();
             if (police != null) police.startChase(ctx.player);
         });
+
+        // Backward compatibility
+        creators.put("trade", creators.get("inventory.trade"));
+        creators.put("add_quest", creators.get("quest.add"));
+        creators.put("complete_quest", creators.get("quest.complete"));
+        creators.put("set_dialogue", creators.get("dialogue.set"));
+        creators.put("add_item", creators.get("inventory.add"));
+        creators.put("remove_item", creators.get("inventory.remove"));
+        creators.put("play_sound", creators.get("audio.playSound"));
+        creators.put("play_music", creators.get("audio.playMusic"));
+        creators.put("player_died", creators.get("player.die"));
+        creators.put("composite", creators.get("system.composite"));
+        creators.put("timer", creators.get("system.timer"));
+        creators.put("player.set_state", creators.get("player.setState"));
+        creators.put("message", creators.get("ui.message"));
+        creators.put("remove_npc", creators.get("npc.remove"));
+        creators.put("call_police", creators.get("npc.callPolice"));
+        creators.put("force_dialogue", creators.get("dialogue.force"));
     }
 
     public static void registerAll(GameContext ctx) {

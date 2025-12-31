@@ -5,8 +5,8 @@
       "vape.offer": {
         "texts": ["dialogue.igo.start"],
         "choices": [
-          { "text": "dialogue.igo.choice.give", "action": "igo_give_vape" },
-          { "text": "dialogue.choice.leave", "action": "igo_add_quest" }
+          { "text": "dialogue.igo.choice.give", "action": "npc.igo.give_vape" },
+          { "text": "dialogue.choice.leave", "action": "quest.igo.add" }
         ]
       },
       "vape.completed": ["dialogue.igo.thanks"]
@@ -17,7 +17,7 @@
       "start": "money.offer",
       "money.offer": {
         "texts": ["dialogue.ryzhyi.start"],
-        "choices": [{ "text": "dialogue.ryzhyi.choice.take", "action": "ryzhyi_take_money" }]
+        "choices": [{ "text": "dialogue.ryzhyi.choice.take", "action": "npc.ryzhyi.take_money" }]
       },
       "money.completed": ["dialogue.ryzhyi.after"]
     }
@@ -34,7 +34,7 @@
       "trade.offer": {
         "texts": ["dialogue.baryga.start.1", "dialogue.baryga.start.2"],
         "choices": [
-          { "text": "dialogue.baryga.choice.buy", "action": "baryga_buy_grass" },
+          { "text": "dialogue.baryga.choice.buy", "action": "inventory.baryga_buy_grass" },
           { "text": "dialogue.choice.leave", "next": "idle" }
         ]
       },
@@ -47,7 +47,7 @@
       "craft.offer": {
         "texts": ["dialogue.chikita.start"],
         "choices": [
-          { "text": "dialogue.chikita.choice.give", "action": "chikita_craft_joint" },
+          { "text": "dialogue.chikita.choice.give", "action": "npc.chikita.craft" },
           "dialogue.choice.leave"
         ]
       }
@@ -59,8 +59,8 @@
       "trade.offer": {
         "texts": ["dialogue.kioskman.start"],
         "choices": [
-          { "text": "dialogue.kioskman.choice.buyPape", "action": "kioskman_buy_pape" },
-          { "text": "dialogue.kioskman.choice.buyIceTea", "action": "kioskman_buy_icetea" },
+          { "text": "dialogue.kioskman.choice.buyPape", "action": "inventory.kioskman_buy_pape" },
+          { "text": "dialogue.kioskman.choice.buyIceTea", "action": "inventory.kioskman_buy_icetea" },
           "dialogue.choice.leave"
         ]
       }
@@ -72,19 +72,19 @@
       "delivery.offer": {
         "texts": ["dialogue.boss.start.1", "dialogue.boss.start.2", "dialogue.boss.start.3", "dialogue.boss.start.4"],
         "choices": [
-          { "text": "dialogue.choice.accept", "action": "boss_accept_quest" },
+          { "text": "dialogue.choice.accept", "action": "quest.delivery.accept" },
           "dialogue.choice.leave"
         ]
       },
       "chase.completed": {
         "texts": ["dialogue.boss.wellDone"],
-        "onFinish": "boss_claim_reward"
+        "onFinish": "quest.boss_end.claim_reward"
       },
       "idle": ["dialogue.boss.whatDoYouWant"],
       "delivery.active": ["dialogue.boss.after.1", "dialogue.boss.after.2"],
       "delivery.failed": {
         "texts": ["dialogue.boss.failure.1", "dialogue.boss.failure.2", "dialogue.boss.failure.3"],
-        "onFinish": "failure"
+        "onFinish": "player.die"
       }
     }
   },
@@ -92,12 +92,12 @@
     "nodes": {
       "start": "check.active",
       "check.active": {
-        "onFinish": "police_check",
+        "onFinish": "npc.police.check",
         "texts": ["dialogue.police.check"],
         "isForced": true
       },
       "check.failed": {
-        "onFinish": "player_died",
+        "onFinish": "player.die",
         "texts": ["dialogue.police.stoned.1", "dialogue.police.stoned.2"],
         "isForced": true
       }
@@ -107,17 +107,17 @@
     "nodes": {
       "start": "check.active",
       "check.active": {
-        "onFinish": "police_check",
+        "onFinish": "npc.police.check",
         "texts": ["dialogue.police.check"],
         "isForced": true
       },
       "chase.offer": {
-        "onFinish": "start_police_chase",
+        "onFinish": "quest.chase.start",
         "texts": ["dialogue.police.beforeChase.1", "dialogue.police.beforeChase.2"],
         "isForced": true
       },
       "chase.failed": {
-          "onFinish": "player_died",
+          "onFinish": "player.die",
           "texts": ["dialogue.police.caught"]
       }
     }
@@ -130,13 +130,13 @@
       "fireworks.offer": {
         "texts":["dialogue.jan.start.1", "dialogue.jan.start.2"],
         "choices":  [
-        { "text": "dialogue.choice.accept", "action": "jan_give_quest" },
+        { "text": "dialogue.choice.accept", "action": "quest.jan.accept" },
         "dialogue.choice.leave"
         ]
       },
       "fireworks.active": ["dialogue.jan.after"],
       "fireworks.completed": {
-        "onFinish": "jan_complete",
+        "onFinish": "quest.jan.complete",
         "texts": ["dialogue.choice.leave"]
       }
     }
@@ -147,12 +147,12 @@
     "nodes": {
       "start": "tour.offer",
       "tour.offer": {
-        "onFinish": "jason_give_money",
+        "onFinish": "npc.jason.give_money",
         "texts": ["dialogue.jason.start.1", "dialogue.jason.start.2", "dialogue.jason.start.3", "dialogue.jason.start.4", "dialogue.jason.start.5"]
       },
       "tour.active": ["dialogue.jason.after.1", "dialogue.jason.after.2"],
       "tour.completed": {
-        "onFinish": "jason_completed",
+        "onFinish": "quest.jason.complete",
         "texts": ["dialogue.jason.finished"]
       },
       "idle": ["dialogue.jason.completed"]
@@ -164,7 +164,7 @@
       "revenge.offer": {
         "texts": ["dialogue.murat.start.1", "dialogue.murat.start.2", "dialogue.murat.start.3", "dialogue.murat.start.4", "dialogue.murat.start.5", "dialogue.murat.start.6"],
         "choices": [
-          { "text": "dialogue.murat.choice.accept", "action": "murat_accept_quest" },
+          { "text": "dialogue.murat.choice.accept", "action": "quest.murat.accept" },
           "dialogue.murat.choice.decline"
         ]
       }
@@ -186,7 +186,7 @@
         "texts": ["dialogue.talahon2.start.1", "dialogue.talahon2.start.2"],
         "isForced": true,
         "choices": [
-          { "text": "dialogue.talahon2.choice.accept", "action": "give_vape_action" },
+          { "text": "dialogue.talahon2.choice.accept", "action": "npc.talahon2.give_vape" },
           { "text": "dialogue.choice.leave", "next": "vape.failed" }
         ]
       },
@@ -218,7 +218,7 @@
       "trade.offer": {
         "texts": ["dialogue.jamal.start.1", "dialogue.jamal.start.2"],
         "choices": [
-          { "text": "dialogue.jamal.choice.buy", "action": "buy_seed" },
+          { "text": "dialogue.jamal.choice.buy", "action": "inventory.buy_seed" },
           "dialogue.choice.leave"
         ]
       }
