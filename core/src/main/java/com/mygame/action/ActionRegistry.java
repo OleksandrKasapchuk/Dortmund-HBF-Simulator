@@ -6,8 +6,6 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.mygame.assets.Assets;
 import com.mygame.assets.audio.MusicManager;
 import com.mygame.assets.audio.SoundManager;
-import com.mygame.action.custom.ChikitaCraftJointAction;
-import com.mygame.action.custom.PoliceCheckAction;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.npc.NPC;
@@ -49,9 +47,17 @@ public class ActionRegistry {
             ItemRegistry.get(data.getString("id")),
             data.getInt("amount", 1)));
 
-        creators.put("inventory.remove", (ctx, data) -> () -> ctx.getInventory().removeItem(
-            ItemRegistry.get(data.getString("id")),
-            data.getInt("amount", 1)));
+        creators.put("inventory.remove", (ctx, data) -> () -> {
+            if (data.has("items")) {
+                for (String itemId : data.get("items").asStringArray()) {
+                    ctx.getInventory().removeItem(ItemRegistry.get(itemId), data.getInt("amount", 9999));
+                }
+            } else {
+                ctx.getInventory().removeItem(
+                    ItemRegistry.get(data.getString("id")),
+                    data.getInt("amount", 1));
+            }
+        });
 
         creators.put("audio.playSound", (ctx, data) -> () -> SoundManager.playSound(Assets.getSound(data.getString("id"))));
 
@@ -96,15 +102,24 @@ public class ActionRegistry {
         });
 
         creators.put("inventory.check", (ctx, data) -> () -> {
-            int amount = data.getInt("amount", 1);
-            if (ctx.getInventory().getAmount(ItemRegistry.get(data.getString("itemId"))) >= amount) {
-                if (data.has("action")) {
-                    createAction(ctx, data.get("action")).run();
+            boolean conditionMet = false;
+            if (data.has("items")) {
+                for (String itemId : data.get("items").asStringArray()) {
+                    if (ctx.getInventory().getAmount(ItemRegistry.get(itemId)) > 0) {
+                        conditionMet = true;
+                        break;
+                    }
                 }
+            } else if (data.has("itemId")) {
+                int amount = data.getInt("amount", 1);
+                conditionMet = ctx.getInventory().getAmount(ItemRegistry.get(data.getString("itemId"))) >= amount;
+            }
+
+            if (conditionMet) {
+                if (data.has("action")) createAction(ctx, data.get("action")).run();
+                if (data.has("onSuccess")) createAction(ctx, data.get("onSuccess")).run();
             } else {
-                if (data.has("onFail")) {
-                    createAction(ctx, data.get("onFail")).run();
-                }
+                if (data.has("onFail")) createAction(ctx, data.get("onFail")).run();
             }
         });
 
@@ -135,9 +150,10 @@ public class ActionRegistry {
             }
         });
 
+        creators.put("player.lockMovement", (ctx, data) -> () -> ctx.player.setMovementLocked(data.getBoolean("locked")));
+
         creators.put("npc.remove", (ctx, data) -> () -> {
             NPC npc = ctx.npcManager.findNpcById(data.getString("npc"));
-            // ПОВЕРНУТО ПРАВИЛЬНУ ЛОГІКУ: прибираємо тільки зі світу, а не вбиваємо назавжди
             if (npc != null && npc.getWorld() != null) {
                 npc.getWorld().getNpcs().remove(npc);
             }
@@ -159,13 +175,13 @@ public class ActionRegistry {
             if (npc != null) ctx.ui.getDialogueManager().startForcedDialogue(npc);
         });
 
-        creators.put("custom.chikitaCraft", (ctx, data) -> () -> new ChikitaCraftJointAction(ctx).execute());
-
-        creators.put("custom.policeCheck", (ctx, data) -> () -> new PoliceCheckAction(ctx).execute());
-
         creators.put("custom.startChase", (ctx, data) -> () -> {
             Police police = ctx.npcManager.getSummonedPolice();
             if (police != null) police.startChase(ctx.player);
+        });
+
+        creators.put("custom.chikitaCraft", (ctx, data) -> () -> {
+            // Лишаємо для сумісності або теж переводимо в JSON
         });
 
         // Backward compatibility

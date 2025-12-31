@@ -261,7 +261,45 @@
     ]
   },
 
-  "npc.police.check": { "type": "custom.policeCheck" },
-  "npc.chikita.craft": { "type": "custom.chikitaCraft" },
+  "npc.police.check": {
+    "type": "inventory.check",
+    "items": ["grass", "joint", "vape"],
+    "onSuccess": {
+      "type": "system.composite",
+      "actions": [
+        { "type": "inventory.remove", "items": ["grass", "joint", "vape"], "amount": 9999 },
+        { "type": "ui.message", "key": "message.police.stuffLost" }
+      ]
+    },
+    "onFail": {"type": "ui.message", "key": "message.police.checkPassed"}
+  },
+
+  "npc.chikita.craft": {
+    "type": "inventory.check", "itemId": "grass",
+    "onFail": { "type": "ui.notEnoughMessage", "item": "grass" },
+    "action": {
+      "type": "inventory.check", "itemId": "pape",
+      "onFail": { "type": "ui.notEnoughMessage", "item": "pape" },
+      "action": {
+        "type": "system.composite",
+        "actions": [
+          { "type": "inventory.remove", "id": "grass" },
+          { "type": "inventory.remove", "id": "pape" },
+          { "type": "player.lockMovement", "locked": true },
+          { "type": "audio.playSound", "id": "kosyak" },
+          {
+            "type": "system.timer", "delay": 1.0,
+            "action": {
+              "type": "system.composite",
+              "actions": [
+                { "type": "inventory.add", "id": "joint" },
+                { "type": "player.lockMovement", "locked": false }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
   "npc.summoned_police.force_dialogue": { "type": "dialogue.force", "npc": "summoned_police" }
 }
