@@ -18,9 +18,11 @@ import java.util.ArrayList;
 public class NpcManager {
     private final ArrayList<NPC> npcs = new ArrayList<>();
     private final Player player;
+    private DialogueRegistry dialogueRegistry;
 
-    public NpcManager(Player player) {
+    public NpcManager(Player player, DialogueRegistry dialogueRegistry) {
         this.player = player;
+        this.dialogueRegistry = dialogueRegistry;
     }
 
     public void loadNpcsFromMap(World world) {
@@ -49,7 +51,7 @@ public class NpcManager {
         NPC npc;
         GameSettings settings = SettingsManager.load();
 
-        DialogueNode initialDialogue = DialogueRegistry.getInitialDialogue(npcId.toLowerCase());
+        DialogueNode initialDialogue = dialogueRegistry.getInitialDialogue(npcId.toLowerCase());
 
         String npcName;
         try {
@@ -76,7 +78,7 @@ public class NpcManager {
 
             // Restore dialogue
             if (state.currentNode != null) {
-                npc.setDialogue(DialogueRegistry.getDialogue(npc.getId(), state.currentNode));
+                npc.setDialogue(dialogueRegistry.getDialogue(npc.getId(), state.currentNode));
                 npc.setCurrentDialogueNodeId(state.currentNode);
             }
 
@@ -111,7 +113,7 @@ public class NpcManager {
 
         Police summonedPolice = new Police("summoned_police", Assets.npcs.get("npc.police.name"),
             100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police"),
-            currentWorld, 200, DialogueRegistry.getDialogue("summoned_police", "chase.offer"));
+            currentWorld, 200, dialogueRegistry.getDialogue("summoned_police", "chase.offer"));
         npcs.add(summonedPolice);
         currentWorld.getNpcs().add(summonedPolice);
     }

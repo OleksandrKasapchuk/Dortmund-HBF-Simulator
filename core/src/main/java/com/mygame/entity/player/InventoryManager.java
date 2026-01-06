@@ -6,7 +6,6 @@ import com.mygame.entity.item.ItemDefinition;
 import com.mygame.assets.audio.SoundManager;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
-import com.mygame.ui.UIManager;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -17,20 +16,25 @@ import java.util.Map;
  */
 public class InventoryManager {
 
-    UIManager uiManager;
+    private ItemRegistry itemRegistry;
 
     // --- Stores items and their quantities ---
     private final Map<ItemDefinition, Integer> items;
 
-    // --- Constructor: initializes empty inventory and effect maps ---
+    // --- Constructor: initializes empty inventory ---
     public InventoryManager() {
         items = new LinkedHashMap<>();       // Preserve insertion order
     }
 
-    public void setUI(UIManager uiManager) {this.uiManager = uiManager;}
+    /**
+     * Set dependencies after initialization
+     */
+    public void init(ItemRegistry itemRegistry) {
+        this.itemRegistry = itemRegistry;
+    }
 
     public void addItem(ItemDefinition type, int amount) {
-        if (type == null) return; // Prevent adding null items
+        if (type == null) return;
         items.put(type, items.getOrDefault(type, 0) + amount);
         EventBus.fire(new Events.InventoryChangedEvent(type, getAmount(type)));
     }
@@ -55,16 +59,23 @@ public class InventoryManager {
 
     public Map<ItemDefinition, Integer> getItems() {return items;}
 
-    public int getMoney() {return getAmount(ItemRegistry.get("money"));}
+    public int getMoney() {
+        if (itemRegistry == null) return 0;
+        return getAmount(itemRegistry.get("money"));
+    }
 
     public void addMoney(int amount) {
+        if (itemRegistry == null) return;
         SoundManager.playSound(Assets.getSound("money"));
-        addItem(ItemRegistry.get("money"), amount);
+        addItem(itemRegistry.get("money"), amount);
     }
 
     public void addItemAndNotify(ItemDefinition type, int amount) {
-        if (type == ItemRegistry.get("money")) addMoney(amount);
-        else addItem(type, amount);
+        if (itemRegistry != null && type == itemRegistry.get("money")) {
+            addMoney(amount);
+        } else {
+            addItem(type, amount);
+        }
         EventBus.fire(new Events.AddItemMessageEvent(type, amount));
     }
 
@@ -78,6 +89,5 @@ public class InventoryManager {
         return false;
     }
 
-    // --- Check if an item is usable (has an effect) ---
     public boolean isUsable(ItemDefinition item) {return item != null && item.isUsable();}
 }

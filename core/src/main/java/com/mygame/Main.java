@@ -13,7 +13,6 @@ import com.mygame.game.save.AutoSaveManager;
 import com.mygame.world.DarkOverlay;
 import com.mygame.world.WorldManager;
 import com.mygame.assets.audio.MusicManager;
-import com.mygame.entity.player.Player;
 
 
 public class Main extends ApplicationAdapter {
@@ -21,6 +20,7 @@ public class Main extends ApplicationAdapter {
     private static GameInitializer gameInitializer;
     private ShapeRenderer shapeRenderer;
     private DarkOverlay darkOverlay;
+    private AutoSaveManager autoSaveManager;
 
     @Override
     public void create() {
@@ -29,6 +29,7 @@ public class Main extends ApplicationAdapter {
         gameInitializer.initGame();               // Initialize all game objects
         shapeRenderer = new ShapeRenderer();
         darkOverlay = new DarkOverlay();
+        autoSaveManager = new AutoSaveManager(gameInitializer.getContext());
     }
 
     public static void restartGame() {gameInitializer.initGame();}
@@ -38,13 +39,13 @@ public class Main extends ApplicationAdapter {
         float delta = Gdx.graphics.getDeltaTime();
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.15f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        AutoSaveManager.update(delta);
 
-        gameInitializer.getGameInputHandler().handleInput();
+        autoSaveManager.update(delta);
+
+        gameInitializer.getManagerRegistry().getGameInputHandler().update();
         GameContext ctx = gameInitializer.getContext();
 
-
-        switch (gameInitializer.getContext().gsm.getState()) {
+        switch (ctx.gsm.getState()) {
             case PLAYING:
                 renderGame(delta);
                 break;
@@ -59,14 +60,13 @@ public class Main extends ApplicationAdapter {
     }
 
     private void renderGame(float delta) {
-        Player player = gameInitializer.getPlayer();
-        player.update(delta);
+        GameContext ctx = gameInitializer.getContext();
+        ctx.player.update(delta);
 
-        WorldManager.update(delta, player, gameInitializer.getContext().ui.isInteractPressed(), darkOverlay);
+        WorldManager.update(delta, ctx.player, ctx.ui.isInteractPressed(), darkOverlay);
         darkOverlay.update(delta);
         OrthographicCamera camera = gameInitializer.getManagerRegistry().getCameraManager().getCamera();
 
-        gameInitializer.getScController().update();
         // 1. Render the TMX map layer
         WorldManager.renderMap(camera);
 
@@ -77,9 +77,9 @@ public class Main extends ApplicationAdapter {
         gameInitializer.getManagerRegistry().update(delta);
 
         batch.begin();
-        WorldManager.drawEntities(batch, Assets.myFont, player);
-        gameInitializer.getContext().ui.renderWorldElements();
-        player.draw(batch);
+        WorldManager.drawEntities(batch, Assets.myFont, ctx.player);
+        ctx.ui.renderWorldElements();
+        ctx.player.draw(batch);
         batch.end();
 
         // 3. Draw debug shapes
@@ -91,7 +91,7 @@ public class Main extends ApplicationAdapter {
         shapeRenderer.end();
 
         // 4. Draw UI
-        gameInitializer.getContext().ui.render();
+        ctx.ui.render();
         darkOverlay.render();
     }
 

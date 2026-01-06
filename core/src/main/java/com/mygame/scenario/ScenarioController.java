@@ -6,8 +6,8 @@ public class ScenarioController {
     private BossDeliveryScenario bossSe;
     private PoliceChaseScenario policeSe;
 
-    public void init(GameContext ctx){
-        bossSe = new BossDeliveryScenario();
+    public ScenarioController(GameContext ctx){
+        bossSe = new BossDeliveryScenario(ctx);
         bossSe.init();
 
         policeSe = new PoliceChaseScenario(ctx);

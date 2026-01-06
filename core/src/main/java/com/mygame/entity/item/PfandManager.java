@@ -17,14 +17,19 @@ public class PfandManager {
     private final Random random = new Random();
     private float spawnTimer = 0f; // Timer to track spawn intervals
 
-    private static final float SPAWN_INTERVAL = 7f; // Time between spawn attempts in seconds
-    private static final int MAX_PFANDS = 15;       // Maximum number of pfand items at a time
+    private final float SPAWN_INTERVAL = 7f; // Time between spawn attempts in seconds
+    private final int MAX_PFANDS = 15;       // Maximum number of pfand items at a time
+    private ItemRegistry itemRegistry;
 
     /**
      * Updates pfand items each frame.
      * - Handles spawning new items.
      * - Checks for player pickups.
      */
+    public PfandManager(ItemRegistry itemRegistry){
+        this.itemRegistry = itemRegistry;
+    }
+
     public void update(float delta) {
         spawnTimer += delta;
 
@@ -62,7 +67,7 @@ public class PfandManager {
             if (isTooCloseToOtherPfands(x, y)) continue;
 
             // Add new pfand to the world
-            Item pfand = new Item(ItemRegistry.get("pfand"), itemWidth, itemHeight, x, y, 75, Assets.getTexture("pfand"), WorldManager.getCurrentWorld(), true, false, false, null, null, 0, null);
+            Item pfand = new Item(itemRegistry.get("pfand"), itemWidth, itemHeight, x, y, 75, Assets.getTexture("pfand"), WorldManager.getCurrentWorld(), true, false, false, null, null, 0, null);
             WorldManager.getCurrentWorld().getItems().add(pfand);
             WorldManager.getCurrentWorld().getPfands().add(pfand);
             break;

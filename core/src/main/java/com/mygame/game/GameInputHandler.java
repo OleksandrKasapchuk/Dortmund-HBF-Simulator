@@ -16,7 +16,7 @@ public class GameInputHandler {
     }
 
     /**Handles key input for global game actions (pause, settings, start game).*/
-    public void handleInput() {
+    public void update() {
         TouchControlsUI touchControlsUI = uiManager.getTouchControlsUI();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.P) || (touchControlsUI != null && touchControlsUI.isPauseButtonJustPressed()))
@@ -36,5 +36,6 @@ public class GameInputHandler {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.M) || (touchControlsUI != null && touchControlsUI.isMapButtonJustPressed()))
             gsm.toggleMap();
+        uiManager.resetButtons();
     }
 }

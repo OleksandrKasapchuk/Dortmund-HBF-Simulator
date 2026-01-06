@@ -36,6 +36,7 @@ public class UIManager {
     private final Skin skin;
     private final SpriteBatch batch;
     private Player player;
+    private QuestManager questManager;
 
     private QuestUI questUI;
     private InventoryUI inventoryUI;
@@ -61,10 +62,11 @@ public class UIManager {
      * @param skin The fully configured skin to use for all UI components
      * @param batch The SpriteBatch used for world rendering
      */
-    public UIManager(SpriteBatch batch,Player player, Skin skin) {
+    public UIManager(SpriteBatch batch,Player player, Skin skin, QuestManager questManager) {
         System.out.println("UIManager: Initializing...");
         this.skin = skin;
         this.batch = batch;
+        this.questManager = questManager;
 
         this.player = player;
         // Initialize screens with the provided skin
@@ -80,7 +82,7 @@ public class UIManager {
         Gdx.input.setInputProcessor(currentStage);
 
         // Initialize in-game UI elements
-        questUI = new QuestUI(skin, gameScreen.getStage(), 1200, 900);
+        questUI = new QuestUI(skin, gameScreen.getStage(), 1200, 900, questManager);
         inventoryUI = new InventoryUI(gameScreen.getStage(), skin);
         dialogueUI = new DialogueUI(skin, gameScreen.getStage(), 1950, 250, 25f, 10f);
         dialogueManager = new DialogueManager(dialogueUI, player);
@@ -139,7 +141,6 @@ public class UIManager {
         }
         // Update the current stage actors
         currentStage.act(delta);
-        resetButtons();
     }
 
     /** Draws UI elements that are positioned in the game world (e.g., interaction labels) */
@@ -152,7 +153,7 @@ public class UIManager {
 
         for (Item item : WorldManager.getCurrentWorld().getItems()) {
             // Check if it's a quest item and if the quest is active
-            if (item.getQuestId() != null && !QuestManager.hasQuest(item.getQuestId())) continue;
+            if (item.getQuestId() != null && questManager.hasQuest(item.getQuestId())) continue;
 
             if (item.isPlayerNear(player, item.getDistance()) && !item.isSearched()) {
                 if (item.isSearchable()){

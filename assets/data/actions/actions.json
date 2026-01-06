@@ -301,5 +301,23 @@
       }
     }
   },
-  "npc.summoned_police.force_dialogue": { "type": "dialogue.force", "npc": "summoned_police" }
+  "npc.summoned_police.force_dialogue": { "type": "dialogue.force", "npc": "summoned_police" },
+
+  "item.search.basic": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "audio.playSound", "id": "search" },
+      { "type": "player.lockMovement", "locked": true },
+      {
+        "type": "system.timer",
+        "delay": 2.0,
+        "action": {
+          "type": "system.composite",
+          "actions": [
+            { "type": "player.lockMovement", "locked": false }
+          ]
+        }
+      }
+    ]
+  }
 }

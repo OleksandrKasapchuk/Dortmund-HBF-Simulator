@@ -1,7 +1,6 @@
 package com.mygame.action;
 
 
-import com.mygame.entity.item.ItemRegistry;
 import com.mygame.game.GameContext;
 
 public class TradeAction implements GameAction {
@@ -20,6 +19,6 @@ public class TradeAction implements GameAction {
 
     @Override
     public void execute() {
-        ctx.getInventory().trade(ItemRegistry.get(fromItem), ItemRegistry.get(toItem), fromAmount, toAmount);
+        ctx.getInventory().trade(ctx.itemRegistry.get(fromItem), ctx.itemRegistry.get(toItem), fromAmount, toAmount);
     }
 }

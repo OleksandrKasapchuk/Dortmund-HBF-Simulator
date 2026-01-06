@@ -8,9 +8,9 @@ import java.util.Map;
 
 public class ItemRegistry {
 
-    private static final Map<String, ItemDefinition> types = new HashMap<>();
+    private final Map<String, ItemDefinition> types = new HashMap<>();
 
-    public static void init() {
+    public ItemRegistry() {
 
         JsonReader reader = new JsonReader();
         JsonValue itemsArray = reader.parse(Gdx.files.internal("data/items.json"));
@@ -38,11 +38,11 @@ public class ItemRegistry {
         }
     }
 
-    private static void register(ItemDefinition type) {
+    private void register(ItemDefinition type) {
         types.put(type.getKey(), type);
     }
 
-    public static ItemDefinition get(String key) {
+    public ItemDefinition get(String key) {
         return types.get(key);
     }
 }

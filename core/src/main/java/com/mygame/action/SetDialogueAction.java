@@ -1,6 +1,5 @@
 package com.mygame.action;
 
-import com.mygame.dialogue.DialogueRegistry;
 import com.mygame.entity.npc.NPC;
 import com.mygame.game.GameContext;
 
@@ -21,7 +20,7 @@ public class SetDialogueAction implements GameAction {
     public void execute() {
         NPC npc = ctx.npcManager.findNpcById(npcId);
         if (npc != null) {
-            npc.setDialogue(DialogueRegistry.getDialogue(npcId, newDialogueId));
+            npc.setDialogue(ctx.dialogueRegistry.getDialogue(npcId, newDialogueId));
             npc.setCurrentDialogueNodeId(newDialogueId);
         }
     }

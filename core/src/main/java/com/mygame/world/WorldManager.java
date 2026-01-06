@@ -21,6 +21,14 @@ public class WorldManager {
     private static float cooldownTimer = 0f;
     private static boolean inTransitionZone = false;
 
+    public static void init(){
+        addWorld(new World("main", "maps/main_station.tmx"));
+        addWorld(new World("leopold", "maps/leopold.tmx"));
+        addWorld(new World("subway", "maps/subway.tmx"));
+        addWorld(new World("home", "maps/home.tmx"));
+        addWorld(new World("kamp", "maps/kamp.tmx"));
+    }
+
     public static void addWorld(World world) {
         worlds.put(world.getName(), world);
     }

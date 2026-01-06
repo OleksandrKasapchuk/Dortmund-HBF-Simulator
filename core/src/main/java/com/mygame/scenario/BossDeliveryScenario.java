@@ -1,22 +1,26 @@
 package com.mygame.scenario;
 
-import com.mygame.action.ActionRegistry;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
+import com.mygame.game.GameContext;
 import com.mygame.quest.QuestManager;
 import java.util.function.Consumer;
 
 public class BossDeliveryScenario implements Scenario {
     private Consumer<Events.InventoryChangedEvent> inventoryListener;
+    private GameContext ctx;
 
+    public BossDeliveryScenario(GameContext ctx){
+        this.ctx = ctx;
+    }
     @Override
     public void init() {
         inventoryListener = event -> {
-            if (QuestManager.hasQuest("delivery") &&
+            if (ctx.questManager.hasQuest("delivery") &&
                 event.item().getKey().equals("grass") && event.newAmount() < 1000) {
 
-                QuestManager.getQuest("delivery").setStatus(QuestManager.Status.NOT_STARTED);
-                ActionRegistry.executeAction("quest.delivery.fail");
+                ctx.questManager.getQuest("delivery").setStatus(QuestManager.Status.NOT_STARTED);
+                EventBus.fire(new Events.ActionRequestEvent("quest.delivery.fail"));
             }
         };
 

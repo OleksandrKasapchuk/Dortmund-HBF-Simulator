@@ -23,8 +23,8 @@ public class CameraManager {
     private float shakeDuration = 0;
     private float shakeIntensity = 0;
 
-    private static final float VIEWPORT_WIDTH = 2000f;
-    private static final float VIEWPORT_HEIGHT = 1000f;
+    private final float VIEWPORT_WIDTH = 2000f;
+    private final float VIEWPORT_HEIGHT = 1000f;
 
     public CameraManager(Player player) {
         this.player = player;

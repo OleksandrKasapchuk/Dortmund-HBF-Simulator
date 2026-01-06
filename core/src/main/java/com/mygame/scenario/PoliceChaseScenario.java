@@ -1,6 +1,5 @@
 package com.mygame.scenario;
 
-import com.mygame.action.ActionRegistry;
 import com.mygame.entity.npc.Police;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
@@ -27,7 +26,7 @@ public class PoliceChaseScenario implements Scenario {
         // Відновлення погоні зі збереження
         if (settings.policeChaseActive) {
             completed = true;
-            ActionRegistry.executeAction("npc.callPolice");
+            EventBus.fire(new Events.ActionRequestEvent("npc.callPolice"));
             Police police = ctx.npcManager.getSummonedPolice();
             if (police != null) {
                 police.setX(settings.policeX);
@@ -36,8 +35,8 @@ public class PoliceChaseScenario implements Scenario {
                 if (world != null) {
                     ctx.npcManager.moveSummonedPoliceToNewWorld(world);
                 }
-                ActionRegistry.executeAction("quest.chase.start");
-                ActionRegistry.executeAction("quest.chase.restore_ui");
+                EventBus.fire(new Events.ActionRequestEvent("quest.chase.start"));
+                EventBus.fire(new Events.ActionRequestEvent("quest.chase.restore_ui"));
             }
         }
 
@@ -51,8 +50,8 @@ public class PoliceChaseScenario implements Scenario {
             if (!completed) return;
 
             switch (event.newState()) {
-                case CAUGHT -> ActionRegistry.executeAction("npc.summoned_police.force_dialogue");
-                case ESCAPED -> ActionRegistry.executeAction("quest.chase.complete");
+                case CAUGHT -> EventBus.fire(new Events.ActionRequestEvent("npc.summoned_police.force_dialogue"));
+                case ESCAPED -> EventBus.fire(new Events.ActionRequestEvent("quest.chase.complete"));
             }
         });
     }

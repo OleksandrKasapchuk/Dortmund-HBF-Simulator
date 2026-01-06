@@ -7,14 +7,12 @@ import com.mygame.assets.Assets;
 import com.mygame.assets.audio.MusicManager;
 import com.mygame.assets.audio.SoundManager;
 import com.mygame.entity.item.Item;
-import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.npc.NPC;
 import com.mygame.entity.npc.Police;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.GameContext;
-import com.mygame.quest.QuestManager;
 import com.mygame.managers.TimerManager;
 import com.mygame.world.WorldManager;
 
@@ -27,42 +25,45 @@ public class ActionRegistry {
         Runnable create(GameContext ctx, JsonValue data);
     }
 
-    private static final Map<String, ActionCreator> creators = new HashMap<>();
-    private static final Map<String, Runnable> registeredActions = new HashMap<>();
+    private final Map<String, ActionCreator> creators = new HashMap<>();
+    private final Map<String, Runnable> registeredActions = new HashMap<>();
 
-    static {
+
+    public void init(GameContext ctx) {
+        setupCreators();
+        loadActionsFromJson(ctx);
+    }
+
+    private void setupCreators() {
         creators.put("inventory.trade", (ctx, data) -> () -> new TradeAction(ctx,
             data.getString("from"), data.getString("to"),
             data.getInt("fromAmount"), data.getInt("toAmount")).execute());
 
-        creators.put("quest.add", (ctx, data) -> () -> new AddQuestAction(
-            data.getString("id")).execute());
+        creators.put("quest.add", (ctx, data) -> () -> ctx.questManager.startQuest(data.getString("id")));
 
-        creators.put("quest.complete", (ctx, data) -> () -> QuestManager.completeQuest(data.getString("id")));
+        creators.put("quest.complete", (ctx, data) -> () -> ctx.questManager.completeQuest(data.getString("id")));
 
         creators.put("dialogue.set", (ctx, data) -> () -> new SetDialogueAction(ctx,
             data.getString("npc"), data.getString("node")).execute());
 
         creators.put("inventory.add", (ctx, data) -> () -> ctx.getInventory().addItemAndNotify(
-            ItemRegistry.get(data.getString("id")),
+            ctx.itemRegistry.get(data.getString("id")),
             data.getInt("amount", 1)));
 
         creators.put("inventory.remove", (ctx, data) -> () -> {
             if (data.has("items")) {
                 for (String itemId : data.get("items").asStringArray()) {
-                    ctx.getInventory().removeItem(ItemRegistry.get(itemId), data.getInt("amount", 9999));
+                    ctx.getInventory().removeItem(ctx.itemRegistry.get(itemId), data.getInt("amount", 9999));
                 }
             } else {
                 ctx.getInventory().removeItem(
-                    ItemRegistry.get(data.getString("id")),
+                    ctx.itemRegistry.get(data.getString("id")),
                     data.getInt("amount", 1));
             }
         });
 
         creators.put("audio.playSound", (ctx, data) -> () -> SoundManager.playSound(Assets.getSound(data.getString("id"))));
-
         creators.put("audio.playMusic", (ctx, data) -> () -> MusicManager.playMusic(Assets.getMusic(data.getString("id"))));
-
         creators.put("player.die", (ctx, data) -> ctx.gsm::playerDied);
 
         creators.put("system.composite", (ctx, data) -> () -> {
@@ -88,8 +89,8 @@ public class ActionRegistry {
         });
 
         creators.put("inventory.conditionalTrade", (ctx, data) -> () -> {
-            if (ctx.getInventory().trade(ItemRegistry.get(data.getString("from")),
-                ItemRegistry.get(data.getString("to")),
+            if (ctx.getInventory().trade(ctx.itemRegistry.get(data.getString("from")),
+                ctx.itemRegistry.get(data.getString("to")),
                 data.getInt("fromAmount"), data.getInt("toAmount"))) {
                 if (data.has("onSuccess")) {
                     createAction(ctx, data.get("onSuccess")).run();
@@ -105,14 +106,14 @@ public class ActionRegistry {
             boolean conditionMet = false;
             if (data.has("items")) {
                 for (String itemId : data.get("items").asStringArray()) {
-                    if (ctx.getInventory().getAmount(ItemRegistry.get(itemId)) > 0) {
+                    if (ctx.getInventory().getAmount(ctx.itemRegistry.get(itemId)) > 0) {
                         conditionMet = true;
                         break;
                     }
                 }
             } else if (data.has("itemId")) {
                 int amount = data.getInt("amount", 1);
-                conditionMet = ctx.getInventory().getAmount(ItemRegistry.get(data.getString("itemId"))) >= amount;
+                conditionMet = ctx.getInventory().getAmount(ctx.itemRegistry.get(data.getString("itemId"))) >= amount;
             }
 
             if (conditionMet) {
@@ -136,8 +137,7 @@ public class ActionRegistry {
             }
         });
 
-        creators.put("ui.notEnoughMessage", (ctx, data) -> () -> EventBus.fire(new Events.NotEnoughMessageEvent(ItemRegistry.get(data.getString("item")))));
-
+        creators.put("ui.notEnoughMessage", (ctx, data) -> () -> EventBus.fire(new Events.NotEnoughMessageEvent(ctx.itemRegistry.get(data.getString("item")))));
         creators.put("ui.message", (ctx, data) -> () -> ctx.ui.getGameScreen().showInfoMessage(Assets.messages.get(data.getString("key")), data.getFloat("duration", 2f)));
 
         creators.put("player.setState", (ctx, data) -> () -> {
@@ -179,36 +179,9 @@ public class ActionRegistry {
             Police police = ctx.npcManager.getSummonedPolice();
             if (police != null) police.startChase(ctx.player);
         });
-
-        creators.put("custom.chikitaCraft", (ctx, data) -> () -> {
-            // Лишаємо для сумісності або теж переводимо в JSON
-        });
-
-        // Backward compatibility
-        creators.put("trade", creators.get("inventory.trade"));
-        creators.put("add_quest", creators.get("quest.add"));
-        creators.put("complete_quest", creators.get("quest.complete"));
-        creators.put("set_dialogue", creators.get("dialogue.set"));
-        creators.put("add_item", creators.get("inventory.add"));
-        creators.put("remove_item", creators.get("inventory.remove"));
-        creators.put("play_sound", creators.get("audio.playSound"));
-        creators.put("play_music", creators.get("audio.playMusic"));
-        creators.put("player_died", creators.get("player.die"));
-        creators.put("composite", creators.get("system.composite"));
-        creators.put("timer", creators.get("system.timer"));
-        creators.put("player.set_state", creators.get("player.setState"));
-        creators.put("message", creators.get("ui.message"));
-        creators.put("remove_npc", creators.get("npc.remove"));
-        creators.put("call_police", creators.get("npc.callPolice"));
-        creators.put("force_dialogue", creators.get("dialogue.force"));
     }
 
-    public static void registerAll(GameContext ctx) {
-        registeredActions.clear();
-        loadActionsFromJson(ctx);
-    }
-
-    private static void loadActionsFromJson(GameContext ctx) {
+    private void loadActionsFromJson(GameContext ctx) {
         try {
             JsonReader reader = new JsonReader();
             JsonValue root = reader.parse(Gdx.files.internal("data/actions/actions.json"));
@@ -220,7 +193,7 @@ public class ActionRegistry {
         }
     }
 
-    public static Runnable createAction(GameContext ctx, JsonValue data) {
+    public Runnable createAction(GameContext ctx, JsonValue data) {
         if (data == null) return () -> {};
         if (data.isString()) {
             return registeredActions.getOrDefault(data.asString(), () -> {});
@@ -233,11 +206,11 @@ public class ActionRegistry {
         return () -> {};
     }
 
-    public static Runnable getAction(String name) {
+    public Runnable getAction(String name) {
         return registeredActions.get(name);
     }
 
-    public static void executeAction(String name) {
+    public void executeAction(String name) {
         Runnable action = registeredActions.get(name);
         if (action != null) {
             action.run();

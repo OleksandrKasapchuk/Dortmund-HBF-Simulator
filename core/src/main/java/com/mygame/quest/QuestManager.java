@@ -12,7 +12,8 @@ import java.util.stream.Collectors;
  * It manages their status and progress.
  */
 public class QuestManager {
-    private static ArrayList<Quest> quests = new ArrayList<>();
+    private final QuestRegistry questRegistry;
+    private ArrayList<Quest> quests = new ArrayList<>();
 
     public enum Status {
         NOT_STARTED,
@@ -24,15 +25,15 @@ public class QuestManager {
      * Initializes the manager by creating all quests from Registry
      * with NOT_STARTED status.
      */
-    public static void init() {
-        quests.clear();
-        for (QuestRegistry.QuestDefinition def : QuestRegistry.getDefinitions()) {
+    public QuestManager(QuestRegistry questRegistry) {
+        this.questRegistry = questRegistry;
+        for (QuestRegistry.QuestDefinition def : questRegistry.getDefinitions()) {
             quests.add(new Quest(def.key(), def.progressable(), 0, def.maxProgress()));
         }
     }
 
     /** Sets quest status to ACTIVE */
-    public static void startQuest(String key) {
+    public void startQuest(String key) {
         Quest quest = getQuest(key);
         if (quest != null && quest.getStatus() == Status.NOT_STARTED) {
             quest.setStatus(Status.ACTIVE);
@@ -41,7 +42,7 @@ public class QuestManager {
     }
 
     /** Completes a quest by its key */
-    public static void completeQuest(String key) {
+    public void completeQuest(String key) {
         Quest quest = getQuest(key);
         if (quest != null) {
             quest.complete();
@@ -49,35 +50,35 @@ public class QuestManager {
     }
 
     /** Returns the list of all quests */
-    public static ArrayList<Quest> getQuests() {
+    public ArrayList<Quest> getQuests() {
         return quests;
     }
 
     /** Returns only active quests */
-    public static List<Quest> getActiveQuests() {
+    public List<Quest> getActiveQuests() {
         return quests.stream()
                 .filter(q -> q.getStatus() == Status.ACTIVE)
                 .collect(Collectors.toList());
     }
 
     /** Returns only completed quests */
-    public static List<Quest> getCompletedQuests() {
+    public List<Quest> getCompletedQuests() {
         return quests.stream()
             .filter(Quest::isCompleted)
             .collect(Collectors.toList());
     }
 
-    public static Quest getQuest(String key) {
+    public Quest getQuest(String key) {
         return quests.stream().filter(q -> q.key().equals(key)).findFirst().orElse(null);
     }
 
     /** Checks if a quest is active */
-    public static boolean hasQuest(String key) {
+    public boolean hasQuest(String key) {
         Quest q = getQuest(key);
         return q != null && q.getStatus() == Status.ACTIVE;
     }
 
-    public static class Quest {
+    public class Quest {
         private final String key;
         private boolean progressable;
         private int progress;
@@ -121,7 +122,7 @@ public class QuestManager {
         }
 
         public String getOnComplete() {
-            QuestRegistry.QuestDefinition def = QuestRegistry.get(key);
+            QuestRegistry.QuestDefinition def = questRegistry.get(key);
             return def != null ? def.onComplete() : null;
         }
 

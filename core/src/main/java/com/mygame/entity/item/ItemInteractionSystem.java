@@ -5,7 +5,7 @@ import com.mygame.events.Events;
 
 public class ItemInteractionSystem {
 
-    public static void init(){
+    public ItemInteractionSystem(){
         EventBus.subscribe(Events.ItemInteractionEvent.class,event -> event.item().interact(event.player()));
     }
 }

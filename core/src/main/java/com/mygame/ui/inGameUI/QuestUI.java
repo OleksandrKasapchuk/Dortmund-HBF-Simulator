@@ -24,12 +24,14 @@ public class QuestUI {
 
     private final Table questTable;
     private final Skin skin;
+    private final QuestManager questManager;
     private boolean visible = false;
     private final Texture bgTexture;
     private boolean showCompleted = false;
 
-    public QuestUI(Skin skin, Stage stage, float width, float height) {
+    public QuestUI(Skin skin, Stage stage, float width, float height, QuestManager questManager) {
         this.skin = skin;
+        this.questManager = questManager;
 
         questTable = new Table();
         questTable.setSize(width, height);
@@ -78,7 +80,7 @@ public class QuestUI {
         }
 
         // Logic for filtering quests
-        List<QuestManager.Quest> quests = showCompleted ? QuestManager.getCompletedQuests() : QuestManager.getActiveQuests();
+        List<QuestManager.Quest> quests = showCompleted ? questManager.getCompletedQuests() : questManager.getActiveQuests();
 
         activeBtn.addListener(new ClickListener() {
             @Override
