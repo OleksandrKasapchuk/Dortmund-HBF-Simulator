@@ -3,6 +3,7 @@ package com.mygame.action;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.mygame.Main;
 import com.mygame.assets.Assets;
 import com.mygame.assets.audio.MusicManager;
 import com.mygame.assets.audio.SoundManager;
@@ -13,6 +14,8 @@ import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.GameContext;
+import com.mygame.game.save.GameSettings;
+import com.mygame.game.save.SettingsManager;
 import com.mygame.managers.TimerManager;
 import com.mygame.world.WorldManager;
 
@@ -32,6 +35,20 @@ public class ActionRegistry {
     public void init(GameContext ctx) {
         setupCreators();
         loadActionsFromJson(ctx);
+        registeredActions.put("system.start", ctx.gsm::startGame);
+        registeredActions.put("system.newGame", () -> {
+            GameSettings newSettings = new GameSettings();
+            newSettings.language = SettingsManager.load().language;
+            SettingsManager.save(newSettings);
+            Main.restartGame();
+            Main.getGameInitializer().getManagerRegistry().getGameStateManager().startGame();});
+
+        registeredActions.put("system.pause", ctx.gsm::togglePause);
+        registeredActions.put("system.settings", ctx.gsm::toggleSettings);
+        registeredActions.put("system.map", ctx.gsm::toggleMap);
+        registeredActions.put("ui.inventory.toggle", ctx.ui::toggleInventoryTable);
+        registeredActions.put("ui.quests.toggle", ctx.ui::toggleQuestTable);
+        EventBus.subscribe(Events.ActionRequestEvent.class, event -> executeAction(event.actionId()));
     }
 
     private void setupCreators() {

@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygame.assets.Assets;
 import com.mygame.game.GameContext;
 import com.mygame.game.GameInitializer;
-import com.mygame.game.save.AutoSaveManager;
 import com.mygame.world.DarkOverlay;
 import com.mygame.world.WorldManager;
 import com.mygame.assets.audio.MusicManager;
@@ -20,7 +19,6 @@ public class Main extends ApplicationAdapter {
     private static GameInitializer gameInitializer;
     private ShapeRenderer shapeRenderer;
     private DarkOverlay darkOverlay;
-    private AutoSaveManager autoSaveManager;
 
     @Override
     public void create() {
@@ -29,7 +27,6 @@ public class Main extends ApplicationAdapter {
         gameInitializer.initGame();               // Initialize all game objects
         shapeRenderer = new ShapeRenderer();
         darkOverlay = new DarkOverlay();
-        autoSaveManager = new AutoSaveManager(gameInitializer.getContext());
     }
 
     public static void restartGame() {gameInitializer.initGame();}
@@ -40,7 +37,6 @@ public class Main extends ApplicationAdapter {
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.15f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        autoSaveManager.update(delta);
 
         gameInitializer.getManagerRegistry().getGameInputHandler().update();
         GameContext ctx = gameInitializer.getContext();

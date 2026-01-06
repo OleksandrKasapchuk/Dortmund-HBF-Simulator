@@ -1,16 +1,13 @@
 package com.mygame.ui.screenUI;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.mygame.assets.Assets;
 import com.mygame.Main;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
 import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.assets.audio.MusicManager;
@@ -19,7 +16,7 @@ import com.mygame.assets.audio.SoundManager;
 import java.util.Locale;
 
 /**
- * Settings UI screen for adjusting music and sound volumes and muting all audio.
+ * Адаптивний екран налаштувань.
  */
 public class SettingsScreen extends Screen {
     private Slider musicVolumeSlider;
@@ -27,36 +24,38 @@ public class SettingsScreen extends Screen {
     private CheckBox muteAllCheckbox;
     private float lastMusicVolume;
     private float lastSoundVolume;
-    private Image backgroundImage;
 
     public SettingsScreen(Skin skin) {
-        Stage stage = getStage();
+        super();
 
-        // Background image
-        backgroundImage = new Image(Assets.getTexture("menuBlurBack"));
+        // Фонове зображення
+        Image backgroundImage = new Image(Assets.getTexture("menuBlurBack"));
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
+        backgroundImage.toBack();
 
-        // Settings title
-        createLabel(skin, Assets.ui.get("settings.title"), 2.5f,800, 800);
+        // Заголовок
+        Label title = createLabel(skin, Assets.ui.get("settings.title"), 2.5f);
+        root.add(title).colspan(2).padBottom(80).center().row();
 
-        // Music volume label
-        createLabel(skin, Assets.ui.get("settings.music"), 2f,50, 650);
+        // --- ЛІВА ПАНЕЛЬ: Звук ---
+        Table audioTable = new Table();
+        audioTable.align(Align.left);
 
-        // Sound volume label
-        createLabel(skin, Assets.ui.get("settings.sounds"), 2f,50, 550);
+        // Музика
+        audioTable.add(createLabel(skin, Assets.ui.get("settings.music"), 1.8f)).left().padRight(20);
+        musicVolumeSlider = createSlider(skin, MusicManager.getVolume(), () -> MusicManager.setVolume(musicVolumeSlider.getValue()));
+        audioTable.add(musicVolumeSlider).width(400).padBottom(20).row();
 
-        // Music volume slider
-        musicVolumeSlider = createSlider(skin,400, 50, 250, 625, MusicManager.getVolume(), () -> MusicManager.setVolume(musicVolumeSlider.getValue()));
+        // Ефекти
+        audioTable.add(createLabel(skin, Assets.ui.get("settings.sounds"), 1.8f)).left().padRight(20);
+        soundVolumeSlider = createSlider(skin, SoundManager.getVolume(), () -> SoundManager.setVolume(soundVolumeSlider.getValue()));
+        audioTable.add(soundVolumeSlider).width(400).padBottom(20).row();
 
-        // Sound volume slider
-        soundVolumeSlider = createSlider(skin,400, 50, 250, 525, SoundManager.getVolume(), () -> SoundManager.setVolume(soundVolumeSlider.getValue()));
-
-        // Mute all checkbox
-        muteAllCheckbox = new CheckBox(Assets.ui.get("settings.muteAll"), skin);
-        muteAllCheckbox.setPosition(50, 425);
-        muteAllCheckbox.getLabel().setFontScale(2f);
-        muteAllCheckbox.getImageCell().size(80, 80);
+        // Mute All
+        muteAllCheckbox = new CheckBox(" " + Assets.ui.get("settings.muteAll"), skin);
+        muteAllCheckbox.getLabel().setFontScale(1.5f);
+        muteAllCheckbox.getImageCell().size(60, 60);
         muteAllCheckbox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -72,22 +71,28 @@ public class SettingsScreen extends Screen {
                 }
             }
         });
-        stage.addActor(muteAllCheckbox);
+        audioTable.add(muteAllCheckbox).left().colspan(2).padTop(30);
 
-        // --- Language Selection ---
+        root.add(audioTable).expandX().center();
+
+        // --- ПРАВА ПАНЕЛЬ: Мова ---
         Table langTable = new Table();
-        langTable.setPosition(1300, 550);
 
-        TextButton englishButton = createButton(skin, "English", 2f, () -> setLanguage("en"));
-        TextButton ukrainianButton = createButton(skin, "Українська", 2f, () -> setLanguage("ua"));
-        TextButton germanButton = createButton(skin, "Deutsch", 2f, () -> setLanguage("de"));
+        TextButton englishButton = createButton(skin, "English", 1.8f, () -> setLanguage("en"));
+        TextButton ukrainianButton = createButton(skin, "Українська", 1.8f, () -> setLanguage("ua"));
+        TextButton germanButton = createButton(skin, "Deutsch", 1.8f, () -> setLanguage("de"));
 
-        langTable.add(englishButton).width(350).height(90).padBottom(20).row();
-        langTable.add(ukrainianButton).width(350).height(90).padBottom(20).row();
-        langTable.add(germanButton).width(350).height(90).row();
-        stage.addActor(langTable);
+        langTable.add(englishButton).width(400).height(90).padBottom(20).row();
+        langTable.add(ukrainianButton).width(400).height(90).padBottom(20).row();
+        langTable.add(germanButton).width(400).height(90).row();
+
+        root.add(langTable).expandX().center();
+
+        // Кнопка НАЗАД (опціонально, бо ESC і так працює)
+        root.row();
+        TextButton backBtn = createButton(skin, Assets.ui.get("button.back.text"), 1.5f, () -> EventBus.fire (new Events.ActionRequestEvent("system.settings")));
+        root.add(backBtn).colspan(2).padTop(50).width(300).height(70);
     }
-
 
     private void setLanguage(String languageCode) {
         GameSettings settings = SettingsManager.load();

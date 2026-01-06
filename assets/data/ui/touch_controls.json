@@ -35,7 +35,7 @@
       "textKey": "button.map.text",
       "width": 200,
       "height": 100,
-      "x": 250,
+      "x": 20,
       "y": 850,
       "fontScale": 1.0,
       "stage": "gameStage"
@@ -58,26 +58,6 @@
       "x": 1750,
       "y": 800,
       "fontScale": 1.0,
-      "stage": "gameStage"
-    },
-    {
-      "action": "TOGGLE_PAUSE",
-      "textKey": "button.resume.text",
-      "width": 300,
-      "height": 150,
-      "x": 1000,
-      "y": 450,
-      "fontScale": 1.0,
-      "stage": "pauseStage"
-    },
-    {
-      "action": "TOGGLE_SETTINGS",
-      "textKey": "button.settings.text",
-      "width": 200,
-      "height": 100,
-      "x": 20,
-      "y": 850,
-      "fontScale": 0.85,
       "stage": "gameStage"
     },
     {

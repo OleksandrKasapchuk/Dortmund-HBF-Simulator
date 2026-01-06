@@ -41,6 +41,7 @@ public class ItemManager {
                 EventBus.fire(new Events.MessageEvent(Assets.ui.get("ui.not_found") , 2f));
             }
         });
+        EventBus.subscribe(Events.ItemInteractionEvent.class,event -> event.item().interact(event.player()));
     }
 
     /**

@@ -19,22 +19,19 @@ public class GameInputHandler {
     public void update() {
         TouchControlsUI touchControlsUI = uiManager.getTouchControlsUI();
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.P) || (touchControlsUI != null && touchControlsUI.isPauseButtonJustPressed()))
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P) || (gsm.getState() == GameStateManager.GameState.PAUSED && Gdx.input.isKeyJustPressed(Input.Keys.ENTER)))
             gsm.togglePause();
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || (touchControlsUI != null && touchControlsUI.isSettingsButtonJustPressed()))
-            gsm.toggleSettings();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && gsm.getState() == GameStateManager.GameState.MENU)
             gsm.startGame();
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.TAB) || (touchControlsUI != null && touchControlsUI.isInvButtonJustPressed()))
+        if (Gdx.input.isKeyJustPressed(Input.Keys.TAB))
             uiManager.toggleInventoryTable();
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Q) || (touchControlsUI != null && touchControlsUI.isQuestButtonJustPressed()))
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Q))
             uiManager.toggleQuestTable();
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.M) || (touchControlsUI != null && touchControlsUI.isMapButtonJustPressed()))
+        if (Gdx.input.isKeyJustPressed(Input.Keys.M))
             gsm.toggleMap();
         uiManager.resetButtons();
     }

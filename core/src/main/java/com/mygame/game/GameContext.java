@@ -11,6 +11,7 @@ import com.mygame.quest.QuestManager;
 import com.mygame.quest.QuestProgressTriggers;
 import com.mygame.quest.QuestRegistry;
 import com.mygame.ui.UIManager;
+import com.mygame.world.transition.TransitionManager;
 
 public class GameContext {
 
@@ -25,10 +26,11 @@ public class GameContext {
     public final QuestProgressTriggers questProgressTriggers;
     public final DialogueRegistry dialogueRegistry;
     public final ActionRegistry actionRegistry;
+    public final TransitionManager transitionManager;
 
 
     public GameContext(Player p, UIManager ui, NpcManager n, GameStateManager gsm,
-                       ItemManager i, ItemRegistry ir, QuestRegistry qr, QuestManager qm, QuestProgressTriggers qpt, DialogueRegistry dr, ActionRegistry actionRegistry) {
+                       ItemManager i, ItemRegistry ir, QuestRegistry qr, QuestManager qm, QuestProgressTriggers qpt, DialogueRegistry dr, ActionRegistry actionRegistry, TransitionManager transitionManager) {
         this.player = p;
         this.ui = ui;
         this.npcManager = n;
@@ -40,6 +42,7 @@ public class GameContext {
         this.questProgressTriggers = qpt;
         this.dialogueRegistry = dr;
         this.actionRegistry = actionRegistry;
+        this.transitionManager = transitionManager;
     }
 
     // Always get the current inventory from the player

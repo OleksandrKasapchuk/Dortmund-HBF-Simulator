@@ -5,24 +5,21 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.mygame.action.ActionRegistry;
 import com.mygame.dialogue.DialogueRegistry;
-import com.mygame.entity.item.ItemInteractionSystem;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.player.Player;
 import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.npc.NpcManager;
 import com.mygame.entity.item.PfandManager;
 import com.mygame.entity.player.PlayerEffectManager;
-import com.mygame.events.EventBus;
-import com.mygame.events.Events;
 import com.mygame.game.GameContext;
 import com.mygame.game.GameInputHandler;
 import com.mygame.game.GameStateManager;
+import com.mygame.game.save.AutoSaveManager;
 import com.mygame.quest.QuestManager;
 import com.mygame.quest.QuestProgressTriggers;
 import com.mygame.quest.QuestRegistry;
 import com.mygame.scenario.ScenarioController;
 import com.mygame.ui.UIManager;
-import com.mygame.world.World;
 import com.mygame.world.transition.TransitionManager;
 import com.mygame.world.WorldManager;
 
@@ -43,14 +40,12 @@ public class ManagerRegistry {
     private DialogueRegistry dialogueRegistry;
     private ActionRegistry actionRegistry;
     private ScenarioController scController;
-    private ItemInteractionSystem itemInteractionSystem;
     private Player player;
     private GameContext ctx;
     private GameInputHandler gameInputHandler;
-
+    private AutoSaveManager autoSaveManager;
 
     public ManagerRegistry(SpriteBatch batch, Player player, Skin skin) {
-        EventBus.clear();
         this.player = player;
 
         // 1. Реєстри
@@ -79,27 +74,19 @@ public class ManagerRegistry {
         actionRegistry.init(ctx);
         dialogueRegistry.init(actionRegistry);
 
-        // ПІДПИСКА НА ВИКОНАННЯ ДІЙ ЧЕРЕЗ ІВЕНТИ
-        EventBus.subscribe(Events.ActionRequestEvent.class, event -> actionRegistry.executeAction(event.actionId()));
-
-        // 5. Завантаження мап
-        for (World world : WorldManager.getWorlds().values()) {
-            npcManager.loadNpcsFromMap(world);
-            itemManager.loadItemsFromMap(world);
-            transitionManager.loadTransitionsFromMap(world);
-        }
+        autoSaveManager = new AutoSaveManager(ctx);
 
         scController = new ScenarioController(ctx);
-        itemInteractionSystem = new ItemInteractionSystem();
         gameInputHandler = new GameInputHandler(ctx.gsm, ctx.ui);
     }
 
     public void update(float delta) {
         npcManager.update(delta);
-        cameraManager.update(delta, WorldManager.getCurrentWorld());
         itemManager.update(delta, player);
         pfandManager.update(delta);
         scController.update();
+        autoSaveManager.update(delta);
+        cameraManager.update(delta, WorldManager.getCurrentWorld());
         uiManager.update(delta);
     }
 
@@ -109,6 +96,14 @@ public class ManagerRegistry {
     }
 
     public void dispose() {
+        dispose(true);
+    }
+
+    public void dispose(boolean save) {
+        if (save && autoSaveManager != null) {
+            Gdx.app.log("ManagerRegistry", "Disposing managers, saving game...");
+            autoSaveManager.saveGame();
+        }
         if (uiManager != null) uiManager.dispose();
     }
 
@@ -118,7 +113,7 @@ public class ManagerRegistry {
     public GameContext createContext(){
         return new GameContext(player, uiManager, npcManager, gameStateManager,
                                itemManager, itemRegistry, questRegistry, questManager,
-                               questProgressTriggers, dialogueRegistry, actionRegistry);
+                               questProgressTriggers, dialogueRegistry, actionRegistry, transitionManager);
     }
     public GameContext getContext(){ return ctx; }
 }
