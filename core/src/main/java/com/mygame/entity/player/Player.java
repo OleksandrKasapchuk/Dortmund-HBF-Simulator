@@ -14,7 +14,6 @@ import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.world.World;
-import com.mygame.world.WorldManager;
 
 
 // Player entity controlled by user
@@ -116,6 +115,7 @@ public class Player extends Entity {
      * It checks the four corners of the player's bounding box.
      */
     private boolean isCollidingWithMap(float newX, float newY) {
+        if (world == null) return false;
         // Check bottom-left corner
         if (world.isSolid(newX, newY)) return true;
         // Check bottom-right corner
@@ -130,8 +130,9 @@ public class Player extends Entity {
      * Checks if the player at a new position would collide with any solid items.
      */
     private boolean isCollidingWithSolidItems(float newX, float newY) {
+        if (world == null) return false;
         Rectangle playerRect = new Rectangle(newX, newY, getWidth(), getHeight());
-        for (Item item : WorldManager.getCurrentWorld().getItems()) {
+        for (Item item : world.getItems()) {
             if (item.isSolid()) {
                 Rectangle itemRect = new Rectangle(item.getX(), item.getY(), item.getWidth(), item.getHeight());
                 if (playerRect.overlaps(itemRect)) {

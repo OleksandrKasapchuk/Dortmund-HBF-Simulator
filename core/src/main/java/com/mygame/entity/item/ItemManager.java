@@ -25,9 +25,11 @@ public class ItemManager {
 
     private final ItemRegistry itemRegistry;
     private final Map<String, Item> namedItems = new HashMap<>();
+    private WorldManager worldManager;
 
-    public ItemManager(ItemRegistry itemRegistry) {
+    public ItemManager(ItemRegistry itemRegistry, WorldManager worldManager) {
         this.itemRegistry = itemRegistry;
+        this.worldManager = worldManager;
 
         // Підписка на подію обшуку предмета
         EventBus.subscribe(Events.ItemSearchedEvent.class, event -> {
@@ -35,10 +37,10 @@ public class ItemManager {
                 ItemDefinition reward = itemRegistry.get(event.itemKey());
                 if (reward != null) {
                     event.player().getInventory().addItem(reward, event.amount());
-                    EventBus.fire(new Events.MessageEvent(event.amount() + " " + Assets.ui.format("ui.found", Assets.items.get(reward.getNameKey()) ), 2));
+                    EventBus.fire(new Events.MessageEvent(event.amount() + " " + Assets.ui.format("ui.found", Assets.items.get(reward.getNameKey()))));
                 }
             } else {
-                EventBus.fire(new Events.MessageEvent(Assets.ui.get("ui.not_found") , 2f));
+                EventBus.fire(new Events.MessageEvent(Assets.ui.get("ui.not_found")));
             }
         });
         EventBus.subscribe(Events.ItemInteractionEvent.class,event -> event.item().interact(event.player()));
@@ -115,7 +117,7 @@ public class ItemManager {
 
     // --- Update items: handle pickups by the player and cooldowns ---
     public void update(float delta, Player player) {
-        World currentWorld = WorldManager.getCurrentWorld();
+        World currentWorld = worldManager.getCurrentWorld();
         if (currentWorld == null) return;
 
         for (Iterator<Item> it = currentWorld.getItems().iterator(); it.hasNext(); ) {

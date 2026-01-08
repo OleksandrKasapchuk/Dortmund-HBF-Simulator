@@ -8,7 +8,6 @@ import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.managers.TimerManager;
 import com.mygame.world.World;
-import com.mygame.world.WorldManager;
 import com.mygame.world.transition.Transition;
 
 public class PoliceChaseScenario implements Scenario {
@@ -31,7 +30,7 @@ public class PoliceChaseScenario implements Scenario {
             if (police != null) {
                 police.setX(settings.policeX);
                 police.setY(settings.policeY);
-                World world = WorldManager.getWorld(settings.policeWorldName);
+                World world = ctx.worldManager.getWorld(settings.policeWorldName);
                 if (world != null) {
                     ctx.npcManager.moveSummonedPoliceToNewWorld(world);
                 }
@@ -69,7 +68,7 @@ public class PoliceChaseScenario implements Scenario {
         Transition policeTransition = police.update(ctx.player);
         if (policeTransition != null) {
             TimerManager.setAction(() -> {
-                World newWorld = WorldManager.getWorld(policeTransition.targetWorldId);
+                World newWorld = ctx.worldManager.getWorld(policeTransition.targetWorldId);
                 if (newWorld != null) {
                     ctx.npcManager.moveSummonedPoliceToNewWorld(newWorld);
                     police.setX(policeTransition.targetX);

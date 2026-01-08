@@ -27,9 +27,6 @@ public class TouchControlsUI {
     private Texture knobTexture;
     private Texture bgTexture;
 
-    // Залишаємо лише для ACT, бо вона перевіряється в циклі update через UIManager.isInteractPressed()
-    private boolean actButtonJustPressed = false;
-
     public TouchControlsUI(Skin skin, Stage gameStage, Stage pauseStage, Stage settingsStage, Stage mapStage, Player player) {
 
         createJoystickTextures();
@@ -51,10 +48,8 @@ public class TouchControlsUI {
 
         Map<String, InputListener> actionListeners = new HashMap<>();
 
-        // ACT залишаємо як прапорець для коректної роботи взаємодії
-        actionListeners.put("ACT", createListener(() -> actButtonJustPressed = true));
-
-        // Інші кнопки тепер відправляють івенти прямо в ActionRegistry
+        // Всі кнопки тепер відправляють івенти
+        actionListeners.put("ACT", createListener(() -> EventBus.fire(new Events.InteractEvent())));
         actionListeners.put("INVENTORY", createListener(() -> EventBus.fire(new Events.ActionRequestEvent("ui.inventory.toggle"))));
         actionListeners.put("QUESTS", createListener(() -> EventBus.fire(new Events.ActionRequestEvent("ui.quests.toggle"))));
         actionListeners.put("TOGGLE_PAUSE", createListener(() -> EventBus.fire(new Events.ActionRequestEvent("system.pause"))));
@@ -86,12 +81,6 @@ public class TouchControlsUI {
                 return true;
             }
         };
-    }
-
-    public boolean isActButtonJustPressed() { return actButtonJustPressed; }
-
-    public void resetButtons() {
-        actButtonJustPressed = false;
     }
 
     public void dispose() {

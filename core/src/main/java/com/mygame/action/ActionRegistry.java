@@ -17,8 +17,6 @@ import com.mygame.game.GameContext;
 import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.managers.TimerManager;
-import com.mygame.world.WorldManager;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,7 +54,7 @@ public class ActionRegistry {
             data.getString("from"), data.getString("to"),
             data.getInt("fromAmount"), data.getInt("toAmount")).execute());
 
-        creators.put("quest.add", (ctx, data) -> () -> ctx.questManager.startQuest(data.getString("id")));
+        creators.put("quest.start", (ctx, data) -> () -> ctx.questManager.startQuest(data.getString("id")));
 
         creators.put("quest.complete", (ctx, data) -> () -> ctx.questManager.completeQuest(data.getString("id")));
 
@@ -155,7 +153,7 @@ public class ActionRegistry {
         });
 
         creators.put("ui.notEnoughMessage", (ctx, data) -> () -> EventBus.fire(new Events.NotEnoughMessageEvent(ctx.itemRegistry.get(data.getString("item")))));
-        creators.put("ui.message", (ctx, data) -> () -> ctx.ui.getGameScreen().showInfoMessage(Assets.messages.get(data.getString("key")), data.getFloat("duration", 2f)));
+        creators.put("ui.message", (ctx, data) -> () -> EventBus.fire(new Events.MessageEvent(Assets.messages.get(data.getString("key")))));
 
         creators.put("player.setState", (ctx, data) -> () -> {
             String stateName = data.getString("key").toUpperCase();
@@ -179,7 +177,7 @@ public class ActionRegistry {
         creators.put("npc.spawnNearPlayer", (ctx, data) -> () -> {
             NPC npc = ctx.npcManager.findNpcById(data.getString("npc"));
             if (npc != null) {
-                WorldManager.getCurrentWorld().getNpcs().add(npc);
+                ctx.worldManager.getCurrentWorld().getNpcs().add(npc);
                 npc.setX(ctx.player.getX() + data.getFloat("offsetX", 0f));
                 npc.setY(ctx.player.getY() + data.getFloat("offsetY", 0f));
             }

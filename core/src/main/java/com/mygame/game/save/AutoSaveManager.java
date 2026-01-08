@@ -10,7 +10,6 @@ import com.mygame.events.Events;
 import com.mygame.game.GameContext;
 import com.mygame.game.GameInitializer;
 import com.mygame.quest.QuestManager;
-import com.mygame.world.WorldManager;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -81,8 +80,8 @@ public class AutoSaveManager {
             settings.playerState = ctx.player.getState();
             settings.playerX = ctx.player.getX();
             settings.playerY = ctx.player.getY();
-            if (WorldManager.getCurrentWorld() != null) {
-                settings.currentWorldName = WorldManager.getCurrentWorld().getName();
+            if (ctx.worldManager.getCurrentWorld() != null) {
+                settings.currentWorldName = ctx.worldManager.getCurrentWorld().getName();
             }
 
             settings.inventory = ctx.player.getInventory().getItems().entrySet().stream()
@@ -99,13 +98,13 @@ public class AutoSaveManager {
                 settings.visited = new HashSet<>(ctx.questProgressTriggers.getVisited());
             }
 
-            settings.searchedItems = WorldManager.getWorlds().values().stream()
+            settings.searchedItems = ctx.worldManager.getWorlds().values().stream()
                 .flatMap(world -> world.getItems().stream())
                 .filter(Item::isSearched)
                 .map(Item::getUniqueId)
                 .collect(Collectors.toSet());
 
-            settings.npcStates = WorldManager.getWorlds().values().stream()
+            settings.npcStates = ctx.worldManager.getWorlds().values().stream()
                 .flatMap(world -> world.getNpcs().stream())
                 .collect(Collectors.toMap(
                     NPC::getId,

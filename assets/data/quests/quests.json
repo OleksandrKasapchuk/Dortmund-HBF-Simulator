@@ -1,6 +1,6 @@
 [
   {
-    "key": "jan",
+    "key": "jan_firework",
     "progressable": true,
     "maxProgress": 2,
     "onComplete": "jan_complete"

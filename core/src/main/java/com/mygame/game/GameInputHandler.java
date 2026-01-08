@@ -3,8 +3,9 @@ package com.mygame.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
 import com.mygame.ui.UIManager;
-import com.mygame.ui.inGameUI.TouchControlsUI;
 
 public class GameInputHandler {
     private final GameStateManager gsm;
@@ -17,9 +18,10 @@ public class GameInputHandler {
 
     /**Handles key input for global game actions (pause, settings, start game).*/
     public void update() {
-        TouchControlsUI touchControlsUI = uiManager.getTouchControlsUI();
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.P) || (gsm.getState() == GameStateManager.GameState.PAUSED && Gdx.input.isKeyJustPressed(Input.Keys.ENTER)))
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            EventBus.fire(new Events.InteractEvent());
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || (gsm.getState() == GameStateManager.GameState.PAUSED && Gdx.input.isKeyJustPressed(Input.Keys.ENTER)))
             gsm.togglePause();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && gsm.getState() == GameStateManager.GameState.MENU)
@@ -33,6 +35,5 @@ public class GameInputHandler {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.M))
             gsm.toggleMap();
-        uiManager.resetButtons();
     }
 }

@@ -9,8 +9,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygame.assets.Assets;
 import com.mygame.game.GameContext;
 import com.mygame.game.GameInitializer;
-import com.mygame.world.DarkOverlay;
-import com.mygame.world.WorldManager;
 import com.mygame.assets.audio.MusicManager;
 
 
@@ -18,7 +16,6 @@ public class Main extends ApplicationAdapter {
 
     private static GameInitializer gameInitializer;
     private ShapeRenderer shapeRenderer;
-    private DarkOverlay darkOverlay;
 
     @Override
     public void create() {
@@ -26,7 +23,6 @@ public class Main extends ApplicationAdapter {
         gameInitializer = new GameInitializer();
         gameInitializer.initGame();               // Initialize all game objects
         shapeRenderer = new ShapeRenderer();
-        darkOverlay = new DarkOverlay();
     }
 
     public static void restartGame() {gameInitializer.initGame();}
@@ -59,12 +55,10 @@ public class Main extends ApplicationAdapter {
         GameContext ctx = gameInitializer.getContext();
         ctx.player.update(delta);
 
-        WorldManager.update(delta, ctx.player, ctx.ui.isInteractPressed(), darkOverlay);
-        darkOverlay.update(delta);
         OrthographicCamera camera = gameInitializer.getManagerRegistry().getCameraManager().getCamera();
 
         // 1. Render the TMX map layer
-        WorldManager.renderMap(camera);
+        ctx.worldManager.renderMap(camera);
 
         // 2. Draw sprites (entities) on top
         SpriteBatch batch = gameInitializer.getBatch();
@@ -73,7 +67,7 @@ public class Main extends ApplicationAdapter {
         gameInitializer.getManagerRegistry().update(delta);
 
         batch.begin();
-        WorldManager.drawEntities(batch, Assets.myFont, ctx.player);
+        ctx.worldManager.drawEntities(batch, Assets.myFont);
         ctx.ui.renderWorldElements();
         ctx.player.draw(batch);
         batch.end();
@@ -82,13 +76,13 @@ public class Main extends ApplicationAdapter {
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
-        WorldManager.getCurrentWorld().drawTransitions(shapeRenderer);
+        ctx.worldManager.getCurrentWorld().drawTransitions(shapeRenderer);
 
         shapeRenderer.end();
 
         // 4. Draw UI
         ctx.ui.render();
-        darkOverlay.render();
+        ctx.darkOverlay.render();
     }
 
     @Override
@@ -99,7 +93,6 @@ public class Main extends ApplicationAdapter {
         Assets.dispose();
         if (gameInitializer != null) gameInitializer.dispose();
         if (shapeRenderer != null) shapeRenderer.dispose();
-        WorldManager.disposeWorlds();
         MusicManager.stopAll();
     }
 

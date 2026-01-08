@@ -10,7 +10,6 @@ import com.mygame.quest.QuestManager;
 import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.ui.load.SkinLoader;
-import com.mygame.world.WorldManager;
 import com.mygame.assets.audio.MusicManager;
 import com.mygame.world.World;
 
@@ -29,11 +28,9 @@ public class GameInitializer {
         if (batch != null) batch.dispose();
         MusicManager.stopAll();
 
-        // Очищаємо старі світи перед ініціалізацією нових
-        WorldManager.disposeWorlds();
-        WorldManager.init();
 
         batch = new SpriteBatch();
+
         skin = SkinLoader.loadSkin();
 
         GameSettings settings = SettingsManager.load();
@@ -43,7 +40,7 @@ public class GameInitializer {
         managerRegistry = new ManagerRegistry(batch, player, skin);
         GameContext ctx = managerRegistry.getContext();
 
-        for (World world : WorldManager.getWorlds().values()) {
+        for (World world : ctx.worldManager.getWorlds().values()) {
             ctx.npcManager.loadNpcsFromMap(world);
             ctx.itemManager.loadItemsFromMap(world);
             ctx.transitionManager.loadTransitionsFromMap(world);
@@ -52,9 +49,9 @@ public class GameInitializer {
         player.getInventory().init(ctx.itemRegistry);
 
         // Встановлюємо світ
-        World startWorld = WorldManager.getWorld(settings.currentWorldName != null ? settings.currentWorldName : "main");
+        World startWorld = ctx.worldManager.getWorld(settings.currentWorldName != null ? settings.currentWorldName : "main");
         player.setWorld(startWorld);
-        WorldManager.setCurrentWorld(startWorld);
+        ctx.worldManager.setCurrentWorld(startWorld);
 
         // Load inventory data
         if (settings.inventory != null)
