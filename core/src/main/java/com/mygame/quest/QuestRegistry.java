@@ -8,10 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class QuestRegistry {
-    private static final Map<String, QuestDefinition> quests = new HashMap<>();
+    private final Map<String, QuestDefinition> quests = new HashMap<>();
 
-    public static void init() {
-        quests.clear();
+    public QuestRegistry() {
         JsonReader reader = new JsonReader();
         JsonValue questsArray = reader.parse(Gdx.files.internal("data/quests/quests.json"));
 
@@ -25,15 +24,15 @@ public class QuestRegistry {
         }
     }
 
-    private static void register(QuestDefinition definition) {
+    private void register(QuestDefinition definition) {
         quests.put(definition.key(), definition);
     }
 
-    public static QuestDefinition get(String key) {
+    public QuestDefinition get(String key) {
         return quests.get(key);
     }
 
-    public static Collection<QuestDefinition> getDefinitions() {
+    public Collection<QuestDefinition> getDefinitions() {
         return quests.values();
     }
 

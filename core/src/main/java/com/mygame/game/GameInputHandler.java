@@ -3,8 +3,9 @@ package com.mygame.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
 import com.mygame.ui.UIManager;
-import com.mygame.ui.inGameUI.TouchControlsUI;
 
 public class GameInputHandler {
     private final GameStateManager gsm;
@@ -16,25 +17,23 @@ public class GameInputHandler {
     }
 
     /**Handles key input for global game actions (pause, settings, start game).*/
-    public void handleInput() {
-        TouchControlsUI touchControlsUI = uiManager.getTouchControlsUI();
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.P) || (touchControlsUI != null && touchControlsUI.isPauseButtonJustPressed()))
+    public void update() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            EventBus.fire(new Events.InteractEvent());
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || (gsm.getState() == GameStateManager.GameState.PAUSED && Gdx.input.isKeyJustPressed(Input.Keys.ENTER)))
             gsm.togglePause();
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || (touchControlsUI != null && touchControlsUI.isSettingsButtonJustPressed()))
-            gsm.toggleSettings();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && gsm.getState() == GameStateManager.GameState.MENU)
             gsm.startGame();
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.TAB) || (touchControlsUI != null && touchControlsUI.isInvButtonJustPressed()))
+        if (Gdx.input.isKeyJustPressed(Input.Keys.TAB))
             uiManager.toggleInventoryTable();
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Q) || (touchControlsUI != null && touchControlsUI.isQuestButtonJustPressed()))
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Q))
             uiManager.toggleQuestTable();
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.M) || (touchControlsUI != null && touchControlsUI.isMapButtonJustPressed()))
+        if (Gdx.input.isKeyJustPressed(Input.Keys.M))
             gsm.toggleMap();
     }
 }

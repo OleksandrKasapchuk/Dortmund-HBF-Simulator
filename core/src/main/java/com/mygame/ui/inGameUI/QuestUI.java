@@ -16,6 +16,7 @@ import com.mygame.events.Events;
 import com.mygame.quest.QuestManager;
 
 import java.util.List;
+
 /**
  * QuestUI displays the player's active and completed quests in a table overlay.
  * It has tabs to switch between active and completed quests.
@@ -24,17 +25,19 @@ public class QuestUI {
 
     private final Table questTable;
     private final Skin skin;
+    private final QuestManager questManager;
     private boolean visible = false;
     private final Texture bgTexture;
     private boolean showCompleted = false;
 
-    public QuestUI(Skin skin, Stage stage, float width, float height) {
+    public QuestUI(Skin skin, Stage stage, float width, float height, QuestManager questManager) {
         this.skin = skin;
+        this.questManager = questManager;
 
         questTable = new Table();
         questTable.setSize(width, height);
         questTable.setPosition(stage.getViewport().getWorldWidth() / 2f - width / 2,
-            stage.getViewport().getWorldHeight() / 2f - height / 2);
+                stage.getViewport().getWorldHeight() / 2f - height / 2);
         questTable.align(Align.top).pad(20);
 
         // Semi-transparent background
@@ -57,13 +60,26 @@ public class QuestUI {
     public void update() {
         questTable.clear();
 
-        // --- Title ---
+        buildTitle();
+        buildTabs();
+
+        List<QuestManager.Quest> quests = showCompleted ? questManager.getCompletedQuests() : questManager.getActiveQuests();
+
+        if (quests.isEmpty()) {
+            showEmpty();
+        } else {
+            buildQuestList(quests);
+        }
+    }
+
+    private void buildTitle() {
         Label title = new Label(Assets.ui.get("ui.quest.title"), skin);
         title.setFontScale(2.5f);
         title.setColor(Color.GOLD);
         questTable.add(title).padBottom(20).colspan(2).center().row();
+    }
 
-        // --- Tabs ---
+    private void buildTabs() {
         Table tabsTable = new Table();
         TextButton activeBtn = new TextButton(Assets.ui.get("ui.quest.active"), skin);
         TextButton completedBtn = new TextButton(Assets.ui.get("ui.quest.completed"), skin);
@@ -76,9 +92,6 @@ public class QuestUI {
             activeBtn.setColor(Color.LIGHT_GRAY);
             completedBtn.setColor(Color.YELLOW);
         }
-
-        // Logic for filtering quests
-        List<QuestManager.Quest> quests = showCompleted ? QuestManager.getCompletedQuests() : QuestManager.getActiveQuests();
 
         activeBtn.addListener(new ClickListener() {
             @Override
@@ -99,39 +112,47 @@ public class QuestUI {
         tabsTable.add(activeBtn).pad(10).width(200).height(50);
         tabsTable.add(completedBtn).pad(10).width(200).height(50);
         questTable.add(tabsTable).padBottom(20).colspan(2).row();
+    }
 
+    private void buildQuestList(List<QuestManager.Quest> quests) {
+        Table listTable = new Table();
+        listTable.align(Align.topLeft);
 
-        if (quests.isEmpty()) {
-            String emptyMsg = showCompleted ? Assets.ui.get("ui.quest.completed.empty") : Assets.ui.get("ui.quest.empty");
-            Label noQuest = new Label(emptyMsg, skin);
-            noQuest.setFontScale(1.2f);
-            questTable.add(noQuest).expand().center().colspan(2);
-        } else {
-            Table listTable = new Table();
-            listTable.align(Align.topLeft);
-
-            for (QuestManager.Quest quest : quests) {
-                Label nameLabel = new Label(Assets.quests.get("quest." + quest.key() + ".name"), skin);
-                nameLabel.setFontScale(1.8f);
-                nameLabel.setColor(quest.isCompleted() ? Color.GREEN : Color.CYAN);
-                listTable.add(nameLabel).left().padLeft(10).row();
-
-                String description;
-                if (quest.progressable()) {
-                    description = Assets.quests.format("quest." + quest.key() + ".description", quest.progress(), quest.maxProgress());
-                } else {
-                    description = Assets.quests.get("quest." + quest.key() + ".description");
-                }
-                Label descLabel = new Label(" - " + description, skin);
-                descLabel.setFontScale(1.1f);
-                descLabel.setWrap(true);
-                listTable.add(descLabel).left().width(questTable.getWidth() - 60).padLeft(25).padBottom(20).row();
-            }
-
-            ScrollPane scroll = new ScrollPane(listTable, skin);
-            scroll.setScrollingDisabled(true, false);
-            questTable.add(scroll).expand().fill().colspan(2);
+        for (QuestManager.Quest quest : quests) {
+            addQuestEntry(listTable, quest);
         }
+
+        ScrollPane scroll = new ScrollPane(listTable, skin);
+        scroll.setScrollingDisabled(true, false);
+        questTable.add(scroll).expand().fill().colspan(2);
+    }
+
+    private void addQuestEntry(Table listTable, QuestManager.Quest quest) {
+        Label nameLabel = new Label(Assets.quests.get("quest." + quest.key() + ".name"), skin);
+        nameLabel.setFontScale(1.8f);
+        nameLabel.setColor(quest.isCompleted() ? Color.GREEN : Color.CYAN);
+        listTable.add(nameLabel).left().padLeft(10).row();
+
+        String description = getQuestDescription(quest);
+        Label descLabel = new Label(" - " + description, skin);
+        descLabel.setFontScale(1.1f);
+        descLabel.setWrap(true);
+        listTable.add(descLabel).left().width(questTable.getWidth() - 60).padLeft(25).padBottom(20).row();
+    }
+
+    private String getQuestDescription(QuestManager.Quest quest) {
+        if (quest.progressable()) {
+            return Assets.quests.format("quest." + quest.key() + ".description", quest.progress(), quest.maxProgress());
+        } else {
+            return Assets.quests.get("quest." + quest.key() + ".description");
+        }
+    }
+
+    private void showEmpty() {
+        String emptyMsg = showCompleted ? Assets.ui.get("ui.quest.completed.empty") : Assets.ui.get("ui.quest.empty");
+        Label noQuest = new Label(emptyMsg, skin);
+        noQuest.setFontScale(1.2f);
+        questTable.add(noQuest).expand().center().colspan(2);
     }
 
     public void toggle() {
@@ -140,7 +161,11 @@ public class QuestUI {
         if (visible) update();
     }
 
-    public boolean isVisible() { return visible; }
+    public boolean isVisible() {
+        return visible;
+    }
 
-    public void dispose() { bgTexture.dispose(); }
+    public void dispose() {
+        bgTexture.dispose();
+    }
 }

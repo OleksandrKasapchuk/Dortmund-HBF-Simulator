@@ -1,26 +1,34 @@
 package com.mygame.ui.screenUI;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.mygame.assets.Assets;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
 
 /**
- * PauseUI displays the pause screen.
- * It shows a "Game Paused" message and a prompt to resume the game.
+ * Адаптивний екран паузи.
  */
 public class PauseScreen extends Screen {
-    /**
-     * Constructor sets up the pause UI elements.
-     *
-     * @param skin Skin used for the labels
-     */
-    public PauseScreen(Skin skin) {
-        // "GAME PAUSED" label
-        createLabel(skin, Assets.ui.get("pause.title"), 2.5f,750, 600);
 
-        // Instruction label to resume game
-        if (Gdx.app.getType() != Application.ApplicationType.Android)
-            createLabel(skin, Assets.ui.get("pause.resume"), 1.5f,775, 500);
+    public PauseScreen(Skin skin) {
+        super(); // Ініціалізує root table
+
+        // Заголовок
+        Label title = createLabel(skin, Assets.ui.get("pause.title"), 3f);
+        root.add(title).padBottom(100).row();
+
+        // Основне меню кнопок
+        Table menu = new Table();
+
+        TextButton resumeBtn = createButton(skin, Assets.ui.get("button.resume.text"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("system.pause")));
+        TextButton settingsBtn = createButton(skin, Assets.ui.get("settings.title"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("system.settings")));
+
+        TextButton menuBtn = createButton(skin, Assets.ui.get("button.exit.text"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("system.menu")));
+
+        menu.add(resumeBtn).width(500).height(100).padBottom(30).row();
+        menu.add(settingsBtn).width(500).height(100).padBottom(30).row();
+        menu.add(menuBtn).width(500).height(100).row();
+
+        root.add(menu).center().row();
     }
 }

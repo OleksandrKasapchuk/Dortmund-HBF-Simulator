@@ -18,12 +18,15 @@ public class MapScreen extends Screen {
     private final Skin skin;
     private final Map<String, Label> worldLabels = new HashMap<>();
     private final Map<String, com.badlogic.gdx.math.Vector2> worldPositions = new HashMap<>();
+    private WorldManager worldManager;
 
-    public MapScreen(Skin skin) {
+    public MapScreen(Skin skin, WorldManager worldManager) {
         this.skin = skin;
         this.shapeRenderer = new ShapeRenderer();
         this.layout = new Table();
         this.layout.setFillParent(true);
+        this.worldManager = worldManager;
+
         getStage().addActor(this.layout);
 
         setupMap();
@@ -39,7 +42,7 @@ public class MapScreen extends Screen {
 
         // Create labels for each world
         for (Map.Entry<String, com.badlogic.gdx.math.Vector2> entry : worldPositions.entrySet()) {
-            World world = WorldManager.getWorld(entry.getKey());
+            World world = worldManager.getWorld(entry.getKey());
             if (world != null) {
                 String worldName = world.getName();
                 Label.LabelStyle style = new Label.LabelStyle(skin.get(Label.LabelStyle.class));
@@ -53,7 +56,7 @@ public class MapScreen extends Screen {
 
     public void update() {
         // Highlight the current world
-        World currentWorld = WorldManager.getCurrentWorld();
+        World currentWorld = worldManager.getCurrentWorld();
         if (currentWorld != null) {
             String currentWorldName = currentWorld.getName();
             for (Map.Entry<String, Label> entry : worldLabels.entrySet()) {

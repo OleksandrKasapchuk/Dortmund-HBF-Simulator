@@ -17,20 +17,27 @@ public class PfandManager {
     private final Random random = new Random();
     private float spawnTimer = 0f; // Timer to track spawn intervals
 
-    private static final float SPAWN_INTERVAL = 7f; // Time between spawn attempts in seconds
-    private static final int MAX_PFANDS = 15;       // Maximum number of pfand items at a time
+    private final float SPAWN_INTERVAL = 7f; // Time between spawn attempts in seconds
+    private final int MAX_PFANDS = 15;       // Maximum number of pfand items at a time
+    private ItemRegistry itemRegistry;
+    private WorldManager worldManager;
 
     /**
      * Updates pfand items each frame.
      * - Handles spawning new items.
      * - Checks for player pickups.
      */
+    public PfandManager(ItemRegistry itemRegistry, WorldManager worldManager){
+        this.itemRegistry = itemRegistry;
+        this.worldManager = worldManager;
+    }
+
     public void update(float delta) {
         spawnTimer += delta;
 
         // Spawn a new pfand if interval passed and under max limit
-        if (spawnTimer >= SPAWN_INTERVAL && WorldManager.getCurrentWorld().getPfands().size() < MAX_PFANDS) {
-            spawnRandomPfand(WorldManager.getCurrentWorld());
+        if (spawnTimer >= SPAWN_INTERVAL && worldManager.getCurrentWorld().getPfands().size() < MAX_PFANDS) {
+            spawnRandomPfand(worldManager.getCurrentWorld());
             spawnTimer = 0f;
         }
     }
@@ -62,9 +69,9 @@ public class PfandManager {
             if (isTooCloseToOtherPfands(x, y)) continue;
 
             // Add new pfand to the world
-            Item pfand = new Item(ItemRegistry.get("pfand"), itemWidth, itemHeight, x, y, 75, Assets.getTexture("pfand"), WorldManager.getCurrentWorld(), true, false, false, null, null, 0, null);
-            WorldManager.getCurrentWorld().getItems().add(pfand);
-            WorldManager.getCurrentWorld().getPfands().add(pfand);
+            Item pfand = new Item(itemRegistry.get("pfand"), itemWidth, itemHeight, x, y, 75, Assets.getTexture("pfand"), worldManager.getCurrentWorld(), true, false, false, null, null, 0, null);
+            worldManager.getCurrentWorld().getItems().add(pfand);
+            worldManager.getCurrentWorld().getPfands().add(pfand);
             break;
         }
     }
@@ -83,7 +90,7 @@ public class PfandManager {
 
     /** Checks if a position is too close to existing pfand items */
     private boolean isTooCloseToOtherPfands(float x, float y) {
-        for (Item p : WorldManager.getCurrentWorld().getPfands()) {
+        for (Item p : worldManager.getCurrentWorld().getPfands()) {
             float dx = p.getX() - x;
             float dy = p.getY() - y;
             if (Math.sqrt(dx * dx + dy * dy) < 150f) // Minimum distance between pfands

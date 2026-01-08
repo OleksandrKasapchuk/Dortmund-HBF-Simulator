@@ -1,6 +1,5 @@
 package com.mygame.quest;
 
-import com.mygame.action.ActionRegistry;
 import com.mygame.entity.item.ItemDefinition;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.events.EventBus;
@@ -15,16 +14,21 @@ import java.util.Set;
  */
 public class QuestProgressTriggers {
 
-    private  final String QUEST_FIREWORKS = "jan";
-    private  final String QUEST_VISIT_LOCATIONS = "jason1";
-    private  final String QUEST_TALK_NPCS = "jason2";
-    private  final String ITEM_FIREWORK = "firework";
+    private final String QUEST_FIREWORKS = "jan";
+    private final String QUEST_VISIT_LOCATIONS = "jason1";
+    private final String QUEST_TALK_NPCS = "jason2";
+    private final String ITEM_FIREWORK = "firework";
 
+    private final QuestManager questManager;
+    private final ItemRegistry itemRegistry;
     private Set<String> talkedNpcs;
     private Set<String> visited;
     private int lastFireworkCount = 0;
 
-    public QuestProgressTriggers() {
+    public QuestProgressTriggers(QuestManager questManager, ItemRegistry itemRegistry) {
+        this.questManager = questManager;
+        this.itemRegistry = itemRegistry;
+
         // Прогрес квестів
         GameSettings settings = SettingsManager.load();
         talkedNpcs = settings.talkedNpcs;
@@ -36,16 +40,15 @@ public class QuestProgressTriggers {
 
         // --- ОБРОБКА ЗАВЕРШЕННЯ КВЕСТУ ---
         EventBus.subscribe(Events.QuestCompletedEvent.class, event -> {
-            QuestManager.Quest quest = QuestManager.getQuest(event.questId());
+            QuestManager.Quest quest = questManager.getQuest(event.questId());
             if (quest != null && quest.getOnComplete() != null) {
-                // Виконуємо дію, назва якої вказана в JSON квесту
-                ActionRegistry.executeAction(quest.getOnComplete());
+                EventBus.fire(new Events.ActionRequestEvent(quest.getOnComplete()));
             }
         });
     }
 
     private void handleInventoryQuest(ItemDefinition item, int newAmount) {
-        if (item == ItemRegistry.get(ITEM_FIREWORK)) {
+        if (item == itemRegistry.get(ITEM_FIREWORK)) {
             if (newAmount > lastFireworkCount) {
                 progress(QUEST_FIREWORKS);
             }
@@ -66,7 +69,7 @@ public class QuestProgressTriggers {
     }
 
     private void progress(String questKey) {
-        QuestManager.Quest quest = QuestManager.getQuest(questKey);
+        QuestManager.Quest quest = questManager.getQuest(questKey);
         if (quest != null && quest.getStatus() == QuestManager.Status.ACTIVE) {
             quest.makeProgress();
         }

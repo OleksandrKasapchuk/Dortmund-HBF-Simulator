@@ -51,36 +51,43 @@ public class GameStateManager {
         SettingsManager.save(settings);
     }
 
+    public void exitToMenu() {
+        if (state != GameState.MENU) {
+            state = GameState.MENU;
+            MusicManager.playMusic(Assets.getMusic("start"));
+            uiManager.setCurrentStage("MENU");
+        }
+    }
     // --- Toggle pause state ---
     public void togglePause() {
-        if (state == GameState.PLAYING) {
-            state = GameState.PAUSED;          // Pause the game
-            MusicManager.pauseMusic();          // Pause music
-            uiManager.setCurrentStage("PAUSE"); // Show pause UI
-        } else if (state == GameState.PAUSED) {
+        if (state == GameState.PAUSED) {
             state = GameState.PLAYING;          // Resume the game
             MusicManager.resumeMusic();         // Resume music
             uiManager.setCurrentStage("GAME");  // Show game UI
+        } else {
+            state = GameState.PAUSED;          // Pause the game
+            MusicManager.pauseMusic();          // Pause music
+            uiManager.setCurrentStage("PAUSE"); // Show pause UI
         }
     }
     public void toggleMap() {
-        if (state == GameState.PLAYING) {
-            state = GameState.MAP;
-            uiManager.setCurrentStage("MAP");
-        } else if (state == GameState.MAP) {
+        if (state == GameState.MAP) {
             state = GameState.PLAYING;
             uiManager.setCurrentStage("GAME");
+        } else {
+            state = GameState.MAP;
+            uiManager.setCurrentStage("MAP");
         }
     }
 
     // --- Toggle settings menu ---
     public void toggleSettings() {
-        if (state == GameState.PLAYING) {
+        if (state == GameState.SETTINGS) {
+            state = GameState.PAUSED;           // Close settings menu and return to pause
+            uiManager.setCurrentStage("PAUSE"); // Виправлено з "PAUSED" на "PAUSE"
+        } else {
             state = GameState.SETTINGS;           // Open settings menu
             uiManager.setCurrentStage("SETTINGS");
-        } else if (state == GameState.SETTINGS) {
-            state = GameState.PLAYING;           // Close settings menu and return to game
-            uiManager.setCurrentStage("GAME");
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.mygame.scenario;
 
-import com.mygame.action.ActionRegistry;
 import com.mygame.entity.npc.Police;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
@@ -9,7 +8,6 @@ import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.managers.TimerManager;
 import com.mygame.world.World;
-import com.mygame.world.WorldManager;
 import com.mygame.world.transition.Transition;
 
 public class PoliceChaseScenario implements Scenario {
@@ -27,17 +25,17 @@ public class PoliceChaseScenario implements Scenario {
         // Відновлення погоні зі збереження
         if (settings.policeChaseActive) {
             completed = true;
-            ActionRegistry.executeAction("npc.callPolice");
+            EventBus.fire(new Events.ActionRequestEvent("npc.callPolice"));
             Police police = ctx.npcManager.getSummonedPolice();
             if (police != null) {
                 police.setX(settings.policeX);
                 police.setY(settings.policeY);
-                World world = WorldManager.getWorld(settings.policeWorldName);
+                World world = ctx.worldManager.getWorld(settings.policeWorldName);
                 if (world != null) {
                     ctx.npcManager.moveSummonedPoliceToNewWorld(world);
                 }
-                ActionRegistry.executeAction("quest.chase.start");
-                ActionRegistry.executeAction("quest.chase.restore_ui");
+                EventBus.fire(new Events.ActionRequestEvent("quest.chase.start"));
+                EventBus.fire(new Events.ActionRequestEvent("quest.chase.restore_ui"));
             }
         }
 
@@ -51,8 +49,8 @@ public class PoliceChaseScenario implements Scenario {
             if (!completed) return;
 
             switch (event.newState()) {
-                case CAUGHT -> ActionRegistry.executeAction("npc.summoned_police.force_dialogue");
-                case ESCAPED -> ActionRegistry.executeAction("quest.chase.complete");
+                case CAUGHT -> EventBus.fire(new Events.ActionRequestEvent("npc.summoned_police.force_dialogue"));
+                case ESCAPED -> EventBus.fire(new Events.ActionRequestEvent("quest.chase.complete"));
             }
         });
     }
@@ -70,7 +68,7 @@ public class PoliceChaseScenario implements Scenario {
         Transition policeTransition = police.update(ctx.player);
         if (policeTransition != null) {
             TimerManager.setAction(() -> {
-                World newWorld = WorldManager.getWorld(policeTransition.targetWorldId);
+                World newWorld = ctx.worldManager.getWorld(policeTransition.targetWorldId);
                 if (newWorld != null) {
                     ctx.npcManager.moveSummonedPoliceToNewWorld(newWorld);
                     police.setX(policeTransition.targetX);

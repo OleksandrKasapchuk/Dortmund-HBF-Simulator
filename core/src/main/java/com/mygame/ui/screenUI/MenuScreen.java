@@ -1,44 +1,34 @@
 package com.mygame.ui.screenUI;
 
-
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.mygame.assets.Assets;
-import com.mygame.Main;
-import com.mygame.game.save.GameSettings;
-import com.mygame.game.save.SettingsManager;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
 
 /**
- * MenuUI displays the main menu screen.
- * It shows a background image and a "Press Enter to Start" prompt on non-Android platforms.
+ * Адаптивне головне меню.
  */
 public class MenuScreen extends Screen {
-    private Image backgroundImage; // Background image for the menu
-    /**
-     * Constructor sets up the menu UI elements.
-     * @param skin Skin for labels and UI elements
-     */
-    public MenuScreen(Skin skin){
-        Stage stage = getStage();
 
-        // Background image
-        backgroundImage = new Image(Assets.getTexture("menuBack"));
+    public MenuScreen(Skin skin) {
+        super();
+
+        // Фонове зображення
+        Image backgroundImage = new Image(Assets.getTexture("menuBack"));
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
+        backgroundImage.toBack();
 
-        TextButton startButton = createButton(skin, Assets.ui.get("button.start.text"), 1.5f, 300, 125, 200, 100, () ->
-            Main.getGameInitializer().getManagerRegistry().getGameStateManager().startGame());
-        stage.addActor(startButton);
+        // Таблиця для кнопок
+        Table menuTable = new Table();
 
-        TextButton newGameButton = createButton(skin, Assets.ui.get("button.newGame.text"), 1.5f, 300, 125, 200, 300, () -> {
-            GameSettings newSettings = new GameSettings();
-            newSettings.language = SettingsManager.load().language;
-            SettingsManager.save(newSettings);
-            Main.restartGame();
-            Main.getGameInitializer().getManagerRegistry().getGameStateManager().startGame();
-            });
-        stage.addActor(newGameButton);
+        TextButton startBtn = createButton(skin, Assets.ui.get("button.start.text"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("system.start")));
+        TextButton newGameBtn = createButton(skin, Assets.ui.get("button.newGame.text"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("system.newGame")));
+
+        menuTable.add(startBtn).width(500).height(120).padBottom(30).row();
+        menuTable.add(newGameBtn).width(500).height(120).row();
+
+        // Розміщуємо таблицю по центру екрану (або знизу, як вам подобається)
+        root.add(menuTable).expand().bottom().padBottom(100);
     }
 }

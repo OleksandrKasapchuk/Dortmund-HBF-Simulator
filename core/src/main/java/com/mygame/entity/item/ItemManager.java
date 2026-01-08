@@ -6,6 +6,8 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.mygame.assets.Assets;
 import com.mygame.entity.player.Player;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
 import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.world.World;
@@ -21,10 +23,28 @@ import java.util.Map;
  */
 public class ItemManager {
 
-    /**
-     * Store items by their unique name (from Tiled) or their itemKey.
-     */
+    private final ItemRegistry itemRegistry;
     private final Map<String, Item> namedItems = new HashMap<>();
+    private WorldManager worldManager;
+
+    public ItemManager(ItemRegistry itemRegistry, WorldManager worldManager) {
+        this.itemRegistry = itemRegistry;
+        this.worldManager = worldManager;
+
+        // Підписка на подію обшуку предмета
+        EventBus.subscribe(Events.ItemSearchedEvent.class, event -> {
+            if (event.itemKey() != null && !event.itemKey().isEmpty()) {
+                ItemDefinition reward = itemRegistry.get(event.itemKey());
+                if (reward != null) {
+                    event.player().getInventory().addItem(reward, event.amount());
+                    EventBus.fire(new Events.MessageEvent(event.amount() + " " + Assets.ui.format("ui.found", Assets.items.get(reward.getNameKey()))));
+                }
+            } else {
+                EventBus.fire(new Events.MessageEvent(Assets.ui.get("ui.not_found")));
+            }
+        });
+        EventBus.subscribe(Events.ItemInteractionEvent.class,event -> event.item().interact(event.player()));
+    }
 
     /**
      * Loads items from a specific world's Tiled map layer named "items".
@@ -45,7 +65,7 @@ public class ItemManager {
                 continue;
             }
 
-            ItemDefinition itemType = ItemRegistry.get(itemKey);
+            ItemDefinition itemType = itemRegistry.get(itemKey);
             if (itemType == null) {
                 System.err.println("Skipping item: ItemType with key '" + itemKey + "' not found in ItemRegistry.");
                 continue;
@@ -97,7 +117,7 @@ public class ItemManager {
 
     // --- Update items: handle pickups by the player and cooldowns ---
     public void update(float delta, Player player) {
-        World currentWorld = WorldManager.getCurrentWorld();
+        World currentWorld = worldManager.getCurrentWorld();
         if (currentWorld == null) return;
 
         for (Iterator<Item> it = currentWorld.getItems().iterator(); it.hasNext(); ) {

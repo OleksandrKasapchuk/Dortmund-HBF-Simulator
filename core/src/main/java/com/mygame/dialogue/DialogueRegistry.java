@@ -10,23 +10,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DialogueRegistry {
-    private static Map<String, JsonValue> npcDialogueData = new HashMap<>();
-    private static Map<String, DialogueNode> builtNodes = new HashMap<>();
+    private final Map<String, JsonValue> npcDialogueData = new HashMap<>();
+    private final Map<String, DialogueNode> builtNodes = new HashMap<>();
+    private ActionRegistry actionRegistry;
 
-    public static void init() {
+    public DialogueRegistry() {
         JsonReader jsonReader = new JsonReader();
         JsonValue base = jsonReader.parse(Gdx.files.internal("data/dialogues/dialogues.json"));
         for (JsonValue npcData : base) {
             npcDialogueData.put(npcData.name(), npcData);
         }
     }
-
-    public static void reset() {
-        npcDialogueData.clear();
-        builtNodes.clear();
+    public void init(ActionRegistry actionRegistry) {
+        this.actionRegistry = actionRegistry;
     }
 
-    public static DialogueNode getDialogue(String npcId, String nodeName) {
+
+    public DialogueNode getDialogue(String npcId, String nodeName) {
         String fullNodeId = npcId + "." + nodeName;
         if (builtNodes.containsKey(fullNodeId)) {
             return builtNodes.get(fullNodeId);
@@ -50,7 +50,6 @@ public class DialogueRegistry {
             return new DialogueNode("Error: Node '" + nodeName + "' not found.");
         }
 
-        // ПІДТРИМКА АЛІАСІВ: якщо нода — це рядок, рекурсивно шукаємо ту ноду, на яку він вказує
         if (nodeData.isString()) {
             return getDialogue(npcId, nodeData.asString());
         }
@@ -64,7 +63,7 @@ public class DialogueRegistry {
         if (nodeData.isObject()) {
             if (nodeData.has("onFinish")) {
                 String actionName = nodeData.getString("onFinish");
-                onFinish = ActionRegistry.getAction(actionName);
+                onFinish = actionRegistry.getAction(actionName);
             }
             textKeys = nodeData.get("texts").asStringArray();
             if (nodeData.has("isForced")) {
@@ -80,20 +79,20 @@ public class DialogueRegistry {
 
                     if (choiceData.isString()) {
                         choiceTextKey = choiceData.asString();
-                    } else { // isObject
+                    } else {
                         choiceTextKey = choiceData.getString("text");
                         if (choiceData.has("next")) {
                             nextNode = getDialogue(npcId, choiceData.getString("next"));
                         }
                         if (choiceData.has("action")) {
-                            choiceAction = ActionRegistry.getAction(choiceData.getString("action"));
+                            choiceAction = actionRegistry.getAction(choiceData.getString("action"));
                         }
                     }
                     String choiceText = Assets.dialogues.get(choiceTextKey);
                     node.addChoice(choiceText, nextNode, choiceAction);
                 }
             }
-        } else { // isArray
+        } else {
             textKeys = nodeData.asStringArray();
             node = new DialogueNode(null, false, textKeys);
         }
@@ -102,8 +101,7 @@ public class DialogueRegistry {
         return node;
     }
 
-    public static DialogueNode getInitialDialogue(String npcId) {
-        // Завжди починаємо з ноди "start", яка в JSON може бути аліасом
+    public DialogueNode getInitialDialogue(String npcId) {
         return getDialogue(npcId, "start");
     }
 }

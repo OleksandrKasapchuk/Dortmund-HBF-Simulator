@@ -25,6 +25,7 @@ public class DialogueManager {
 
     private final DialogueState state = new DialogueState();
     private final TypeWriterController typeWriter = new TypeWriterController();
+    private WorldManager worldManager;
 
     private NPC recentlyFinishedForcedNpc;
 
@@ -48,9 +49,12 @@ public class DialogueManager {
         }
     };
 
-    public DialogueManager(DialogueUI dialogueUI, Player player) {
+    public DialogueManager(DialogueUI dialogueUI, Player player, WorldManager worldManager) {
         this.dialogueUI = dialogueUI;
         this.player = player;
+        this.worldManager = worldManager;
+
+        EventBus.subscribe(Events.InteractEvent.class, e -> handleInteraction());
     }
 
     /**
@@ -125,15 +129,49 @@ public class DialogueManager {
         EventBus.fire(new Events.DialogueFinishedEvent(npcId));
     }
 
+    private void handleInteraction() {
+        if (interactCooldown > 0) return;
+
+        if (!state.isActive()) {
+            // Standard interaction - start a new dialogue
+            if (worldManager.getCurrentWorld() != null) {
+                for (NPC npc : worldManager.getCurrentWorld().getNpcs()) {
+                    if (npc.isPlayerNear(player)) {
+                        startDialogue(npc);
+                        return;
+                    }
+                }
+            }
+        } else {
+            // Dialogue is active - advance it
+            String currentPhrase = state.activeNode.getTexts().get(state.textIndex);
+            if (!state.textCompleted) {
+                // Skip typewriter animation
+                state.textCompleted = true;
+                dialogueUI.updateText(currentPhrase);
+            } else {
+                if (state.isLastPhrase()) {
+                    if (state.activeNode.getAction() != null) state.activeNode.getAction().run();
+                    if (state.activeNode.getChoices().isEmpty()) endDialogue();
+                } else {
+                    state.textIndex++;
+                    state.textCompleted = false;
+                    typeWriter.reset();
+                }
+            }
+            interactCooldown = INTERACT_COOLDOWN_TIME;
+        }
+    }
+
     /**
      * Called every frame — handles:
      * - detecting new interactions
      * - updating text animation
      * - continuing dialogue on press
      */
-    public void update(float delta, boolean interactPressed) {
-        if (WorldManager.getCurrentWorld() == null) return;
-        ArrayList<NPC> npcs = WorldManager.getCurrentWorld().getNpcs();
+    public void update(float delta) {
+        if (worldManager.getCurrentWorld() == null) return;
+        ArrayList<NPC> npcs = worldManager.getCurrentWorld().getNpcs();
 
         // Cooldown
         if (interactCooldown > 0) interactCooldown -= delta;
@@ -156,16 +194,6 @@ public class DialogueManager {
                 if (npc.getDialogue().isForced() && npc.isPlayerNear(player) && npc != recentlyFinishedForcedNpc) {
                     startForcedDialogue(npc);
                     return;
-                }
-            }
-
-            // Standard interaction
-            if (interactPressed && interactCooldown <= 0) {
-                for (NPC npc : npcs) {
-                    if (npc.isPlayerNear(player)) {
-                        startDialogue(npc);
-                        return;
-                    }
                 }
             }
             return;
@@ -195,33 +223,6 @@ public class DialogueManager {
             if(typeWriter.isFinished(currentPhrase)) {
                 state.textCompleted = true;
             }
-        }
-
-        // Interact to skip/continue
-        if (interactPressed && interactCooldown <= 0) {
-
-            if (!state.textCompleted) {
-                // Skip typewriter animation
-                state.textCompleted = true;
-                dialogueUI.updateText(currentPhrase);
-            } else {
-                if (state.isLastPhrase()) {
-                    if (state.activeNode.getAction() != null) {
-                        state.activeNode.getAction().run();
-                    }
-
-                    if (state.activeNode.getChoices().isEmpty()) {
-                        endDialogue();
-                        return;
-                    }
-                } else {
-                    state.textIndex++;
-                    state.textCompleted = false;
-                    typeWriter.reset();
-                }
-            }
-
-            interactCooldown = INTERACT_COOLDOWN_TIME;
         }
 
         // Show choices only at the end of last phrase

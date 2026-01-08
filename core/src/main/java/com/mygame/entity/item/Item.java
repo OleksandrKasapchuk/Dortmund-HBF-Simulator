@@ -1,9 +1,6 @@
 package com.mygame.entity.item;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.mygame.action.ActionRegistry;
-import com.mygame.assets.Assets;
-import com.mygame.assets.audio.SoundManager;
 import com.mygame.entity.Entity;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
@@ -13,25 +10,21 @@ import com.mygame.world.World;
 
 /**
  * Represents a world item (e.g., spoon, pfand).
- * Can be interactable, solid, and have pickup radius + interaction cooldown.
  */
 public class Item extends Entity {
 
-    // --- Item properties ---
     private ItemDefinition type;
     private boolean canBePickedUp;
     private boolean solid;
     private boolean searchable;
     private boolean searched = false;
-    private int distance;           // distance at which player can interact/pick up
+    private int distance;
     private String questId;
-    private String interactionActionId; // The ID of the action to execute from ActionRegistry
+    private String interactionActionId;
 
-    // --- Search reward properties ---
     private String rewardItemKey;
     private int rewardAmount;
 
-    // --- Interaction ---
     private float cooldownTimer = 0f;
 
     public Item(
@@ -39,8 +32,7 @@ public class Item extends Entity {
         float x, float y, int distance,
         Texture texture, World world,
         boolean canBePickedUp, boolean solid, boolean searchable, String questId,
-        String rewardItemKey, int rewardAmount, String interactionActionId
-    ) {
+        String rewardItemKey, int rewardAmount, String interactionActionId) {
         super(width, height, x, y, texture, world);
         this.type = type;
         this.canBePickedUp = canBePickedUp;
@@ -54,16 +46,11 @@ public class Item extends Entity {
     }
 
     @Override
-    public void update(float delta) {
-        // Items do not move or update by default.
-    }
+    public void update(float delta) {}
 
-    /**
-     * Executes the interaction logic.
-     */
     public void interact(Player player) {
         if (interactionActionId != null && !interactionActionId.isEmpty()) {
-            ActionRegistry.executeAction(interactionActionId);
+            EventBus.fire(new Events.ActionRequestEvent(interactionActionId));
         } else if (searchable && !searched) {
             search(player);
         }
@@ -71,60 +58,33 @@ public class Item extends Entity {
 
     private void search(Player player) {
         searched = true;
-        SoundManager.playSound(Assets.getSound("search"));
-        player.setMovementLocked(true);
-
-        // Determine item and amount
-        TimerManager.setAction(() -> {
-            player.setMovementLocked(false);
-            if (rewardItemKey != null && !rewardItemKey.isEmpty()) {
-                ItemDefinition reward = ItemRegistry.get(rewardItemKey);
-                if (reward != null) {
-                    player.getInventory().addItem(reward, rewardAmount);
-                    EventBus.fire(new Events.MessageEvent(rewardAmount + " " + Assets.ui.format("ui.found", Assets.items.get(reward.getNameKey()) ), 2));
-                }
-            } else {
-                EventBus.fire(new Events.MessageEvent(Assets.ui.get("ui.not_found") , 2f));
-            }
-        }, 2);
-
+        // Замість ActionRegistry.executeAction викликаємо івент
+        EventBus.fire(new Events.ActionRequestEvent("item.search.basic"));
+        TimerManager.setAction(() -> EventBus.fire(new Events.ItemSearchedEvent(player, rewardItemKey, rewardAmount)), 2);
     }
 
-    /**
-     * Generates a unique identifier for this item based on its location and world.
-     */
     public String getUniqueId() {
         return world.getName() + "_" + (int)getX() + "_" + (int)getY();
     }
 
-    // --- Basic getters ---
     public String getName() { return type.getNameKey(); }
     public ItemDefinition getType() { return type; }
     public boolean canBePickedUp() { return canBePickedUp; }
     public boolean isSolid() { return solid; }
     public int getDistance() { return distance; }
 
-    // --- Cooldown logic ---
-    /**
-     * Updates cooldown timer.
-     */
     public void updateCooldown(float delta) {
         if (cooldownTimer > 0) {
             cooldownTimer -= delta;
             if (cooldownTimer < 0) cooldownTimer = 0;
         }
     }
-    /**
-     * Starts cooldown after interaction.
-     */
     public void startCooldown(float seconds) {
         cooldownTimer = seconds;
     }
 
     public String getQuestId(){ return questId; }
     public boolean isSearched() { return searched; }
-
     public boolean isSearchable() {return searchable;}
-
     public void setSearched(boolean searched) { this.searched = searched; }
 }

@@ -21,16 +21,18 @@ public class Events {
     public record InventoryChangedEvent(ItemDefinition item, int newAmount) {}
     public record WorldChangedEvent(String newWorldId) {}
     public record ItemInteractionEvent(Item item, Player player){}
+    public record ItemSearchedEvent(Player player, String itemKey, int amount) {}
+    public record ActionRequestEvent(String actionId) {} // Нова подія
+    public record InteractEvent() {}
 
     public record ItemUsedEvent(ItemDefinition item) {}
     public record PlayerStateChangedEvent(Player.State newState) {}
 
-    // ───── Player)
     // ───── Police ─────
     public record PoliceStateChangedEvent(Police.PoliceState newState) {}
 
     // ───── Message ─────
-    public record MessageEvent(String message, float duration) {}
+    public record MessageEvent(String message) {}
     public record NotEnoughMessageEvent(ItemDefinition item) {}
     public record AddItemMessageEvent(ItemDefinition item, int amount) {}
 }
