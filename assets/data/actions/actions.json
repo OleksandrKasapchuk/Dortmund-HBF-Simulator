@@ -6,7 +6,6 @@
 
   "quest.murat.accept": { "type": "quest.start", "id": "chili"},
   "quest.walter.accept": { "type": "quest.start", "id": "wallet"},
-  "quest.igo.add": { "type": "quest.start", "id": "igo" },
 
   "npc.ryzhyi.take_money": {
     "type": "system.composite",
@@ -31,8 +30,14 @@
       { "type": "dialogue.set", "npc": "jason", "node": "tour.completed" }
     ]
   },
-
-  "npc.igo.give_vape": {
+  "quest.igo.joint_activate": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "dialogue.set", "npc": "igo", "node": "joint.active" },
+      { "type": "quest.start", "id": "igo" }
+    ]
+  },
+  "quest.igo.joint_complete": {
     "type": "inventory.conditionalTrade",
     "from": "joint",
     "to": "vape",
@@ -41,16 +46,15 @@
     "onSuccess": {
       "type": "system.composite",
       "actions": [
-        { "type": "dialogue.set", "npc": "igo", "node": "vape.completed" },
         { "type": "quest.complete", "id": "igo" },
         { "type": "audio.playSound", "id": "lighter" },
         {
           "type": "system.timer",
           "delay": 5.0,
-          "action": {
-            "type": "npc.setTexture",
-            "npc": "igo",
-            "texture": "igo2"
+          "action": { "type": "system.composite", "actions": [
+            { "type": "dialogue.set", "npc": "igo", "node": "joint.completed" },
+            { "type": "npc.setTexture", "npc": "igo", "texture": "igo2"}
+        ]
           }
         }
       ]

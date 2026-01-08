@@ -1,53 +1,61 @@
 {
   "igo": {
     "nodes": {
-      "start": "vape.offer",
-      "vape.offer": {
-        "texts": ["dialogue.igo.start"],
+      "start": "joint.offer",
+      "joint.offer": {
+        "texts": ["dialogue.igo.joint_offer.text.1", "dialogue.igo.joint_offer.text.2", "dialogue.igo.joint_offer.text.3"],
+
         "choices": [
-          { "text": "dialogue.igo.choice.give", "action": "npc.igo.give_vape" },
-          { "text": "dialogue.choice.leave", "action": "quest.igo.add" }
+          { "text": "dialogue.choice.accept", "action": "quest.igo.joint_activate" },
+          "dialogue.choice.leave"
         ]
       },
-      "vape.completed": ["dialogue.igo.thanks"]
+      "joint.active": {
+        "texts": ["dialogue.igo.joint_active.text.1"],
+        "choices": [
+          { "text": "dialogue.igo.joint_active.choice.1", "action": "quest.igo.joint_complete" },
+          "dialogue.choice.leave"
+        ]
+      },
+      "joint.completed": ["dialogue.igo.joint_completed.text.1"]
     }
   },
   "ryzhyi": {
     "nodes": {
       "start": "money.offer",
       "money.offer": {
-        "texts": ["dialogue.ryzhyi.start"],
-        "choices": [{ "text": "dialogue.ryzhyi.choice.take", "action": "npc.ryzhyi.take_money" }]
+        "texts": ["dialogue.ryzhyi.money_offer.text.1"],
+        "choices": [{ "text": "dialogue.ryzhyi.money_offer.choice.1", "action": "npc.ryzhyi.take_money" }]
       },
-      "money.completed": ["dialogue.ryzhyi.after"]
+      "money.completed": ["dialogue.ryzhyi.money_completed.text.1"]
     }
   },
   "denys": {
     "nodes": {
       "start": "idle",
-      "idle": ["dialogue.denys.start", "dialogue.denys.declined"]
+      "idle": ["dialogue.denys.idle.text.1", "dialogue.denys.idle.text.2"]
     }
   },
   "baryga": {
     "nodes": {
       "start": "trade.offer",
       "trade.offer": {
-        "texts": ["dialogue.baryga.start.1", "dialogue.baryga.start.2"],
+        "texts": ["dialogue.baryga.trade_offer.text.1", "dialogue.baryga.trade_offer.text.2"],
         "choices": [
-          { "text": "dialogue.baryga.choice.buy", "action": "inventory.baryga_buy_grass" },
+          { "text": "dialogue.baryga.trade_offer.choice.1", "action": "inventory.baryga_buy_grass" },
           { "text": "dialogue.choice.leave", "next": "idle" }
         ]
       },
-      "idle": ["dialogue.baryga.bye"]
+      "idle": ["dialogue.baryga.idle.text.1"]
     }
   },
   "chikita": {
     "nodes": {
       "start": "craft.offer",
       "craft.offer": {
-        "texts": ["dialogue.chikita.start"],
+        "texts": ["dialogue.chikita.craft_offer.text.1"],
         "choices": [
-          { "text": "dialogue.chikita.choice.give", "action": "npc.chikita.craft" },
+          { "text": "dialogue.chikita.craft_offer.choice.1", "action": "npc.chikita.craft" },
           "dialogue.choice.leave"
         ]
       }
@@ -57,10 +65,10 @@
     "nodes": {
       "start": "trade.offer",
       "trade.offer": {
-        "texts": ["dialogue.kioskman.start"],
+        "texts": ["dialogue.kioskman.trade_offer.text.1"],
         "choices": [
-          { "text": "dialogue.kioskman.choice.buyPape", "action": "inventory.kioskman_buy_pape" },
-          { "text": "dialogue.kioskman.choice.buyIceTea", "action": "inventory.kioskman_buy_icetea" },
+          { "text": "dialogue.kioskman.trade_offer.choice.1", "action": "inventory.kioskman_buy_pape" },
+          { "text": "dialogue.kioskman.trade_offer.choice.2", "action": "inventory.kioskman_buy_icetea" },
           "dialogue.choice.leave"
         ]
       }
@@ -70,20 +78,20 @@
     "nodes": {
       "start": "delivery.offer",
       "delivery.offer": {
-        "texts": ["dialogue.boss.start.1", "dialogue.boss.start.2", "dialogue.boss.start.3", "dialogue.boss.start.4"],
+        "texts": ["dialogue.boss.delivery_offer.text.1", "dialogue.boss.delivery_offer.text.2", "dialogue.boss.delivery_offer.text.3", "dialogue.boss.delivery_offer.text.4"],
         "choices": [
           { "text": "dialogue.choice.accept", "action": "quest.delivery.accept" },
           "dialogue.choice.leave"
         ]
       },
       "chase.completed": {
-        "texts": ["dialogue.boss.wellDone"],
+        "texts": ["dialogue.boss.chase_completed.text.1"],
         "onFinish": "quest.boss_end.claim_reward"
       },
-      "idle": ["dialogue.boss.whatDoYouWant"],
-      "delivery.active": ["dialogue.boss.after.1", "dialogue.boss.after.2"],
+      "idle": ["dialogue.boss.idle.text.1"],
+      "delivery.active": ["dialogue.boss.delivery_active.text.1", "dialogue.boss.delivery_active.text.2"],
       "delivery.failed": {
-        "texts": ["dialogue.boss.failure.1", "dialogue.boss.failure.2", "dialogue.boss.failure.3"],
+        "texts": ["dialogue.boss.delivery_failed.text.1", "dialogue.boss.delivery_failed.text.2", "dialogue.boss.delivery_failed.text.3"],
         "onFinish": "player.die"
       }
     }
@@ -93,12 +101,12 @@
       "start": "check.active",
       "check.active": {
         "onFinish": "npc.police.check",
-        "texts": ["dialogue.police.check"],
+        "texts": ["dialogue.police.check_active.text.1"],
         "isForced": true
       },
       "check.failed": {
         "onFinish": "player.die",
-        "texts": ["dialogue.police.stoned.1", "dialogue.police.stoned.2"],
+        "texts": ["dialogue.police.check_failed.text.1", "dialogue.police.check_failed.text.2"],
         "isForced": true
       }
     }
@@ -108,64 +116,64 @@
       "start": "check.active",
       "check.active": {
         "onFinish": "npc.police.check",
-        "texts": ["dialogue.police.check"],
+        "texts": ["dialogue.summoned_police.check_active.text.1"],
         "isForced": true
       },
       "chase.offer": {
         "onFinish": "quest.chase.start",
-        "texts": ["dialogue.police.beforeChase.1", "dialogue.police.beforeChase.2"],
+        "texts": ["dialogue.summoned_police.chase_offer.text.1", "dialogue.summoned_police.chase_offer.text.2"],
         "isForced": true
       },
       "chase.failed": {
           "onFinish": "player.die",
-          "texts": ["dialogue.police.caught"]
+          "texts": ["dialogue.summoned_police.chase_failed.text.1"]
       }
     }
   },
-  "kamil": { "nodes": { "start": "idle", "idle": ["dialogue.kamil.start"] } },
+  "kamil": { "nodes": { "start": "idle", "idle": ["dialogue.kamil.idle.text.1"] } },
 
   "jan": {
     "nodes": {
       "start": "fireworks.offer",
       "fireworks.offer": {
-        "texts":["dialogue.jan.start.1", "dialogue.jan.start.2"],
+        "texts":["dialogue.jan.fireworks_offer.text.1", "dialogue.jan.fireworks_offer.text.2"],
         "choices":  [
         { "text": "dialogue.choice.accept", "action": "quest.jan.accept" },
         "dialogue.choice.leave"
         ]
       },
-      "fireworks.active": ["dialogue.jan.after"],
+      "fireworks.active": ["dialogue.jan.fireworks_active.text.1"],
       "fireworks.completed": {
         "onFinish": "quest.jan.complete",
         "texts": ["dialogue.choice.leave"]
       }
     }
   },
-  "filip": { "nodes": { "start": "idle", "idle": ["dialogue.filip.start.1", "dialogue.filip.start.2", "dialogue.filip.start.3", "dialogue.filip.start.4"]}
+  "filip": { "nodes": { "start": "idle", "idle": ["dialogue.filip.idle.text.1", "dialogue.filip.idle.text.2", "dialogue.filip.idle.text.3", "dialogue.filip.idle.text.4"]}
   },
   "jason": {
     "nodes": {
       "start": "tour.offer",
       "tour.offer": {
         "onFinish": "npc.jason.give_money",
-        "texts": ["dialogue.jason.start.1", "dialogue.jason.start.2", "dialogue.jason.start.3", "dialogue.jason.start.4", "dialogue.jason.start.5"]
+        "texts": ["dialogue.jason.tour_offer.text.1", "dialogue.jason.tour_offer.text.2", "dialogue.jason.tour_offer.text.3", "dialogue.jason.tour_offer.text.4", "dialogue.jason.tour_offer.text.5"]
       },
-      "tour.active": ["dialogue.jason.after.1", "dialogue.jason.after.2"],
+      "tour.active": ["dialogue.jason.tour_active.text.1", "dialogue.jason.tour_active.text.2"],
       "tour.completed": {
         "onFinish": "quest.jason.complete",
-        "texts": ["dialogue.jason.finished"]
+        "texts": ["dialogue.jason.tour_completed.text.1"]
       },
-      "idle": ["dialogue.jason.completed"]
+      "idle": ["dialogue.jason.idle.text.1"]
     }
   },
   "murat": {
     "nodes": {
       "start": "revenge.offer",
       "revenge.offer": {
-        "texts": ["dialogue.murat.start.1", "dialogue.murat.start.2", "dialogue.murat.start.3", "dialogue.murat.start.4", "dialogue.murat.start.5", "dialogue.murat.start.6"],
+        "texts": ["dialogue.murat.revenge_offer.text.1", "dialogue.murat.revenge_offer.text.2", "dialogue.murat.revenge_offer.text.3", "dialogue.murat.revenge_offer.text.4", "dialogue.murat.revenge_offer.text.5", "dialogue.murat.revenge_offer.text.6"],
         "choices": [
-          { "text": "dialogue.murat.choice.accept", "action": "quest.murat.accept" },
-          "dialogue.murat.choice.decline"
+          { "text": "dialogue.murat.revenge_offer.choice.1", "action": "quest.murat.accept" },
+          { "text": "dialogue.murat.revenge_offer.choice.2", "action": null }
         ]
       }
     }
@@ -174,7 +182,7 @@
     "nodes": {
       "start": "idle",
       "idle": {
-        "texts": ["dialogue.talahon1.start.1", "dialogue.talahon1.start.2", "dialogue.talahon1.start.3"],
+        "texts": ["dialogue.talahon1.idle.text.1", "dialogue.talahon1.idle.text.2", "dialogue.talahon1.idle.text.3"],
         "isForced": true
       }
     }
@@ -183,18 +191,18 @@
     "nodes": {
       "start": "vape.offer",
       "vape.offer": {
-        "texts": ["dialogue.talahon2.start.1", "dialogue.talahon2.start.2"],
+        "texts": ["dialogue.talahon2.vape_offer.text.1", "dialogue.talahon2.vape_offer.text.2"],
         "isForced": true,
         "choices": [
-          { "text": "dialogue.talahon2.choice.accept", "action": "npc.talahon2.give_vape" },
+          { "text": "dialogue.talahon2.vape_offer.choice.1", "action": "npc.talahon2.give_vape" },
           { "text": "dialogue.choice.leave", "next": "vape.failed" }
         ]
       },
       "vape.completed": {
-        "texts": ["dialogue.talahon2.yes"]
+        "texts": ["dialogue.talahon2.vape_completed.text.1"]
       },
       "vape.failed": {
-        "texts": ["dialogue.talahon2.no"]
+        "texts": ["dialogue.talahon2.vape_failed.text.1"]
       }
     }
   },
@@ -202,23 +210,23 @@
     "nodes": {
       "start": "wallet.offer",
       "wallet.offer": {
-        "texts": ["dialogue.walter.start.1", "dialogue.walter.start.2"]
+        "texts": ["dialogue.walter.wallet_offer.text.1", "dialogue.walter.wallet_offer.text.2"]
       }
     }
   },
   "dmitri": {
     "nodes": {
       "start": "idle",
-      "idle": ["dialogue.dmitri.start.1", "dialogue.dmitri.start.2", "dialogue.dmitri.start.3", "dialogue.dmitri.start.4", "dialogue.dmitri.start.5", "dialogue.dmitri.start.6", "dialogue.dmitri.start.7"]
+      "idle": ["dialogue.dmitri.idle.text.1", "dialogue.dmitri.idle.text.2", "dialogue.dmitri.idle.text.3", "dialogue.dmitri.idle.text.4", "dialogue.dmitri.idle.text.5", "dialogue.dmitri.idle.text.6", "dialogue.dmitri.idle.text.7"]
     }
   },
   "jamal": {
     "nodes": {
       "start": "trade.offer",
       "trade.offer": {
-        "texts": ["dialogue.jamal.start.1", "dialogue.jamal.start.2"],
+        "texts": ["dialogue.jamal.trade_offer.text.1", "dialogue.jamal.trade_offer.text.2"],
         "choices": [
-          { "text": "dialogue.jamal.choice.buy", "action": "inventory.buy_seed" },
+          { "text": "dialogue.jamal.trade_offer.choice.1", "action": "inventory.buy_seed" },
           "dialogue.choice.leave"
         ]
       }
