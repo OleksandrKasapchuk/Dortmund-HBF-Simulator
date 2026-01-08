@@ -88,8 +88,9 @@ public class UIManager {
         dialogueUI = new DialogueUI(skin, gameScreen.getStage(), 1950, 250, 25f, 10f);
         dialogueManager = new DialogueManager(dialogueUI, player, worldManager);
 
-        EventBus.subscribe(Events.MessageEvent.class, event -> gameScreen.showInfoMessage(event.message(), 2f));
-        EventBus.subscribe(Events.QuestStartedEvent.class, event -> gameScreen.showInfoMessage(Assets.ui.get("ui.quest.new"), 2f));
+        EventBus.subscribe(Events.MessageEvent.class, event -> gameScreen.showInfoMessage(event.message(), 1.5f));
+        EventBus.subscribe(Events.QuestStartedEvent.class, event -> gameScreen.showInfoMessage(Assets.messages.get("message.quest.new"), 1.5f));
+        EventBus.subscribe(Events.QuestCompletedEvent.class, event -> gameScreen.showInfoMessage(Assets.messages.format("message.generic.quest.completed", Assets.quests.get("quest." + event.questId() + ".name")), 1.5f));
         EventBus.subscribe(Events.AddItemMessageEvent.class, event -> showEarned(event.item().getNameKey(), event.amount()));
         EventBus.subscribe(Events.NotEnoughMessageEvent.class, event -> showNotEnough(event.item().getNameKey()));
         EventBus.subscribe(Events.InteractEvent.class, e -> handleInteraction());
@@ -218,11 +219,11 @@ public class UIManager {
 
 
     public void showEarned(String thing, int amount){
-        gameScreen.showInfoMessage(Assets.messages.format("message.generic.got", amount, Assets.items.get(thing)),2f);
+        gameScreen.showInfoMessage(Assets.messages.format("message.generic.got", amount, Assets.items.get(thing)),1.5f);
     }
 
     public void showNotEnough(String thing) {
-        gameScreen.showInfoMessage(Assets.messages.format("message.generic.not_enough", Assets.items.get(thing)), 2f);
+        gameScreen.showInfoMessage(Assets.messages.format("message.generic.not_enough", Assets.items.get(thing)), 1.5f);
     }
 
     /**
