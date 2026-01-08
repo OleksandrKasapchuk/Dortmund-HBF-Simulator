@@ -33,7 +33,6 @@ public class Main extends ApplicationAdapter {
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.15f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-
         gameInitializer.getManagerRegistry().getGameInputHandler().update();
         GameContext ctx = gameInitializer.getContext();
 

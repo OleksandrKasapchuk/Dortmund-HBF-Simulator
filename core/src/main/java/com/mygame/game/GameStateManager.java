@@ -51,6 +51,13 @@ public class GameStateManager {
         SettingsManager.save(settings);
     }
 
+    public void exitToMenu() {
+        if (state != GameState.MENU) {
+            state = GameState.MENU;
+            MusicManager.playMusic(Assets.getMusic("start"));
+            uiManager.setCurrentStage("MENU");
+        }
+    }
     // --- Toggle pause state ---
     public void togglePause() {
         if (state == GameState.PAUSED) {

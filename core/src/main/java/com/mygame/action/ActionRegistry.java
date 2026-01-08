@@ -44,6 +44,7 @@ public class ActionRegistry {
         registeredActions.put("system.pause", ctx.gsm::togglePause);
         registeredActions.put("system.settings", ctx.gsm::toggleSettings);
         registeredActions.put("system.map", ctx.gsm::toggleMap);
+        registeredActions.put("system.menu", ctx.gsm::exitToMenu);
         registeredActions.put("ui.inventory.toggle", ctx.ui::toggleInventoryTable);
         registeredActions.put("ui.quests.toggle", ctx.ui::toggleQuestTable);
         EventBus.subscribe(Events.ActionRequestEvent.class, event -> executeAction(event.actionId()));

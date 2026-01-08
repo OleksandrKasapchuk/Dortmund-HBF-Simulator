@@ -30,8 +30,8 @@ public class ItemRegistry {
 
             String effect = null;
 
-            if (item.has("effect")) {
-                effect = item.getString("effect");
+            if (item.has("effect") && item.getBoolean("effect")) {
+                effect = "item." + item.getString("effect") + ".use";
             }
 
             register(new ItemDefinition(key, name, description, effect));

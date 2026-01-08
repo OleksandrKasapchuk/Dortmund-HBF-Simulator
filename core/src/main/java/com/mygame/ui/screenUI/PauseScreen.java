@@ -1,7 +1,5 @@
 package com.mygame.ui.screenUI;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.mygame.assets.Assets;
 import com.mygame.events.EventBus;
@@ -25,20 +23,12 @@ public class PauseScreen extends Screen {
         TextButton resumeBtn = createButton(skin, Assets.ui.get("button.resume.text"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("system.pause")));
         TextButton settingsBtn = createButton(skin, Assets.ui.get("settings.title"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("system.settings")));
 
-        TextButton menuBtn = createButton(skin, Assets.ui.get("button.exit.text"), 1.8f, () -> {
-
-        });
+        TextButton menuBtn = createButton(skin, Assets.ui.get("button.exit.text"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("system.menu")));
 
         menu.add(resumeBtn).width(500).height(100).padBottom(30).row();
         menu.add(settingsBtn).width(500).height(100).padBottom(30).row();
         menu.add(menuBtn).width(500).height(100).row();
 
         root.add(menu).center().row();
-
-        // Додаткова інформація лише для ПК
-        if (Gdx.app.getType() != Application.ApplicationType.Android) {
-            Label hint = createLabel(skin, Assets.ui.get("pause.resume"), 1.2f);
-            root.add(hint).padTop(50);
-        }
     }
 }
