@@ -6,19 +6,35 @@ import com.mygame.events.Events;
 
 public class DayManager {
     private final float DAY_LENGTH = 24;
-    private int day = 1;
-    public enum Phase { MORNING, DAY, EVENING, NIGHT }
+    private int day;
+
+    public enum Phase {
+        MORNING("phase.morning"),
+        DAY("phase.day"),
+        EVENING("phase.evening"),
+        NIGHT("phase.night");
+
+        private final String localizationKey;
+
+        Phase(String localizationKey) {
+            this.localizationKey = localizationKey;
+        }
+        public String getLocalizationKey() {
+            return localizationKey;
+        }
+
+    }
     private Phase currentPhase;
     private float currentTime;
+
 
     public DayManager(){
         this.currentPhase = Phase.MORNING;
         this.currentTime = 6;
     }
 
-
     public void update(float delta) {
-        currentTime += delta * 6; // баланс
+        currentTime += delta * 3; // баланс
 
         if (currentTime >= DAY_LENGTH) {
             nextDay();
@@ -29,10 +45,16 @@ public class DayManager {
 
     private void nextDay() {
         currentTime = 0f;
-        day++;
+        setDay(++day);
+    }
+
+    public void setTime(float time){ currentTime = time; }
+    public void setDay(int day){
+        this.day = day;
         EventBus.fire(new Events.NewDayEvent(day));
         System.out.println("New day: " + day);
     }
+
 
     private void updatePhase() {
         Phase newPhase =
@@ -42,6 +64,7 @@ public class DayManager {
 
         if (newPhase != currentPhase) {
             currentPhase = newPhase;
+            EventBus.fire(new Events.PhaseChangedEvent(newPhase));
             System.out.println("New phase: " + newPhase);
         }
     }
@@ -50,7 +73,7 @@ public class DayManager {
         currentTime = 6f;
         nextDay();
     }
-
+    public float getCurrentTime(){ return currentTime; }
     public Phase getCurrentPhase(){ return currentPhase; }
     public int getDay(){ return day; }
 }

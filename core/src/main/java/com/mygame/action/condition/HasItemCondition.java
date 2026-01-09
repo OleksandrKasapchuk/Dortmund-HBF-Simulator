@@ -16,7 +16,7 @@ public class HasItemCondition implements ConditionAction {
     }
     @Override
     public boolean check() {
-        if (!ctx.getInventory().hasItem(ctx.itemRegistry.get(itemId))) {
+        if (!ctx.player.getInventory().hasItem(ctx.itemRegistry.get(itemId))) {
             ctx.ui.showNotEnough(Assets.items.get(nameKey));
             return false;
         }

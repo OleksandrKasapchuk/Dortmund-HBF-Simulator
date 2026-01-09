@@ -20,6 +20,7 @@ public class GameScreen extends Screen {
     private final Label infoLabel;
     private final Label worldLabel;
     private final Label dayLabel;
+    private final Label phaseLabel;
     private float infoMessageTimer = 0f;
 
     private record Message(String text, float duration) {}
@@ -37,9 +38,11 @@ public class GameScreen extends Screen {
         worldLabel = createLabel(skin, "", 1.5f);
         moneyLabel = createLabel(skin, "", 1.5f);
         dayLabel = createLabel(skin, "", 1.5f);
+        phaseLabel = createLabel(skin, "", 1.5f);
 
         root.add(worldLabel).expandX().left();
-        root.add(dayLabel).expandX().center().padRight(125);
+        root.add(dayLabel).center().padRight(20);
+        root.add(phaseLabel).center();
         root.add(moneyLabel).expandX().right().row();
 
         // --- MIDDLE: Info Messages ---
@@ -51,7 +54,10 @@ public class GameScreen extends Screen {
         root.add(infoLabel).colspan(3).padTop(50).center();
 
         EventBus.subscribe(Events.WorldChangedEvent.class, event -> updateWorld(event.newWorldId()));
+
         EventBus.subscribe(Events.NewDayEvent.class, event -> updateDay(event.newDayCount()));
+        EventBus.subscribe(Events.PhaseChangedEvent.class, event -> updatePhase(event.newPhase()));
+
         EventBus.subscribe(Events.InventoryChangedEvent.class, event -> {
             if (event.item().getKey().equals("money")){
                 updateMoney(event.newAmount());
@@ -59,7 +65,6 @@ public class GameScreen extends Screen {
         });
 
         updateMoney(player.getInventory().getMoney());
-        updateDay(dayManager.getDay());
     }
 
     public void updateMoney(int money) {
@@ -72,6 +77,10 @@ public class GameScreen extends Screen {
 
     public void updateDay(int day) {
         dayLabel.setText(Assets.ui.format("ui.day", day));
+    }
+
+    public void updatePhase(DayManager.Phase phase) {
+        phaseLabel.setText(Assets.ui.format("ui.phase", Assets.ui.get(phase.getLocalizationKey())));
     }
 
     public void showInfoMessage(String message, float duration) {

@@ -39,7 +39,7 @@ public class ActionRegistry {
             newSettings.language = SettingsManager.load().language;
             SettingsManager.save(newSettings);
             Main.restartGame();
-            Main.getGameInitializer().getManagerRegistry().getGameStateManager().startGame();});
+            Main.getGameInitializer().getManagerRegistry().getContext().gsm.startGame();});
 
         registeredActions.put("system.pause", ctx.gsm::togglePause);
         registeredActions.put("system.settings", ctx.gsm::toggleSettings);
@@ -62,17 +62,17 @@ public class ActionRegistry {
         creators.put("dialogue.set", (ctx, data) -> () -> new SetDialogueAction(ctx,
             data.getString("npc"), data.getString("node")).execute());
 
-        creators.put("inventory.add", (ctx, data) -> () -> ctx.getInventory().addItemAndNotify(
+        creators.put("inventory.add", (ctx, data) -> () -> ctx.player.getInventory().addItemAndNotify(
             ctx.itemRegistry.get(data.getString("id")),
             data.getInt("amount", 1)));
 
         creators.put("inventory.remove", (ctx, data) -> () -> {
             if (data.has("items")) {
                 for (String itemId : data.get("items").asStringArray()) {
-                    ctx.getInventory().removeItem(ctx.itemRegistry.get(itemId), data.getInt("amount", 9999));
+                    ctx.player.getInventory().removeItem(ctx.itemRegistry.get(itemId), data.getInt("amount", 9999));
                 }
             } else {
-                ctx.getInventory().removeItem(
+                ctx.player.getInventory().removeItem(
                     ctx.itemRegistry.get(data.getString("id")),
                     data.getInt("amount", 1));
             }
@@ -105,7 +105,7 @@ public class ActionRegistry {
         });
 
         creators.put("inventory.conditionalTrade", (ctx, data) -> () -> {
-            if (ctx.getInventory().trade(ctx.itemRegistry.get(data.getString("from")),
+            if (ctx.player.getInventory().trade(ctx.itemRegistry.get(data.getString("from")),
                 ctx.itemRegistry.get(data.getString("to")),
                 data.getInt("fromAmount"), data.getInt("toAmount"))) {
                 if (data.has("onSuccess")) {
@@ -122,14 +122,14 @@ public class ActionRegistry {
             boolean conditionMet = false;
             if (data.has("items")) {
                 for (String itemId : data.get("items").asStringArray()) {
-                    if (ctx.getInventory().getAmount(ctx.itemRegistry.get(itemId)) > 0) {
+                    if (ctx.player.getInventory().getAmount(ctx.itemRegistry.get(itemId)) > 0) {
                         conditionMet = true;
                         break;
                     }
                 }
             } else if (data.has("itemId")) {
                 int amount = data.getInt("amount", 1);
-                conditionMet = ctx.getInventory().getAmount(ctx.itemRegistry.get(data.getString("itemId"))) >= amount;
+                conditionMet = ctx.player.getInventory().getAmount(ctx.itemRegistry.get(data.getString("itemId"))) >= amount;
             }
 
             if (conditionMet) {

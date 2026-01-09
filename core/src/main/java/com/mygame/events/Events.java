@@ -4,6 +4,7 @@ import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemDefinition;
 import com.mygame.entity.npc.Police;
 import com.mygame.entity.player.Player;
+import com.mygame.game.DayManager;
 
 public class Events {
 
@@ -20,6 +21,7 @@ public class Events {
     // ───── World & Interaction ─────
     public record WorldChangedEvent(String newWorldId) {}
     public record NewDayEvent(int newDayCount) {}
+    public record PhaseChangedEvent(DayManager.Phase newPhase) {}
 
     public record InventoryChangedEvent(ItemDefinition item, int newAmount) {}
     public record ItemInteractionEvent(Item item, Player player){}

@@ -16,16 +16,23 @@ import java.util.Set;
  */
 public class GameSettings {
     public String language;
+
     public float musicVolume;
     public float soundVolume;
     public boolean muteAll;
+
     public float playerX;
     public float playerY;
+    public Player.State playerState;
+
     public String currentWorldName;
+
+    public int currentDay;
+    public float currentTime;
+
     public Map<String, Integer> inventory;
     public Map<String, QuestSaveData> activeQuests;
     public List<String> completedDialogueEvents;
-    public Player.State playerState;
 
     public Set<String> talkedNpcs;
     public Set<String> visited;

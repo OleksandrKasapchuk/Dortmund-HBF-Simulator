@@ -19,6 +19,6 @@ public class TradeAction implements GameAction {
 
     @Override
     public void execute() {
-        ctx.getInventory().trade(ctx.itemRegistry.get(fromItem), ctx.itemRegistry.get(toItem), fromAmount, toAmount);
+        ctx.player.getInventory().trade(ctx.itemRegistry.get(fromItem), ctx.itemRegistry.get(toItem), fromAmount, toAmount);
     }
 }
