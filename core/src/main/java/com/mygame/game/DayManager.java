@@ -1,6 +1,7 @@
 package com.mygame.game;
 
 
+import com.mygame.assets.Assets;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.managers.TimerManager;
@@ -71,7 +72,10 @@ public class DayManager {
     }
 
     public void sleep() {
-        if(currentPhase == Phase.MORNING || currentPhase == Phase.DAY) return;
+        if(currentPhase == Phase.MORNING || currentPhase == Phase.DAY) {
+            EventBus.fire(new Events.MessageEvent(Assets.messages.get("message.sleep.not_allowed")));
+            return;
+        }
         EventBus.fire(new Events.DarkOverlayEvent(0.5f));
         TimerManager.setAction(() -> {
             if (currentPhase == Phase.EVENING) nextDay();

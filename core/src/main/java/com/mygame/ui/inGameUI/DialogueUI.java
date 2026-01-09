@@ -90,6 +90,12 @@ public class DialogueUI {
         updateText("");  // clear dialogue text initially
         choiceTable.clear();  // remove previous choices
 
+        createChoices(node, listener);
+        showChoices(false);       // initially hide choices
+        dialogueTable.setVisible(true);
+    }
+
+    private void createChoices(DialogueNode node, ChoiceListener listener){
         // Create buttons for each choice
         for (DialogueNode.Choice choice : node.getChoices()) {
             TextButton button = new TextButton(choice.text(), skin, "default");
@@ -104,10 +110,7 @@ public class DialogueUI {
             });
             choiceTable.add(button).padBottom(10).align(Align.right).row();
         }
-        showChoices(false);       // initially hide choices
-        dialogueTable.setVisible(true);
     }
-
     // Updates the main dialogue text
     public void updateText(String text) { dialogueLabel.setText(text); }
 

@@ -51,7 +51,7 @@ public class GameScreen extends Screen {
         infoLabel.setAlignment(Align.center);
         infoLabel.setVisible(false);
 
-        root.add(infoLabel).colspan(3).padTop(50).center();
+        root.add(infoLabel).colspan(4).padTop(50).center();
 
         EventBus.subscribe(Events.WorldChangedEvent.class, event -> updateWorld(event.newWorldId()));
 
