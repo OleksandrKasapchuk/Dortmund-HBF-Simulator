@@ -16,7 +16,7 @@ import com.mygame.quest.QuestProgressTriggers;
 import com.mygame.quest.QuestRegistry;
 import com.mygame.scenario.ScenarioController;
 import com.mygame.ui.UIManager;
-import com.mygame.world.DarkOverlay;
+import com.mygame.ui.inGameUI.DarkOverlay;
 import com.mygame.world.WorldManager;
 import com.mygame.world.transition.TransitionManager;
 

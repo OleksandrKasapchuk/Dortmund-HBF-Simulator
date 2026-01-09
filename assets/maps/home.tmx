@@ -106,8 +106,7 @@
     <property name="interactionDistance" type="int" value="150"/>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="bed"/>
-    <property name="questId" value="jan_firework"/>
-    <property name="searchable" type="bool" value="true"/>
+    <property name="onInteractAction" value="player.sleep"/>
    </properties>
   </object>
   <object id="7" gid="6" x="919.667" y="1200.67" width="180" height="200">

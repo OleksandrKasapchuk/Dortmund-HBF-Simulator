@@ -3,6 +3,7 @@ package com.mygame.game;
 
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
+import com.mygame.managers.TimerManager;
 
 public class DayManager {
     private final float DAY_LENGTH = 24;
@@ -30,11 +31,11 @@ public class DayManager {
 
     public DayManager(){
         this.currentPhase = Phase.MORNING;
-        this.currentTime = 6;
+        this.currentTime = 6f;
     }
 
     public void update(float delta) {
-        currentTime += delta * 3; // баланс
+        currentTime += delta; // баланс
 
         if (currentTime >= DAY_LENGTH) {
             nextDay();
@@ -70,9 +71,16 @@ public class DayManager {
     }
 
     public void sleep() {
-        currentTime = 6f;
-        nextDay();
+        if(currentPhase == Phase.MORNING || currentPhase == Phase.DAY) return;
+        EventBus.fire(new Events.DarkOverlayEvent(0.5f));
+        TimerManager.setAction(() -> {
+            if (currentPhase == Phase.EVENING) nextDay();
+            currentTime = 6f;
+            System.out.println("Player slept at " + currentTime + " hours.");
+        }, 0.5f);
+
     }
+
     public float getCurrentTime(){ return currentTime; }
     public Phase getCurrentPhase(){ return currentPhase; }
     public int getDay(){ return day; }

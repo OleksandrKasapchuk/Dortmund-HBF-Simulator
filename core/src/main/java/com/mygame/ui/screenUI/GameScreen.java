@@ -65,6 +65,7 @@ public class GameScreen extends Screen {
         });
 
         updateMoney(player.getInventory().getMoney());
+        updatePhase(dayManager.getCurrentPhase());
     }
 
     public void updateMoney(int money) {

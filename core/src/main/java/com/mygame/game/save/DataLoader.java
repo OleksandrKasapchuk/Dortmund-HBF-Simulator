@@ -13,8 +13,9 @@ public class DataLoader {
     }
 
     private static void loadDayData(GameContext ctx, GameSettings settings){
-        ctx.dayManager.setDay(settings.currentDay>0 ? settings.currentDay : 1);
-        ctx.dayManager.setTime(settings.currentTime);
+        boolean isNewGame = settings.currentDay <= 0;
+        ctx.dayManager.setDay(isNewGame ? 1 : settings.currentDay);
+        ctx.dayManager.setTime(isNewGame ? 6f : settings.currentTime);
     }
 
     private static void loadFromMap(GameContext ctx){

@@ -8,6 +8,7 @@ import com.mygame.assets.Assets;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
+import com.mygame.ui.inGameUI.DarkOverlay;
 import com.mygame.world.transition.Transition;
 
 import java.util.HashMap;
@@ -88,8 +89,7 @@ public class WorldManager {
 
     private void handleInteraction() {
         if (inTransitionZone && activeTransition != null) {
-            darkOverlay.show(1, 0.8f);
-
+            EventBus.fire(new Events.DarkOverlayEvent(0.8f));
             setCurrentWorld(activeTransition.targetWorldId);
             player.setX(activeTransition.targetX);
             player.setY(activeTransition.targetY);
