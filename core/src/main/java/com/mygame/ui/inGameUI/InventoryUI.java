@@ -71,6 +71,7 @@ public class InventoryUI {
      * @param player Player whose inventory is displayed
      */
     public void update(Player player) {
+        if (!visible) return;
         inventoryTable.clear();
 
         // Title
@@ -83,6 +84,10 @@ public class InventoryUI {
         statusLabel.setFontScale(1.5f);
         inventoryTable.add(statusLabel).left().padBottom(40).colspan(4).row();
 
+        listItems(player);
+    }
+
+    private void listItems(Player player){
         // Iterate through all items
         for (Map.Entry<ItemDefinition, Integer> entry : player.getInventory().getItems().entrySet()) {
             ItemDefinition itemType = entry.getKey();
@@ -125,7 +130,6 @@ public class InventoryUI {
             inventoryTable.row().padBottom(20);
         }
     }
-
     /** Returns whether the inventory is currently visible */
     public boolean isVisible() { return visible; }
 

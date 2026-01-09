@@ -40,6 +40,10 @@ public class MapScreen extends Screen {
         worldPositions.put("subway", new com.badlogic.gdx.math.Vector2(1200, 500));
         worldPositions.put("kamp", new com.badlogic.gdx.math.Vector2(950, 300));
 
+        createLabels();
+    }
+
+    private void createLabels(){
         // Create labels for each world
         for (Map.Entry<String, com.badlogic.gdx.math.Vector2> entry : worldPositions.entrySet()) {
             World world = worldManager.getWorld(entry.getKey());

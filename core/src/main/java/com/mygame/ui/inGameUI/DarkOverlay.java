@@ -1,9 +1,11 @@
-package com.mygame.world;
+package com.mygame.ui.inGameUI;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
 
 public class DarkOverlay {
 
@@ -17,7 +19,10 @@ public class DarkOverlay {
     private float fadeDuration = 0.1f;
     private float stayTimer = 0f;
 
-    public DarkOverlay() {shapeRenderer = new ShapeRenderer();}
+    public DarkOverlay() {
+        shapeRenderer = new ShapeRenderer();
+        EventBus.subscribe(Events.DarkOverlayEvent.class, event -> show(1f, event.duration()));
+    }
 
     /**
      * Показує затемнення з ефектом появи (fade-in).
