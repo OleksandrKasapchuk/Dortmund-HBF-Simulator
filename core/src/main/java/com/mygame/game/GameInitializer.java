@@ -22,12 +22,9 @@ public class GameInitializer {
 
     public void initGame() {
         EventBus.clear();
-        // Важливо: при ініціалізації ми не хочемо зберігати стан старого менеджера,
-        // бо це може затерти нові налаштування (наприклад, при "Новій грі")
         if (managerRegistry != null) managerRegistry.dispose(false);
         if (batch != null) batch.dispose();
         MusicManager.stopAll();
-
 
         batch = new SpriteBatch();
 
@@ -53,11 +50,15 @@ public class GameInitializer {
         player.setWorld(startWorld);
         ctx.worldManager.setCurrentWorld(startWorld);
 
-        // Load inventory data
+        loadInventoryAndQuests(ctx, settings);
+
+        MusicManager.playMusic(Assets.getMusic("start"));
+    }
+
+    private void loadInventoryAndQuests(GameContext ctx, GameSettings settings){
         if (settings.inventory != null)
             settings.inventory.forEach((itemKey, amount) -> player.getInventory().addItem(ctx.itemRegistry.get(itemKey), amount));
 
-        // Відновлюємо прогрес квестів
         if (settings.activeQuests != null) {
             settings.activeQuests.forEach((key, saveData) -> {
                 QuestManager.Quest q = ctx.questManager.getQuest(key);
@@ -67,8 +68,6 @@ public class GameInitializer {
                 }
             });
         }
-
-        MusicManager.playMusic(Assets.getMusic("start"));
     }
 
     public ManagerRegistry getManagerRegistry() { return managerRegistry; }

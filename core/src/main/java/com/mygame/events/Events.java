@@ -18,14 +18,17 @@ public class Events {
     public record QuestCompletedEvent(String questId) {}
 
     // ───── World & Interaction ─────
-    public record InventoryChangedEvent(ItemDefinition item, int newAmount) {}
     public record WorldChangedEvent(String newWorldId) {}
+    public record NewDayEvent(int newDayCount) {}
+
+    public record InventoryChangedEvent(ItemDefinition item, int newAmount) {}
     public record ItemInteractionEvent(Item item, Player player){}
     public record ItemSearchedEvent(Player player, String itemKey, int amount) {}
+    public record ItemUsedEvent(ItemDefinition item) {}
+
     public record ActionRequestEvent(String actionId) {} // Нова подія
     public record InteractEvent() {}
 
-    public record ItemUsedEvent(ItemDefinition item) {}
     public record PlayerStateChangedEvent(Player.State newState) {}
 
     // ───── Police ─────

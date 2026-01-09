@@ -11,6 +11,7 @@ import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.npc.NpcManager;
 import com.mygame.entity.item.PfandManager;
 import com.mygame.entity.player.PlayerEffectManager;
+import com.mygame.game.DayManager;
 import com.mygame.game.GameContext;
 import com.mygame.game.GameInputHandler;
 import com.mygame.game.GameStateManager;
@@ -47,6 +48,7 @@ public class ManagerRegistry {
     private final AutoSaveManager autoSaveManager;
     private final WorldManager worldManager;
     private DarkOverlay darkOverlay;
+    private DayManager dayManager;
 
     public ManagerRegistry(SpriteBatch batch, Player player, Skin skin) {
         this.player = player;
@@ -54,6 +56,8 @@ public class ManagerRegistry {
         // 1. Core Managers & Registries
         darkOverlay = new DarkOverlay();
         worldManager = new WorldManager(player, darkOverlay);
+
+        dayManager = new DayManager();
 
         itemRegistry = new ItemRegistry();
         questRegistry = new QuestRegistry();
@@ -65,7 +69,7 @@ public class ManagerRegistry {
         questProgressTriggers = new QuestProgressTriggers(questManager, itemRegistry);
         cameraManager = new CameraManager(player);
         pfandManager = new PfandManager(itemRegistry, worldManager); // Injected worldManager
-        uiManager = new UIManager(batch, player, skin, questManager, worldManager); // Injected worldManager
+        uiManager = new UIManager(batch, player, skin, questManager, worldManager, dayManager); // Injected worldManager
         playerEffectManager = new PlayerEffectManager();
         itemManager = new ItemManager(itemRegistry, worldManager); // Injected worldManager
         npcManager = new NpcManager(player, dialogueRegistry, worldManager); // Injected worldManager
@@ -84,6 +88,7 @@ public class ManagerRegistry {
     }
 
     public void update(float delta) {
+        dayManager.update(delta);
         worldManager.update(delta);
         darkOverlay.update(delta);
         npcManager.update(delta);
@@ -93,7 +98,6 @@ public class ManagerRegistry {
         autoSaveManager.update(delta);
         cameraManager.update(delta, worldManager.getCurrentWorld());
         uiManager.update(delta);
-        worldManager.update(delta);
     }
 
     public void resize() {

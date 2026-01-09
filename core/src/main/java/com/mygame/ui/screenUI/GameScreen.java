@@ -7,6 +7,9 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Queue;
 import com.mygame.assets.Assets;
 import com.mygame.entity.player.Player;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
+import com.mygame.game.DayManager;
 import com.mygame.world.WorldManager;
 
 /**
@@ -16,13 +19,14 @@ public class GameScreen extends Screen {
     private final Label moneyLabel;
     private final Label infoLabel;
     private final Label worldLabel;
+    private final Label dayLabel;
     private float infoMessageTimer = 0f;
 
     private record Message(String text, float duration) {}
     private final Queue<Message> messageQueue = new Queue<>();
     private WorldManager worldManager;
 
-    public GameScreen(Skin skin, WorldManager worldManager) {
+    public GameScreen(Skin skin, WorldManager worldManager, DayManager dayManager, Player player) {
         super();
         this.worldManager = worldManager;
 
@@ -32,8 +36,10 @@ public class GameScreen extends Screen {
         // --- TOP ROW: World Name (Left) and Money (Right) ---
         worldLabel = createLabel(skin, "", 1.5f);
         moneyLabel = createLabel(skin, "", 1.5f);
+        dayLabel = createLabel(skin, "", 1.5f);
 
         root.add(worldLabel).expandX().left();
+        root.add(dayLabel).expandX().center().padRight(125);
         root.add(moneyLabel).expandX().right().row();
 
         // --- MIDDLE: Info Messages ---
@@ -42,8 +48,18 @@ public class GameScreen extends Screen {
         infoLabel.setAlignment(Align.center);
         infoLabel.setVisible(false);
 
-        // Додаємо повідомлення з великим відступом зверху
-        root.add(infoLabel).colspan(2).padTop(50).center();
+        root.add(infoLabel).colspan(3).padTop(50).center();
+
+        EventBus.subscribe(Events.WorldChangedEvent.class, event -> updateWorld(event.newWorldId()));
+        EventBus.subscribe(Events.NewDayEvent.class, event -> updateDay(event.newDayCount()));
+        EventBus.subscribe(Events.InventoryChangedEvent.class, event -> {
+            if (event.item().getKey().equals("money")){
+                updateMoney(event.newAmount());
+            }
+        });
+
+        updateMoney(player.getInventory().getMoney());
+        updateDay(dayManager.getDay());
     }
 
     public void updateMoney(int money) {
@@ -54,11 +70,15 @@ public class GameScreen extends Screen {
         worldLabel.setText(Assets.ui.format("ui.world.name", Assets.ui.get("ui.world.name." + worldName)));
     }
 
+    public void updateDay(int day) {
+        dayLabel.setText(Assets.ui.format("ui.day", day));
+    }
+
     public void showInfoMessage(String message, float duration) {
         messageQueue.addLast(new Message(message, duration));
     }
 
-    public void update(float delta, Player player) {
+    public void update(float delta) {
         if (infoMessageTimer > 0) {
             infoMessageTimer -= delta;
             if (infoMessageTimer <= 0) {
@@ -71,11 +91,6 @@ public class GameScreen extends Screen {
             infoLabel.setText(nextMessage.text());
             infoLabel.setVisible(true);
             infoMessageTimer = nextMessage.duration();
-        }
-
-        updateMoney(player.getInventory().getMoney());
-        if (worldManager.getCurrentWorld() != null) {
-            updateWorld(worldManager.getCurrentWorld().getName());
         }
     }
 }

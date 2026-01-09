@@ -13,6 +13,7 @@ import com.mygame.entity.npc.NPC;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
+import com.mygame.game.DayManager;
 import com.mygame.quest.QuestManager;
 import com.mygame.ui.inGameUI.DialogueUI;
 import com.mygame.ui.inGameUI.InventoryUI;
@@ -62,7 +63,7 @@ public class UIManager {
      * @param skin The fully configured skin to use for all UI components
      * @param batch The SpriteBatch used for world rendering
      */
-    public UIManager(SpriteBatch batch,Player player, Skin skin, QuestManager questManager, WorldManager worldManager) {
+    public UIManager(SpriteBatch batch, Player player, Skin skin, QuestManager questManager, WorldManager worldManager, DayManager dayManager) {
         System.out.println("UIManager: Initializing...");
         this.skin = skin;
         this.batch = batch;
@@ -71,7 +72,7 @@ public class UIManager {
 
         this.player = player;
         // Initialize screens with the provided skin
-        gameScreen = new GameScreen(skin, worldManager);
+        gameScreen = new GameScreen(skin, worldManager, dayManager,player);
         menuScreen = new MenuScreen(skin);
         pauseScreen = new PauseScreen(skin);
         settingsScreen = new SettingsScreen(skin);
@@ -97,16 +98,8 @@ public class UIManager {
 
         // Initialize touch controls only on Android
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            System.out.println("UIManager: Android detected, creating TouchControlsUI...");
-            touchControlsUI = new TouchControlsUI(
-                skin,
-                gameScreen.getStage(), pauseScreen.getStage(),
-                settingsScreen.getStage(), mapScreen.getStage(),
-                player
-            );
-            System.out.println("UIManager: TouchControlsUI created.");
+            touchControlsUI = new TouchControlsUI(skin, gameScreen.getStage(), pauseScreen.getStage(), settingsScreen.getStage(), mapScreen.getStage(), player);
         }
-        System.out.println("UIManager: Initialization complete.");
     }
 
     /**
@@ -135,9 +128,9 @@ public class UIManager {
         if (currentStage == mapScreen.getStage()) {
             mapScreen.update();
         } else if (currentStage == gameScreen.getStage()) {
-            gameScreen.update(delta, player);
+            gameScreen.update(delta);
             dialogueManager.update(delta);
-            if (inventoryUI.isVisible()) inventoryUI.update(player);
+            inventoryUI.update(player);
         }
         // Update the current stage actors
         currentStage.act(delta);

@@ -71,6 +71,7 @@ public class InventoryUI {
      * @param player Player whose inventory is displayed
      */
     public void update(Player player) {
+        if (!visible) return;
         inventoryTable.clear();
 
         // Title
