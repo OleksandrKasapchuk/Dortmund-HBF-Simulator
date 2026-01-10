@@ -1,23 +1,18 @@
 package com.mygame.world;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.mygame.assets.Assets;
-import com.mygame.entity.npc.NPC;
 import com.mygame.entity.item.Item;
+import com.mygame.entity.npc.NPC;
 import com.mygame.world.transition.Transition;
 
 import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Represents a game world, loaded from a TMX map file.
- * This class is a data container for the map, its layers, and the entities within it.
- */
 public class World {
     private final String name;
     private final TiledMap map;
@@ -29,14 +24,34 @@ public class World {
 
     private final ArrayList<Transition> transitions = new ArrayList<>();
     private final ArrayList<NPC> npcs = new ArrayList<>();
-    private final ArrayList<Item> items = new ArrayList<>();
+    private final ArrayList<Item> backgroundItems = new ArrayList<>();
+    private final ArrayList<Item> foregroundItems = new ArrayList<>();
     private final ArrayList<Item> pfands = new ArrayList<>();
+
+    private final int[] bottomLayersIndices;
+    private final int[] topLayersIndices;
 
     public World(String name, String pathToMapFile) {
         this.name = name;
         this.map = new TmxMapLoader().load(pathToMapFile);
         this.mapRenderer = new OrthogonalTiledMapRenderer(this.map);
         this.collisionLayer = (TiledMapTileLayer) this.map.getLayers().get("collision");
+
+        // --- Layers to be rendered BEHIND the player ---
+        ArrayList<Integer> bottomIndices = new ArrayList<>();
+        int backgroundIndex = this.map.getLayers().getIndex("background");
+        if (backgroundIndex != -1) {
+            bottomIndices.add(backgroundIndex);
+        }
+        this.bottomLayersIndices = bottomIndices.stream().mapToInt(i -> i).toArray();
+
+        // --- Layers to be rendered IN FRONT of the player ---
+        ArrayList<Integer> topIndices = new ArrayList<>();
+        int collisionIndex = this.map.getLayers().getIndex("collision");
+        if (collisionIndex != -1) {
+            topIndices.add(collisionIndex);
+        }
+        this.topLayersIndices = topIndices.stream().mapToInt(i -> i).toArray();
 
         this.tileSize = this.map.getProperties().get("tilewidth", Integer.class);
         this.mapWidth = this.map.getProperties().get("width", Integer.class) * tileSize;
@@ -58,20 +73,24 @@ public class World {
         return cell != null;
     }
 
-    public void renderMap(OrthographicCamera camera) {
+    private void renderLayers(OrthographicCamera camera, int[] layers) {
         mapRenderer.setView(camera);
-        mapRenderer.render();
+        // Expand the renderer's view bounds only at the bottom to prevent culling
+        float bottomBuffer = 40f;
+        mapRenderer.getViewBounds().y -= bottomBuffer;
+        mapRenderer.getViewBounds().height += bottomBuffer;
+
+        if (layers.length > 0) {
+            mapRenderer.render(layers);
+        }
     }
 
-    public void draw(SpriteBatch batch) {
-        for (NPC npc : npcs) npc.draw(batch);
-        for (Item item : items) item.draw(batch);
+    public void renderBottomLayers(OrthographicCamera camera) {
+        renderLayers(camera, bottomLayersIndices);
+    }
 
-        for (Transition transition : transitions) {
-            float textX = transition.area.x + transition.area.width / 2 - 50;
-            float textY = transition.area.y + transition.area.height / 2;
-            Assets.myFont.draw(batch, Assets.ui.get("ui.world.name." + transition.targetWorldId), textX, textY);
-        }
+    public void renderTopLayers(OrthographicCamera camera) {
+        renderLayers(camera, topLayersIndices);
     }
 
     public void drawTransitions(ShapeRenderer shapeRenderer) {
@@ -90,6 +109,12 @@ public class World {
     public String getName() { return name; }
     public ArrayList<Transition> getTransitions() { return transitions; }
     public ArrayList<NPC> getNpcs() { return npcs; }
-    public ArrayList<Item> getItems() { return items; }
+    public List<Item> getBackgroundItems() { return backgroundItems; }
+    public List<Item> getForegroundItems() { return foregroundItems; }
+    public List<Item> getAllItems() {
+        List<Item> allItems = new ArrayList<>(backgroundItems);
+        allItems.addAll(foregroundItems);
+        return allItems;
+    }
     public ArrayList<Item> getPfands() { return pfands; }
 }

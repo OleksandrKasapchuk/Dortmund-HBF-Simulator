@@ -128,7 +128,7 @@ public class SaveManager {
 
     private void saveSearchedItems(GameSettings settings){
         settings.searchedItems = ctx.worldManager.getWorlds().values().stream()
-            .flatMap(world -> world.getItems().stream())
+            .flatMap(world -> world.getAllItems().stream())
             .filter(Item::isSearched)
             .map(Item::getUniqueId)
             .collect(Collectors.toSet());

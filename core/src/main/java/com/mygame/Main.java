@@ -7,10 +7,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygame.assets.Assets;
+import com.mygame.entity.item.Item;
+import com.mygame.entity.npc.NPC;
 import com.mygame.game.GameContext;
 import com.mygame.game.GameInitializer;
 import com.mygame.assets.audio.MusicManager;
-
+import com.mygame.world.World;
 
 public class Main extends ApplicationAdapter {
 
@@ -25,7 +27,9 @@ public class Main extends ApplicationAdapter {
         shapeRenderer = new ShapeRenderer();
     }
 
-    public static void restartGame() {gameInitializer.initGame();}
+    public static void restartGame() {
+        gameInitializer.initGame();
+    }
 
     @Override
     public void render() {
@@ -40,11 +44,7 @@ public class Main extends ApplicationAdapter {
             case PLAYING:
                 renderGame(delta);
                 break;
-            case DEATH:
-            case SETTINGS:
-            case MENU:
-            case PAUSED:
-            case MAP:
+            default:
                 ctx.ui.render();
                 break;
         }
@@ -52,40 +52,71 @@ public class Main extends ApplicationAdapter {
 
     private void renderGame(float delta) {
         GameContext ctx = gameInitializer.getContext();
+        World currentWorld = ctx.worldManager.getCurrentWorld();
+
+        // 1. Update all logic
         ctx.player.update(delta);
-
-        OrthographicCamera camera = gameInitializer.getManagerRegistry().getCameraManager().getCamera();
-
-        // 1. Render the TMX map layer
-        ctx.worldManager.renderMap(camera);
-
-        // 2. Draw sprites (entities) on top
-        SpriteBatch batch = gameInitializer.getBatch();
-        batch.setProjectionMatrix(camera.combined);
-
         gameInitializer.getManagerRegistry().update(delta);
 
+        // 2. Get the updated camera
+        OrthographicCamera camera = gameInitializer.getManagerRegistry().getCameraManager().getCamera();
+
+        // 3. Render the absolute bottom layer (background/floor)
+        ctx.worldManager.renderBottomLayers(camera);
+
+        SpriteBatch batch = gameInitializer.getBatch();
+        batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        ctx.worldManager.drawEntities(batch, Assets.myFont);
-        ctx.ui.renderWorldElements();
-        ctx.player.draw(batch);
+
+        if (currentWorld != null) {
+            // 4. Draw background items (carpets, etc.)
+            for (Item item : currentWorld.getBackgroundItems()) {
+                item.draw(batch);
+            }
+
+            // 5. Draw player and NPCs
+            ctx.player.draw(batch);
+            for (NPC npc : currentWorld.getNpcs()) {
+                npc.draw(batch);
+            }
+        }
+
         batch.end();
 
-        // 3. Draw debug shapes
+        // 6. Render the collision layer (walls), which now covers the player
+        ctx.worldManager.renderTopLayers(camera);
+
+        // 7. Draw foreground items (e.g., items on tables) over the walls
+        batch.begin();
+        if (currentWorld != null) {
+            for (Item item : currentWorld.getForegroundItems()) {
+                item.draw(batch);
+            }
+        }
+
+        // Draw non-gameplay world elements like transition texts
+        ctx.worldManager.drawEntities(batch, Assets.myFont);
+        ctx.ui.renderWorldElements();
+
+        batch.end();
+
+        // 8. Draw debug shapes
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-
-        ctx.worldManager.getCurrentWorld().drawTransitions(shapeRenderer);
-
+        if (currentWorld != null) {
+            currentWorld.drawTransitions(shapeRenderer);
+        }
         shapeRenderer.end();
 
-        // 4. Draw UI
+        // 9. Draw screen-space UI
         ctx.ui.render();
         ctx.darkOverlay.render();
     }
 
     @Override
-    public void resize(int width, int height) {gameInitializer.getManagerRegistry().resize();}
+    public void resize(int width, int height) {
+        gameInitializer.getManagerRegistry().resize(width, height);
+    }
 
     @Override
     public void dispose() {
@@ -95,5 +126,7 @@ public class Main extends ApplicationAdapter {
         MusicManager.stopAll();
     }
 
-    public static GameInitializer getGameInitializer() {return gameInitializer;}
+    public static GameInitializer getGameInitializer() {
+        return gameInitializer;
+    }
 }

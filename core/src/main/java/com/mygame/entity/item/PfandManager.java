@@ -70,7 +70,7 @@ public class PfandManager {
 
             // Add new pfand to the world
             Item pfand = new Item(itemRegistry.get("pfand"), itemWidth, itemHeight, x, y, 75, Assets.getTexture("pfand"), worldManager.getCurrentWorld(), true, false, false, null, null, 0, null);
-            worldManager.getCurrentWorld().getItems().add(pfand);
+            worldManager.getCurrentWorld().getBackgroundItems().add(pfand);
             worldManager.getCurrentWorld().getPfands().add(pfand);
             break;
         }

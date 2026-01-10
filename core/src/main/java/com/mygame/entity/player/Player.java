@@ -132,7 +132,7 @@ public class Player extends Entity {
     private boolean isCollidingWithSolidItems(float newX, float newY) {
         if (world == null) return false;
         Rectangle playerRect = new Rectangle(newX, newY, getWidth(), getHeight());
-        for (Item item : world.getItems()) {
+        for (Item item : world.getAllItems()) {
             if (item.isSolid()) {
                 Rectangle itemRect = new Rectangle(item.getX(), item.getY(), item.getWidth(), item.getHeight());
                 if (playerRect.overlaps(itemRect)) {

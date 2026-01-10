@@ -37,5 +37,6 @@
   {"key": "carpet", "path": "images/block/carpet.png"},
   {"key": "big_plant", "path": "images/block/big_plant.png"},
   {"key": "small_plant", "path": "images/block/small_plant.png"},
-  {"key": "lamp", "path": "images/block/lamp.png"}
+  {"key": "lamp", "path": "images/block/lamp.png"},
+  {"key": "TV", "path": "images/block/TV.png"}
 ]

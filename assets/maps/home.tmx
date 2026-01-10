@@ -1,34 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="35" tilewidth="100" tileheight="100" infinite="0" nextlayerid="6" nextobjectid="31">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="36" tilewidth="100" tileheight="100" infinite="0" nextlayerid="6" nextobjectid="35">
  <tileset firstgid="1" source="plate.tsx"/>
  <tileset firstgid="2" source="brick.tsx"/>
  <tileset firstgid="3" source="npc.tsx"/>
  <tileset firstgid="4" source="wooden_floor.tsx"/>
  <tileset firstgid="5" source="wood.tsx"/>
  <tileset firstgid="6" source="wardrobe.tsx"/>
- <tileset firstgid="19" source="blackbrick.tsx"/>
- <layer id="1" name="background" width="30" height="35">
+ <tileset firstgid="22" source="blackbrick.tsx"/>
+ <tileset firstgid="23" source="3d_brick.tsx"/>
+ <layer id="1" name="background" width="30" height="36">
   <data encoding="csv">
+1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1,1,1,1,1,1,
-1,1,1,1,1,1,1,1,1,1,1,1,1,4,4,4,4,1,1,1,1,1,1,1,1,1,1,1,1,1,
-1,1,1,1,1,1,4,4,4,4,4,1,4,4,4,4,4,4,4,1,4,4,4,4,1,1,1,1,1,1,
-1,1,1,1,1,1,4,4,4,4,4,4,4,4,4,4,4,4,4,1,4,4,4,4,1,1,1,1,1,1,
-1,1,1,1,1,1,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1,1,
-1,1,1,1,1,1,4,4,4,4,4,1,4,4,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1,1,
-1,1,1,1,1,1,1,1,1,1,1,1,4,4,4,4,4,4,1,1,1,1,1,1,1,1,1,1,1,1,
-1,1,1,1,1,1,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1,1,
-1,1,1,1,1,1,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1,1,
-1,1,1,1,1,1,4,4,1,1,1,1,4,4,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1,1,
-1,1,1,1,1,1,4,4,4,4,4,1,4,4,4,4,4,4,1,4,4,4,4,4,1,1,1,1,1,1,
-1,1,1,1,1,1,4,4,4,4,4,1,4,4,4,4,4,4,1,4,4,4,4,4,1,1,1,1,1,1,
-1,1,1,1,1,1,4,4,4,4,4,1,4,4,4,4,4,4,1,4,4,4,4,4,1,1,1,1,1,1,
-1,1,1,1,1,1,4,4,4,4,4,1,4,4,4,4,4,4,1,4,4,4,4,4,1,1,1,1,1,1,
-1,1,1,1,1,1,1,1,1,1,1,1,1,0,4,4,4,0,1,1,1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,0,0,0,0,0,0,0,0,4,4,4,4,1,1,1,1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,0,4,4,4,4,4,0,4,4,4,4,4,4,4,1,4,4,4,4,1,1,1,1,1,1,
+1,1,1,1,1,0,4,4,4,4,4,4,4,4,4,4,4,4,4,1,4,4,4,4,1,1,1,1,1,1,
+1,1,1,1,1,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1,1,
+1,1,1,1,1,0,4,4,4,4,4,1,4,4,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1,1,
+1,1,1,1,1,0,1,1,1,1,1,1,4,4,4,4,4,4,1,1,1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1,1,
+1,1,1,1,1,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1,1,
+1,1,1,1,1,0,4,4,1,1,1,1,4,4,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1,1,
+1,1,1,1,1,0,4,4,4,4,4,1,4,4,4,4,4,4,1,4,4,4,4,4,1,1,1,1,1,1,
+1,1,1,1,1,0,4,4,4,4,4,1,4,4,4,4,4,4,1,4,4,4,4,4,1,1,1,1,1,1,
+1,1,1,1,1,0,4,4,4,4,4,1,4,4,4,4,4,4,1,4,4,4,4,4,1,1,1,1,1,1,
+1,1,1,1,1,0,4,4,4,4,4,1,4,4,4,4,4,4,1,4,4,4,4,4,1,1,1,1,1,1,
+1,1,1,1,1,0,0,0,0,0,0,0,0,0,4,4,4,0,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -46,28 +48,46 @@
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 </data>
  </layer>
- <layer id="3" name="collision" width="30" height="35" tintcolor="#afacaf">
+ <objectgroup id="2" name="transitions">
+  <object id="1" gid="2" x="750" y="3574" width="1548" height="580">
+   <properties>
+    <property name="targetWorldId" value="subway"/>
+    <property name="targetX" type="float" value="3000"/>
+    <property name="targetY" type="float" value="2500"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="npcs">
+  <object id="2" gid="3" x="1821" y="2302" width="70" height="100">
+   <properties>
+    <property name="name" value="denys"/>
+    <property name="textureKey" value="denys"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <layer id="3" name="collision" width="30" height="36" tintcolor="#afacaf">
   <data encoding="csv">
-0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,2,23,23,23,23,23,23,23,23,2,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,2,2,2,2,2,2,2,2,0,0,0,0,2,2,2,2,2,2,2,2,0,0,0,0,0,
+0,0,0,0,0,2,23,23,23,23,23,2,23,0,0,0,0,23,23,2,23,23,23,23,2,0,0,0,0,0,
 0,0,0,0,0,2,0,0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,2,0,0,0,0,0,
 0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,2,0,0,0,0,0,
 0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,
 0,0,0,0,0,2,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,
-0,0,0,0,0,2,2,2,2,2,2,2,0,0,0,0,0,0,2,2,2,2,2,2,2,0,0,0,0,0,
+0,0,0,0,0,2,23,23,23,23,23,23,0,0,0,0,0,0,23,23,23,23,23,23,2,0,0,0,0,0,
 0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,
 0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,
-0,0,0,0,0,2,0,0,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,
+0,0,0,0,0,2,0,0,23,23,23,2,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,
 0,0,0,0,0,2,0,0,0,0,0,2,0,0,0,0,0,0,2,0,0,0,0,0,2,0,0,0,0,0,
 0,0,0,0,0,2,0,0,0,0,0,2,0,0,0,0,0,0,2,0,0,0,0,0,2,0,0,0,0,0,
 0,0,0,0,0,2,0,0,0,0,0,2,0,0,0,0,0,0,2,0,0,0,0,0,2,0,0,0,0,0,
 0,0,0,0,0,2,0,0,0,0,0,2,0,0,0,0,0,0,2,0,0,0,0,0,2,0,0,0,0,0,
-0,0,0,0,0,2,2,2,2,2,2,2,2,2,0,0,2,2,2,2,2,2,2,2,2,0,0,0,0,0,
+0,0,0,0,0,23,23,23,23,23,23,23,23,23,0,0,23,23,23,23,23,23,23,23,23,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -85,25 +105,8 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="2" name="transitions">
-  <object id="1" gid="2" x="750" y="3474" width="1548" height="580">
-   <properties>
-    <property name="targetWorldId" value="subway"/>
-    <property name="targetX" type="float" value="3000"/>
-    <property name="targetY" type="float" value="2500"/>
-   </properties>
-  </object>
- </objectgroup>
- <objectgroup id="4" name="npcs">
-  <object id="2" gid="3" x="1821" y="2202" width="70" height="100">
-   <properties>
-    <property name="name" value="denys"/>
-    <property name="textureKey" value="denys"/>
-   </properties>
-  </object>
- </objectgroup>
  <objectgroup id="5" name="items">
-  <object id="4" gid="3" x="845" y="2193" width="150" height="150">
+  <object id="4" gid="3" x="845" y="2293" width="150" height="150">
    <properties>
     <property name="isPickupable" type="bool" value="false"/>
     <property name="isSolid" type="bool" value="true"/>
@@ -112,7 +115,7 @@
     <property name="questId" value="delivery"/>
    </properties>
   </object>
-  <object id="6" gid="7" x="2207" y="960" width="190" height="258">
+  <object id="6" gid="7" x="2207" y="1010" width="190" height="258">
    <properties>
     <property name="interactionDistance" type="int" value="150"/>
     <property name="isSolid" type="bool" value="true"/>
@@ -120,15 +123,16 @@
     <property name="onInteractAction" value="player.sleep"/>
    </properties>
   </object>
-  <object id="20" gid="7" x="600.333" y="1900.33" width="190" height="258">
+  <object id="20" gid="7" x="600.333" y="2000.33" width="190" height="258">
    <properties>
     <property name="interactionDistance" type="int" value="150"/>
+    <property name="isBackground" type="bool" value="true"/>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="bed"/>
     <property name="onInteractAction" value="player.sleep"/>
    </properties>
   </object>
-  <object id="7" gid="6" x="919.667" y="1700.67" width="180" height="200">
+  <object id="7" gid="6" x="919.667" y="1705.67" width="180" height="200">
    <properties>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="wardrobe"/>
@@ -138,7 +142,7 @@
     <property name="searchable" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="10" gid="8" x="2004.33" y="799.997" width="91" height="100">
+  <object id="10" gid="8" x="2004.33" y="860.997" width="91" height="100">
    <properties>
     <property name="interactionDistance" type="int" value="100"/>
     <property name="isSolid" type="bool" value="true"/>
@@ -149,7 +153,7 @@
     <property name="searchable" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="11" gid="10" x="2045" y="1857" width="229" height="114">
+  <object id="11" gid="10" x="2045" y="1957" width="229" height="114">
    <properties>
     <property name="isPickupable" type="bool" value="false"/>
     <property name="isSolid" type="bool" value="true"/>
@@ -157,7 +161,7 @@
     <property name="onInteractAction" value="interact.table_plant"/>
    </properties>
   </object>
-  <object id="12" gid="6" x="605" y="902.03" width="180" height="200">
+  <object id="12" gid="6" x="600" y="904.03" width="180" height="200">
    <properties>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="wardrobe"/>
@@ -165,50 +169,58 @@
     <property name="searchable" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="13" gid="11" x="2025" y="1335.5" width="250" height="136">
+  <object id="13" gid="11" x="2025" y="1401.5" width="250" height="136">
    <properties>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="sofa"/>
    </properties>
   </object>
-  <object id="14" gid="13" x="2015" y="1562" width="271" height="209.333">
+  <object id="14" gid="13" x="2015" y="1662" width="271" height="209.333">
    <properties>
+    <property name="isBackground" type="bool" value="true"/>
     <property name="itemKey" value="carpet"/>
    </properties>
   </object>
-  <object id="15" gid="12" x="2280" y="1300" width="64" height="100">
+  <object id="15" gid="12" x="2280" y="1366" width="64" height="100">
    <properties>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="big_plant"/>
    </properties>
   </object>
-  <object id="16" gid="12" x="1955" y="1300" width="64" height="100">
+  <object id="16" gid="12" x="1955" y="1366" width="64" height="100">
    <properties>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="big_plant"/>
    </properties>
   </object>
-  <object id="17" gid="15" x="1751" y="899.5" width="150" height="200">
+  <object id="17" gid="15" x="1752" y="903.5" width="150" height="200">
    <properties>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="bookshell"/>
    </properties>
   </object>
-  <object id="18" gid="14" x="1026.33" y="781.667" width="57" height="63">
+  <object id="18" gid="14" x="1026.33" y="881.667" width="57" height="63">
    <properties>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="small_plant"/>
    </properties>
   </object>
-  <object id="24" gid="13" x="1358.5" y="1893.33" width="271" height="209.333">
+  <object id="24" gid="13" x="1358.5" y="1993.33" width="271" height="209.333">
    <properties>
+    <property name="isBackground" type="bool" value="true"/>
     <property name="itemKey" value="carpet"/>
    </properties>
   </object>
-  <object id="25" gid="17" x="2316" y="1404.33" width="77" height="187.333">
+  <object id="25" gid="17" x="2316" y="1470.33" width="77" height="187.333">
    <properties>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="lamp"/>
+   </properties>
+  </object>
+  <object id="33" gid="18" x="1350" y="300.333" width="299" height="178">
+   <properties>
+    <property name="isSolid" type="bool" value="true"/>
+    <property name="itemKey" value="TV"/>
    </properties>
   </object>
  </objectgroup>
