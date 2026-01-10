@@ -146,8 +146,8 @@ public class UIManager {
 
         for (Item item : worldManager.getCurrentWorld().getItems()) {
             // Check if it's a quest item and if the quest is active
+            if (!item.isInteractable()) continue;
             if (item.getQuestId() != null && !questManager.hasQuest(item.getQuestId())) continue;
-
             if (item.isPlayerNear(player, item.getDistance()) && !item.isSearched()) {
                 if (item.isSearchable()){
                     drawText(Assets.ui.get("interact.search"), item.getCenterX(), item.getCenterY());
@@ -161,8 +161,8 @@ public class UIManager {
     private void handleInteraction() {
         // Find the nearest item the player can interact with
         for (Item item : worldManager.getCurrentWorld().getItems()) {
+            if (!item.isInteractable()) continue;
             if (item.getQuestId() != null && !questManager.hasQuest(item.getQuestId())) continue;
-
             if (item.isPlayerNear(player, item.getDistance()) && !item.isSearched()) {
                 EventBus.fire(new Events.ItemInteractionEvent(item, player));
                 return; // Prioritize items and interact with only one

@@ -8,6 +8,7 @@ import com.mygame.assets.Assets;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
+import com.mygame.managers.TimerManager;
 import com.mygame.ui.inGameUI.DarkOverlay;
 import com.mygame.world.transition.Transition;
 
@@ -90,12 +91,15 @@ public class WorldManager {
     private void handleInteraction() {
         if (inTransitionZone && activeTransition != null) {
             EventBus.fire(new Events.DarkOverlayEvent(0.8f));
-            setCurrentWorld(activeTransition.targetWorldId);
-            player.setX(activeTransition.targetX);
-            player.setY(activeTransition.targetY);
-            player.setWorld(currentWorld);
-            inTransitionZone = false;
-            cooldownTimer = TRANSITION_COOLDOWN; // Start cooldown
+            TimerManager.setAction(() -> {
+                setCurrentWorld(activeTransition.targetWorldId);
+                player.setX(activeTransition.targetX);
+                player.setY(activeTransition.targetY);
+                player.setWorld(currentWorld);
+                inTransitionZone = false;
+                cooldownTimer = TRANSITION_COOLDOWN; // Start cooldown
+            }, 0.2f);
+
         }
     }
 

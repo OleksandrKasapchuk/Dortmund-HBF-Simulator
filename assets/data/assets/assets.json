@@ -31,5 +31,11 @@
   { "key": "bed", "path": "images/block/bed.png"},
   { "key": "drawer", "path": "images/block/drawer.png"},
   { "key": "nightstand", "path": "images/block/nightstand.png"},
-  { "key": "table", "path": "images/block/table.png"}
+  { "key": "table", "path": "images/block/table.png"},
+  { "key": "sofa", "path": "images/block/sofa.png"},
+  {"key": "bookshell", "path": "images/block/bookshell.png"},
+  {"key": "carpet", "path": "images/block/carpet.png"},
+  {"key": "big_plant", "path": "images/block/big_plant.png"},
+  {"key": "small_plant", "path": "images/block/small_plant.png"},
+  {"key": "lamp", "path": "images/block/lamp.png"}
 ]

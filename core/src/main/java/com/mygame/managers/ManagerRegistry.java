@@ -25,7 +25,7 @@ public class ManagerRegistry {
     }
 
     public void resize() {
-        ctx.cameraManager.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        ctx.cameraManager.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), ctx.worldManager.getCurrentWorld());
         ctx.ui.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 

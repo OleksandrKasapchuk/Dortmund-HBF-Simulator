@@ -67,7 +67,9 @@ public class Item extends Entity {
         return world.getName() + "_" + (int)getX() + "_" + (int)getY();
     }
 
-    public String getName() { return type.getNameKey(); }
+    public boolean isInteractable() {
+        return interactionActionId != null && !interactionActionId.isEmpty();
+    }
     public ItemDefinition getType() { return type; }
     public boolean canBePickedUp() { return canBePickedUp; }
     public boolean isSolid() { return solid; }
