@@ -1,9 +1,11 @@
 package com.mygame.entity.npc;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
 import com.mygame.assets.Assets;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.Entity;
+import com.mygame.entity.item.Item;
 import com.mygame.world.World;
 
 /**
@@ -60,7 +62,6 @@ public class NPC extends Entity {
         timer += delta;
 
         if (isPaused) {
-
             // --- Pause state ---
             if (timer >= pauseTime) {
                 timer = 0f;
@@ -70,30 +71,26 @@ public class NPC extends Entity {
                 directionX *= -1;
                 directionY *= -1;
             }
-
         } else {
-
             // --- Movement state ---
-            float newX = this.getX() + directionX * speed * delta;
-            float newY = this.getY() + directionY * speed * delta;
+            float dx = directionX * speed * delta;
+            float dy = directionY * speed * delta;
+
+            Rectangle npcRect = new Rectangle(getX(), getY(), getWidth(), getHeight());
 
             // --- Collision detection on X ---
-            boolean collideX =
-                world.isSolid(newX, this.getY() - this.getHeight() - 20) ||
-                    world.isSolid(newX + this.getWidth(), this.getY() - this.getHeight() - 20) ||
-                    world.isSolid(newX, this.getY() - 20) ||
-                    world.isSolid(newX + this.getWidth(), this.getY() - 20);
-
-            if (!collideX) this.setX(newX);
+            npcRect.x += dx;
+            if (!world.isCollidingWithMap(npcRect) && !isCollidingWithSolidItems(npcRect)) {
+                this.setX(this.getX() + dx);
+            }
+            npcRect.x = getX(); // Reset X
 
             // --- Collision detection on Y ---
-            boolean collideY =
-                world.isSolid(this.getX(), newY - this.getHeight() - 20) ||
-                    world.isSolid(this.getX() + this.getWidth(), newY - this.getHeight() - 20) ||
-                    world.isSolid(this.getX(), newY - 20) ||
-                    world.isSolid(this.getX() + this.getWidth(), newY - 20);
-
-            if (!collideY) this.setY(newY);
+            npcRect.y += dy;
+            if (!world.isCollidingWithMap(npcRect) && !isCollidingWithSolidItems(npcRect)) {
+                this.setY(this.getY() + dy);
+            }
+            // npcRect.y is not reset because it's re-created on the next frame
 
             // After moving → switch to pause
             if (timer > moveTime) {
@@ -101,6 +98,19 @@ public class NPC extends Entity {
                 timer = 0f;
             }
         }
+    }
+
+    private boolean isCollidingWithSolidItems(Rectangle npcRect) {
+        if (world == null) return false;
+        for (Item item : world.getAllItems()) {
+            if (item.isSolid()) {
+                Rectangle itemRect = new Rectangle(item.getX(), item.getY(), item.getWidth(), item.getHeight());
+                if (npcRect.overlaps(itemRect)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     // --- Dialogue ---

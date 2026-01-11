@@ -2,6 +2,8 @@ package com.mygame.game.save;
 
 import com.badlogic.gdx.Gdx;
 import com.mygame.Main;
+import com.mygame.assets.audio.MusicManager;
+import com.mygame.assets.audio.SoundManager;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.npc.NPC;
 import com.mygame.entity.npc.Police;
@@ -79,6 +81,9 @@ public class SaveManager {
 
         try {
             GameSettings settings = SettingsManager.load();
+
+            settings.musicVolume = MusicManager.getVolume();
+            settings.soundVolume = SoundManager.getVolume();
 
             savePlayerData(settings);
 

@@ -53,7 +53,7 @@ public class SettingsScreen extends Screen {
         audioTable.add(soundVolumeSlider).width(400).padBottom(20).row();
 
         // Mute All
-        muteAllCheckbox = new CheckBox(" " + Assets.ui.get("settings.muteAll"), skin);
+        muteAllCheckbox = new CheckBox(Assets.ui.get("settings.muteAll"), skin);
         muteAllCheckbox.getLabel().setFontScale(1.5f);
         muteAllCheckbox.getImageCell().size(60, 60);
         muteAllCheckbox.addListener(new ChangeListener() {

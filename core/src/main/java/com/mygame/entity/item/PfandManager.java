@@ -1,6 +1,7 @@
 package com.mygame.entity.item;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Rectangle;
 import com.mygame.assets.Assets;
 import com.mygame.Main;
 import com.mygame.world.WorldManager;
@@ -62,8 +63,11 @@ public class PfandManager {
             // Skip if inside camera view
             if (isInCameraView(x, y, cam)) continue;
 
+            // Create a rectangle for the potential new item
+            Rectangle newItemRect = new Rectangle(x, y, itemWidth, itemHeight);
+
             // Skip if colliding with world blocks
-            if (isCollidingWithAnyBlock(world, x, y, itemWidth, itemHeight)) continue;
+            if (world.isCollidingWithMap(newItemRect)) continue;
 
             // Skip if too close to other pfands
             if (isTooCloseToOtherPfands(x, y)) continue;
@@ -74,18 +78,6 @@ public class PfandManager {
             worldManager.getCurrentWorld().getPfands().add(pfand);
             break;
         }
-    }
-
-    /**
-     * Checks if an item's bounding box collides with any solid tile in the world.
-     * It checks the four corners of the bounding box.
-     */
-    private boolean isCollidingWithAnyBlock(World world, float x, float y, float width, float height) {
-        // Check the four corners of the item's bounding box against the world's collision layer
-        if (world.isSolid(x, y)) return true;                      // Bottom-left
-        if (world.isSolid(x + width, y)) return true;             // Bottom-right
-        if (world.isSolid(x, y + height)) return true;             // Top-left
-        return world.isSolid(x + width, y + height); // Top-right
     }
 
     /** Checks if a position is too close to existing pfand items */

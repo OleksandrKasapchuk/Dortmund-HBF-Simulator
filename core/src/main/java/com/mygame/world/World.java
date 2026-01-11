@@ -2,10 +2,17 @@ package com.mygame.world;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.PolygonMapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.npc.NPC;
 import com.mygame.world.transition.Transition;
@@ -18,7 +25,8 @@ public class World {
     private final TiledMap map;
     private final OrthogonalTiledMapRenderer mapRenderer;
     private final TiledMapTileLayer collisionLayer;
-    public final int tileSize;
+    public final int tileWidth;
+    public final int tileHeight;
     public final int mapWidth;
     public final int mapHeight;
 
@@ -37,7 +45,6 @@ public class World {
         this.mapRenderer = new OrthogonalTiledMapRenderer(this.map);
         this.collisionLayer = (TiledMapTileLayer) this.map.getLayers().get("collision");
 
-        // --- Layers to be rendered BEHIND the player ---
         ArrayList<Integer> bottomIndices = new ArrayList<>();
         int backgroundIndex = this.map.getLayers().getIndex("background");
         if (backgroundIndex != -1) {
@@ -45,7 +52,6 @@ public class World {
         }
         this.bottomLayersIndices = bottomIndices.stream().mapToInt(i -> i).toArray();
 
-        // --- Layers to be rendered IN FRONT of the player ---
         ArrayList<Integer> topIndices = new ArrayList<>();
         int collisionIndex = this.map.getLayers().getIndex("collision");
         if (collisionIndex != -1) {
@@ -53,44 +59,87 @@ public class World {
         }
         this.topLayersIndices = topIndices.stream().mapToInt(i -> i).toArray();
 
-        this.tileSize = this.map.getProperties().get("tilewidth", Integer.class);
-        this.mapWidth = this.map.getProperties().get("width", Integer.class) * tileSize;
-        this.mapHeight = this.map.getProperties().get("height", Integer.class) * tileSize;
+        this.tileWidth = this.map.getProperties().get("tilewidth", Integer.class);
+        this.tileHeight = this.map.getProperties().get("tileheight", Integer.class);
+        this.mapWidth = this.map.getProperties().get("width", Integer.class) * tileWidth;
+        this.mapHeight = this.map.getProperties().get("height", Integer.class) * tileHeight;
     }
 
-    public boolean isSolid(float x, float y) {
+    public boolean isCollidingWithMap(Rectangle rect) {
         if (collisionLayer == null) {
             return false;
         }
-        int tileX = (int) (x / tileSize);
-        int tileY = (int) (y / tileSize);
 
-        if (tileX < 0 || tileX >= collisionLayer.getWidth() || tileY < 0 || tileY >= collisionLayer.getHeight()) {
-            return true; // Out of bounds is solid
+        int startX = Math.max(0, (int) (rect.x / tileWidth));
+        int startY = Math.max(0, (int) (rect.y / tileHeight));
+        int endX = Math.min(collisionLayer.getWidth() - 1, (int) ((rect.x + rect.width) / tileWidth));
+        int endY = Math.min(collisionLayer.getHeight() - 1, (int) ((rect.y + rect.height) / tileHeight));
+
+        for (int y = startY; y <= endY; y++) {
+            for (int x = startX; x <= endX; x++) {
+                TiledMapTileLayer.Cell cell = collisionLayer.getCell(x, y);
+                if (cell == null || cell.getTile() == null) {
+                    continue;
+                }
+
+                MapObjects objects = cell.getTile().getObjects();
+                if (objects.getCount() == 0) continue;
+
+                for (MapObject object : objects) {
+                    float tileWorldX = x * tileWidth;
+                    float tileWorldY = y * tileHeight;
+
+                    if (object instanceof RectangleMapObject) {
+                        Rectangle mapRect = ((RectangleMapObject) object).getRectangle();
+                        // LibGDX Tiled importer flips the Y-axis for objects within tiles.
+                        // We must account for this by subtracting the object's Y from the tile's height.
+                        float objectWorldY = tileWorldY + (tileHeight - (mapRect.y + mapRect.height));
+                        Rectangle worldRect = new Rectangle(mapRect.x + tileWorldX, objectWorldY, mapRect.width, mapRect.height);
+
+                        if (Intersector.overlaps(worldRect, rect)) {
+                            return true;
+                        }
+                    } else if (object instanceof PolygonMapObject) {
+                        Polygon mapPoly = ((PolygonMapObject) object).getPolygon();
+                        Polygon worldPoly = new Polygon(mapPoly.getVertices());
+                        worldPoly.setPosition(tileWorldX, tileWorldY);
+
+                        Polygon playerPoly = new Polygon(new float[]{
+                                rect.x, rect.y,
+                                rect.x, rect.y + rect.height,
+                                rect.x + rect.width, rect.y + rect.height,
+                                rect.x + rect.width, rect.y
+                        });
+
+                        if (Intersector.overlapConvexPolygons(worldPoly, playerPoly)) {
+                            return true;
+                        }
+                    }
+                }
+            }
         }
-
-        TiledMapTileLayer.Cell cell = collisionLayer.getCell(tileX, tileY);
-        return cell != null;
+        return false;
     }
 
-    private void renderLayers(OrthographicCamera camera, int[] layers) {
+
+    public void renderBottomLayers(OrthographicCamera camera) {
         mapRenderer.setView(camera);
-        // Expand the renderer's view bounds only at the bottom to prevent culling
         float bottomBuffer = 40f;
         mapRenderer.getViewBounds().y -= bottomBuffer;
         mapRenderer.getViewBounds().height += bottomBuffer;
-
-        if (layers.length > 0) {
-            mapRenderer.render(layers);
+        if (bottomLayersIndices.length > 0) {
+            mapRenderer.render(bottomLayersIndices);
         }
     }
 
-    public void renderBottomLayers(OrthographicCamera camera) {
-        renderLayers(camera, bottomLayersIndices);
-    }
-
     public void renderTopLayers(OrthographicCamera camera) {
-        renderLayers(camera, topLayersIndices);
+        mapRenderer.setView(camera);
+        float bottomBuffer = 40f;
+        mapRenderer.getViewBounds().y -= bottomBuffer;
+        mapRenderer.getViewBounds().height += bottomBuffer;
+        if (topLayersIndices.length > 0) {
+            mapRenderer.render(topLayersIndices);
+        }
     }
 
     public void drawTransitions(ShapeRenderer shapeRenderer) {

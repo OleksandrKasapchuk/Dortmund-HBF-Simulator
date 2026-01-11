@@ -91,15 +91,21 @@ public class Player extends Entity {
         }
 
         // --- Collision Detection and Movement ---
+        Rectangle playerRect = new Rectangle(getX(), getY(), getWidth(), getHeight());
+
         // Move on X axis
-        if (!isCollidingWithMap(getX() + dx, getY()) && !isCollidingWithSolidItems(getX() + dx, getY())) {
+        playerRect.x += dx;
+        if (!world.isCollidingWithMap(playerRect) && !isCollidingWithSolidItems(playerRect)) {
             setX(getX() + dx);
         }
+        playerRect.x = getX(); // Reset X to current position
 
         // Move on Y axis
-        if (!isCollidingWithMap(getX(), getY() + dy) && !isCollidingWithSolidItems(getX(), getY() + dy)) {
+        playerRect.y += dy;
+        if (!world.isCollidingWithMap(playerRect) && !isCollidingWithSolidItems(playerRect)) {
             setY(getY() + dy);
         }
+        playerRect.y = getY(); // Reset Y to current position
 
         // --- World Bounds Clamping ---
         if (world != null) {
@@ -111,27 +117,10 @@ public class Player extends Entity {
     }
 
     /**
-     * Checks if the player at a new position would collide with a solid tile on the map.
-     * It checks the four corners of the player's bounding box.
-     */
-    private boolean isCollidingWithMap(float newX, float newY) {
-        if (world == null) return false;
-        // Check bottom-left corner
-        if (world.isSolid(newX, newY)) return true;
-        // Check bottom-right corner
-        if (world.isSolid(newX + getWidth(), newY)) return true;
-        // Check top-left corner
-        if (world.isSolid(newX, newY + getHeight())) return true;
-        // Check top-right corner
-        return world.isSolid(newX + getWidth(), newY + getHeight());
-    }
-
-    /**
      * Checks if the player at a new position would collide with any solid items.
      */
-    private boolean isCollidingWithSolidItems(float newX, float newY) {
+    private boolean isCollidingWithSolidItems(Rectangle playerRect) {
         if (world == null) return false;
-        Rectangle playerRect = new Rectangle(newX, newY, getWidth(), getHeight());
         for (Item item : world.getAllItems()) {
             if (item.isSolid()) {
                 Rectangle itemRect = new Rectangle(item.getX(), item.getY(), item.getWidth(), item.getHeight());
