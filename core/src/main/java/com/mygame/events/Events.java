@@ -5,6 +5,7 @@ import com.mygame.entity.item.ItemDefinition;
 import com.mygame.entity.npc.Police;
 import com.mygame.entity.player.Player;
 import com.mygame.game.DayManager;
+import com.mygame.game.GameStateManager;
 
 public class Events {
 
@@ -34,7 +35,7 @@ public class Events {
     public record InteractEvent() {}
 
     public record PlayerStateChangedEvent(Player.State newState) {}
-
+    public record GameStateChangedEvent(GameStateManager.GameState newState) {}
     // ───── Police ─────
     public record PoliceStateChangedEvent(Police.PoliceState newState) {}
 

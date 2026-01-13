@@ -142,14 +142,6 @@ public class NpcManager {
         }
     }
 
-    public NPC getBoss() {
-        return findNpcById("boss");
-    }
-
-    public Police getPolice() {
-        return (Police) findNpcById("police");
-    }
-
     public Police getSummonedPolice() {
         return (Police) findNpcById("summoned_police");
     }

@@ -25,26 +25,30 @@ public class World {
     private final TiledMap map;
     private final OrthogonalTiledMapRenderer mapRenderer;
     private final TiledMapTileLayer collisionLayer;
-    public final int tileWidth;
-    public final int tileHeight;
-    public final int mapWidth;
-    public final int mapHeight;
+    public int tileWidth;
+    public int tileHeight;
+    public int mapWidth;
+    public int mapHeight;
 
     private final ArrayList<Transition> transitions = new ArrayList<>();
     private final ArrayList<NPC> npcs = new ArrayList<>();
     private final ArrayList<Item> backgroundItems = new ArrayList<>();
     private final ArrayList<Item> foregroundItems = new ArrayList<>();
+    private final ArrayList<Item> allItems = new ArrayList<>();
     private final ArrayList<Item> pfands = new ArrayList<>();
-
-    private final int[] bottomLayersIndices;
-    private final int[] topLayersIndices;
+    private int[] bottomLayersIndices;
+    private int[] topLayersIndices;
 
     public World(String name, String pathToMapFile) {
         this.name = name;
         this.map = new TmxMapLoader().load(pathToMapFile);
         this.mapRenderer = new OrthogonalTiledMapRenderer(this.map);
         this.collisionLayer = (TiledMapTileLayer) this.map.getLayers().get("collision");
+        initializeRenderLayers();
+        initializeMapDimensions();
+    }
 
+    private void initializeRenderLayers() {
         ArrayList<Integer> bottomIndices = new ArrayList<>();
         int backgroundIndex = this.map.getLayers().getIndex("background");
         if (backgroundIndex != -1) {
@@ -58,7 +62,9 @@ public class World {
             topIndices.add(collisionIndex);
         }
         this.topLayersIndices = topIndices.stream().mapToInt(i -> i).toArray();
+    }
 
+    private void initializeMapDimensions() {
         this.tileWidth = this.map.getProperties().get("tilewidth", Integer.class);
         this.tileHeight = this.map.getProperties().get("tileheight", Integer.class);
         this.mapWidth = this.map.getProperties().get("width", Integer.class) * tileWidth;
@@ -86,39 +92,42 @@ public class World {
                 if (objects.getCount() == 0) continue;
 
                 for (MapObject object : objects) {
-                    float tileWorldX = x * tileWidth;
-                    float tileWorldY = y * tileHeight;
+                    float tileWorldX = (float) x * tileWidth;
+                    float tileWorldY = (float) y * tileHeight;
 
-                    if (object instanceof RectangleMapObject) {
-                        Rectangle mapRect = ((RectangleMapObject) object).getRectangle();
-                        // LibGDX Tiled importer flips the Y-axis for objects within tiles.
-                        // We must account for this by subtracting the object's Y from the tile's height.
-                        float objectWorldY = tileWorldY + (tileHeight - (mapRect.y + mapRect.height));
-                        Rectangle worldRect = new Rectangle(mapRect.x + tileWorldX, objectWorldY, mapRect.width, mapRect.height);
-
-                        if (Intersector.overlaps(worldRect, rect)) {
-                            return true;
-                        }
-                    } else if (object instanceof PolygonMapObject) {
-                        Polygon mapPoly = ((PolygonMapObject) object).getPolygon();
-                        Polygon worldPoly = new Polygon(mapPoly.getVertices());
-                        worldPoly.setPosition(tileWorldX, tileWorldY);
-
-                        Polygon playerPoly = new Polygon(new float[]{
-                                rect.x, rect.y,
-                                rect.x, rect.y + rect.height,
-                                rect.x + rect.width, rect.y + rect.height,
-                                rect.x + rect.width, rect.y
-                        });
-
-                        if (Intersector.overlapConvexPolygons(worldPoly, playerPoly)) {
-                            return true;
-                        }
+                    if (object instanceof RectangleMapObject && isOverlappingWithRectangle(rect, (RectangleMapObject) object, tileWorldX, tileWorldY)) {
+                        return true;
+                    } else if (object instanceof PolygonMapObject && isOverlappingWithPolygon(rect, (PolygonMapObject) object, tileWorldX, tileWorldY)) {
+                        return true;
                     }
                 }
             }
         }
         return false;
+    }
+
+    private boolean isOverlappingWithRectangle(Rectangle rect, RectangleMapObject mapObject, float tileWorldX, float tileWorldY) {
+        Rectangle mapRect = mapObject.getRectangle();
+        // LibGDX Tiled importer flips the Y-axis for objects within tiles.
+        // We must account for this by subtracting the object's Y from the tile's height.
+        float objectWorldY = tileWorldY + (tileHeight - (mapRect.y + mapRect.height));
+        Rectangle worldRect = new Rectangle(mapRect.x + tileWorldX, objectWorldY, mapRect.width, mapRect.height);
+        return Intersector.overlaps(worldRect, rect);
+    }
+
+    private boolean isOverlappingWithPolygon(Rectangle rect, PolygonMapObject mapObject, float tileWorldX, float tileWorldY) {
+        Polygon mapPoly = mapObject.getPolygon();
+        Polygon worldPoly = new Polygon(mapPoly.getVertices());
+        worldPoly.setPosition(tileWorldX, tileWorldY);
+
+        Polygon playerPoly = new Polygon(new float[]{
+                rect.x, rect.y,
+                rect.x, rect.y + rect.height,
+                rect.x + rect.width, rect.y + rect.height,
+                rect.x + rect.width, rect.y
+        });
+
+        return Intersector.overlapConvexPolygons(worldPoly, playerPoly);
     }
 
 
@@ -160,10 +169,25 @@ public class World {
     public ArrayList<NPC> getNpcs() { return npcs; }
     public List<Item> getBackgroundItems() { return backgroundItems; }
     public List<Item> getForegroundItems() { return foregroundItems; }
-    public List<Item> getAllItems() {
-        List<Item> allItems = new ArrayList<>(backgroundItems);
-        allItems.addAll(foregroundItems);
-        return allItems;
+
+
+    public void addBackgroundItem(Item item) {
+        backgroundItems.add(item);
+        allItems.add(item);
     }
+
+    public void addForegroundItem(Item item) {
+        foregroundItems.add(item);
+        allItems.add(item);
+    }
+
+    public List<Item> getAllItems() {return allItems;}
     public ArrayList<Item> getPfands() { return pfands; }
+
+    public void removeItem(Item item) {
+        backgroundItems.remove(item);
+        foregroundItems.remove(item);
+        allItems.remove(item);
+    }
+
 }

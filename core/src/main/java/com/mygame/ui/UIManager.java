@@ -6,13 +6,13 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygame.assets.Assets;
-import com.mygame.dialogue.DialogueManager;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.npc.NPC;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.DayManager;
+import com.mygame.game.GameStateManager;
 import com.mygame.quest.QuestManager;
 import com.mygame.ui.inGameUI.DialogueUI;
 import com.mygame.ui.inGameUI.InventoryUI;
@@ -21,7 +21,7 @@ import com.mygame.ui.inGameUI.TouchControlsUI;
 import com.mygame.ui.screenUI.*;
 import com.mygame.world.WorldManager;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 public class UIManager {
@@ -31,18 +31,17 @@ public class UIManager {
     private final QuestManager questManager;
     private final WorldManager worldManager;
 
-    private final Map<String, Screen> screens = new HashMap<>();
+    private final Map<GameStateManager.GameState, Screen> screens = new EnumMap<>(GameStateManager.GameState.class);
     private Screen currentScreen;
 
     private QuestUI questUI;
     private InventoryUI inventoryUI;
     private DialogueUI dialogueUI;
     private TouchControlsUI touchControlsUI;
-    private final DialogueManager dialogueManager;
+
     private final GlyphLayout layout = new GlyphLayout();
 
     public UIManager(SpriteBatch batch, Player player, Skin skin, QuestManager questManager, WorldManager worldManager, DayManager dayManager) {
-        System.out.println("UIManager: Initializing...");
         this.batch = batch;
         this.player = player;
         this.questManager = questManager;
@@ -50,28 +49,27 @@ public class UIManager {
 
         createScreens(skin, dayManager);
 
-        currentScreen = screens.get("MENU");
+        currentScreen = screens.get(GameStateManager.GameState.MENU);
         Gdx.input.setInputProcessor(currentScreen.getStage());
 
         questUI = new QuestUI(skin, getGameScreen().getStage(), 1200, 900, questManager);
         inventoryUI = new InventoryUI(getGameScreen().getStage(), skin);
         dialogueUI = new DialogueUI(skin, getGameScreen().getStage(), 1950, 250, 25f, 10f);
-        dialogueManager = new DialogueManager(dialogueUI, player, worldManager);
 
         subscribeToEvents();
 
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            touchControlsUI = new TouchControlsUI(skin, screens.get("GAME").getStage(), screens.get("PAUSE").getStage(), screens.get("SETTINGS").getStage(), screens.get("MAP").getStage(), player);
+            touchControlsUI = new TouchControlsUI(skin, screens.get(GameStateManager.GameState.PLAYING).getStage(), screens.get(GameStateManager.GameState.PAUSED).getStage(), screens.get(GameStateManager.GameState.SETTINGS).getStage(), screens.get(GameStateManager.GameState.MAP).getStage(), player);
         }
     }
 
     private void createScreens(Skin skin, DayManager dayManager) {
-        screens.put("GAME", new GameScreen(skin, worldManager, dayManager, player));
-        screens.put("MENU", new MenuScreen(skin));
-        screens.put("PAUSE", new PauseScreen(skin));
-        screens.put("SETTINGS", new SettingsScreen(skin));
-        screens.put("DEATH", new DeathScreen(skin));
-        screens.put("MAP", new MapScreen(skin, worldManager));
+        screens.put(GameStateManager.GameState.PLAYING, new GameScreen(skin, worldManager, dayManager, player));
+        screens.put(GameStateManager.GameState.MENU, new MenuScreen(skin));
+        screens.put(GameStateManager.GameState.PAUSED, new PauseScreen(skin));
+        screens.put(GameStateManager.GameState.SETTINGS, new SettingsScreen(skin));
+        screens.put(GameStateManager.GameState.DEATH, new DeathScreen(skin));
+        screens.put(GameStateManager.GameState.MAP, new MapScreen(skin, worldManager));
     }
 
     private void subscribeToEvents() {
@@ -81,10 +79,11 @@ public class UIManager {
         EventBus.subscribe(Events.AddItemMessageEvent.class, event -> showEarned(event.item().getNameKey(), event.amount()));
         EventBus.subscribe(Events.NotEnoughMessageEvent.class, event -> showNotEnough(event.item().getNameKey()));
         EventBus.subscribe(Events.InteractEvent.class, e -> handleInteraction());
+        EventBus.subscribe(Events.GameStateChangedEvent.class, e -> setCurrentStage(e.newState()));
     }
 
-    public void setCurrentStage(String stageName) {
-        Screen newScreen = screens.get(stageName);
+    public void setCurrentStage(GameStateManager.GameState state) {
+        Screen newScreen = screens.get(state);
         if (newScreen != null) {
             currentScreen = newScreen;
             Gdx.input.setInputProcessor(currentScreen.getStage());
@@ -94,7 +93,6 @@ public class UIManager {
     public void update(float delta) {
         if (currentScreen instanceof GameScreen) {
             ((GameScreen) currentScreen).update(delta);
-            dialogueManager.update(delta);
             inventoryUI.update(player);
         } else if (currentScreen instanceof MapScreen) {
             ((MapScreen) currentScreen).update();
@@ -152,9 +150,8 @@ public class UIManager {
         inventoryUI.toggle();
     }
 
-    public DialogueManager getDialogueManager() { return dialogueManager; }
-    public GameScreen getGameScreen() { return (GameScreen) screens.get("GAME"); }
-    public TouchControlsUI getTouchControlsUI() { return touchControlsUI; }
+    public GameScreen getGameScreen() { return (GameScreen) screens.get(GameStateManager.GameState.PLAYING); }
+    public DialogueUI getDialogueUI(){ return dialogueUI; }
 
     public void showEarned(String thing, int amount) {
         getGameScreen().showInfoMessage(Assets.messages.format("message.generic.got", amount, Assets.items.get(thing)), 1.5f);

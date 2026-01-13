@@ -3,6 +3,7 @@ package com.mygame.game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygame.action.ActionRegistry;
+import com.mygame.dialogue.DialogueManager;
 import com.mygame.dialogue.DialogueRegistry;
 import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.item.ItemRegistry;
@@ -45,6 +46,7 @@ public class GameContext {
     public final UIManager ui;
     public final CameraManager cameraManager;
     public final SaveManager saveManager;
+    public final DialogueManager dialogueManager;
 
     // Logic
     public final QuestProgressTriggers questProgressTriggers;
@@ -72,6 +74,7 @@ public class GameContext {
         this.transitionManager = new TransitionManager();
         this.cameraManager = new CameraManager(player);
         this.ui = new UIManager(batch, player, skin, questManager, worldManager, dayManager);
+        this.dialogueManager = new DialogueManager(ui.getDialogueUI(), player, worldManager);
         this.gsm = new GameStateManager(ui);
 
         // 4. High-level logic
@@ -89,6 +92,7 @@ public class GameContext {
         worldManager.update(delta);
         darkOverlay.update(delta);
         npcManager.update(delta);
+        dialogueManager.update(delta);
         itemManager.update(delta, player);
         pfandManager.update(delta);
         scController.update();

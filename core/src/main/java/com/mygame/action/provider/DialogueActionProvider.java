@@ -13,7 +13,7 @@ public class DialogueActionProvider implements ActionProvider {
 
         registry.registerCreator("dialogue.force", (c, data) -> () -> {
             NPC npc = c.npcManager.findNpcById(data.getString("npc"));
-            if (npc != null) c.ui.getDialogueManager().startForcedDialogue(npc);
+            if (npc != null) c.dialogueManager.startForcedDialogue(npc);
         });
     }
 }

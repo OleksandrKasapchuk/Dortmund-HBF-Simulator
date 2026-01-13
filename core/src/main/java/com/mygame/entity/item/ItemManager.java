@@ -84,9 +84,9 @@ public class ItemManager {
 
         // Add item to the correct list based on its properties
         if (props.get("isBackground", false, Boolean.class)) {
-            world.getBackgroundItems().add(item);
+            world.addBackgroundItem(item);
         } else {
-            world.getForegroundItems().add(item);
+            world.addForegroundItem(item);
         }
 
         registerNamedItem(object, item, itemKey);
@@ -142,8 +142,7 @@ public class ItemManager {
         if (currentWorld == null) return;
 
         // We need to check both lists for pickups
-        checkPickupsInList(currentWorld.getForegroundItems(), delta, player, currentWorld);
-        checkPickupsInList(currentWorld.getBackgroundItems(), delta, player, currentWorld);
+        checkPickupsInList(currentWorld.getAllItems(), delta, player, currentWorld);
     }
 
     private void checkPickupsInList(List<Item> items, float delta, Player player, World currentWorld) {
