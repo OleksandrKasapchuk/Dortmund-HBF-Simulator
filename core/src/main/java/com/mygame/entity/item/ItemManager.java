@@ -14,7 +14,6 @@ import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -138,32 +137,24 @@ public class ItemManager {
 
     // --- Update items: handle pickups by the player and cooldowns ---
     public void update(float delta, Player player) {
-        World currentWorld = worldManager.getCurrentWorld();
-        if (currentWorld == null) return;
+        if (worldManager.getCurrentWorld() == null) return;
 
         // We need to check both lists for pickups
-        checkPickupsInList(currentWorld.getAllItems(), delta, player, currentWorld);
+        checkPickupsInList(delta, player);
     }
 
-    private void checkPickupsInList(List<Item> items, float delta, Player player, World currentWorld) {
-        for (Iterator<Item> it = items.iterator(); it.hasNext(); ) {
-            Item item = it.next();
+    private void checkPickupsInList(float delta, Player player) {
+        World currentWorld = worldManager.getCurrentWorld();
+        List<Item> items = currentWorld.getAllItems();
+        for (int i = items.size() - 1; i >= 0; i--) {
+            Item item = items.get(i);
             item.updateCooldown(delta);
-            checkPickUp(item, player, currentWorld, it);
-        }
-    }
-
-    private void checkPickUp(Item item, Player player, World currentWorld, Iterator<Item> it){
-        // If item can be picked up and player is near, add to inventory and remove from world
-        if (item.canBePickedUp() && item.isPlayerNear(player, item.getDistance())) {
-            player.getInventory().addItem(item.getType(), 1);
-
-            if (item.getType().getKey().equals("pfand")) {
-                // This logic might need adjustment depending on whether pfand can be a background item
-                currentWorld.getPfands().remove(item);
+            if (item.canBePickedUp() && item.isPlayerNear(player, item.getDistance())) {
+                player.getInventory().addItem(item.getType(), 1);
+                currentWorld.removeItem(item); // безпечне видалення, бо йдемо з кінця
             }
-            it.remove(); // Remove item from the world
         }
+
     }
     /**
      * Retrieves an item by its name (set in Tiled) or its itemKey.

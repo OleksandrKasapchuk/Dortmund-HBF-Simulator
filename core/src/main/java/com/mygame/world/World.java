@@ -187,6 +187,7 @@ public class World {
     public void removeItem(Item item) {
         backgroundItems.remove(item);
         foregroundItems.remove(item);
+        pfands.remove(item);
         allItems.remove(item);
     }
 
