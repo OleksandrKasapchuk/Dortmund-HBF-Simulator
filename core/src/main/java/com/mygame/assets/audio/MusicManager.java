@@ -32,16 +32,21 @@ public class MusicManager {
                 case DEATH -> playMusic(Assets.getMusic("back2"));
                 case PLAYING, MAP -> {
                     if (temporaryMusic != null) playMusic(temporaryMusic);
-                    else playMusic(Assets.getMusic("back1"));
+                    else playBackgroundMusic();
                 }
         }});
     }
-
+    public static void playBackgroundMusic(){
+        playMusic(Assets.getMusic("back1"));
+    }
     public static void playTemporaryMusic(Music music){
         temporaryMusic = music;
         playMusic(music);
     }
-    public void resetTemporaryMusic(){temporaryMusic = null;}
+    public static void resetTemporaryMusic(){
+        temporaryMusic = null;
+        playBackgroundMusic();
+    }
 
 
 

@@ -27,7 +27,6 @@ public class GameStateManager {
         return state;
     }
 
-
     // --- Start the game ---
     public void startGame() {
         setState(GameState.PLAYING);                // Switch state to PLAYING
@@ -56,7 +55,7 @@ public class GameStateManager {
     public void toggleMap() {
         if (state == GameState.MAP) {
             setState(GameState.PLAYING);
-        } else {
+        } else if (state == GameState.PLAYING) {
             setState(GameState.MAP);
         }
     }
@@ -65,7 +64,7 @@ public class GameStateManager {
     public void toggleSettings() {
         if (state == GameState.SETTINGS) {
             setState(GameState.PAUSED);           // Close settings menu and return to pause
-        } else {
+        } else if (state == GameState.PAUSED) {
             setState(GameState.SETTINGS);           // Open settings menu
         }
     }
