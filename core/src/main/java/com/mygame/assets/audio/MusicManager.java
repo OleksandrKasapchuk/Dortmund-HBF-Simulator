@@ -48,8 +48,6 @@ public class MusicManager {
         playBackgroundMusic();
     }
 
-
-
     public static void playMusic(Music newMusic) {
         if (newMusic == null) return;
         // If the same track is already playing — do nothing.

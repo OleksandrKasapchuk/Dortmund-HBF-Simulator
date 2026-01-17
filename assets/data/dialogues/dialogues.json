@@ -36,6 +36,12 @@
       "idle": ["dialogue.denys.idle.text.1", "dialogue.denys.idle.text.2"]
     }
   },
+  "maksym": {
+    "nodes": {
+      "start": "idle",
+      "idle": ["dialogue.maksym.idle.text.1"]
+    }
+  },
   "baryga": {
     "nodes": {
       "start": "trade.offer",
