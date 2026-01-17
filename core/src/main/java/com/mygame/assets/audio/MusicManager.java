@@ -1,6 +1,9 @@
 package com.mygame.assets.audio;
 
 import com.badlogic.gdx.audio.Music;
+import com.mygame.assets.Assets;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
 
 /**
  * Global music controller for the game.
@@ -11,11 +14,37 @@ public class MusicManager {
     private static Music currentMusic;   // currently playing track
     private static float currentVolume = 1f;
     private static boolean isPaused = false;
+    private static Music temporaryMusic;
 
     /**
      * Plays new music track.
      * Automatically stops previous one (if different).
      */
+
+    public static void init(){
+        stopAll();
+        EventBus.subscribe(Events.GameStateChangedEvent.class, event -> {
+            switch (event.newState()) {
+                case PAUSED, SETTINGS -> {
+                    if(!isPaused) pauseMusic();
+                }
+                case MENU -> playMusic(Assets.getMusic("start"));
+                case DEATH -> playMusic(Assets.getMusic("back2"));
+                case PLAYING, MAP -> {
+                    if (temporaryMusic != null) playMusic(temporaryMusic);
+                    else playMusic(Assets.getMusic("back1"));
+                }
+        }});
+    }
+
+    public static void playTemporaryMusic(Music music){
+        temporaryMusic = music;
+        playMusic(music);
+    }
+    public void resetTemporaryMusic(){temporaryMusic = null;}
+
+
+
     public static void playMusic(Music newMusic) {
         if (newMusic == null) return;
         // If the same track is already playing — do nothing.

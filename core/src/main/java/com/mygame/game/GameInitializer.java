@@ -22,9 +22,11 @@ public class GameInitializer {
 
     public void initGame() {
         EventBus.clear();
+
         if (managerRegistry != null) managerRegistry.dispose(false);
         if (batch != null) batch.dispose();
-        MusicManager.stopAll();
+
+        MusicManager.init();
 
         batch = new SpriteBatch();
 
@@ -45,8 +47,6 @@ public class GameInitializer {
         World startWorld = ctx.worldManager.getWorld(settings.currentWorldName != null ? settings.currentWorldName : "main");
         player.setWorld(startWorld);
         ctx.worldManager.setCurrentWorld(startWorld);
-
-        MusicManager.playMusic(Assets.getMusic("start"));
     }
 
     public ManagerRegistry getManagerRegistry() { return managerRegistry; }

@@ -11,6 +11,7 @@ import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.GameContext;
 import com.mygame.game.GameInitializer;
+import com.mygame.game.GameStateManager;
 import com.mygame.quest.QuestManager;
 
 import java.util.HashSet;
@@ -78,6 +79,7 @@ public class SaveManager {
             Gdx.app.error("AutoSaveManager", "Save failed: Game state not fully ready.");
             return;
         }
+        if (ctx.gsm.getState() == GameStateManager.GameState.DEATH) return;
 
         try {
             GameSettings settings = SettingsManager.load();

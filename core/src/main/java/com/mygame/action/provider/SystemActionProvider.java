@@ -25,9 +25,7 @@ public class SystemActionProvider implements ActionProvider {
 
         registry.registerAction("system.start", context.gsm::startGame);
         registry.registerAction("system.newGame", () -> {
-            GameSettings newSettings = new GameSettings();
-            newSettings.language = SettingsManager.load().language;
-            SettingsManager.save(newSettings);
+            SettingsManager.resetSettings();
             Main.restartGame();
             Main.getGameInitializer().getManagerRegistry().getContext().gsm.startGame();
         });

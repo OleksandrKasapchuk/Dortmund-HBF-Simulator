@@ -31,6 +31,16 @@ public class SettingsManager {
         }
     }
 
+    public static void resetSettings() {
+        GameSettings newSettings = new GameSettings();
+        newSettings.language = SettingsManager.load().language;
+        newSettings.musicVolume = SettingsManager.load().musicVolume;
+        newSettings.soundVolume = SettingsManager.load().soundVolume;
+
+        SettingsManager.save(newSettings);
+    }
+
+
     public static GameSettings load() {
         FileHandle file = Gdx.files.local(SETTINGS_FILE);
         if (file.exists()) {
