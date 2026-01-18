@@ -10,6 +10,7 @@ import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.item.PfandManager;
 import com.mygame.entity.npc.NpcManager;
 import com.mygame.entity.player.Player;
+import com.mygame.entity.player.PlayerEffectManager;
 import com.mygame.game.save.SaveManager;
 import com.mygame.managers.CameraManager;
 import com.mygame.quest.QuestManager;
@@ -37,6 +38,7 @@ public class GameContext {
     public final ActionRegistry actionRegistry;
 
     // Managers
+    public final PlayerEffectManager playerEffectManager;
     public final QuestManager questManager;
     public final NpcManager npcManager;
     public final ItemManager itemManager;
@@ -67,6 +69,7 @@ public class GameContext {
         this.actionRegistry = new ActionRegistry();
 
         // 3. Managers that depend on registries and core systems
+        this.playerEffectManager = new PlayerEffectManager();
         this.questManager = new QuestManager(questRegistry);
         this.npcManager = new NpcManager(player, dialogueRegistry, worldManager);
         this.itemManager = new ItemManager(itemRegistry, worldManager);

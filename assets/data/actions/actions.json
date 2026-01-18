@@ -325,5 +325,12 @@
         }
       }
     ]
+  },
+  "jan_complete": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "dialogue.set", "npc": "jan", "node": "fireworks.completed" },
+      { "type": "quest.start", "id": "jan_firework"}
+    ]
   }
 }
