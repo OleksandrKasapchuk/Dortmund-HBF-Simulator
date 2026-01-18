@@ -1,6 +1,5 @@
 package com.mygame.managers;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygame.entity.player.Player;
@@ -24,9 +23,9 @@ public class ManagerRegistry {
         ctx.update(delta);
     }
 
-    public void resize() {
-        ctx.cameraManager.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        ctx.ui.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    public void resize(int width, int height) {
+        ctx.cameraManager.resize(width, height, ctx.worldManager.getCurrentWorld());
+        ctx.ui.resize(width, height);
     }
 
     public void dispose() {

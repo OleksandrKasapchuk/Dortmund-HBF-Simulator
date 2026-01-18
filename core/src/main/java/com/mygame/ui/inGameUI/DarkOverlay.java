@@ -32,7 +32,7 @@ public class DarkOverlay {
      *                    Якщо 0, залишається видимим до виклику hide().
      */
     public void show(float maxAlpha, float staySeconds) {
-        this.targetAlpha = MathUtils.clamp(maxAlpha, 0f, 1f);
+        this.targetAlpha = MathUtils.clamp(maxAlpha, 0.5f, 1f);
         this.stayTimer = staySeconds;
         this.currentState = State.FADING_IN;
     }

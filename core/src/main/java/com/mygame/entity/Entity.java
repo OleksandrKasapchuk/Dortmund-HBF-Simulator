@@ -9,7 +9,7 @@ import com.mygame.world.World;
  * Base abstract class for all objects rendered in the world:
  * players, NPCs, items, etc.
  */
-public abstract class Entity {
+public abstract class Entity implements Renderable {
 
     // --- Base entity properties ---
     private int width;

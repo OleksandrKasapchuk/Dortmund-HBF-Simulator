@@ -3,199 +3,69 @@ package com.mygame.action;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.mygame.Main;
-import com.mygame.assets.Assets;
-import com.mygame.assets.audio.MusicManager;
-import com.mygame.assets.audio.SoundManager;
-import com.mygame.entity.item.Item;
-import com.mygame.entity.npc.NPC;
-import com.mygame.entity.npc.Police;
-import com.mygame.entity.player.Player;
+import com.mygame.action.provider.ActionProvider;
+import com.mygame.action.provider.AudioActionProvider;
+import com.mygame.action.provider.CustomActionProvider;
+import com.mygame.action.provider.DialogueActionProvider;
+import com.mygame.action.provider.InventoryActionProvider;
+import com.mygame.action.provider.ItemActionProvider;
+import com.mygame.action.provider.NpcActionProvider;
+import com.mygame.action.provider.PlayerActionProvider;
+import com.mygame.action.provider.QuestActionProvider;
+import com.mygame.action.provider.SystemActionProvider;
+import com.mygame.action.provider.UiActionProvider;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.GameContext;
-import com.mygame.game.save.GameSettings;
-import com.mygame.game.save.SettingsManager;
-import com.mygame.managers.TimerManager;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ActionRegistry {
 
-    private interface ActionCreator {
+    public interface ActionCreator {
         Runnable create(GameContext ctx, JsonValue data);
     }
 
     private final Map<String, ActionCreator> creators = new HashMap<>();
     private final Map<String, Runnable> registeredActions = new HashMap<>();
+    private final List<ActionProvider> providers = new ArrayList<>();
 
 
     public void init(GameContext ctx) {
-        setupCreators();
+        setupProviders();
+        setupCreators(ctx);
         loadActionsFromJson(ctx);
-        registeredActions.put("system.start", ctx.gsm::startGame);
-        registeredActions.put("system.newGame", () -> {
-            GameSettings newSettings = new GameSettings();
-            newSettings.language = SettingsManager.load().language;
-            SettingsManager.save(newSettings);
-            Main.restartGame();
-            Main.getGameInitializer().getManagerRegistry().getContext().gsm.startGame();});
-
-        registeredActions.put("system.pause", ctx.gsm::togglePause);
-        registeredActions.put("system.settings", ctx.gsm::toggleSettings);
-        registeredActions.put("system.map", ctx.gsm::toggleMap);
-        registeredActions.put("system.menu", ctx.gsm::exitToMenu);
-        registeredActions.put("ui.inventory.toggle", ctx.ui::toggleInventoryTable);
-        registeredActions.put("ui.quests.toggle", ctx.ui::toggleQuestTable);
-        registeredActions.put("player.sleep", ctx.dayManager::sleep);
         EventBus.subscribe(Events.ActionRequestEvent.class, event -> executeAction(event.actionId()));
     }
 
-    private void setupCreators() {
-        creators.put("inventory.trade", (ctx, data) -> () -> new TradeAction(ctx,
-            data.getString("from"), data.getString("to"),
-            data.getInt("fromAmount"), data.getInt("toAmount")).execute());
+    private void setupProviders() {
+        providers.add(new InventoryActionProvider());
+        providers.add(new QuestActionProvider());
+        providers.add(new DialogueActionProvider());
+        providers.add(new AudioActionProvider());
+        providers.add(new PlayerActionProvider());
+        providers.add(new SystemActionProvider());
+        providers.add(new ItemActionProvider());
+        providers.add(new NpcActionProvider());
+        providers.add(new UiActionProvider());
+        providers.add(new CustomActionProvider());
+    }
 
-        creators.put("quest.start", (ctx, data) -> () -> ctx.questManager.startQuest(data.getString("id")));
+    public void registerCreator(String type, ActionCreator creator) {
+        creators.put(type, creator);
+    }
 
-        creators.put("quest.complete", (ctx, data) -> () -> ctx.questManager.completeQuest(data.getString("id")));
+    public void registerAction(String name, Runnable action) {
+        registeredActions.put(name, action);
+    }
 
-        creators.put("dialogue.set", (ctx, data) -> () -> new SetDialogueAction(ctx,
-            data.getString("npc"), data.getString("node")).execute());
-
-        creators.put("inventory.add", (ctx, data) -> () -> ctx.player.getInventory().addItemAndNotify(
-            ctx.itemRegistry.get(data.getString("id")),
-            data.getInt("amount", 1)));
-
-        creators.put("inventory.remove", (ctx, data) -> () -> {
-            if (data.has("items")) {
-                for (String itemId : data.get("items").asStringArray()) {
-                    ctx.player.getInventory().removeItem(ctx.itemRegistry.get(itemId), data.getInt("amount", 9999));
-                }
-            } else {
-                ctx.player.getInventory().removeItem(
-                    ctx.itemRegistry.get(data.getString("id")),
-                    data.getInt("amount", 1));
-            }
-        });
-
-        creators.put("audio.playSound", (ctx, data) -> () -> SoundManager.playSound(Assets.getSound(data.getString("id"))));
-        creators.put("audio.playMusic", (ctx, data) -> () -> MusicManager.playMusic(Assets.getMusic(data.getString("id"))));
-        creators.put("player.die", (ctx, data) -> ctx.gsm::playerDied);
-
-        creators.put("system.composite", (ctx, data) -> () -> {
-            for (JsonValue subAction : data.get("actions")) {
-                createAction(ctx, subAction).run();
-            }
-        });
-
-        creators.put("system.timer", (ctx, data) -> () -> {
-            float delay = data.getFloat("delay", 1f);
-            JsonValue actionData = data.get("action");
-            TimerManager.setAction(() -> createAction(ctx, actionData).run(), delay);
-        });
-
-        creators.put("item.startCooldown", (ctx, data) -> () -> {
-            Item item = ctx.itemManager.getItem(data.getString("id"));
-            if (item != null) item.startCooldown(data.getFloat("seconds", 1f));
-        });
-
-        creators.put("npc.setTexture", (ctx, data) -> () -> {
-            var npc = ctx.npcManager.findNpcById((data.getString("npc")));
-            if (npc != null) npc.setTexture(Assets.getTexture(data.getString("texture")));
-        });
-
-        creators.put("inventory.conditionalTrade", (ctx, data) -> () -> {
-            if (ctx.player.getInventory().trade(ctx.itemRegistry.get(data.getString("from")),
-                ctx.itemRegistry.get(data.getString("to")),
-                data.getInt("fromAmount"), data.getInt("toAmount"))) {
-                if (data.has("onSuccess")) {
-                    createAction(ctx, data.get("onSuccess")).run();
-                }
-            } else {
-                if (data.has("onFail")) {
-                    createAction(ctx, data.get("onFail")).run();
-                }
-            }
-        });
-
-        creators.put("inventory.check", (ctx, data) -> () -> {
-            boolean conditionMet = false;
-            if (data.has("items")) {
-                for (String itemId : data.get("items").asStringArray()) {
-                    if (ctx.player.getInventory().getAmount(ctx.itemRegistry.get(itemId)) > 0) {
-                        conditionMet = true;
-                        break;
-                    }
-                }
-            } else if (data.has("itemId")) {
-                int amount = data.getInt("amount", 1);
-                conditionMet = ctx.player.getInventory().getAmount(ctx.itemRegistry.get(data.getString("itemId"))) >= amount;
-            }
-
-            if (conditionMet) {
-                if (data.has("action")) createAction(ctx, data.get("action")).run();
-                if (data.has("onSuccess")) createAction(ctx, data.get("onSuccess")).run();
-            } else {
-                if (data.has("onFail")) createAction(ctx, data.get("onFail")).run();
-            }
-        });
-
-        creators.put("player.checkState", (ctx, data) -> () -> {
-            String requiredState = data.getString("state").toUpperCase();
-            if (ctx.player.getState().name().equals(requiredState)) {
-                if (data.has("action")) {
-                    createAction(ctx, data.get("action")).run();
-                }
-            } else {
-                if (data.has("onFail")) {
-                    createAction(ctx, data.get("onFail")).run();
-                }
-            }
-        });
-
-        creators.put("ui.notEnoughMessage", (ctx, data) -> () -> EventBus.fire(new Events.NotEnoughMessageEvent(ctx.itemRegistry.get(data.getString("item")))));
-        creators.put("ui.message", (ctx, data) -> () -> EventBus.fire(new Events.MessageEvent(Assets.messages.get(data.getString("key")))));
-
-        creators.put("player.setState", (ctx, data) -> () -> {
-            String stateName = data.getString("key").toUpperCase();
-            try {
-                Player.State state = Player.State.valueOf(stateName);
-                ctx.player.setState(state);
-            } catch (IllegalArgumentException e) {
-                Gdx.app.log("ActionRegistry", "Unknown player state: " + stateName);
-            }
-        });
-
-        creators.put("player.lockMovement", (ctx, data) -> () -> ctx.player.setMovementLocked(data.getBoolean("locked")));
-
-        creators.put("npc.remove", (ctx, data) -> () -> {
-            NPC npc = ctx.npcManager.findNpcById(data.getString("npc"));
-            if (npc != null && npc.getWorld() != null) {
-                npc.getWorld().getNpcs().remove(npc);
-            }
-        });
-
-        creators.put("npc.spawnNearPlayer", (ctx, data) -> () -> {
-            NPC npc = ctx.npcManager.findNpcById(data.getString("npc"));
-            if (npc != null) {
-                ctx.worldManager.getCurrentWorld().getNpcs().add(npc);
-                npc.setX(ctx.player.getX() + data.getFloat("offsetX", 0f));
-                npc.setY(ctx.player.getY() + data.getFloat("offsetY", 0f));
-            }
-        });
-
-        creators.put("npc.callPolice", (ctx, data) -> ctx.npcManager::callPolice);
-
-        creators.put("dialogue.force", (ctx, data) -> () -> {
-            NPC npc = ctx.npcManager.findNpcById(data.getString("npc"));
-            if (npc != null) ctx.ui.getDialogueManager().startForcedDialogue(npc);
-        });
-
-        creators.put("custom.startChase", (ctx, data) -> () -> {
-            Police police = ctx.npcManager.getSummonedPolice();
-            if (police != null) police.startChase(ctx.player);
-        });
+    private void setupCreators(GameContext ctx) {
+        for (ActionProvider provider : providers) {
+            provider.provide(ctx, this);
+        }
     }
 
     private void loadActionsFromJson(GameContext ctx) {
@@ -220,6 +90,7 @@ public class ActionRegistry {
         if (creator != null) {
             return creator.create(ctx, data);
         }
+        Gdx.app.log("ActionRegistry", "Action creator '" + type + "' not found!");
         return () -> {};
     }
 

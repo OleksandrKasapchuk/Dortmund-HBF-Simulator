@@ -4,16 +4,15 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygame.assets.Assets;
-import com.mygame.dialogue.DialogueManager;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.npc.NPC;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.DayManager;
+import com.mygame.game.GameStateManager;
 import com.mygame.quest.QuestManager;
 import com.mygame.ui.inGameUI.DialogueUI;
 import com.mygame.ui.inGameUI.InventoryUI;
@@ -22,209 +21,146 @@ import com.mygame.ui.inGameUI.TouchControlsUI;
 import com.mygame.ui.screenUI.*;
 import com.mygame.world.WorldManager;
 
-/**
- * UIManager is responsible for managing all UI components of the game.
- * It handles switching between different screens (menu, game, pause, settings, death),
- * updating in-game HUD elements (money, inventory, quests),
- * and managing touch controls for Android devices.
+import java.util.EnumMap;
+import java.util.Map;
 
- * This class also forwards input events to the current active stage and updates
- * UI elements based on player actions or key presses.
- */
 public class UIManager {
 
-    private final Skin skin;
     private final SpriteBatch batch;
-    private Player player;
-    private QuestManager questManager;
-    private WorldManager worldManager;
+    private final Player player;
+    private final QuestManager questManager;
+    private final WorldManager worldManager;
+
+    private final Map<GameStateManager.GameState, Screen> screens = new EnumMap<>(GameStateManager.GameState.class);
+    private Screen currentScreen;
 
     private QuestUI questUI;
     private InventoryUI inventoryUI;
     private DialogueUI dialogueUI;
     private TouchControlsUI touchControlsUI;
-    private MapScreen mapScreen;
 
-    private GameScreen gameScreen;
-    private MenuScreen menuScreen;
-    private PauseScreen pauseScreen;
-    private SettingsScreen settingsScreen;
-    private DeathScreen deathScreen;
-
-    private Stage currentStage;
-    private final DialogueManager dialogueManager;
     private final GlyphLayout layout = new GlyphLayout();
 
-    /**
-     * Initializes all UI screens and attaches them to their respective stages.
-     * Sets up touch controls if running on Android.
-     *
-     * @param player The player object to link HUD elements and touchpad
-     * @param skin The fully configured skin to use for all UI components
-     * @param batch The SpriteBatch used for world rendering
-     */
     public UIManager(SpriteBatch batch, Player player, Skin skin, QuestManager questManager, WorldManager worldManager, DayManager dayManager) {
-        System.out.println("UIManager: Initializing...");
-        this.skin = skin;
         this.batch = batch;
+        this.player = player;
         this.questManager = questManager;
         this.worldManager = worldManager;
 
-        this.player = player;
-        // Initialize screens with the provided skin
-        gameScreen = new GameScreen(skin, worldManager, dayManager,player);
-        menuScreen = new MenuScreen(skin);
-        pauseScreen = new PauseScreen(skin);
-        settingsScreen = new SettingsScreen(skin);
-        deathScreen = new DeathScreen(skin);
-        mapScreen = new MapScreen(skin, worldManager);
+        createScreens(skin, dayManager);
 
-        // Set initial stage to menu
-        currentStage = menuScreen.getStage();
-        Gdx.input.setInputProcessor(currentStage);
+        currentScreen = screens.get(GameStateManager.GameState.MENU);
+        Gdx.input.setInputProcessor(currentScreen.getStage());
 
-        // Initialize in-game UI elements
-        questUI = new QuestUI(skin, gameScreen.getStage(), 1200, 900, questManager);
-        inventoryUI = new InventoryUI(gameScreen.getStage(), skin);
-        dialogueUI = new DialogueUI(skin, gameScreen.getStage(), 1950, 250, 25f, 10f);
-        dialogueManager = new DialogueManager(dialogueUI, player, worldManager);
+        questUI = new QuestUI(skin, getGameScreen().getStage(), 1200, 900, questManager);
+        inventoryUI = new InventoryUI(getGameScreen().getStage(), skin);
+        dialogueUI = new DialogueUI(skin, getGameScreen().getStage(), 1950, 250, 25f, 10f);
 
-        EventBus.subscribe(Events.MessageEvent.class, event -> gameScreen.showInfoMessage(event.message(), 1.5f));
-        EventBus.subscribe(Events.QuestStartedEvent.class, event -> gameScreen.showInfoMessage(Assets.messages.get("message.quest.new"), 1.5f));
-        EventBus.subscribe(Events.QuestCompletedEvent.class, event -> gameScreen.showInfoMessage(Assets.messages.format("message.generic.quest.completed", Assets.quests.get("quest." + event.questId() + ".name")), 1.5f));
+        subscribeToEvents();
+
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+            touchControlsUI = new TouchControlsUI(skin, screens.get(GameStateManager.GameState.PLAYING).getStage(), screens.get(GameStateManager.GameState.PAUSED).getStage(), screens.get(GameStateManager.GameState.SETTINGS).getStage(), screens.get(GameStateManager.GameState.MAP).getStage(), player);
+        }
+    }
+
+    private void createScreens(Skin skin, DayManager dayManager) {
+        screens.put(GameStateManager.GameState.PLAYING, new GameScreen(skin, worldManager, dayManager, player));
+        screens.put(GameStateManager.GameState.MENU, new MenuScreen(skin));
+        screens.put(GameStateManager.GameState.PAUSED, new PauseScreen(skin));
+        screens.put(GameStateManager.GameState.SETTINGS, new SettingsScreen(skin));
+        screens.put(GameStateManager.GameState.DEATH, new DeathScreen(skin));
+        screens.put(GameStateManager.GameState.MAP, new MapScreen(skin, worldManager));
+    }
+
+    private void subscribeToEvents() {
+        EventBus.subscribe(Events.MessageEvent.class, event -> getGameScreen().showInfoMessage(event.message(), 1.5f));
+        EventBus.subscribe(Events.QuestStartedEvent.class, event -> getGameScreen().showInfoMessage(Assets.messages.get("message.quest.new"), 1.5f));
+        EventBus.subscribe(Events.QuestCompletedEvent.class, event -> getGameScreen().showInfoMessage(Assets.messages.format("message.generic.quest.completed", Assets.quests.get("quest." + event.questId() + ".name")), 1.5f));
         EventBus.subscribe(Events.AddItemMessageEvent.class, event -> showEarned(event.item().getNameKey(), event.amount()));
         EventBus.subscribe(Events.NotEnoughMessageEvent.class, event -> showNotEnough(event.item().getNameKey()));
         EventBus.subscribe(Events.InteractEvent.class, e -> handleInteraction());
+        EventBus.subscribe(Events.GameStateChangedEvent.class, e -> setCurrentStage(e.newState()));
+    }
 
-        // Initialize touch controls only on Android
-        if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            touchControlsUI = new TouchControlsUI(skin, gameScreen.getStage(), pauseScreen.getStage(), settingsScreen.getStage(), mapScreen.getStage(), player);
+    public void setCurrentStage(GameStateManager.GameState state) {
+        Screen newScreen = screens.get(state);
+        if (newScreen != null) {
+            currentScreen = newScreen;
+            Gdx.input.setInputProcessor(currentScreen.getStage());
         }
     }
 
-    /**
-     * Switches the current input stage.
-     * This ensures that input events are processed by the correct screen.
-     * @param stageName Name of the stage: MENU, GAME, PAUSE, SETTINGS, DEATH, MAP
-     */
-    public void setCurrentStage(String stageName) {
-        switch (stageName) {
-            case "MENU": currentStage = menuScreen.getStage(); break;
-            case "GAME": currentStage = gameScreen.getStage(); break;
-            case "PAUSE": currentStage = pauseScreen.getStage(); break;
-            case "SETTINGS": currentStage = settingsScreen.getStage(); break;
-            case "DEATH": currentStage = deathScreen.getStage(); break;
-            case "MAP": currentStage = mapScreen.getStage(); break;
-        }
-        Gdx.input.setInputProcessor(currentStage);
-    }
-
-    /**
-     * Updates UI elements and handles input events.
-     * This should be called every frame during the game.
-     * @param delta Time elapsed since last frame
-     */
     public void update(float delta) {
-        if (currentStage == mapScreen.getStage()) {
-            mapScreen.update();
-        } else if (currentStage == gameScreen.getStage()) {
-            gameScreen.update(delta);
-            dialogueManager.update(delta);
+        if (currentScreen instanceof GameScreen) {
+            ((GameScreen) currentScreen).update(delta);
             inventoryUI.update(player);
+        } else if (currentScreen instanceof MapScreen) {
+            ((MapScreen) currentScreen).update();
         }
-        // Update the current stage actors
-        currentStage.act(delta);
+        currentScreen.getStage().act(delta);
     }
 
-    /** Draws UI elements that are positioned in the game world (e.g., interaction labels) */
     public void renderWorldElements() {
         for (NPC npc : worldManager.getCurrentWorld().getNpcs()) {
             if (npc.isPlayerNear(player)) {
                 Assets.myFont.draw(batch, Assets.ui.get("interact"), npc.getX() - 100, npc.getY() + npc.getHeight() + 40);
             }
         }
-
-        for (Item item : worldManager.getCurrentWorld().getItems()) {
-            // Check if it's a quest item and if the quest is active
-            if (item.getQuestId() != null && !questManager.hasQuest(item.getQuestId())) continue;
-
-            if (item.isPlayerNear(player, item.getDistance()) && !item.isSearched()) {
-                if (item.isSearchable()){
-                    drawText(Assets.ui.get("interact.search"), item.getCenterX(), item.getCenterY());
-                } else {
-                    drawText(Assets.ui.get("interact"), item.getCenterX(), item.getCenterY());
-                }
-            }
+        for (Item item : worldManager.getCurrentWorld().getAllItems()) {
+            if (!item.isInteractable() || (item.getQuestId() != null && !questManager.hasQuest(item.getQuestId())) || !item.isPlayerNear(player, item.getDistance()) || item.isSearched()) continue;
+            drawText(item.isSearchable() ? Assets.ui.get("interact.search") : Assets.ui.get("interact"), item.getCenterX(), item.getCenterY());
         }
     }
 
     private void handleInteraction() {
-        // Find the nearest item the player can interact with
-        for (Item item : worldManager.getCurrentWorld().getItems()) {
-            if (item.getQuestId() != null && !questManager.hasQuest(item.getQuestId())) continue;
-
-            if (item.isPlayerNear(player, item.getDistance()) && !item.isSearched()) {
-                EventBus.fire(new Events.ItemInteractionEvent(item, player));
-                return; // Prioritize items and interact with only one
-            }
+        for (Item item : worldManager.getCurrentWorld().getAllItems()) {
+            if (!item.isInteractable() || (item.getQuestId() != null && !questManager.hasQuest(item.getQuestId())) || !item.isPlayerNear(player, item.getDistance()) || item.isSearched()) continue;
+            EventBus.fire(new Events.ItemInteractionEvent(item, player));
+            return;
         }
     }
 
-    /** Draws the current stage (HUD, Menus) in screen space */
     public void render() {
-        currentStage.draw();
+        currentScreen.getStage().draw();
     }
 
-    /** Updates viewport size for current stage */
-    public void resize(int width, int height) { currentStage.getViewport().update(width, height, true); }
+    public void resize(int width, int height) {
+        for (Screen screen : screens.values()) {
+            screen.getStage().getViewport().update(width, height, true);
+        }
+    }
 
-    /** Dispose all UI resources to free memory */
     public void dispose() {
-        menuScreen.dispose();
-        gameScreen.dispose();
-        pauseScreen.dispose();
-        deathScreen.dispose();
-        settingsScreen.dispose();
-        mapScreen.dispose();
-        skin.dispose();
+        for (Screen screen : screens.values()) {
+            screen.dispose();
+        }
         dialogueUI.dispose();
         inventoryUI.dispose();
         questUI.dispose();
         if (touchControlsUI != null) touchControlsUI.dispose();
     }
 
-    /** Toggles the quest UI; closes inventory if open */
     public void toggleQuestTable() {
         if (inventoryUI.isVisible()) inventoryUI.toggle();
         questUI.toggle();
     }
 
-    /** Toggles the inventory UI; closes quest UI if open */
     public void toggleInventoryTable() {
         if (questUI.isVisible()) questUI.toggle();
         inventoryUI.toggle();
     }
 
-    // Getter methods for accessing UI components
-    public DialogueManager getDialogueManager() { return dialogueManager; }
-    public GameScreen getGameScreen() { return gameScreen; }
-    public TouchControlsUI getTouchControlsUI() { return touchControlsUI; }
+    public GameScreen getGameScreen() { return (GameScreen) screens.get(GameStateManager.GameState.PLAYING); }
+    public DialogueUI getDialogueUI(){ return dialogueUI; }
 
-
-    public void showEarned(String thing, int amount){
-        gameScreen.showInfoMessage(Assets.messages.format("message.generic.got", amount, Assets.items.get(thing)),1.5f);
+    public void showEarned(String thing, int amount) {
+        getGameScreen().showInfoMessage(Assets.messages.format("message.generic.got", amount, Assets.items.get(thing)), 1.5f);
     }
 
     public void showNotEnough(String thing) {
-        gameScreen.showInfoMessage(Assets.messages.format("message.generic.not_enough", Assets.items.get(thing)), 1.5f);
+        getGameScreen().showInfoMessage(Assets.messages.format("message.generic.not_enough", Assets.items.get(thing)), 1.5f);
     }
 
-    /**
-     * Draws centered text at world coordinates.
-     * @param text The text to draw
-     * @param x World X coordinate
-     * @param y World Y coordinate
-     */
     public void drawText(String text, float x, float y) {
         layout.setText(Assets.myFont, text);
         Assets.myFont.draw(batch, text, x - layout.width / 2f, y + 60);

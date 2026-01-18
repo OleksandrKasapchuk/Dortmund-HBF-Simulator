@@ -194,7 +194,7 @@
   "player.state.normal.enter": {
     "type": "system.composite",
     "actions": [
-      { "type": "audio.playMusic", "id": "back1" },
+      { "type": "audio.resetBack"},
       { "type": "dialogue.set", "npc": "police", "node": "check.active" },
       { "type": "ui.message", "key": "message.ice_tea", "duration": 1.5 }
     ]
@@ -226,7 +226,7 @@
   "quest.chase.complete": {
     "type": "system.composite",
     "actions": [
-      { "type": "audio.playMusic", "id": "back1" },
+      { "type": "audio.resetBack"},
       { "type": "ui.message", "key": "message.generic.ranAway", "duration": 1.5 },
       { "type": "dialogue.set", "npc": "boss", "node": "chase.completed" },
       { "type": "quest.complete", "id": "chase" },
@@ -324,6 +324,13 @@
           ]
         }
       }
+    ]
+  },
+  "jan_complete": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "dialogue.set", "npc": "jan", "node": "fireworks.completed" },
+      { "type": "quest.start", "id": "jan_firework"}
     ]
   }
 }

@@ -13,6 +13,7 @@ public class PlayerEffectManager {
             if (event.item().getEffectId() != null) {
                 EventBus.fire(new Events.ActionRequestEvent(event.item().getEffectId()));
             }
+                System.out.println("Effect ID: " + event.item().getEffectId());
         });
 
         EventBus.subscribe(Events.PlayerStateChangedEvent.class, event -> {

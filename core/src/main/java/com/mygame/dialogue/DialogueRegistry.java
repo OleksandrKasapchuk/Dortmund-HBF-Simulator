@@ -21,10 +21,14 @@ public class DialogueRegistry {
             npcDialogueData.put(npcData.name(), npcData);
         }
     }
+
     public void init(ActionRegistry actionRegistry) {
         this.actionRegistry = actionRegistry;
     }
 
+    public DialogueNode getInitialDialogue(String npcId) {
+        return getDialogue(npcId, "start");
+    }
 
     public DialogueNode getDialogue(String npcId, String nodeName) {
         String fullNodeId = npcId + "." + nodeName;
@@ -32,6 +36,12 @@ public class DialogueRegistry {
             return builtNodes.get(fullNodeId);
         }
 
+        DialogueNode node = buildNode(npcId, nodeName);
+        builtNodes.put(fullNodeId, node);
+        return node;
+    }
+
+    private DialogueNode buildNode(String npcId, String nodeName) {
         JsonValue npcData = npcDialogueData.get(npcId);
         if (npcData == null) {
             System.err.println("DialogueRegistry: NPC '" + npcId + "' not found in dialogues.json");
@@ -50,58 +60,63 @@ public class DialogueRegistry {
             return new DialogueNode("Error: Node '" + nodeName + "' not found.");
         }
 
+        // Node redirection
         if (nodeData.isString()) {
             return getDialogue(npcId, nodeData.asString());
         }
 
-        Runnable onFinish = null;
-        String[] textKeys;
-        boolean isForced = false;
-
-        DialogueNode node;
-
         if (nodeData.isObject()) {
-            if (nodeData.has("onFinish")) {
-                String actionName = nodeData.getString("onFinish");
-                onFinish = actionRegistry.getAction(actionName);
-            }
-            textKeys = nodeData.get("texts").asStringArray();
-            if (nodeData.has("isForced")) {
-                isForced = nodeData.getBoolean("isForced");
-            }
-            node = new DialogueNode(onFinish, isForced, textKeys);
-
-            if (nodeData.has("choices")) {
-                for (JsonValue choiceData : nodeData.get("choices")) {
-                    String choiceTextKey;
-                    DialogueNode nextNode = null;
-                    Runnable choiceAction = null;
-
-                    if (choiceData.isString()) {
-                        choiceTextKey = choiceData.asString();
-                    } else {
-                        choiceTextKey = choiceData.getString("text");
-                        if (choiceData.has("next")) {
-                            nextNode = getDialogue(npcId, choiceData.getString("next"));
-                        }
-                        if (choiceData.has("action")) {
-                            choiceAction = actionRegistry.getAction(choiceData.getString("action"));
-                        }
-                    }
-                    String choiceText = Assets.dialogues.get(choiceTextKey);
-                    node.addChoice(choiceText, nextNode, choiceAction);
-                }
-            }
+            return createNodeFromObject(nodeData, npcId);
         } else {
-            textKeys = nodeData.asStringArray();
-            node = new DialogueNode(null, false, textKeys);
+            // Default to simple node with just text
+            return createSimpleNode(nodeData);
+        }
+    }
+
+    private DialogueNode createNodeFromObject(JsonValue nodeData, String npcId) {
+        Runnable onFinish = null;
+        if (nodeData.has("onFinish")) {
+            String actionName = nodeData.getString("onFinish");
+            onFinish = actionRegistry.getAction(actionName);
         }
 
-        builtNodes.put(fullNodeId, node);
+        String[] textKeys = nodeData.get("texts").asStringArray();
+        boolean isForced = nodeData.getBoolean("isForced", false);
+
+        DialogueNode node = new DialogueNode(onFinish, isForced, textKeys);
+
+        if (nodeData.has("choices")) {
+            addChoicesToNode(node, nodeData.get("choices"), npcId);
+        }
+
         return node;
     }
 
-    public DialogueNode getInitialDialogue(String npcId) {
-        return getDialogue(npcId, "start");
+    private void addChoicesToNode(DialogueNode node, JsonValue choicesData, String npcId) {
+        for (JsonValue choiceData : choicesData) {
+            String choiceTextKey;
+            DialogueNode nextNode = null;
+            Runnable choiceAction = null;
+
+            if (choiceData.isString()) {
+                choiceTextKey = choiceData.asString();
+            } else {
+                choiceTextKey = choiceData.getString("text");
+                if (choiceData.has("next")) {
+                    // Recursive call to get or build the next node
+                    nextNode = getDialogue(npcId, choiceData.getString("next"));
+                }
+                if (choiceData.has("action")) {
+                    choiceAction = actionRegistry.getAction(choiceData.getString("action"));
+                }
+            }
+            String choiceText = Assets.dialogues.get(choiceTextKey);
+            node.addChoice(choiceText, nextNode, choiceAction);
+        }
+    }
+
+    private DialogueNode createSimpleNode(JsonValue nodeData) {
+        String[] textKeys = nodeData.asStringArray();
+        return new DialogueNode(null, false, textKeys);
     }
 }

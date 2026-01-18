@@ -6,10 +6,10 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.mygame.assets.Assets;
 import com.mygame.dialogue.DialogueNode;
+import com.mygame.dialogue.DialogueRegistry;
 import com.mygame.entity.player.Player;
 import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;
-import com.mygame.dialogue.DialogueRegistry;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 
@@ -18,8 +18,8 @@ import java.util.ArrayList;
 public class NpcManager {
     private final ArrayList<NPC> npcs = new ArrayList<>();
     private final Player player;
-    private DialogueRegistry dialogueRegistry;
-    private WorldManager worldManager;
+    private final DialogueRegistry dialogueRegistry;
+    private final WorldManager worldManager;
 
     public NpcManager(Player player, DialogueRegistry dialogueRegistry, WorldManager worldManager) {
         this.player = player;
@@ -31,74 +31,84 @@ public class NpcManager {
         MapLayer npcLayer = world.getMap().getLayers().get("npcs");
         if (npcLayer == null) return;
 
+        GameSettings settings = SettingsManager.load();
         for (MapObject object : npcLayer.getObjects()) {
             MapProperties props = object.getProperties();
             String npcId = props.get("name", String.class);
-            if (npcId == null) continue;
-
-            createNpcById(npcId, props, world);
+            if (npcId != null) {
+                createNpcFromMap(npcId, props, world, settings);
+            }
         }
     }
 
-    private void createNpcById(String npcId, MapProperties props, World world) {
+    private void createNpcFromMap(String npcId, MapProperties props, World world, GameSettings settings) {
+        NPC npc = createNpcInstance(npcId, props, world);
+        restoreNpcState(npc, settings);
+        addNpcToGame(npc, world);
+        System.out.println("SUCCESS: Loaded '" + npcId + "' from map (Node: " + npc.getCurrentDialogueNodeId() + ", Tex: " + npc.getCurrentTextureKey() + ")");
+    }
+
+    private NPC createNpcInstance(String npcId, MapProperties props, World world) {
         float x = props.get("x", 0f, Float.class);
         float y = props.get("y", 0f, Float.class);
-        Texture texture = Assets.getTexture(npcId.toLowerCase());
-
-        if (texture == null) {
-            System.err.println("Texture for '" + npcId + "' not found! Using fallback.");
-            texture = Assets.getTexture("zoe");
-        }
-
-        NPC npc;
-        GameSettings settings = SettingsManager.load();
-
+        Texture texture = getNpcTexture(npcId);
+        String npcName = getNpcName(npcId);
         DialogueNode initialDialogue = dialogueRegistry.getInitialDialogue(npcId.toLowerCase());
-
-        String npcName;
-        try {
-            npcName = Assets.npcs.get("npc." + npcId.toLowerCase() + ".name");
-        } catch (Exception e) {
-            npcName = npcId; // Fallback to id
-        }
-
-        int directionX = props.get("directionX", 0, Integer.class);
-        int directionY = props.get("directionY", 0, Integer.class);
-        float pauseTime = props.get("pauseTime", 0f, Float.class);
-        float moveTime = props.get("moveTime", 0f, Float.class);
         int speed = props.get("speed", 50, Integer.class);
 
-        if (npcId.equalsIgnoreCase("police")) {
-            npc = new Police("police", npcName, 100, 100, x, y, texture, world, speed, initialDialogue);
+        if ("police".equalsIgnoreCase(npcId)) {
+            return new Police("police", npcName, 100, 100, x, y, texture, world, speed, initialDialogue);
         } else {
-            npc = new NPC(npcId.toLowerCase(), npcName, 100, 100, x, y, texture, world, directionX, directionY, pauseTime, moveTime, speed, initialDialogue);
+            int directionX = props.get("directionX", 0, Integer.class);
+            int directionY = props.get("directionY", 0, Integer.class);
+            float pauseTime = props.get("pauseTime", 0f, Float.class);
+            float moveTime = props.get("moveTime", 0f, Float.class);
+            return new NPC(npcId.toLowerCase(), npcName, 100, 100, x, y, texture, world, directionX, directionY, pauseTime, moveTime, speed, initialDialogue);
         }
+    }
 
-        // --- RESTORE NPC STATE (Dialogue & Texture) ---
+    private void restoreNpcState(NPC npc, GameSettings settings) {
         if (settings.npcStates != null && settings.npcStates.containsKey(npc.getId())) {
             GameSettings.NpcSaveData state = settings.npcStates.get(npc.getId());
 
-            // Restore dialogue
             if (state.currentNode != null) {
                 npc.setDialogue(dialogueRegistry.getDialogue(npc.getId(), state.currentNode));
                 npc.setCurrentDialogueNodeId(state.currentNode);
             }
 
-            // Restore texture
             if (state.currentTexture != null) {
                 npc.setTexture(state.currentTexture);
             }
         }
+    }
 
+    private String getNpcName(String npcId) {
+        try {
+            return Assets.npcs.get("npc." + npcId.toLowerCase() + ".name");
+        } catch (Exception e) {
+            return npcId; // Fallback to id
+        }
+    }
+
+    private Texture getNpcTexture(String npcId) {
+        Texture texture = Assets.getTexture(npcId.toLowerCase());
+        if (texture == null) {
+            System.err.println("Texture for '" + npcId + "' not found! Using fallback.");
+            texture = Assets.getTexture("zoe");
+        }
+        return texture;
+    }
+
+    private void addNpcToGame(NPC npc, World world) {
         npcs.add(npc);
         world.getNpcs().add(npc);
-        System.out.println("SUCCESS: Loaded '" + npcId + "' from map (Node: " + npc.getCurrentDialogueNodeId() + ", Tex: " + npc.getCurrentTextureKey() + ")");
     }
+
 
     public void update(float delta) {
         World currentWorld = worldManager.getCurrentWorld();
         if (currentWorld == null) return;
-        for (NPC npc : new ArrayList<>(currentWorld.getNpcs())) {
+        for (NPC npc : currentWorld.getNpcs()) {
             npc.update(delta);
         }
     }
@@ -112,12 +122,12 @@ public class NpcManager {
 
     public void callPolice() {
         World currentWorld = worldManager.getCurrentWorld();
+        if (currentWorld == null) return;
 
         Police summonedPolice = new Police("summoned_police", Assets.npcs.get("npc.police.name"),
-            100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police"),
-            currentWorld, 200, dialogueRegistry.getDialogue("summoned_police", "chase.offer"));
-        npcs.add(summonedPolice);
-        currentWorld.getNpcs().add(summonedPolice);
+                100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police"),
+                currentWorld, 200, dialogueRegistry.getDialogue("summoned_police", "chase.offer"));
+        addNpcToGame(summonedPolice, currentWorld);
     }
 
     public void moveSummonedPoliceToNewWorld(World newWorld) {
@@ -132,9 +142,9 @@ public class NpcManager {
         }
     }
 
-    public NPC getBoss() { return findNpcById("boss"); }
-    public Police getPolice() { return (Police) findNpcById("police"); }
-    public Police getSummonedPolice(){ return (Police) findNpcById("summoned_police"); }
+    public Police getSummonedPolice() {
+        return (Police) findNpcById("summoned_police");
+    }
 
     public void kill(NPC npc) {
         if (npc == null) return;

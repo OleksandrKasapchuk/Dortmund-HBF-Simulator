@@ -2,6 +2,8 @@ package com.mygame.game.save;
 
 import com.badlogic.gdx.Gdx;
 import com.mygame.Main;
+import com.mygame.assets.audio.MusicManager;
+import com.mygame.assets.audio.SoundManager;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.npc.NPC;
 import com.mygame.entity.npc.Police;
@@ -9,6 +11,7 @@ import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.GameContext;
 import com.mygame.game.GameInitializer;
+import com.mygame.game.GameStateManager;
 import com.mygame.quest.QuestManager;
 
 import java.util.HashSet;
@@ -76,9 +79,13 @@ public class SaveManager {
             Gdx.app.error("AutoSaveManager", "Save failed: Game state not fully ready.");
             return;
         }
+        if (ctx.gsm.getState() == GameStateManager.GameState.DEATH) return;
 
         try {
             GameSettings settings = SettingsManager.load();
+
+            settings.musicVolume = MusicManager.getVolume();
+            settings.soundVolume = SoundManager.getVolume();
 
             savePlayerData(settings);
 
@@ -128,7 +135,7 @@ public class SaveManager {
 
     private void saveSearchedItems(GameSettings settings){
         settings.searchedItems = ctx.worldManager.getWorlds().values().stream()
-            .flatMap(world -> world.getItems().stream())
+            .flatMap(world -> world.getAllItems().stream())
             .filter(Item::isSearched)
             .map(Item::getUniqueId)
             .collect(Collectors.toSet());

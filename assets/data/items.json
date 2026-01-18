@@ -13,5 +13,12 @@
   {"key": "pfandAutomat", "pickupable": false},
   {"key": "wardrobe", "pickupable": false},
   {"key": "bed", "pickupable": false},
-  {"key": "nightstand", "pickupable": false}
+  {"key": "nightstand", "pickupable": false},
+  {"key": "sofa", "pickupable": false},
+  {"key": "bookshell", "pickupable": false},
+  {"key": "carpet", "pickupable": false},
+  {"key": "big_plant", "pickupable": false},
+  {"key": "small_plant", "pickupable": false},
+  {"key": "lamp", "pickupable": false},
+  {"key": "TV", "pickupable": false}
 ]

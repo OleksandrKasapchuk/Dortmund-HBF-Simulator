@@ -19,6 +19,7 @@
   { "key": "murat", "path": "images/npc/murat.png" },
   { "key": "jamal", "path": "images/npc/jamal.png" },
   { "key": "dmitri", "path": "images/npc/dmitri.png" },
+  { "key": "maksym", "path": "images/npc/maksym.png" },
   { "key": "deathBack", "path": "images/background/deathScreen.jpg" },
   { "key": "menuBack", "path": "images/background/menu.jpg" },
   { "key": "menuBlurBack", "path": "images/background/menublur.jpg" },
@@ -31,5 +32,12 @@
   { "key": "bed", "path": "images/block/bed.png"},
   { "key": "drawer", "path": "images/block/drawer.png"},
   { "key": "nightstand", "path": "images/block/nightstand.png"},
-  { "key": "table", "path": "images/block/table.png"}
+  { "key": "table", "path": "images/block/table.png"},
+  { "key": "sofa", "path": "images/block/sofa.png"},
+  {"key": "bookshell", "path": "images/block/bookshell.png"},
+  {"key": "carpet", "path": "images/block/carpet.png"},
+  {"key": "big_plant", "path": "images/block/big_plant.png"},
+  {"key": "small_plant", "path": "images/block/small_plant.png"},
+  {"key": "lamp", "path": "images/block/lamp.png"},
+  {"key": "TV", "path": "images/block/TV.png"}
 ]

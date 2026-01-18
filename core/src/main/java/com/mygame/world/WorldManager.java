@@ -8,6 +8,7 @@ import com.mygame.assets.Assets;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
+import com.mygame.managers.TimerManager;
 import com.mygame.ui.inGameUI.DarkOverlay;
 import com.mygame.world.transition.Transition;
 
@@ -73,14 +74,27 @@ public class WorldManager {
         EventBus.fire(new Events.WorldChangedEvent(currentWorld.getName()));
     }
 
-    public void renderMap(OrthographicCamera camera) {
+    public void renderBottomLayers(OrthographicCamera camera) {
         if (currentWorld != null) {
-            currentWorld.renderMap(camera);
+            currentWorld.renderBottomLayers(camera);
+        }
+    }
+
+    public void renderTopLayers(OrthographicCamera camera) {
+        if (currentWorld != null) {
+            currentWorld.renderTopLayers(camera);
         }
     }
 
     public void drawEntities(SpriteBatch batch, BitmapFont font) {
-        if (currentWorld != null) currentWorld.draw(batch);
+        if (currentWorld != null) {
+            // Draw transition texts
+            for (Transition transition : currentWorld.getTransitions()) {
+                float textX = transition.area.x + transition.area.width / 2 - 50;
+                float textY = transition.area.y + transition.area.height / 2;
+                Assets.myFont.draw(batch, Assets.ui.get("ui.world.name." + transition.targetWorldId), textX, textY);
+            }
+        }
 
         if (inTransitionZone && player != null) {
             font.draw(batch, Assets.ui.get("world.pressEToTransition"), player.getX(), player.getY() + player.getHeight() + 30);
@@ -90,12 +104,15 @@ public class WorldManager {
     private void handleInteraction() {
         if (inTransitionZone && activeTransition != null) {
             EventBus.fire(new Events.DarkOverlayEvent(0.8f));
-            setCurrentWorld(activeTransition.targetWorldId);
-            player.setX(activeTransition.targetX);
-            player.setY(activeTransition.targetY);
-            player.setWorld(currentWorld);
-            inTransitionZone = false;
-            cooldownTimer = TRANSITION_COOLDOWN; // Start cooldown
+            TimerManager.setAction(() -> {
+                setCurrentWorld(activeTransition.targetWorldId);
+                player.setX(activeTransition.targetX);
+                player.setY(activeTransition.targetY);
+                player.setWorld(currentWorld);
+                inTransitionZone = false;
+                cooldownTimer = TRANSITION_COOLDOWN; // Start cooldown
+            }, 0.2f);
+
         }
     }
 

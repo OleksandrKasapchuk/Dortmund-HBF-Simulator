@@ -47,15 +47,26 @@ public class CameraManager {
         camera.position.x += (targetX - camera.position.x) * alpha;
         camera.position.y += (targetY - camera.position.y) * alpha;
 
-        // Apply camera shake if active
-        if (shakeDuration > 0) {
-            shakeDuration -= delta;
-            float shakeX = (MathUtils.random() - 0.5f) * 2 * shakeIntensity;
-            float shakeY = (MathUtils.random() - 0.5f) * 2 * shakeIntensity;
-            camera.position.add(shakeX, shakeY, 0);
-        }
-
         // Clamp camera to world boundaries
+        clampCameraToWorld(world);
+
+        camera.update();
+    }
+    /** Handles window resizing */
+    public void resize(int width, int height, World world) {
+        viewport.update(width, height, false);
+        centerOnPlayer();
+        clampCameraToWorld(world);
+        camera.update();
+    }
+
+    private void centerOnPlayer() {
+        float targetX = player.getX() + player.getWidth() / 2f;
+        float targetY = player.getY() + player.getHeight() / 2f;
+        camera.position.set(targetX, targetY, 0);
+    }
+
+    private void clampCameraToWorld(World world) {
         float halfViewportWidth = viewport.getWorldWidth() / 2f;
         float halfViewportHeight = viewport.getWorldHeight() / 2f;
 
@@ -64,12 +75,6 @@ public class CameraManager {
 
         camera.position.x = MathUtils.clamp(camera.position.x, halfViewportWidth, maxX);
         camera.position.y = MathUtils.clamp(camera.position.y, halfViewportHeight, maxY);
-
-        camera.update();
-    }
-    /** Handles window resizing */
-    public void resize(int width, int height) {
-        viewport.update(width, height, true);
     }
 
     public OrthographicCamera getCamera() {
