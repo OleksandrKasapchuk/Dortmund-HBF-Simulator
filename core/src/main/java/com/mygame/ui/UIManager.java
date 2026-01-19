@@ -107,14 +107,14 @@ public class UIManager {
             }
         }
         for (Item item : worldManager.getCurrentWorld().getAllItems()) {
-            if (!item.isInteractable() || (item.getQuestId() != null && !questManager.hasQuest(item.getQuestId())) || !item.isPlayerNear(player, item.getDistance()) || item.isSearched()) continue;
+            if ((!item.isInteractable() && !item.isSearchable()) || (item.getQuestId() != null && !questManager.hasQuest(item.getQuestId())) || !item.isPlayerNear(player, item.getDistance()) || item.isSearched()) continue;
             drawText(item.isSearchable() ? Assets.ui.get("interact.search") : Assets.ui.get("interact"), item.getCenterX(), item.getCenterY());
         }
     }
 
     private void handleInteraction() {
         for (Item item : worldManager.getCurrentWorld().getAllItems()) {
-            if (!item.isInteractable() || (item.getQuestId() != null && !questManager.hasQuest(item.getQuestId())) || !item.isPlayerNear(player, item.getDistance()) || item.isSearched()) continue;
+            if ((!item.isInteractable() && !item.isSearchable()) || (item.getQuestId() != null && !questManager.hasQuest(item.getQuestId())) || !item.isPlayerNear(player, item.getDistance()) || item.isSearched()) continue;
             EventBus.fire(new Events.ItemInteractionEvent(item, player));
             return;
         }

@@ -1,0 +1,14 @@
+{
+  "jamal": {
+    "nodes": {
+      "start": "trade.offer",
+      "trade.offer": {
+        "texts": ["dialogue.jamal.trade_offer.text.1", "dialogue.jamal.trade_offer.text.2"],
+        "choices": [
+          { "text": "dialogue.jamal.trade_offer.choice.1", "action": "inventory.buy_seed" },
+          "dialogue.choice.leave"
+        ]
+      }
+    }
+  }
+}

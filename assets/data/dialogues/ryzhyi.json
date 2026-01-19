@@ -1,0 +1,12 @@
+{
+  "ryzhyi": {
+    "nodes": {
+      "start": "money.offer",
+      "money.offer": {
+        "texts": ["dialogue.ryzhyi.money_offer.text.1"],
+        "choices": [{ "text": "dialogue.ryzhyi.money_offer.choice.1", "action": "npc.ryzhyi.take_money" }]
+      },
+      "money.completed": ["dialogue.ryzhyi.money_completed.text.1"]
+    }
+  }
+}

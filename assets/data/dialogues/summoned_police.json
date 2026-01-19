@@ -1,0 +1,21 @@
+{
+  "summoned_police": {
+    "nodes": {
+      "start": "check.active",
+      "check.active": {
+        "onFinish": "npc.police.check",
+        "texts": ["dialogue.summoned_police.check_active.text.1"],
+        "isForced": true
+      },
+      "chase.offer": {
+        "onFinish": "quest.chase.start",
+        "texts": ["dialogue.summoned_police.chase_offer.text.1", "dialogue.summoned_police.chase_offer.text.2"],
+        "isForced": true
+      },
+      "chase.failed": {
+        "onFinish": "player.die",
+        "texts": ["dialogue.summoned_police.chase_failed.text.1"]
+      }
+    }
+  }
+}

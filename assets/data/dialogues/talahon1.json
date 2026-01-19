@@ -1,0 +1,11 @@
+{
+  "talahon1": {
+    "nodes": {
+      "start": "idle",
+      "idle": {
+        "texts": ["dialogue.talahon1.idle.text.1", "dialogue.talahon1.idle.text.2", "dialogue.talahon1.idle.text.3"],
+        "isForced": true
+      }
+    }
+  }
+}

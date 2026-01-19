@@ -1,0 +1,8 @@
+{
+  "denys": {
+    "nodes": {
+      "start": "idle",
+      "idle": ["dialogue.denys.idle.text.1", "dialogue.denys.idle.text.2"]
+    }
+  }
+}

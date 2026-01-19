@@ -1,0 +1,22 @@
+{
+  "jan": {
+    "nodes": {
+      "start": "fireworks.stage.1.offer",
+      "fireworks.stage.1.offer": {
+        "texts":["dialogue.jan.fireworks.stage.1.offer.text.1", "dialogue.jan.fireworks.stage.1.offer.text.2"],
+        "choices":  [
+          { "text": "dialogue.choice.accept", "action": "quest.jan_firework.stage.1.accept" },
+          "dialogue.choice.leave"
+        ]
+      },
+      "fireworks.stage.1.active": ["dialogue.jan.fireworks.stage.1.active.text.1"],
+      "fireworks.stage.1.completed": {
+        "onFinish": "quest.jan_firework.stage.2.accept",
+        "texts": ["dialogue.jan.fireworks.stage.2.offer.text.1", "dialogue.jan.fireworks.stage.2.offer.text.2"]
+      },
+      "fireworks.stage.2.active": {
+        "texts": ["dialogue.jan.fireworks.stage.2.active.text.1"]
+      }
+    }
+  }
+}

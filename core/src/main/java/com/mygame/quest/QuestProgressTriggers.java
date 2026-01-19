@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public class QuestProgressTriggers {
 
-    private final String QUEST_FIREWORKS = "jan";
+    private final String QUEST_FIREWORKS = "jan_firework.stage.1";
     private final String QUEST_VISIT_LOCATIONS = "jason1";
     private final String QUEST_TALK_NPCS = "jason2";
     private final String ITEM_FIREWORK = "firework";

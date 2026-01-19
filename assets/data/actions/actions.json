@@ -243,20 +243,29 @@
     ]
   },
 
-  "quest.jan.accept": {
+  "quest.jan_firework.stage.1.accept": {
     "type": "system.composite",
     "actions": [
-      { "type": "dialogue.set", "npc": "jan", "node": "fireworks.active" },
-      { "type": "quest.start", "id": "jan_firework", "progressable": true, "progress": 0, "max": 2 }
+      { "type": "dialogue.set", "npc": "jan", "node": "fireworks.stage.1.active" },
+      { "type": "quest.start", "id": "jan_firework.stage.1"}
     ]
   },
 
-  "quest.jan.complete": {
+  "quest.jan_firework.stage.1.complete": {
     "type": "system.composite",
     "actions": [
-      { "type": "dialogue.set", "npc": "jan", "node": "fireworks.completed" },
-      { "type": "quest.start", "id": "jan2"}
+      { "type": "dialogue.set", "npc": "jan", "node": "fireworks.stage.1.completed" },
+      { "type": "quest.start", "id": "jan_firework.stage.2"}
       ]
+  },
+
+  "quest.jan_firework.stage.2.accept": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "dialogue.set", "npc": "jan", "node": "fireworks.stage.2.active" },
+      { "type": "quest.complete", "id": "jan_firework.stage.2"},
+      { "type": "quest.start", "id": "jan_firework.stage.3"}
+    ]
   },
 
   "player.die": {
@@ -326,11 +335,11 @@
       }
     ]
   },
-  "jan_complete": {
+  "jan_fireworks.stage.1.complete": {
     "type": "system.composite",
     "actions": [
-      { "type": "dialogue.set", "npc": "jan", "node": "fireworks.completed" },
-      { "type": "quest.start", "id": "jan_firework"}
+      { "type": "dialogue.set", "npc": "jan", "node": "fireworks.stage.1.completed" },
+      { "type": "quest.start", "id": "jan_firework.stage.2"}
     ]
   }
 }

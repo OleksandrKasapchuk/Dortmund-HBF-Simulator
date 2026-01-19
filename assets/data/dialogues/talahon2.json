@@ -1,0 +1,21 @@
+{
+  "talahon2": {
+    "nodes": {
+      "start": "vape.offer",
+      "vape.offer": {
+        "texts": ["dialogue.talahon2.vape_offer.text.1", "dialogue.talahon2.vape_offer.text.2"],
+        "isForced": true,
+        "choices": [
+          { "text": "dialogue.talahon2.vape_offer.choice.1", "action": "npc.talahon2.give_vape" },
+          { "text": "dialogue.choice.leave", "next": "vape.failed" }
+        ]
+      },
+      "vape.completed": {
+        "texts": ["dialogue.talahon2.vape_completed.text.1"]
+      },
+      "vape.failed": {
+        "texts": ["dialogue.talahon2.vape_failed.text.1"]
+      }
+    }
+  }
+}

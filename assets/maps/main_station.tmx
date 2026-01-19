@@ -192,11 +192,6 @@
     <property name="textureKey" value="jason"/>
    </properties>
   </object>
-  <object id="37" gid="3" x="2758.52" y="2084.42" width="70" height="100">
-   <properties>
-    <property name="name" value="walter"/>
-   </properties>
-  </object>
   <object id="41" gid="3" x="2121" y="4892" width="70" height="100">
    <properties>
     <property name="name" value="dmitri"/>

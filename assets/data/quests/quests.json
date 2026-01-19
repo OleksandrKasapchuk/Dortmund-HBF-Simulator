@@ -1,11 +1,12 @@
 [
   {
-    "key": "jan_firework",
+    "key": "jan_firework.stage.1",
     "progressable": true,
     "maxProgress": 2,
-    "onComplete": "jan_complete"
+    "onComplete": "quest.jan_firework.stage.1.complete"
   },
-  {"key": "jan2"},
+  {"key": "jan_firework.stage.2"},
+  {"key": "jan_firework.stage.3"},
   {
     "key": "jason1",
     "progressable": true,

@@ -1,0 +1,17 @@
+{
+  "jason": {
+    "nodes": {
+      "start": "tour.offer",
+      "tour.offer": {
+        "onFinish": "npc.jason.give_money",
+        "texts": ["dialogue.jason.tour_offer.text.1", "dialogue.jason.tour_offer.text.2", "dialogue.jason.tour_offer.text.3", "dialogue.jason.tour_offer.text.4", "dialogue.jason.tour_offer.text.5"]
+      },
+      "tour.active": ["dialogue.jason.tour_active.text.1", "dialogue.jason.tour_active.text.2"],
+      "tour.completed": {
+        "onFinish": "quest.jason.complete",
+        "texts": ["dialogue.jason.tour_completed.text.1"]
+      },
+      "idle": ["dialogue.jason.idle.text.1"]
+    }
+  }
+}
