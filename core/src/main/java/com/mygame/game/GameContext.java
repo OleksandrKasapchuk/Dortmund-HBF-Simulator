@@ -81,7 +81,7 @@ public class GameContext {
         this.gsm = new GameStateManager(ui);
 
         // 4. High-level logic
-        this.questProgressTriggers = new QuestProgressTriggers(questManager, itemRegistry);
+        this.questProgressTriggers = new QuestProgressTriggers(questManager, itemRegistry, npcManager, worldManager);
         this.scController = new ScenarioController(this);
 
         // 5. Systems that need the full context
