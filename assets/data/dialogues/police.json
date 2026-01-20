@@ -1,0 +1,17 @@
+{
+  "police": {
+    "nodes": {
+      "start": "check.active",
+      "check.active": {
+        "onFinish": "npc.police.check",
+        "texts": ["dialogue.police.check_active.text.1"],
+        "isForced": true
+      },
+      "check.failed": {
+        "onFinish": "player.die",
+        "texts": ["dialogue.police.check_failed.text.1", "dialogue.police.check_failed.text.2"],
+        "isForced": true
+      }
+    }
+  }
+}

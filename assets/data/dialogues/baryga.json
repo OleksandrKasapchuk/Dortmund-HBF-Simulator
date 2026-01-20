@@ -1,0 +1,15 @@
+{
+  "baryga": {
+    "nodes": {
+      "start": "trade.offer",
+      "trade.offer": {
+        "texts": ["dialogue.baryga.trade_offer.text.1", "dialogue.baryga.trade_offer.text.2"],
+        "choices": [
+          { "text": "dialogue.baryga.trade_offer.choice.1", "action": "inventory.baryga_buy_grass" },
+          { "text": "dialogue.choice.leave", "next": "idle" }
+        ]
+      },
+      "idle": ["dialogue.baryga.idle.text.1"]
+    }
+  }
+}

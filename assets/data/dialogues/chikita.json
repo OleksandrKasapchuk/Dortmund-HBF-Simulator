@@ -1,0 +1,14 @@
+{
+  "chikita": {
+    "nodes": {
+      "start": "craft.offer",
+      "craft.offer": {
+        "texts": ["dialogue.chikita.craft_offer.text.1"],
+        "choices": [
+          { "text": "dialogue.chikita.craft_offer.choice.1", "action": "npc.chikita.craft" },
+          "dialogue.choice.leave"
+        ]
+      }
+    }
+  }
+}

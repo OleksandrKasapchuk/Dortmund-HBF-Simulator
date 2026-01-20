@@ -2,10 +2,14 @@ package com.mygame.quest;
 
 import com.mygame.entity.item.ItemDefinition;
 import com.mygame.entity.item.ItemRegistry;
+import com.mygame.entity.npc.NPC;
+import com.mygame.entity.npc.NpcManager;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;
+import com.mygame.world.World;
+import com.mygame.world.WorldManager;
 
 import java.util.Set;
 
@@ -14,21 +18,20 @@ import java.util.Set;
  */
 public class QuestProgressTriggers {
 
-    private final String QUEST_FIREWORKS = "jan";
-    private final String QUEST_VISIT_LOCATIONS = "jason1";
-    private final String QUEST_TALK_NPCS = "jason2";
-    private final String ITEM_FIREWORK = "firework";
-
     private final QuestManager questManager;
     private final ItemRegistry itemRegistry;
+    private final NpcManager npcManager;
+    private final WorldManager worldManager;
+
     private Set<String> talkedNpcs;
     private Set<String> visited;
     private int lastFireworkCount = 0;
 
-    public QuestProgressTriggers(QuestManager questManager, ItemRegistry itemRegistry) {
+    public QuestProgressTriggers(QuestManager questManager, ItemRegistry itemRegistry, NpcManager npcManager, WorldManager worldManager) {
         this.questManager = questManager;
         this.itemRegistry = itemRegistry;
-
+        this.npcManager = npcManager;
+        this.worldManager = worldManager;
         // Прогрес квестів
         GameSettings settings = SettingsManager.load();
         talkedNpcs = settings.talkedNpcs;
@@ -48,8 +51,10 @@ public class QuestProgressTriggers {
     }
 
     private void handleInventoryQuest(ItemDefinition item, int newAmount) {
+        String ITEM_FIREWORK = "firework";
         if (item == itemRegistry.get(ITEM_FIREWORK)) {
             if (newAmount > lastFireworkCount) {
+                String QUEST_FIREWORKS = "jan_firework.stage.1";
                 progress(QUEST_FIREWORKS);
             }
             lastFireworkCount = newAmount;
@@ -58,13 +63,24 @@ public class QuestProgressTriggers {
 
     private void handleNpcDialogue(String npcId) {
         if (talkedNpcs.add(npcId)) {
+            String QUEST_TALK_NPCS = "jason2";
             progress(QUEST_TALK_NPCS);
         }
     }
 
     private void handleWorldChange(String worldId) {
         if (visited.add(worldId)) {
+            String QUEST_VISIT_LOCATIONS = "jason1";
             progress(QUEST_VISIT_LOCATIONS);
+        }
+        NPC jan = npcManager.findNpcById("jan");
+        World world = worldManager.getWorld("leopold");
+        if (questManager.hasQuest("jan_firework.stage.3") && jan.getWorld() != world){
+            jan.setWorld(world);
+            jan.setX(1000);
+            jan.setY(500);
+            worldManager.getCurrentWorld().getNpcs().remove(jan);
+            world.getNpcs().add(jan);
         }
     }
 

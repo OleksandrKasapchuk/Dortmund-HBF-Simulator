@@ -1,0 +1,3 @@
+{
+  "kamil": { "nodes": { "start": "idle", "idle": ["dialogue.kamil.idle.text.1"] } }
+}

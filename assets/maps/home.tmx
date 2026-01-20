@@ -140,7 +140,7 @@
    <properties>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="wardrobe"/>
-    <property name="questId" value="jan_firework"/>
+    <property name="questId" value="jan_firework.stage.1"/>
     <property name="rewardAmount" type="int" value="1"/>
     <property name="rewardItemKey" value="firework"/>
     <property name="searchable" type="bool" value="true"/>
@@ -151,7 +151,7 @@
     <property name="interactionDistance" type="int" value="100"/>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="nightstand"/>
-    <property name="questId" value="jan_firework"/>
+    <property name="questId" value="jan_firework.stage.1"/>
     <property name="rewardAmount" type="int" value="1"/>
     <property name="rewardItemKey" value="firework"/>
     <property name="searchable" type="bool" value="true"/>
@@ -169,7 +169,7 @@
    <properties>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="wardrobe"/>
-    <property name="questId" value="jan_firework"/>
+    <property name="questId" value="jan_firework.stage.1"/>
     <property name="searchable" type="bool" value="true"/>
    </properties>
   </object>
@@ -225,6 +225,7 @@
    <properties>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="TV"/>
+    <property name="questId" value="jan_firework.stage.1"/>
    </properties>
   </object>
  </objectgroup>

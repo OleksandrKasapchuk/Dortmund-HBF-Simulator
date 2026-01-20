@@ -1,0 +1,8 @@
+{
+  "dmitri": {
+    "nodes": {
+      "start": "idle",
+      "idle": ["dialogue.dmitri.idle.text.1", "dialogue.dmitri.idle.text.2", "dialogue.dmitri.idle.text.3", "dialogue.dmitri.idle.text.4", "dialogue.dmitri.idle.text.5", "dialogue.dmitri.idle.text.6", "dialogue.dmitri.idle.text.7"]
+    }
+  }
+}

@@ -89,6 +89,8 @@ project(":lwjgl3") {
     apply plugin: 'application'
     sourceCompatibility = 17
 
+    sourceSets.main.resources.srcDirs += [rootProject.file("assets")]
+
     application {
         mainClass = 'com.mygame.lwjgl3.Lwjgl3Launcher'
     }
