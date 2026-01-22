@@ -4,6 +4,7 @@ import com.mygame.action.ActionRegistry;
 import com.mygame.assets.Assets;
 import com.mygame.entity.npc.NPC;
 import com.mygame.game.GameContext;
+import com.mygame.world.World;
 
 public class NpcActionProvider implements ActionProvider {
     @Override
@@ -28,6 +29,15 @@ public class NpcActionProvider implements ActionProvider {
                 npc.setY(c.player.getY() + data.getFloat("offsetY", 0f));
             }
         });
+        registry.registerCreator("npc.teleport", (c, data) -> () -> {
+            c.npcManager.teleportNpc(
+                data.getString("npc"),
+                c.worldManager.getWorld(data.getString("world")),
+                data.getFloat("x", 0f),
+                data.getFloat("y", 0f)
+            );
+        });
+
 
         registry.registerCreator("npc.callPolice", (c, data) -> c.npcManager::callPolice);
     }

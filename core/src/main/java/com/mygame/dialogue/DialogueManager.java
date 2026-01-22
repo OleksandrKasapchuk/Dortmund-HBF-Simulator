@@ -151,7 +151,7 @@ public class DialogueManager {
                 dialogueUI.updateText(currentPhrase);
             } else {
                 if (state.isLastPhrase()) {
-                    if (state.activeNode.getAction() != null) state.activeNode.getAction().run();
+                    if (state.activeNode.getAction() != null) EventBus.fire(new Events.ActionRequestEvent(state.activeNode.getAction()));
                     if (state.activeNode.getChoices().isEmpty()) endDialogue();
                 } else {
                     state.textIndex++;

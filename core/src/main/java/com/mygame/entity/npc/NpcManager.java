@@ -154,4 +154,22 @@ public class NpcManager {
         }
         npcs.remove(npc);
     }
+    public void teleportNpc(String npcId, World targetWorld, float x, float y) {
+        NPC npc = findNpcById(npcId);
+        if (npc == null || targetWorld == null) return;
+
+        World oldWorld = npc.getWorld();
+
+        if (oldWorld != null) {
+            oldWorld.getNpcs().remove(npc);
+        }
+
+        npc.setWorld(targetWorld);
+        npc.setX(x);
+        npc.setY(y);
+
+        if (!targetWorld.getNpcs().contains(npc)) {
+            targetWorld.getNpcs().add(npc);
+        }
+    }
 }

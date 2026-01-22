@@ -129,13 +129,11 @@ public class DialogueRegistry {
     }
 
     private DialogueNode createNodeFromObject(JsonValue nodeData, String npcId) {
-        Runnable onFinish = null;
+        String onFinish = null;
         boolean isForced = nodeData.getBoolean("isForced", false);
 
         if (nodeData.has("onFinish")) {
-            onFinish = actionRegistry.getAction(
-                nodeData.getString("onFinish")
-            );
+            onFinish = nodeData.getString("onFinish");
         }
 
         if (!nodeData.has("texts")) {

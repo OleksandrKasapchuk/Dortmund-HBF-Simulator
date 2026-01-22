@@ -1,3 +1,3 @@
 {
-  "filip": { "nodes": { "start": "idle", "idle": ["dialogue.filip.idle.text.1", "dialogue.filip.idle.text.2", "dialogue.filip.idle.text.3", "dialogue.filip.idle.text.4"]}},
+  "filip": { "nodes": { "start": "idle", "idle": ["dialogue.filip.idle.1", "dialogue.filip.idle.2", "dialogue.filip.idle.3", "dialogue.filip.idle.4"]}}
 }

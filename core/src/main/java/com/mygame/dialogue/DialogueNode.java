@@ -27,14 +27,14 @@ public class DialogueNode {
 
     private final List<String> texts;   // фрази вузла
     private final List<Choice> choices; // варіанти відповіді
-    private final Runnable action;      // виконується коли вузол завершується
+    private final String action;      // виконується коли вузол завершується
     private boolean isForced;
 
     public DialogueNode(String... textKeys) {
         this(null, false, textKeys);
     }
 
-    public DialogueNode(Runnable onFinish, boolean isForced, String... textKeys) {
+    public DialogueNode(String onFinish, boolean isForced, String... textKeys) {
         this.action = onFinish;
         this.texts = (textKeys == null || textKeys.length == 0) ?
                 List.of("") :
@@ -56,6 +56,6 @@ public class DialogueNode {
 
     public List<String> getTexts() { return texts; }
     public List<Choice> getChoices() { return choices; }
-    public Runnable getAction() { return action; }
+    public String getAction() { return action; }
     public boolean isForced(){ return isForced; }
 }

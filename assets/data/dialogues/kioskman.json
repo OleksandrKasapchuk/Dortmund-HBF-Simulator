@@ -3,10 +3,10 @@
     "nodes": {
       "start": "trade.offer",
       "trade.offer": {
-        "texts": ["dialogue.kioskman.trade_offer.text.1"],
+        "texts": ["dialogue.kioskman.trade_offer.1"],
         "choices": [
-          { "text": "dialogue.kioskman.trade_offer.choice.1", "action": "inventory.kioskman_buy_pape" },
-          { "text": "dialogue.kioskman.trade_offer.choice.2", "action": "inventory.kioskman_buy_icetea" },
+          { "text": "dialogue.kioskman.trade_offer.choice.1", "action": "act.inventory.kioskman_buy_pape" },
+          { "text": "dialogue.kioskman.trade_offer.choice.2", "action": "act.inventory.kioskman_buy_icetea" },
           "dialogue.choice.leave"
         ]
       }

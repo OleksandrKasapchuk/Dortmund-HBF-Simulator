@@ -1,6 +1,7 @@
 package com.mygame.action;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.mygame.action.provider.ActionProvider;
@@ -37,7 +38,7 @@ public class ActionRegistry {
     public void init(GameContext ctx) {
         setupProviders();
         setupCreators(ctx);
-        loadActionsFromJson(ctx);
+        loadActionsFromManifest(ctx);
         EventBus.subscribe(Events.ActionRequestEvent.class, event -> executeAction(event.actionId()));
     }
 
@@ -68,15 +69,38 @@ public class ActionRegistry {
         }
     }
 
-    private void loadActionsFromJson(GameContext ctx) {
+    private void loadActionsFromManifest(GameContext ctx) {
+        JsonReader reader = new JsonReader();
+        FileHandle manifestFile = Gdx.files.internal("data/actions/actions.json");
+
+        if (!manifestFile.exists()) {
+            manifestFile = Gdx.files.internal("assets/data/actions/actions.json");
+        }
+
+        if (!manifestFile.exists()) {
+            Gdx.app.log("ActionRegistry", "Manifest file 'actions.json' not found. Looked in 'data/actions/' and 'assets/data/actions/'.");
+            return;
+        }
+
         try {
-            JsonReader reader = new JsonReader();
-            JsonValue root = reader.parse(Gdx.files.internal("data/actions/actions.json"));
-            for (JsonValue entry : root) {
-                registeredActions.put(entry.name(), createAction(ctx, entry));
+            String[] actionFiles = reader.parse(manifestFile).asStringArray();
+            for (String fileName : actionFiles) {
+                FileHandle actionFile = Gdx.files.internal("data/actions/" + fileName + ".json");
+                if (!actionFile.exists()) {
+                     actionFile = Gdx.files.internal("assets/data/actions/" + fileName + ".json");
+                }
+
+                if (actionFile.exists()) {
+                    JsonValue root = reader.parse(actionFile);
+                    for (JsonValue entry : root) {
+                        registeredActions.put(entry.name(), createAction(ctx, entry));
+                    }
+                } else {
+                    Gdx.app.log("ActionRegistry", "Action file '" + fileName + ".json' not found.");
+                }
             }
         } catch (Exception e) {
-            Gdx.app.log("ActionRegistry", "Could not load actions.json: " + e.getMessage());
+            Gdx.app.log("ActionRegistry", "Could not load actions from manifest: " + e.getMessage());
         }
     }
 
@@ -102,6 +126,7 @@ public class ActionRegistry {
         Runnable action = registeredActions.get(name);
         if (action != null) {
             action.run();
+            Gdx.app.log("ActionRegistry", "Action '" + name + "' executed!");
         } else {
             Gdx.app.log("ActionRegistry", "Action '" + name + "' not found!");
         }

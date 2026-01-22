@@ -3,15 +3,15 @@
     "nodes": {
       "start": "tour.offer",
       "tour.offer": {
-        "onFinish": "npc.jason.give_money",
-        "texts": ["dialogue.jason.tour_offer.text.1", "dialogue.jason.tour_offer.text.2", "dialogue.jason.tour_offer.text.3", "dialogue.jason.tour_offer.text.4", "dialogue.jason.tour_offer.text.5"]
+        "onFinish": "act.npc.jason.give_money",
+        "texts": ["dialogue.jason.tour.offer.1", "dialogue.jason.tour.offer.2", "dialogue.jason.tour.offer.3", "dialogue.jason.tour.offer.4", "dialogue.jason.tour.offer.5"]
       },
-      "tour.active": ["dialogue.jason.tour_active.text.1", "dialogue.jason.tour_active.text.2"],
+      "tour.active": ["dialogue.jason.tour.active.1", "dialogue.jason.tour.active.2"],
       "tour.completed": {
-        "onFinish": "quest.jason.complete",
-        "texts": ["dialogue.jason.tour_completed.text.1"]
+        "onFinish": "act.quest.jason.complete",
+        "texts": ["dialogue.jason.tour.completed.1"]
       },
-      "idle": ["dialogue.jason.idle.text.1"]
+      "idle": ["dialogue.jason.idle.1"]
     }
   }
 }

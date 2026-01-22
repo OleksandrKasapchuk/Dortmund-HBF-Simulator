@@ -59,7 +59,7 @@ public class Item extends Entity {
     private void search(Player player) {
         searched = true;
         // Замість ActionRegistry.executeAction викликаємо івент
-        EventBus.fire(new Events.ActionRequestEvent("item.search.basic"));
+        EventBus.fire(new Events.ActionRequestEvent("act.item.search.basic"));
         TimerManager.setAction(() -> EventBus.fire(new Events.ItemSearchedEvent(player, rewardItemKey, rewardAmount)), 2);
     }
 

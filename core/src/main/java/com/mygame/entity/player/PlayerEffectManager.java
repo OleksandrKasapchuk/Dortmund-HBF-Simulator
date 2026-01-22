@@ -18,8 +18,8 @@ public class PlayerEffectManager {
 
         EventBus.subscribe(Events.PlayerStateChangedEvent.class, event -> {
             switch (event.newState()) {
-                case STONED -> EventBus.fire(new Events.ActionRequestEvent("player.state.stoned.enter"));
-                case NORMAL -> EventBus.fire(new Events.ActionRequestEvent("player.state.normal.enter"));
+                case STONED -> EventBus.fire(new Events.ActionRequestEvent("act.player.state.stoned.enter"));
+                case NORMAL -> EventBus.fire(new Events.ActionRequestEvent("act.player.state.normal.enter"));
             }
         });
     }

@@ -1,0 +1,44 @@
+{
+  "act.interact.pfand_automat": {
+    "type": "inventory.check",
+    "itemId": "pfand",
+    "amount": 1,
+    "action": "act.interact.pfand_automat.success",
+    "onFail": { "type": "ui.notEnoughMessage", "item": "pfand" }
+  },
+
+  "act.interact.pfand_automat.success": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "inventory.remove", "id": "pfand", "amount": 1 },
+      { "type": "audio.playSound", "id": "pfandAutomat" },
+      { "type": "item.startCooldown", "id": "pfandAutomat", "seconds": 1.9 },
+      {
+        "type": "system.timer",
+        "delay": 1.9,
+        "action": { "type": "inventory.add", "id": "money", "amount": 1 }
+      }
+    ]
+  },
+
+  "act.interact.table_plant": {
+    "type": "inventory.check",
+    "itemId": "grass_seed",
+    "amount": 1,
+    "action": "act.interact.table_plant.success",
+    "onFail": { "type": "ui.notEnoughMessage", "item": "grass_seed" }
+  },
+
+  "act.interact.table_plant.success": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "inventory.remove", "id": "grass_seed", "amount": 1 },
+      { "type": "audio.playSound", "id": "bush" },
+      {
+        "type": "system.timer",
+        "delay": 1.9,
+        "action": { "type": "ui.message", "key": "message.grass_planted", "duration": 1.0 }
+      }
+    ]
+  }
+}

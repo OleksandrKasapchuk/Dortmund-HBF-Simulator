@@ -3,21 +3,21 @@
     "nodes": {
       "start": "joint.offer",
       "joint.offer": {
-        "texts": ["dialogue.igo.joint_offer.text.1", "dialogue.igo.joint_offer.text.2", "dialogue.igo.joint_offer.text.3"],
+        "texts": ["dialogue.igo.joint_offer.1", "dialogue.igo.joint_offer.2", "dialogue.igo.joint_offer.3"],
 
         "choices": [
-          { "text": "dialogue.choice.accept", "action": "quest.igo.joint_activate" },
+          { "text": "dialogue.choice.accept", "action": "act.quest.igo.joint_activate" },
           "dialogue.choice.leave"
         ]
       },
       "joint.active": {
-        "texts": ["dialogue.igo.joint_active.text.1"],
+        "texts": ["dialogue.igo.joint_active.1"],
         "choices": [
-          { "text": "dialogue.igo.joint_active.choice.1", "action": "quest.igo.joint_complete" },
+          { "text": "dialogue.igo.joint_active.choice.1", "action": "act.quest.igo.joint_complete" },
           "dialogue.choice.leave"
         ]
       },
-      "joint.completed": ["dialogue.igo.joint_completed.text.1"]
+      "joint.completed": ["dialogue.igo.joint_completed.1"]
     }
   }
 }

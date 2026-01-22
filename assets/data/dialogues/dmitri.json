@@ -2,7 +2,7 @@
   "dmitri": {
     "nodes": {
       "start": "idle",
-      "idle": ["dialogue.dmitri.idle.text.1", "dialogue.dmitri.idle.text.2", "dialogue.dmitri.idle.text.3", "dialogue.dmitri.idle.text.4", "dialogue.dmitri.idle.text.5", "dialogue.dmitri.idle.text.6", "dialogue.dmitri.idle.text.7"]
+      "idle": ["dialogue.dmitri.idle.1", "dialogue.dmitri.idle.2", "dialogue.dmitri.idle.3", "dialogue.dmitri.idle.4", "dialogue.dmitri.idle.5", "dialogue.dmitri.idle.6", "dialogue.dmitri.idle.7"]
     }
   }
 }

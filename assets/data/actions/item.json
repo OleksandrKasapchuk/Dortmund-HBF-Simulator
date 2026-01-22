@@ -1,0 +1,31 @@
+{
+  "act.item.joint.use": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "audio.playSound", "id": "lighter" },
+      { "type": "system.timer", "delay": 4.0, "action": { "type": "player.setState", "key": "stoned" } }
+    ]
+  },
+
+  "act.item.ice_tea.use": {
+    "type": "system.timer", "delay": 1.0, "action": { "type": "player.setState", "key": "normal" }
+  },
+
+  "act.item.search.basic": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "audio.playSound", "id": "search" },
+      { "type": "player.lockMovement", "locked": true },
+      {
+        "type": "system.timer",
+        "delay": 2.0,
+        "action": {
+          "type": "system.composite",
+          "actions": [
+            { "type": "player.lockMovement", "locked": false }
+          ]
+        }
+      }
+    ]
+  }
+}
