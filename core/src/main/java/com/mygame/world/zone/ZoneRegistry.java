@@ -5,9 +5,19 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
+import com.mygame.entity.item.ItemRegistry;
+import com.mygame.entity.player.Player;
 import com.mygame.world.World;
 
 public class ZoneRegistry {
+
+    private final ItemRegistry itemRegistry;
+    private final Player player;
+
+    public ZoneRegistry(ItemRegistry itemRegistry, Player player) {
+        this.itemRegistry = itemRegistry;
+        this.player = player;
+    }
 
     public void loadZonesFromMap(World world) {
         MapLayer zoneLayer = world.getMap().getLayers().get("zones");
@@ -54,7 +64,7 @@ public class ZoneRegistry {
                     String questId = props.get("questId", String.class);
 
                     world.getZones().add(
-                        new QuestZone(questId, rect)
+                        new QuestZone(questId, rect, player, itemRegistry)
                     );
                 }
 

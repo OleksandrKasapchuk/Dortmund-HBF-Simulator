@@ -91,12 +91,13 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,0,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="3" name="transitions">
+ <objectgroup id="3" name="zones">
   <object id="1" gid="2" x="2562" y="1774" width="296" height="692">
    <properties>
     <property name="targetWorldId" value="home"/>
     <property name="targetX" type="float" value="2000"/>
     <property name="targetY" type="float" value="700"/>
+    <property name="zoneType" value="transition"/>
    </properties>
   </object>
   <object id="2" gid="2" x="2610" y="3598" width="800" height="460">
@@ -104,6 +105,7 @@
     <property name="targetWorldId" value="main"/>
     <property name="targetX" type="float" value="3700"/>
     <property name="targetY" type="float" value="3900"/>
+    <property name="zoneType" value="transition"/>
    </properties>
   </object>
  </objectgroup>

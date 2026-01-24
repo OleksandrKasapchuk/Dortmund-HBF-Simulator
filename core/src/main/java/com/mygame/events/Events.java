@@ -32,6 +32,7 @@ public class Events {
     public record ItemInteractionEvent(Item item, Player player){}
     public record ItemSearchedEvent(Player player, String itemKey, int amount) {}
     public record ItemUsedEvent(ItemDefinition item) {}
+    public record CreateItemEvent(String itemKey, float x, float y) {}
 
     public record ActionRequestEvent(String actionId) {} // Нова подія
     public record InteractEvent() {}

@@ -74,7 +74,7 @@ public class GameContext {
         this.npcManager = new NpcManager(player, dialogueRegistry, worldManager);
         this.itemManager = new ItemManager(itemRegistry, worldManager);
         this.pfandManager = new PfandManager(itemRegistry, worldManager);
-        this.zoneRegistry = new ZoneRegistry();
+        this.zoneRegistry = new ZoneRegistry(itemRegistry, player);
         this.cameraManager = new CameraManager(player);
         this.ui = new UIManager(batch, player, skin, questManager, worldManager, dayManager);
         this.dialogueManager = new DialogueManager(ui.getDialogueUI(), player, worldManager, dialogueRegistry);

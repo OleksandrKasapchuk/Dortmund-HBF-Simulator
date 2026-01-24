@@ -7,9 +7,11 @@
     "onComplete": "act.quest.jan.firework.1.completed"
   },
   {"key": "jan.firework.2"},
+  {"key": "jan.firework.3"},
   {
-    "key": "jan.firework.3",
-    "onComplete": "act.quest.jan.firework.3.completed"
+    "key": "jan.firework.4",
+    "progressable": true,
+    "maxProgress": 2
   },
   {
     "key": "jason.smalltalk",

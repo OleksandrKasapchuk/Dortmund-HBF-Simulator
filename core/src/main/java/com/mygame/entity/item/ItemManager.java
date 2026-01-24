@@ -44,7 +44,23 @@ public class ItemManager {
             }
         });
         EventBus.subscribe(Events.ItemInteractionEvent.class,event -> event.item().interact(event.player()));
+        EventBus.subscribe(Events.CreateItemEvent.class, this::handleCreateItemEvent);
     }
+
+    private void handleCreateItemEvent(Events.CreateItemEvent event) {
+        ItemDefinition itemType = itemRegistry.get(event.itemKey());
+        if (itemType == null) return;
+
+        Texture texture = Assets.getTexture(event.itemKey());
+        if (texture == null) return;
+
+        World currentWorld = worldManager.getCurrentWorld();
+        if (currentWorld == null) return;
+
+        Item item = new Item(itemType, 25, 75, event.x(), event.y(), 200, texture, currentWorld, false, false, false, null, null, 0, null);
+        currentWorld.addBackgroundItem(item);
+    }
+
 
     /**
      * Loads items from a specific world's Tiled map layer named "items".

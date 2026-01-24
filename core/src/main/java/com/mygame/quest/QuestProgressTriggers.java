@@ -39,6 +39,7 @@ public class QuestProgressTriggers {
         EventBus.subscribe(Events.DialogueFinishedEvent.class, event -> handleNpcDialogue(event.npcId()));
         EventBus.subscribe(Events.WorldChangedEvent.class, event -> handleWorldChange(event.newWorldId()));
         EventBus.subscribe(Events.InventoryChangedEvent.class, event -> handleInventoryQuest(event.item(), event.newAmount()));
+        EventBus.subscribe(Events.CreateItemEvent.class, this::handleCreateItemQuest);
 
         // --- ОБРОБКА ЗАВЕРШЕННЯ КВЕСТУ ---
         EventBus.subscribe(Events.QuestCompletedEvent.class, event -> {
@@ -49,6 +50,14 @@ public class QuestProgressTriggers {
         });
     }
 
+    private void handleCreateItemQuest(Events.CreateItemEvent event){
+        ItemDefinition item = itemRegistry.get("firework");
+        QuestManager.Quest quest = questManager.getQuest("jan.firework.4");
+        if (quest != null && quest.getStatus() == QuestManager.Status.ACTIVE && item.getKey().equals(event.itemKey())) {
+            quest.makeProgress();
+        }
+
+    }
     private void handleInventoryQuest(ItemDefinition item, int newAmount) {
         if (item == itemRegistry.get("firework")) progress("jan.firework.1");
     }

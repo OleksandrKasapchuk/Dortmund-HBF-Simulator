@@ -171,6 +171,10 @@
 
   "act.quest.jan.firework.3.accept": {
     "type": "system.composite",
-    "actions": []
+    "actions": [
+      { "type": "dialogue.set", "npc": "jan", "node": "firework.3.active" },
+      { "type": "quest.complete", "id": "jan.firework.3"},
+      { "type": "quest.start", "id": "jan.firework.4"}
+    ]
   }
 }
