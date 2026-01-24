@@ -80,12 +80,13 @@
 </data>
  </layer>
  <objectgroup id="3" name="items"/>
- <objectgroup id="4" name="transitions">
+ <objectgroup id="4" name="zones">
   <object id="2" gid="2" x="800.909" y="222" width="910.182" height="172">
    <properties>
     <property name="targetWorldId" value="main"/>
     <property name="targetX" type="float" value="1750"/>
     <property name="targetY" type="float" value="200"/>
+    <property name="zoneType" value="transition"/>
    </properties>
   </object>
  </objectgroup>

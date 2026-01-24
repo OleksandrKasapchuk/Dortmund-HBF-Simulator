@@ -152,7 +152,6 @@
     ]
   },
 
-
   "act.quest.jan.firework.2.accept": {
     "type": "system.composite",
     "actions": [
@@ -161,11 +160,17 @@
       { "type": "quest.start", "id": "jan.firework.3"}
     ]
   },
+
   "act.quest.jan.firework.2.active": {
     "type": "system.composite",
     "actions": [
       {"type":  "npc.teleport", "npc": "jan", "world": "leopold", "x": 1000, "y": 500},
       {"type":  "dialogue.set", "npc": "jan", "node": "firework.2.completed"}
     ]
+  },
+
+  "act.quest.jan.firework.3.accept": {
+    "type": "system.composite",
+    "actions": []
   }
 }

@@ -52,12 +52,13 @@
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 </data>
  </layer>
- <objectgroup id="2" name="transitions">
+ <objectgroup id="2" name="zones">
   <object id="1" gid="2" x="750" y="3574" width="1548" height="580">
    <properties>
     <property name="targetWorldId" value="subway"/>
     <property name="targetX" type="float" value="3000"/>
     <property name="targetY" type="float" value="2500"/>
+    <property name="zoneType" value="transition"/>
    </properties>
   </object>
  </objectgroup>

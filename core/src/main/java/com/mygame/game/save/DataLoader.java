@@ -22,7 +22,7 @@ public class DataLoader {
         for (World world : ctx.worldManager.getWorlds().values()) {
             ctx.npcManager.loadNpcsFromMap(world);
             ctx.itemManager.loadItemsFromMap(world);
-            ctx.transitionManager.loadTransitionsFromMap(world);
+            ctx.zoneRegistry.loadZonesFromMap(world);
         }
     }
 

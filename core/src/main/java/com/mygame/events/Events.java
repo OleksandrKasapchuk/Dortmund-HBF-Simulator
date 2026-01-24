@@ -17,7 +17,7 @@ public class Events {
 
     public record DarkOverlayEvent(float duration){}
     public record FireworkExplodedEvent(){}
-
+    public record TransitionRequestedEvent(String targetWorldId, float targetX, float targetY){}
     // ───── Quest ─────
     public record QuestStartedEvent(String questId) {}
     public record QuestProgressEvent(String questId, int currentProgress, int maxProgress) {}

@@ -10,7 +10,9 @@ import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.managers.TimerManager;
 import com.mygame.ui.inGameUI.DarkOverlay;
-import com.mygame.world.transition.Transition;
+import com.mygame.world.zone.QuestZone;
+import com.mygame.world.zone.TransitionZone;
+import com.mygame.world.zone.Zone;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,12 +23,12 @@ public class WorldManager {
     private World currentWorld;
     private static final float TRANSITION_COOLDOWN = 0.5f; // Cooldown in seconds
     private float cooldownTimer = 0f;
-    private boolean inTransitionZone = false;
+    private boolean inZone = false;
 
     // Context for event handlers and updates
     private Player player;
     private DarkOverlay darkOverlay;
-    private Transition activeTransition;
+    private Zone activeZone;
 
     public WorldManager(Player player, DarkOverlay darkOverlay) {
         addWorld(new World("main", "maps/main_station.tmx"));
@@ -35,8 +37,22 @@ public class WorldManager {
         addWorld(new World("home", "maps/home.tmx"));
         addWorld(new World("kamp", "maps/kamp.tmx"));
         EventBus.subscribe(Events.InteractEvent.class, e -> handleInteraction());
+        EventBus.subscribe(Events.TransitionRequestedEvent.class, this::handleTransition);
         this.player = player;
         this.darkOverlay = darkOverlay;
+    }
+    private void handleTransition(Events.TransitionRequestedEvent e) {
+        if (cooldownTimer > 0) return;
+        if (player == null) return;
+
+        EventBus.fire(new Events.DarkOverlayEvent(0.8f));
+        TimerManager.setAction(() -> {
+            setCurrentWorld(e.targetWorldId());
+            player.setX(e.targetX());
+            player.setY(e.targetY());
+            player.setWorld(currentWorld);
+            cooldownTimer = TRANSITION_COOLDOWN; // Start cooldown
+        }, 0.2f);
     }
 
     public void addWorld(World world) {
@@ -88,38 +104,38 @@ public class WorldManager {
 
     public void drawEntities(SpriteBatch batch, BitmapFont font) {
         if (currentWorld != null) {
-            // Draw transition texts
-            for (Transition transition : currentWorld.getTransitions()) {
-                float textX = transition.area.x + transition.area.width / 2 - 50;
-                float textY = transition.area.y + transition.area.height / 2;
-                Assets.myFont.draw(batch, Assets.ui.get("ui.world.name." + transition.targetWorldId), textX, textY);
+            // Малюємо всі TransitionZone
+            for (Zone zone : currentWorld.getZones()) {
+                if (zone instanceof TransitionZone tz) {
+                    Rectangle rect = tz.getArea();
+                    float textX = rect.x + rect.width / 2 - 50;
+                    float textY = rect.y + rect.height / 2;
+                    Assets.myFont.draw(batch, Assets.ui.get("ui.world.name." + tz.targetWorldId), textX, textY);
+                }
             }
         }
 
-        if (inTransitionZone && player != null) {
-            font.draw(batch, Assets.ui.get("world.pressEToTransition"), player.getX(), player.getY() + player.getHeight() + 30);
+        if (inZone && player != null && activeZone.isEnabled()) {
+            if (activeZone instanceof TransitionZone tz) {
+                font.draw(batch, Assets.ui.get("world.pressEToTransition"),
+                    player.getX(), player.getY() + player.getHeight() + 30);
+            } else if (activeZone instanceof QuestZone qz) {
+                font.draw(batch, Assets.ui.get("interact"),
+                    player.getX(), player.getY() + player.getHeight() + 30);
+            }
         }
     }
 
     private void handleInteraction() {
-        if (inTransitionZone && activeTransition != null) {
-            EventBus.fire(new Events.DarkOverlayEvent(0.8f));
-            TimerManager.setAction(() -> {
-                setCurrentWorld(activeTransition.targetWorldId);
-                player.setX(activeTransition.targetX);
-                player.setY(activeTransition.targetY);
-                player.setWorld(currentWorld);
-                inTransitionZone = false;
-                cooldownTimer = TRANSITION_COOLDOWN; // Start cooldown
-            }, 0.2f);
-
+        if (inZone && activeZone != null && activeZone.isEnabled()) {
+            activeZone.onInteract();
         }
     }
 
     public void update(float delta) {
         if (cooldownTimer > 0) {
             cooldownTimer -= delta;
-            inTransitionZone = false;
+            inZone = false;
             return;
         }
 
@@ -127,14 +143,14 @@ public class WorldManager {
 
         Rectangle playerBounds = new Rectangle(player.getX(), player.getY(), player.getWidth(), player.getHeight());
 
-        activeTransition = null;
-        for (Transition transition : currentWorld.getTransitions()) {
-            if (transition.area.overlaps(playerBounds)) {
-                activeTransition = transition;
+        activeZone = null;
+        for (Zone zone : currentWorld.getZones()) {
+            if (zone.getArea().overlaps(playerBounds)) {
+                activeZone = zone;
                 break;
             }
         }
 
-        inTransitionZone = activeTransition != null;
+        inZone = activeZone != null;
     }
 }

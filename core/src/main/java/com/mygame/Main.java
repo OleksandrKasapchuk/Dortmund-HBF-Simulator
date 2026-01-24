@@ -100,13 +100,11 @@ public class Main extends ApplicationAdapter {
 
         batch.end();
 
-        // 8. Draw debug shapes
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+
         if (currentWorld != null) {
-            currentWorld.drawTransitions(shapeRenderer);
+            currentWorld.drawZones(shapeRenderer, camera);
         }
-        shapeRenderer.end();
+
 
         // 9. Draw screen-space UI
         ctx.ui.render();

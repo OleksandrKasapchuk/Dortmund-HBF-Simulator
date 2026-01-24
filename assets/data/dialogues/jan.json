@@ -34,6 +34,10 @@
       "firework.3.offer": {
         "texts": ["dialogue.jan.firework.3.offer.1"],
         "onFinish": "act.quest.jan.firework.3.accept"
+      },
+
+      "firework.3.active": {
+        "texts": ["dialogue.jan.firework.3.active.1"]
       }
     }
   }

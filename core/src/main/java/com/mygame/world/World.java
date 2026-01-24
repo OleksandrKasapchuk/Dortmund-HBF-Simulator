@@ -1,5 +1,6 @@
 package com.mygame.world;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObject;
@@ -15,7 +16,9 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.npc.NPC;
-import com.mygame.world.transition.Transition;
+import com.mygame.world.zone.QuestZone;
+import com.mygame.world.zone.TransitionZone;
+import com.mygame.world.zone.Zone;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +33,7 @@ public class World {
     public int mapWidth;
     public int mapHeight;
 
-    private final ArrayList<Transition> transitions = new ArrayList<>();
+    private final ArrayList<Zone> zones = new ArrayList<>();
     private final ArrayList<NPC> npcs = new ArrayList<>();
     private final ArrayList<Item> backgroundItems = new ArrayList<>();
     private final ArrayList<Item> foregroundItems = new ArrayList<>();
@@ -151,10 +154,24 @@ public class World {
         }
     }
 
-    public void drawTransitions(ShapeRenderer shapeRenderer) {
-        for (Transition t : transitions) {
-            t.drawDebug(shapeRenderer);
+    public void drawZones(ShapeRenderer shapeRenderer, OrthographicCamera camera) {
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        for (Zone zone : zones) {
+            if (!zone.isEnabled()) continue;
+            if (zone instanceof TransitionZone tz) {
+                shapeRenderer.setColor(Color.WHITE); // білий для переходів
+                shapeRenderer.rect(tz.getArea().x, tz.getArea().y, tz.getArea().width, tz.getArea().height);
+            } else if (zone instanceof QuestZone qz) {
+                shapeRenderer.setColor(Color.YELLOW); // жовтий для квестів
+                shapeRenderer.rect(qz.getArea().x, qz.getArea().y, qz.getArea().width, qz.getArea().height);
+            } else {
+                // просто для загальних зон
+                shapeRenderer.setColor(Color.CYAN);
+                shapeRenderer.rect(zone.getArea().x, zone.getArea().y, zone.getArea().width, zone.getArea().height);
+            }
         }
+        shapeRenderer.end();
     }
 
     public void dispose() {
@@ -165,7 +182,7 @@ public class World {
     // --- Getters ---
     public TiledMap getMap() { return map; }
     public String getName() { return name; }
-    public ArrayList<Transition> getTransitions() { return transitions; }
+    public ArrayList<Zone> getZones() { return zones; }
     public ArrayList<NPC> getNpcs() { return npcs; }
     public List<Item> getBackgroundItems() { return backgroundItems; }
     public List<Item> getForegroundItems() { return foregroundItems; }

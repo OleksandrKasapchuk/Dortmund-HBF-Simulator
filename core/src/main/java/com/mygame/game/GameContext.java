@@ -20,7 +20,7 @@ import com.mygame.scenario.ScenarioController;
 import com.mygame.ui.UIManager;
 import com.mygame.ui.inGameUI.DarkOverlay;
 import com.mygame.world.WorldManager;
-import com.mygame.world.transition.TransitionManager;
+import com.mygame.world.zone.ZoneRegistry;
 
 // GameContext now creates and holds most of the managers.
 public class GameContext {
@@ -43,7 +43,7 @@ public class GameContext {
     public final NpcManager npcManager;
     public final ItemManager itemManager;
     public final PfandManager pfandManager;
-    public final TransitionManager transitionManager;
+    public final ZoneRegistry zoneRegistry;
     public final GameStateManager gsm;
     public final UIManager ui;
     public final CameraManager cameraManager;
@@ -74,7 +74,7 @@ public class GameContext {
         this.npcManager = new NpcManager(player, dialogueRegistry, worldManager);
         this.itemManager = new ItemManager(itemRegistry, worldManager);
         this.pfandManager = new PfandManager(itemRegistry, worldManager);
-        this.transitionManager = new TransitionManager();
+        this.zoneRegistry = new ZoneRegistry();
         this.cameraManager = new CameraManager(player);
         this.ui = new UIManager(batch, player, skin, questManager, worldManager, dayManager);
         this.dialogueManager = new DialogueManager(ui.getDialogueUI(), player, worldManager, dialogueRegistry);

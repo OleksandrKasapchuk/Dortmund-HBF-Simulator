@@ -8,7 +8,7 @@ import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.managers.TimerManager;
 import com.mygame.world.World;
-import com.mygame.world.transition.Transition;
+import com.mygame.world.zone.TransitionZone;
 
 public class PoliceChaseScenario implements Scenario {
     private GameContext ctx;
@@ -65,7 +65,7 @@ public class PoliceChaseScenario implements Scenario {
         Police police = ctx.npcManager.getSummonedPolice();
         if (police == null) return;
 
-        Transition policeTransition = police.update(ctx.player);
+        TransitionZone policeTransition = police.update(ctx.player);
         if (policeTransition != null) {
             TimerManager.setAction(() -> {
                 World newWorld = ctx.worldManager.getWorld(policeTransition.targetWorldId);
