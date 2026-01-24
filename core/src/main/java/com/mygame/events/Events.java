@@ -13,8 +13,10 @@ public class Events {
 
     // ───── Dialogue ─────
     public record DialogueFinishedEvent(String npcId) {}
+    public record DialogueStartedEvent(String npcId) {}
 
     public record DarkOverlayEvent(float duration){}
+    public record FireworkExplodedEvent(){}
 
     // ───── Quest ─────
     public record QuestStartedEvent(String questId) {}

@@ -74,4 +74,5 @@ public abstract class Entity implements Renderable {
         return Math.sqrt(dx * dx + dy * dy) < distance;
     }
     public void setTexture(Texture texture) { this.texture = texture; }
+    public Texture getTexture() { return texture; }
 }

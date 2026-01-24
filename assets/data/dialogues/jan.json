@@ -2,6 +2,7 @@
   "jan": {
     "nodes": {
       "start": "firework.1.offer",
+
       "firework.1.offer": {
         "texts":["dialogue.jan.firework.1.offer.1", "dialogue.jan.firework.1.offer.2"],
         "choices":  [
@@ -10,15 +11,29 @@
         ]
       },
       "firework.1.active": ["dialogue.jan.firework.1.active.1"],
+
       "firework.1.completed": {
-        "onFinish": "act.quest.jan.firework.2.accept",
-        "texts": ["dialogue.jan.firework.2.offer.1", "dialogue.jan.firework.2.offer.2"]
+        "texts": ["dialogue.jan.firework.1.completed.1"],
+        "next": "firework.2.offer"
       },
+
+      "firework.2.offer": {
+        "onFinish": "act.quest.jan.firework.2.accept",
+        "texts": ["dialogue.jan.firework.2.offer.1"]
+      },
+
       "firework.2.active": {
         "texts": ["dialogue.jan.firework.2.active.1"]
       },
+
       "firework.2.completed": {
-        "texts": ["dialogue.jan.firework.2.completed.1"]
+        "texts": ["dialogue.jan.firework.2.completed.1"],
+        "next": "firework.3.offer"
+      },
+
+      "firework.3.offer": {
+        "texts": ["dialogue.jan.firework.3.offer.1"],
+        "onFinish": "act.quest.jan.firework.3.accept"
       }
     }
   }

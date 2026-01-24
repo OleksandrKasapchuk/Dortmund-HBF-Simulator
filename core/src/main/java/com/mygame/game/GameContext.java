@@ -77,7 +77,7 @@ public class GameContext {
         this.transitionManager = new TransitionManager();
         this.cameraManager = new CameraManager(player);
         this.ui = new UIManager(batch, player, skin, questManager, worldManager, dayManager);
-        this.dialogueManager = new DialogueManager(ui.getDialogueUI(), player, worldManager);
+        this.dialogueManager = new DialogueManager(ui.getDialogueUI(), player, worldManager, dialogueRegistry);
         this.gsm = new GameStateManager(ui);
 
         // 4. High-level logic

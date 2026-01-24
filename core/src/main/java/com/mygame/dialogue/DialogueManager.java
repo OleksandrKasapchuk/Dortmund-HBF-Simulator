@@ -26,7 +26,7 @@ public class DialogueManager {
     private final DialogueState state = new DialogueState();
     private final TypeWriterController typeWriter = new TypeWriterController();
     private WorldManager worldManager;
-
+    private DialogueRegistry dialogueRegistry;
     private NPC recentlyFinishedForcedNpc;
 
     // Prevents multiple interactions per frame
@@ -49,11 +49,11 @@ public class DialogueManager {
         }
     };
 
-    public DialogueManager(DialogueUI dialogueUI, Player player, WorldManager worldManager) {
+    public DialogueManager(DialogueUI dialogueUI, Player player, WorldManager worldManager, DialogueRegistry dialogueRegistry) {
         this.dialogueUI = dialogueUI;
         this.player = player;
         this.worldManager = worldManager;
-
+        this.dialogueRegistry = dialogueRegistry;
         EventBus.subscribe(Events.InteractEvent.class, e -> handleInteraction());
     }
 
@@ -85,7 +85,7 @@ public class DialogueManager {
 
         // Forced dialogue → player cannot move
         player.setMovementLocked(state.forced || state.activeNode.isForced());
-
+        EventBus.fire(new Events.DialogueStartedEvent(npc.getId()));
         displayCurrentNode();
     }
 
@@ -98,7 +98,7 @@ public class DialogueManager {
         typeWriter.reset();
         interactCooldown = INTERACT_COOLDOWN_TIME;
 
-        dialogueUI.show(state.activeNpc.getName(), state.activeNode, choiceListener);
+        dialogueUI.show(state.activeNpc, state.activeNode, choiceListener);
 
         // Start with empty text for typewriter animation
         dialogueUI.updateText("");
@@ -152,7 +152,15 @@ public class DialogueManager {
             } else {
                 if (state.isLastPhrase()) {
                     if (state.activeNode.getAction() != null) EventBus.fire(new Events.ActionRequestEvent(state.activeNode.getAction()));
-                    if (state.activeNode.getChoices().isEmpty()) endDialogue();
+                    if (!state.activeNode.getChoices().isEmpty()) return;
+                    String nextNodeName = state.activeNode.getNextNode();
+                    if (nextNodeName != null) {
+                        state.activeNode = dialogueRegistry.getDialogue(state.activeNpc.getId(), nextNodeName);
+                        displayCurrentNode();
+                    }
+                     else {
+                        endDialogue();
+                    }
                 } else {
                     state.textIndex++;
                     state.textCompleted = false;

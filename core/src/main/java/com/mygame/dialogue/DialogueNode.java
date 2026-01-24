@@ -29,12 +29,12 @@ public class DialogueNode {
     private final List<Choice> choices; // варіанти відповіді
     private final String action;      // виконується коли вузол завершується
     private boolean isForced;
-
+    private String nextNode; // наступна нода після завершення поточної
     public DialogueNode(String... textKeys) {
-        this(null, false, textKeys);
+        this(null, false,null, textKeys);
     }
 
-    public DialogueNode(String onFinish, boolean isForced, String... textKeys) {
+    public DialogueNode(String onFinish, boolean isForced, String nextNode, String... textKeys) {
         this.action = onFinish;
         this.texts = (textKeys == null || textKeys.length == 0) ?
                 List.of("") :
@@ -48,8 +48,18 @@ public class DialogueNode {
                 }).collect(Collectors.toList());
         this.choices = new ArrayList<>();
         this.isForced = isForced;
+        this.nextNode = nextNode;
     }
 
+    // Новий сеттер
+    public void setNextNode(String next) {
+        this.nextNode = next;
+    }
+
+    // Новий геттер
+    public String getNextNode() {
+        return nextNode;
+    }
     public void addChoice(String text, DialogueNode next, Runnable action) {
         choices.add(new Choice(text, next, action));
     }

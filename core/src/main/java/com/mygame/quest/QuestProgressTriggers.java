@@ -62,7 +62,7 @@ public class QuestProgressTriggers {
 
         NPC jan = npcManager.findNpcById("jan");
         World world = worldManager.getWorld("leopold");
-        if (questManager.hasQuest("jan.firework.3") && jan.getWorld() != world){
+        if (questManager.hasQuest("jan.firework.3") && jan.getWorld() != world && world.getName().equals(worldId)){
             EventBus.fire(new Events.ActionRequestEvent("act.quest.jan.firework.2.active"));
         }
     }

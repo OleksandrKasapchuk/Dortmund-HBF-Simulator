@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.mygame.dialogue.DialogueNode;
+import com.mygame.entity.npc.NPC;
 
 /**
  * DialogueUI is responsible for displaying NPC dialogue in a styled window,
@@ -25,6 +27,8 @@ public class DialogueUI {
     private final Table choiceTable;    // holds all choice buttons
     private final Skin skin;
     private final Texture dialogueBgTexture;
+
+    private Image portraitImage;
 
     // Listener interface for choice selection events
     public interface ChoiceListener {
@@ -70,6 +74,7 @@ public class DialogueUI {
         dialogueLabel.setWrap(true);
         dialogueTable.add(dialogueLabel).expand().fillX().align(Align.left).row();
 
+
         // Table to hold choice buttons
         choiceTable = new Table();
         dialogueTable.add(choiceTable).align(Align.left).padLeft(30);
@@ -80,19 +85,36 @@ public class DialogueUI {
 
     /**
      * Shows a dialogue window for a given NPC and dialogue node.
-     *
-     * @param npcName  Name of the NPC
+     * @param npc  NPC
      * @param node     DialogueNode containing text and choices
      * @param listener Callback for when a choice is selected
      */
-    public void show(String npcName, DialogueNode node, ChoiceListener listener) {
-        nameLabel.setText(npcName);
+    public void show(NPC npc, DialogueNode node, ChoiceListener listener) {
+        nameLabel.setText(npc.getName());
         updateText("");  // clear dialogue text initially
         choiceTable.clear();  // remove previous choices
+
+        showPortrait(npc.getTexture());
 
         createChoices(node, listener);
         showChoices(false);       // initially hide choices
         dialogueTable.setVisible(true);
+    }
+
+    public void showPortrait(Texture portrait) {
+        if (portraitImage == null) {
+            portraitImage = new Image(portrait);
+            portraitImage.setSize(256, 256);
+            portraitImage.setPosition(dialogueTable.getWidth() - 256 - 20, 20);
+            dialogueTable.addActor(portraitImage);
+        } else {
+            portraitImage.setDrawable(new TextureRegionDrawable(new TextureRegion(portrait)));
+        }
+        portraitImage.setVisible(true);
+    }
+
+    public void hidePortrait() {
+        if (portraitImage != null) portraitImage.setVisible(false);
     }
 
     private void createChoices(DialogueNode node, ChoiceListener listener){
@@ -121,5 +143,5 @@ public class DialogueUI {
     public void hide() { dialogueTable.setVisible(false); }
 
     // Dispose of texture resources
-    public void dispose() { dialogueBgTexture.dispose(); }
+    public void dispose() {dialogueBgTexture.dispose();}
 }
