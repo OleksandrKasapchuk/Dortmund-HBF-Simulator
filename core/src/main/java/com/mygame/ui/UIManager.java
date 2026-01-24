@@ -74,8 +74,12 @@ public class UIManager {
 
     private void subscribeToEvents() {
         EventBus.subscribe(Events.MessageEvent.class, event -> getGameScreen().showInfoMessage(event.message(), 1.5f));
-        EventBus.subscribe(Events.QuestStartedEvent.class, event -> getGameScreen().showInfoMessage(Assets.messages.get("message.quest.new"), 1.5f));
-        EventBus.subscribe(Events.QuestCompletedEvent.class, event -> getGameScreen().showInfoMessage(Assets.messages.format("message.generic.quest.completed", Assets.quests.get("quest." + event.questId() + ".name")), 1.5f));
+        EventBus.subscribe(Events.QuestStartedEvent.class, event -> {
+            if(questManager.getQuest(event.questId()).getNotify()) getGameScreen().showInfoMessage(Assets.messages.get("message.quest.new"), 1.5f);
+        });
+        EventBus.subscribe(Events.QuestCompletedEvent.class, event -> {
+            if(questManager.getQuest(event.questId()).getNotify()) getGameScreen().showInfoMessage(Assets.messages.format("message.generic.quest.completed", Assets.quests.get("quest." + event.questId() + ".name")), 1.5f);
+        });
         EventBus.subscribe(Events.AddItemMessageEvent.class, event -> showEarned(event.item().getNameKey(), event.amount()));
         EventBus.subscribe(Events.NotEnoughMessageEvent.class, event -> showNotEnough(event.item().getNameKey()));
         EventBus.subscribe(Events.InteractEvent.class, e -> handleInteraction());

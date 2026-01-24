@@ -3,6 +3,7 @@
     "key": "jan.firework.1",
     "progressable": true,
     "maxProgress": 2,
+    "notify": true,
     "onComplete": "act.quest.jan.firework.1.completed"
   },
   {"key": "jan.firework.2"},
@@ -10,17 +11,25 @@
   {
     "key": "jason.smalltalk",
     "progressable": true,
-    "maxProgress": 10
+    "maxProgress": 10,
+    "notify": true
   },
   {
     "key": "jason.tour",
     "progressable": true,
-    "maxProgress": 5
+    "maxProgress": 5,
+    "notify": true
   },
-  {"key": "delivery"},
+  {
+    "key": "delivery",
+    "notify": true
+  },
   {"key": "chase"},
   {"key": "boss_end"},
   {"key": "chili"},
   {"key": "wallet"},
-  {"key": "igo"}
+  {
+    "key": "igo",
+    "notify": true
+  }
 ]

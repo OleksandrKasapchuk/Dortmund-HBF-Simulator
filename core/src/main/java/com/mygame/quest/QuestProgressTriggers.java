@@ -25,7 +25,6 @@ public class QuestProgressTriggers {
 
     private Set<String> talkedNpcs;
     private Set<String> visited;
-    private int lastFireworkCount = 0;
 
     public QuestProgressTriggers(QuestManager questManager, ItemRegistry itemRegistry, NpcManager npcManager, WorldManager worldManager) {
         this.questManager = questManager;
@@ -51,27 +50,16 @@ public class QuestProgressTriggers {
     }
 
     private void handleInventoryQuest(ItemDefinition item, int newAmount) {
-        if (item == itemRegistry.get("firework")) {
-            if (newAmount > lastFireworkCount) {
-                String QUEST_FIREWORKS = "jan.firework.1";
-                progress(QUEST_FIREWORKS);
-            }
-            lastFireworkCount = newAmount;
-        }
+        if (item == itemRegistry.get("firework")) progress("jan.firework.1");
     }
 
     private void handleNpcDialogue(String npcId) {
-        if (talkedNpcs.add(npcId)) {
-            String QUEST_TALK_NPCS = "jason.smalltalk";
-            progress(QUEST_TALK_NPCS);
-        }
+        if (talkedNpcs.add(npcId)) progress("jason.smalltalk");
     }
 
     private void handleWorldChange(String worldId) {
-        if (visited.add(worldId)) {
-            String QUEST_VISIT_LOCATIONS = "jason.tour";
-            progress(QUEST_VISIT_LOCATIONS);
-        }
+        if (visited.add(worldId)) progress("jason.tour");
+
         NPC jan = npcManager.findNpcById("jan");
         World world = worldManager.getWorld("leopold");
         if (questManager.hasQuest("jan.firework.3") && jan.getWorld() != world){
