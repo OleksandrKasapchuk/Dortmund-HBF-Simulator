@@ -18,6 +18,8 @@ public class SoundManager {
     public static void playSound(Sound sound) {
         if (sound != null) {
             sound.play(volume);
+        } else {
+            System.err.println("Sound is null!");
         }
     }
 

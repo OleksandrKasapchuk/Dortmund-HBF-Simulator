@@ -50,4 +50,6 @@ public class Events {
 
     // ───── Save ─────
     public record SaveRequestEvent() {}
+
+    public record CameraShakeEvent(float duration, float intensity){}
 }

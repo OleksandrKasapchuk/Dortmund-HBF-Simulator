@@ -4,8 +4,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mygame.assets.Assets;
-import com.mygame.assets.audio.SoundManager;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
@@ -41,10 +39,7 @@ public class CameraManager {
         viewport.apply();
         EventBus.subscribe(Events.DialogueStartedEvent.class, e -> setZoom(0.75f));
         EventBus.subscribe(Events.DialogueFinishedEvent.class, e -> setZoom(1f));
-        EventBus.subscribe(Events.FireworkExplodedEvent.class, e -> {
-            SoundManager.playSound(Assets.getSound("firework_explosion"));
-            TimerManager.setAction(() -> shake(2, 20), 2f);
-        });
+        EventBus.subscribe(Events.CameraShakeEvent.class, e -> shake(e.duration(), e.intensity()));
     }
 
     /** Updates camera position and handles shake effects */
