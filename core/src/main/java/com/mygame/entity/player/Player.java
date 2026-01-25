@@ -82,7 +82,7 @@ public class Player extends Entity {
         // === PC CONTROLS ===
         if (Gdx.app.getType() != Application.ApplicationType.Android) {
             if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
-                moveSpeed *= 3;
+                moveSpeed *= 5;
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A))
                 dx -= moveSpeed;
             if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D))

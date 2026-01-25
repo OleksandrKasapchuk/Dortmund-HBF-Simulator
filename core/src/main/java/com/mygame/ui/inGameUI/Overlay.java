@@ -1,13 +1,14 @@
 package com.mygame.ui.inGameUI;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 
-public class DarkOverlay {
+public class Overlay {
 
     private final ShapeRenderer shapeRenderer;
 
@@ -18,10 +19,15 @@ public class DarkOverlay {
     private float targetAlpha = 1f;
     private float fadeDuration = 0.1f;
     private float stayTimer = 0f;
+    private boolean isBlack;
 
-    public DarkOverlay() {
+    private final Color BLACK = new Color(0, 0, 0, 1);
+    private final Color WHITE = new Color(1, 1, 1, 1);
+
+
+    public Overlay() {
         shapeRenderer = new ShapeRenderer();
-        EventBus.subscribe(Events.DarkOverlayEvent.class, event -> show(1f, event.duration()));
+        EventBus.subscribe(Events.OverlayEvent.class, event -> show(1f, event.duration(), event.isBlack()));
     }
 
     /**
@@ -31,10 +37,11 @@ public class DarkOverlay {
      * @param staySeconds Скільки секунд екран залишатиметься видимим перед автоматичним зникненням.
      *                    Якщо 0, залишається видимим до виклику hide().
      */
-    public void show(float maxAlpha, float staySeconds) {
+    public void show(float maxAlpha, float staySeconds, boolean isBlack) {
         this.targetAlpha = MathUtils.clamp(maxAlpha, 0.5f, 1f);
         this.stayTimer = staySeconds;
         this.currentState = State.FADING_IN;
+        this.isBlack = isBlack;
     }
     public void update(float delta) {
         if (fadeDuration <= 0) return;
@@ -82,7 +89,9 @@ public class DarkOverlay {
         shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(0, 0, 0, currentAlpha);
+        Color c = isBlack ? BLACK : WHITE;
+        shapeRenderer.setColor(c.r, c.g, c.b, currentAlpha);
+
         shapeRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         shapeRenderer.end();
 

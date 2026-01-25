@@ -78,7 +78,7 @@ public class DayManager {
             EventBus.fire(new Events.MessageEvent(Assets.messages.get("message.sleep.not_allowed")));
             return;
         }
-        EventBus.fire(new Events.DarkOverlayEvent(0.5f));
+        EventBus.fire(new Events.OverlayEvent(0.5f, true));
         TimerManager.setAction(() -> {
             if (currentPhase == Phase.EVENING) nextDay();
             currentTime = 6f;

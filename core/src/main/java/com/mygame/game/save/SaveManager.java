@@ -13,6 +13,7 @@ import com.mygame.game.GameContext;
 import com.mygame.game.GameInitializer;
 import com.mygame.game.GameStateManager;
 import com.mygame.quest.QuestManager;
+import com.mygame.world.zone.Zone;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -87,6 +88,8 @@ public class SaveManager {
             saveNpcStates(settings);
 
             saveSummonedPolice(settings);
+            saveQuestZones(settings);
+            saveCreatedItems(settings);
 
             SettingsManager.save(settings);
             Gdx.app.log("AutoSaveManager", "Game saved successfully. World: " + settings.currentWorldName);
@@ -94,6 +97,18 @@ public class SaveManager {
             Gdx.app.error("AutoSaveManager", "Critical error during save: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private void saveCreatedItems(GameSettings settings) {
+        settings.createdItems = ctx.itemManager.getAllItems().stream()
+                .filter(Item::isDynamic)
+                .map(item -> new GameSettings.ItemSaveData(
+                        item.getType().getKey(),
+                        item.getX(),
+                        item.getY(),
+                        item.getWorld().getName(),
+                        item.isSearched()))
+                .collect(Collectors.toList());
     }
 
     private void saveInventory(GameSettings settings){
@@ -145,8 +160,23 @@ public class SaveManager {
     private void saveNpcStates(GameSettings settings) {
         settings.npcStates = ctx.npcManager.getNpcs().stream().collect(Collectors.toMap(
                 NPC::getId,
-                npc -> new GameSettings.NpcSaveData(npc.getCurrentDialogueNodeId(), npc.getCurrentTextureKey()),
+                npc -> {
+                    GameSettings.NpcSaveData data = new GameSettings.NpcSaveData(npc.getCurrentDialogueNodeId(), npc.getCurrentTextureKey());
+                    data.x = npc.getX();
+                    data.y = npc.getY();
+                    if (npc.getWorld() != null) {
+                        data.currentWorld = npc.getWorld().getName();
+                    }
+                    return data;
+                },
                 (existing, replacement) -> existing
-            ));
+        ));
     }
+    private void saveQuestZones(GameSettings settings) {
+        settings.enabledQuestZones = ctx.zoneRegistry.getZones().stream()
+                .filter(zone -> zone.isEnabled())
+                .map(Zone::getId)
+                .collect(Collectors.toSet());
+    }
+
 }

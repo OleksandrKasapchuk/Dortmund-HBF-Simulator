@@ -53,18 +53,27 @@ public class ItemManager {
         EventBus.subscribe(Events.CreateItemEvent.class, this::handleCreateItemEvent);
     }
 
-    private void handleCreateItemEvent(Events.CreateItemEvent event) {
-        ItemDefinition itemType = itemRegistry.get(event.itemKey());
-        if (itemType == null) return;
+    public void createItem(String itemKey, float x, float y, World world) {
+        ItemDefinition itemType = itemRegistry.get(itemKey);
+        if (itemType == null) {
+            System.err.println("Item type not found: " + itemKey);
+            return;
+        }
 
-        Texture texture = Assets.getTexture(event.itemKey());
-        if (texture == null) return;
+        Texture texture = Assets.getTexture(itemKey);
+        if (texture == null) {
+            System.err.println("Texture not found for item: " + itemKey);
+            return;
+        }
 
-        World currentWorld = worldManager.getCurrentWorld();
-        if (currentWorld == null) return;
-
-        Item item = new Item(itemType, 25, 75, event.x(), event.y(), 200, texture, currentWorld, false, false, false, null, null, 0, null);
+        Item item = new Item(itemType, 25, 75, x, y, 200, texture, world, false, false, false, null, null, 0, null, true);
         addBackgroundItem(item);
+        System.out.println("Created item " + itemKey + " at " + x + "," + y + " in world " + world.getName());
+    }
+
+
+    private void handleCreateItemEvent(Events.CreateItemEvent event) {
+        createItem(event.itemKey(), event.x(), event.y(), worldManager.getCurrentWorld());
     }
 
 
@@ -139,7 +148,7 @@ public class ItemManager {
             return null;
         }
 
-        return new Item(itemType, (int) width, (int) height, x, y, interactionDistance, texture, world, isPickupable, isSolid, searchable, questId, rewardItemKey, rewardAmount, interactionActionId);
+        return new Item(itemType, (int) width, (int) height, x, y, interactionDistance, texture, world, isPickupable, isSolid, searchable, questId, rewardItemKey, rewardAmount, interactionActionId, false);
     }
 
     private void restoreItemState(Item item, GameSettings settings) {

@@ -9,7 +9,7 @@ import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.managers.TimerManager;
-import com.mygame.ui.inGameUI.DarkOverlay;
+import com.mygame.ui.inGameUI.Overlay;
 import com.mygame.world.zone.QuestZone;
 import com.mygame.world.zone.TransitionZone;
 import com.mygame.world.zone.Zone;
@@ -27,10 +27,10 @@ public class WorldManager {
 
     // Context for event handlers and updates
     private Player player;
-    private DarkOverlay darkOverlay;
+    private Overlay overlay;
     private Zone activeZone;
 
-    public WorldManager(Player player, DarkOverlay darkOverlay) {
+    public WorldManager(Player player, Overlay overlay) {
         addWorld(new World("main", "maps/main_station.tmx"));
         addWorld(new World("leopold", "maps/leopold.tmx"));
         addWorld(new World("subway", "maps/subway.tmx"));
@@ -39,13 +39,13 @@ public class WorldManager {
         EventBus.subscribe(Events.InteractEvent.class, e -> handleInteraction());
         EventBus.subscribe(Events.TransitionRequestedEvent.class, this::handleTransition);
         this.player = player;
-        this.darkOverlay = darkOverlay;
+        this.overlay = overlay;
     }
     private void handleTransition(Events.TransitionRequestedEvent e) {
         if (cooldownTimer > 0) return;
         if (player == null) return;
 
-        EventBus.fire(new Events.DarkOverlayEvent(0.8f));
+        EventBus.fire(new Events.OverlayEvent(0.8f, true));
         TimerManager.setAction(() -> {
             setCurrentWorld(e.targetWorldId());
             player.setX(e.targetX());

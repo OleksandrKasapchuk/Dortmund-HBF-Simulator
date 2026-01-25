@@ -21,6 +21,7 @@ public class Item extends Entity {
     private int distance;
     private String questId;
     private String interactionActionId;
+    private final boolean isDynamic;
 
     private String rewardItemKey;
     private int rewardAmount;
@@ -32,7 +33,7 @@ public class Item extends Entity {
         float x, float y, int distance,
         Texture texture, World world,
         boolean canBePickedUp, boolean solid, boolean searchable, String questId,
-        String rewardItemKey, int rewardAmount, String interactionActionId) {
+        String rewardItemKey, int rewardAmount, String interactionActionId, boolean isDynamic) {
         super(width, height, x, y, texture, world);
         this.type = type;
         this.canBePickedUp = canBePickedUp;
@@ -43,6 +44,7 @@ public class Item extends Entity {
         this.rewardItemKey = rewardItemKey;
         this.rewardAmount = rewardAmount;
         this.interactionActionId = interactionActionId;
+        this.isDynamic = isDynamic;
     }
 
     @Override
@@ -92,4 +94,5 @@ public class Item extends Entity {
     public boolean isSearched() { return searched; }
     public boolean isSearchable() {return searchable;}
     public void setSearched(boolean searched) { this.searched = searched; }
+    public boolean isDynamic() { return isDynamic; }
 }

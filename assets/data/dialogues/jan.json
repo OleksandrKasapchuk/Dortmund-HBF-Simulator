@@ -38,6 +38,10 @@
 
       "firework.3.active": {
         "texts": ["dialogue.jan.firework.3.active.1"]
+      },
+
+      "firework.5.completed": {
+        "texts": ["dialogue.jan.firework.5.completed.1", "dialogue.jan.firework.5.completed.2"]
       }
     }
   }

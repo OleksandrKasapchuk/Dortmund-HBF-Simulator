@@ -100,7 +100,7 @@ public class Main extends ApplicationAdapter {
 
         // 9. Draw screen-space UI
         ctx.ui.render();
-        ctx.darkOverlay.render();
+        ctx.overlay.render();
     }
 
     @Override

@@ -11,11 +11,11 @@ import com.mygame.dialogue.DialogueRegistry;
 import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.player.Player;
 import com.mygame.game.save.GameSettings;
-import com.mygame.game.save.SettingsManager;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class NpcManager {
     private final ArrayList<NPC> npcs = new ArrayList<>();
@@ -31,49 +31,63 @@ public class NpcManager {
         this.itemManager = itemManager;
     }
 
-    public void loadNpcsFromMap(World world) {
+    public void loadNpcsFromMap(World world, Map<String, GameSettings.NpcSaveData> npcStates) {
         MapLayer npcLayer = world.getMap().getLayers().get("npcs");
         if (npcLayer == null) return;
 
-        GameSettings settings = SettingsManager.load();
         for (MapObject object : npcLayer.getObjects()) {
             MapProperties props = object.getProperties();
             String npcId = props.get("name", String.class);
-            if (npcId != null) {
-                createNpcFromMap(npcId, props, world, settings);
+            if (npcId != null && findNpcById(npcId.toLowerCase()) == null) {
+                createNpcFromMap(npcId, props, world, npcStates);
             }
         }
     }
 
-    private void createNpcFromMap(String npcId, MapProperties props, World world, GameSettings settings) {
-        NPC npc = createNpcInstance(npcId, props, world);
-        restoreNpcState(npc, settings);
+    private void createNpcFromMap(String npcId, MapProperties props, World world, Map<String, GameSettings.NpcSaveData> npcStates) {
+        NPC npc = createNpcInstance(npcId, props, world, npcStates);
+        restoreNpcState(npc, npcStates);
         npcs.add(npc);
         System.out.println("SUCCESS: Loaded '" + npcId + "' from map (Node: " + npc.getCurrentDialogueNodeId() + ", Tex: " + npc.getCurrentTextureKey() + ")");
     }
 
-    private NPC createNpcInstance(String npcId, MapProperties props, World world) {
+    private NPC createNpcInstance(String npcId, MapProperties props, World world, Map<String, GameSettings.NpcSaveData> npcStates) {
         float x = props.get("x", 0f, Float.class);
         float y = props.get("y", 0f, Float.class);
+        World targetWorld = world;
+        String npcIdLower = npcId.toLowerCase();
+
+        if (npcStates != null && npcStates.containsKey(npcIdLower)) {
+            GameSettings.NpcSaveData state = npcStates.get(npcIdLower);
+            if (state.currentWorld != null) {
+                World savedWorld = worldManager.getWorld(state.currentWorld);
+                if (savedWorld != null) {
+                    targetWorld = savedWorld;
+                    x = state.x;
+                    y = state.y;
+                }
+            }
+        }
+
         Texture texture = getNpcTexture(npcId);
         String npcName = getNpcName(npcId);
-        DialogueNode initialDialogue = dialogueRegistry.getInitialDialogue(npcId.toLowerCase());
+        DialogueNode initialDialogue = dialogueRegistry.getInitialDialogue(npcIdLower);
         int speed = props.get("speed", 50, Integer.class);
 
         if ("police".equalsIgnoreCase(npcId)) {
-            return new Police("police", npcName, 100, 100, x, y, texture, world, speed, initialDialogue, itemManager);
+            return new Police("police", npcName, 100, 100, x, y, texture, targetWorld, speed, initialDialogue, itemManager);
         } else {
             int directionX = props.get("directionX", 0, Integer.class);
             int directionY = props.get("directionY", 0, Integer.class);
             float pauseTime = props.get("pauseTime", 0f, Float.class);
             float moveTime = props.get("moveTime", 0f, Float.class);
-            return new NPC(npcId.toLowerCase(), npcName, 100, 100, x, y, texture, world, directionX, directionY, pauseTime, moveTime, speed, initialDialogue, itemManager);
+            return new NPC(npcIdLower, npcName, 100, 100, x, y, texture, targetWorld, directionX, directionY, pauseTime, moveTime, speed, initialDialogue, itemManager);
         }
     }
 
-    private void restoreNpcState(NPC npc, GameSettings settings) {
-        if (settings.npcStates != null && settings.npcStates.containsKey(npc.getId())) {
-            GameSettings.NpcSaveData state = settings.npcStates.get(npc.getId());
+    private void restoreNpcState(NPC npc, Map<String, GameSettings.NpcSaveData> npcStates) {
+        if (npcStates != null && npcStates.containsKey(npc.getId())) {
+            GameSettings.NpcSaveData state = npcStates.get(npc.getId());
 
             if (state.currentNode != null) {
                 npc.setDialogue(dialogueRegistry.getDialogue(npc.getId(), state.currentNode));

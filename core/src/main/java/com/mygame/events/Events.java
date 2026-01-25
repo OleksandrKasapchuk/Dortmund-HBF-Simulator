@@ -15,8 +15,7 @@ public class Events {
     public record DialogueFinishedEvent(String npcId) {}
     public record DialogueStartedEvent(String npcId) {}
 
-    public record DarkOverlayEvent(float duration){}
-    public record FireworkExplodedEvent(){}
+    public record OverlayEvent(float duration, boolean isBlack){}
     public record TransitionRequestedEvent(String targetWorldId, float targetX, float targetY){}
     // ───── Quest ─────
     public record QuestStartedEvent(String questId) {}
@@ -32,7 +31,9 @@ public class Events {
     public record ItemInteractionEvent(Item item, Player player){}
     public record ItemSearchedEvent(Player player, String itemKey, int amount) {}
     public record ItemUsedEvent(ItemDefinition item) {}
+
     public record CreateItemEvent(String itemKey, float x, float y) {}
+    public record RemoveItemFromWorldEvent(String id) {}
 
     public record ActionRequestEvent(String actionId) {} // Нова подія
     public record InteractEvent() {}

@@ -50,6 +50,7 @@ public class SettingsManager {
                 if (settings.completedDialogueEvents == null) settings.completedDialogueEvents = new java.util.ArrayList<>();
                 if (settings.talkedNpcs == null) settings.talkedNpcs = new java.util.HashSet<>();
                 if (settings.visited == null) settings.visited = new java.util.HashSet<>();
+                if (settings.enabledQuestZones == null) settings.enabledQuestZones = new java.util.HashSet<>();
                 return settings;
             } catch (SerializationException e) {
                 Gdx.app.error("SettingsManager", "Error loading settings, creating new.", e);

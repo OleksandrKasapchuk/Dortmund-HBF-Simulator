@@ -6,6 +6,8 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.player.Player;
+import com.mygame.game.save.GameSettings;
+import com.mygame.game.save.SettingsManager;
 import com.mygame.world.World;
 
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ public class ZoneRegistry {
     public void loadZonesFromMap(World world) {
         MapLayer zoneLayer = world.getMap().getLayers().get("zones");
         if (zoneLayer == null) return;
-
+        GameSettings settings = SettingsManager.load();
         for (MapObject object : zoneLayer.getObjects()) {
 
             Rectangle rect;
@@ -61,7 +63,7 @@ public class ZoneRegistry {
 
                 case "quest" -> {
                     String key = props.get("key", String.class);
-                    zone = new QuestZone(key, rect, player, itemRegistry);
+                    zone = new QuestZone(key, rect, player, itemRegistry, settings);
                     zones.add(zone);
                     world.getZones().add(zone);
                 }
@@ -76,5 +78,8 @@ public class ZoneRegistry {
             if (zone.getId().equals(id)) return zone;
         }
         return null;
+    }
+    public ArrayList<Zone> getZones() {
+        return zones;
     }
 }

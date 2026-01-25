@@ -18,7 +18,7 @@ import com.mygame.quest.QuestProgressTriggers;
 import com.mygame.quest.QuestRegistry;
 import com.mygame.scenario.ScenarioController;
 import com.mygame.ui.UIManager;
-import com.mygame.ui.inGameUI.DarkOverlay;
+import com.mygame.ui.inGameUI.Overlay;
 import com.mygame.world.WorldManager;
 import com.mygame.world.zone.ZoneRegistry;
 
@@ -29,7 +29,7 @@ public class GameContext {
     public final Player player;
     public final WorldManager worldManager;
     public final DayManager dayManager;
-    public final DarkOverlay darkOverlay;
+    public final Overlay overlay;
 
     // Registries
     public final ItemRegistry itemRegistry;
@@ -58,8 +58,8 @@ public class GameContext {
         this.player = player;
 
         // 1. Core Systems
-        this.darkOverlay = new DarkOverlay();
-        this.worldManager = new WorldManager(player, darkOverlay);
+        this.overlay = new Overlay();
+        this.worldManager = new WorldManager(player, overlay);
         this.dayManager = new DayManager();
 
         // 2. Registries
@@ -94,7 +94,7 @@ public class GameContext {
     public void update(float delta) {
         dayManager.update(delta);
         worldManager.update(delta);
-        darkOverlay.update(delta);
+        overlay.update(delta);
         npcManager.update(delta);
         dialogueManager.update(delta);
         itemManager.update(delta, player);
