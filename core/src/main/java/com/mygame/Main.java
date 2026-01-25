@@ -7,8 +7,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygame.assets.Assets;
-import com.mygame.entity.item.Item;
-import com.mygame.entity.npc.NPC;
 import com.mygame.game.GameContext;
 import com.mygame.game.GameInitializer;
 import com.mygame.assets.audio.MusicManager;
@@ -70,15 +68,11 @@ public class Main extends ApplicationAdapter {
 
         if (currentWorld != null) {
             // 4. Draw background items (carpets, etc.)
-            for (Item item : currentWorld.getBackgroundItems()) {
-                item.draw(batch);
-            }
+            ctx.itemManager.renderBackgroundItems(batch);
 
             // 5. Draw player and NPCs
             ctx.player.draw(batch);
-            for (NPC npc : currentWorld.getNpcs()) {
-                npc.draw(batch);
-            }
+            ctx.npcManager.renderNpcs(batch);
         }
 
         batch.end();
@@ -89,9 +83,7 @@ public class Main extends ApplicationAdapter {
         // 7. Draw foreground items (e.g., items on tables) over the walls
         batch.begin();
         if (currentWorld != null) {
-            for (Item item : currentWorld.getForegroundItems()) {
-                item.draw(batch);
-            }
+            ctx.itemManager.renderForegroundItems(batch);
         }
 
         // Draw non-gameplay world elements like transition texts

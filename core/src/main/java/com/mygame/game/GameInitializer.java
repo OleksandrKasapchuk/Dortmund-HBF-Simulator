@@ -34,16 +34,20 @@ public class GameInitializer {
 
         GameSettings settings = SettingsManager.load();
 
+        // 1. Створюємо гравця з початковими даними, але без світу
         player = new Player(500, 80, 80, settings.playerX, settings.playerY, Assets.getTexture("zoe"), null);
 
+        // 2. Створюємо реєстр менеджерів, передаючи туди вже існуючого гравця
         managerRegistry = new ManagerRegistry(batch, player, skin);
         GameContext ctx = managerRegistry.getContext();
 
+        // 3. Ініціалізуємо інвентар гравця, використовуючи реєстр предметів з контексту
         player.getInventory().init(ctx.itemRegistry);
 
+        // 4. Завантажуємо дані гри
         DataLoader.load(ctx, settings);
 
-        // Встановлюємо світ
+        // 5. Встановлюємо початковий світ для гравця та менеджера світів
         World startWorld = ctx.worldManager.getWorld(settings.currentWorldName != null ? settings.currentWorldName : "main");
         player.setWorld(startWorld);
         ctx.worldManager.setCurrentWorld(startWorld);

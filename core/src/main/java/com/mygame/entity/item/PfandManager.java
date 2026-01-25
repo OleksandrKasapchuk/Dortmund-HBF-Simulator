@@ -22,22 +22,24 @@ public class PfandManager {
     private final int MAX_PFANDS = 15;       // Maximum number of pfand items at a time
     private ItemRegistry itemRegistry;
     private WorldManager worldManager;
+    private ItemManager itemManager;
 
     /**
      * Updates pfand items each frame.
      * - Handles spawning new items.
      * - Checks for player pickups.
      */
-    public PfandManager(ItemRegistry itemRegistry, WorldManager worldManager){
+    public PfandManager(ItemRegistry itemRegistry, ItemManager itemManager, WorldManager worldManager){
         this.itemRegistry = itemRegistry;
         this.worldManager = worldManager;
+        this.itemManager = itemManager;
     }
 
     public void update(float delta) {
         spawnTimer += delta;
 
         // Spawn a new pfand if interval passed and under max limit
-        if (spawnTimer >= SPAWN_INTERVAL && worldManager.getCurrentWorld().getPfands().size() < MAX_PFANDS) {
+        if (spawnTimer >= SPAWN_INTERVAL && itemManager.getPfands().size() < MAX_PFANDS) {
             spawnRandomPfand(worldManager.getCurrentWorld());
             spawnTimer = 0f;
         }
@@ -75,15 +77,15 @@ public class PfandManager {
             // Add new pfand to the world
             Item pfand = new Item(itemRegistry.get("pfand"), itemWidth, itemHeight, x, y, 75, Assets.getTexture("pfand"), worldManager.getCurrentWorld(), true, false, false, null, null, 0, null);
 
-            worldManager.getCurrentWorld().addBackgroundItem(pfand);
-            worldManager.getCurrentWorld().getPfands().add(pfand);
+            itemManager.addBackgroundItem(pfand);
+            itemManager.getPfands().add(pfand);
             break;
         }
     }
 
     /** Checks if a position is too close to existing pfand items */
     private boolean isTooCloseToOtherPfands(float x, float y) {
-        for (Item p : worldManager.getCurrentWorld().getPfands()) {
+        for (Item p : itemManager.getPfands()) {
             float dx = p.getX() - x;
             float dy = p.getY() - y;
             if (Math.sqrt(dx * dx + dy * dy) < 150f) // Minimum distance between pfands

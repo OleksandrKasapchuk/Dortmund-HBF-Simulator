@@ -14,14 +14,11 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
-import com.mygame.entity.item.Item;
-import com.mygame.entity.npc.NPC;
 import com.mygame.world.zone.QuestZone;
 import com.mygame.world.zone.TransitionZone;
 import com.mygame.world.zone.Zone;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class World {
     private final String name;
@@ -34,11 +31,7 @@ public class World {
     public int mapHeight;
 
     private final ArrayList<Zone> zones = new ArrayList<>();
-    private final ArrayList<NPC> npcs = new ArrayList<>();
-    private final ArrayList<Item> backgroundItems = new ArrayList<>();
-    private final ArrayList<Item> foregroundItems = new ArrayList<>();
-    private final ArrayList<Item> allItems = new ArrayList<>();
-    private final ArrayList<Item> pfands = new ArrayList<>();
+
     private int[] bottomLayersIndices;
     private int[] topLayersIndices;
 
@@ -183,29 +176,4 @@ public class World {
     public TiledMap getMap() { return map; }
     public String getName() { return name; }
     public ArrayList<Zone> getZones() { return zones; }
-    public ArrayList<NPC> getNpcs() { return npcs; }
-    public List<Item> getBackgroundItems() { return backgroundItems; }
-    public List<Item> getForegroundItems() { return foregroundItems; }
-
-
-    public void addBackgroundItem(Item item) {
-        backgroundItems.add(item);
-        allItems.add(item);
-    }
-
-    public void addForegroundItem(Item item) {
-        foregroundItems.add(item);
-        allItems.add(item);
-    }
-
-    public List<Item> getAllItems() {return allItems;}
-    public ArrayList<Item> getPfands() { return pfands; }
-
-    public void removeItem(Item item) {
-        backgroundItems.remove(item);
-        foregroundItems.remove(item);
-        pfands.remove(item);
-        allItems.remove(item);
-    }
-
 }

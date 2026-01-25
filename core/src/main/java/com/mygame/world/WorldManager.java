@@ -83,11 +83,13 @@ public class WorldManager {
         if (!worlds.containsKey(id)) return;
         this.currentWorld = worlds.get(id);
         EventBus.fire(new Events.WorldChangedEvent(currentWorld.getName()));
+        EventBus.fire(new Events.SaveRequestEvent());
     }
 
     public void setCurrentWorld(World world) {
         this.currentWorld = world;
         EventBus.fire(new Events.WorldChangedEvent(currentWorld.getName()));
+        EventBus.fire(new Events.SaveRequestEvent());
     }
 
     public void renderBottomLayers(OrthographicCamera camera) {

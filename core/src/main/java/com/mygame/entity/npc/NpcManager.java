@@ -1,12 +1,14 @@
 package com.mygame.entity.npc;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.mygame.assets.Assets;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.dialogue.DialogueRegistry;
+import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.player.Player;
 import com.mygame.game.save.GameSettings;
 import com.mygame.game.save.SettingsManager;
@@ -20,11 +22,13 @@ public class NpcManager {
     private final Player player;
     private final DialogueRegistry dialogueRegistry;
     private final WorldManager worldManager;
+    private final ItemManager itemManager;
 
-    public NpcManager(Player player, DialogueRegistry dialogueRegistry, WorldManager worldManager) {
+    public NpcManager(Player player, DialogueRegistry dialogueRegistry, WorldManager worldManager, ItemManager itemManager) {
         this.player = player;
         this.dialogueRegistry = dialogueRegistry;
         this.worldManager = worldManager;
+        this.itemManager = itemManager;
     }
 
     public void loadNpcsFromMap(World world) {
@@ -44,7 +48,7 @@ public class NpcManager {
     private void createNpcFromMap(String npcId, MapProperties props, World world, GameSettings settings) {
         NPC npc = createNpcInstance(npcId, props, world);
         restoreNpcState(npc, settings);
-        addNpcToGame(npc, world);
+        npcs.add(npc);
         System.out.println("SUCCESS: Loaded '" + npcId + "' from map (Node: " + npc.getCurrentDialogueNodeId() + ", Tex: " + npc.getCurrentTextureKey() + ")");
     }
 
@@ -57,13 +61,13 @@ public class NpcManager {
         int speed = props.get("speed", 50, Integer.class);
 
         if ("police".equalsIgnoreCase(npcId)) {
-            return new Police("police", npcName, 100, 100, x, y, texture, world, speed, initialDialogue);
+            return new Police("police", npcName, 100, 100, x, y, texture, world, speed, initialDialogue, itemManager);
         } else {
             int directionX = props.get("directionX", 0, Integer.class);
             int directionY = props.get("directionY", 0, Integer.class);
             float pauseTime = props.get("pauseTime", 0f, Float.class);
             float moveTime = props.get("moveTime", 0f, Float.class);
-            return new NPC(npcId.toLowerCase(), npcName, 100, 100, x, y, texture, world, directionX, directionY, pauseTime, moveTime, speed, initialDialogue);
+            return new NPC(npcId.toLowerCase(), npcName, 100, 100, x, y, texture, world, directionX, directionY, pauseTime, moveTime, speed, initialDialogue, itemManager);
         }
     }
 
@@ -99,16 +103,21 @@ public class NpcManager {
         return texture;
     }
 
-    private void addNpcToGame(NPC npc, World world) {
-        npcs.add(npc);
-        world.getNpcs().add(npc);
+    public void renderNpcs(SpriteBatch batch) {
+        World currentWorld = worldManager.getCurrentWorld();
+        if (currentWorld == null) return;
+        for (NPC npc : npcs) {
+            if (npc.getWorld() != worldManager.getCurrentWorld()) continue;
+            npc.draw(batch);
+        }
     }
 
 
     public void update(float delta) {
         World currentWorld = worldManager.getCurrentWorld();
         if (currentWorld == null) return;
-        for (NPC npc : currentWorld.getNpcs()) {
+        for (NPC npc : npcs) {
+            if (npc.getWorld() != worldManager.getCurrentWorld()) continue;
             npc.update(delta);
         }
     }
@@ -126,20 +135,12 @@ public class NpcManager {
 
         Police summonedPolice = new Police("summoned_police", Assets.npcs.get("npc.police.name"),
                 100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police"),
-                currentWorld, 200, dialogueRegistry.getDialogue("summoned_police", "chase.offer"));
-        addNpcToGame(summonedPolice, currentWorld);
+                currentWorld, 200, dialogueRegistry.getDialogue("summoned_police", "chase.offer"), itemManager);
+        npcs.add(summonedPolice);
     }
 
     public void moveSummonedPoliceToNewWorld(World newWorld) {
-        Police summonedPolice = getSummonedPolice();
-        if (summonedPolice != null && newWorld != null) {
-            World oldWorld = summonedPolice.getWorld();
-            if (oldWorld != null) {
-                oldWorld.getNpcs().remove(summonedPolice);
-            }
-            summonedPolice.setWorld(newWorld);
-            newWorld.getNpcs().add(summonedPolice);
-        }
+        getSummonedPolice().setWorld(newWorld);
     }
 
     public Police getSummonedPolice() {
@@ -148,28 +149,14 @@ public class NpcManager {
 
     public void kill(NPC npc) {
         if (npc == null) return;
-
-        if (npc.getWorld() != null) {
-            npc.getWorld().getNpcs().remove(npc);
-        }
         npcs.remove(npc);
     }
     public void teleportNpc(String npcId, World targetWorld, float x, float y) {
         NPC npc = findNpcById(npcId);
         if (npc == null || targetWorld == null) return;
-
-        World oldWorld = npc.getWorld();
-
-        if (oldWorld != null) {
-            oldWorld.getNpcs().remove(npc);
-        }
-
         npc.setWorld(targetWorld);
         npc.setX(x);
         npc.setY(y);
-
-        if (!targetWorld.getNpcs().contains(npc)) {
-            targetWorld.getNpcs().add(npc);
-        }
     }
+    public ArrayList<NPC> getNpcs() { return npcs; }
 }

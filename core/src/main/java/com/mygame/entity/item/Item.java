@@ -60,7 +60,10 @@ public class Item extends Entity {
         searched = true;
         // Замість ActionRegistry.executeAction викликаємо івент
         EventBus.fire(new Events.ActionRequestEvent("act.item.search.basic"));
-        TimerManager.setAction(() -> EventBus.fire(new Events.ItemSearchedEvent(player, rewardItemKey, rewardAmount)), 2);
+        TimerManager.setAction(() -> {
+            EventBus.fire(new Events.ItemSearchedEvent(player, rewardItemKey, rewardAmount));
+            EventBus.fire(new Events.SaveRequestEvent());
+        }, 2);
     }
 
     public String getUniqueId() {

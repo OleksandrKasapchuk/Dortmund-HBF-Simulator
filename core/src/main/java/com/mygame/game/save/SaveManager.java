@@ -32,21 +32,7 @@ public class SaveManager {
 
     public SaveManager(GameContext ctx) {
         this.ctx = ctx;
-
-        // Підписуємося на події
-        EventBus.subscribe(Events.InventoryChangedEvent.class, e -> requestSave());
-
-        EventBus.subscribe(Events.QuestStartedEvent.class, e -> requestSave());
-        EventBus.subscribe(Events.QuestCompletedEvent.class, e -> requestSave());
-
-        EventBus.subscribe(Events.DialogueFinishedEvent.class, e -> requestSave());
-        EventBus.subscribe(Events.PlayerStateChangedEvent.class, e -> requestSave());
-        EventBus.subscribe(Events.ItemSearchedEvent.class, e -> requestSave());
-
-        EventBus.subscribe(Events.WorldChangedEvent.class, e -> requestSave());
-        EventBus.subscribe(Events.NewDayEvent.class, e -> requestSave());
-        EventBus.subscribe(Events.PhaseChangedEvent.class, e -> requestSave());
-
+        EventBus.subscribe(Events.SaveRequestEvent.class, e -> requestSave());
         Gdx.app.log("AutoSaveManager", "Smart event-based saving initialized.");
     }
 
@@ -54,10 +40,6 @@ public class SaveManager {
         if (saveCooldown > 0) saveCooldown -= delta;
         if (burstTimer > 0) burstTimer -= delta;
 
-        // Зберігаємо лише тоді, коли:
-        // 1. Є запит (pendingSave)
-        // 2. Минуло достатньо часу з останнього запису (saveCooldown <= 0)
-        // 3. Події "затихли" (burstTimer <= 0)
         if (pendingSave && saveCooldown <= 0 && burstTimer <= 0) {
             saveGame();
         }
@@ -135,7 +117,7 @@ public class SaveManager {
 
     private void saveSearchedItems(GameSettings settings){
         settings.searchedItems = ctx.worldManager.getWorlds().values().stream()
-            .flatMap(world -> world.getAllItems().stream())
+            .flatMap(world -> ctx.itemManager.getAllItems().stream())
             .filter(Item::isSearched)
             .map(Item::getUniqueId)
             .collect(Collectors.toSet());
@@ -161,9 +143,7 @@ public class SaveManager {
     }
 
     private void saveNpcStates(GameSettings settings) {
-        settings.npcStates = ctx.worldManager.getWorlds().values().stream()
-            .flatMap(world -> world.getNpcs().stream())
-            .collect(Collectors.toMap(
+        settings.npcStates = ctx.npcManager.getNpcs().stream().collect(Collectors.toMap(
                 NPC::getId,
                 npc -> new GameSettings.NpcSaveData(npc.getCurrentDialogueNodeId(), npc.getCurrentTextureKey()),
                 (existing, replacement) -> existing

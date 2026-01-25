@@ -3,16 +3,18 @@ package com.mygame.world.zone;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.player.Player;
 import com.mygame.world.World;
 
+import java.util.ArrayList;
+
 public class ZoneRegistry {
 
     private final ItemRegistry itemRegistry;
     private final Player player;
+    private ArrayList<Zone> zones = new ArrayList<>();
 
     public ZoneRegistry(ItemRegistry itemRegistry, Player player) {
         this.itemRegistry = itemRegistry;
@@ -27,9 +29,7 @@ public class ZoneRegistry {
 
             Rectangle rect;
 
-            if (object instanceof RectangleMapObject rectObj) {
-                rect = rectObj.getRectangle();
-            } else if (object.getProperties().containsKey("width") && object.getProperties().containsKey("height")) {
+          if (object.getProperties().containsKey("width") && object.getProperties().containsKey("height")) {
                 // Примітивна конвертація tile/polygon в rectangle
                 float x = object.getProperties().get("x", Float.class);
                 float y = object.getProperties().get("y", Float.class);
@@ -47,29 +47,34 @@ public class ZoneRegistry {
             if (zoneType == null) {
                 throw new RuntimeException("Zone without zoneType in world: " + world.getName());
             }
-
+            Zone zone;
             switch (zoneType) {
 
                 case "transition" -> {
                     String targetWorldId = props.get("targetWorldId", String.class);
                     float targetX = Float.parseFloat(props.get("targetX").toString());
                     float targetY = Float.parseFloat(props.get("targetY").toString());
-
-                    world.getZones().add(
-                        new TransitionZone(props.get("id", Integer.class).toString() ,targetWorldId, targetX, targetY, rect)
-                    );
+                    zone = new TransitionZone(props.get("id", Integer.class).toString() ,targetWorldId, targetX, targetY, rect);
+                    zones.add(zone);
+                    world.getZones().add(zone);
                 }
 
                 case "quest" -> {
-                    String questId = props.get("questId", String.class);
-
-                    world.getZones().add(
-                        new QuestZone(questId, rect, player, itemRegistry)
-                    );
+                    String key = props.get("key", String.class);
+                    zone = new QuestZone(key, rect, player, itemRegistry);
+                    zones.add(zone);
+                    world.getZones().add(zone);
                 }
 
                 default -> throw new RuntimeException("Unknown zoneType: " + zoneType);
+
             }
         }
+    }
+    public Zone getZone(String id){
+        for (Zone zone : zones) {
+            if (zone.getId().equals(id)) return zone;
+        }
+        return null;
     }
 }

@@ -71,13 +71,14 @@ public class GameContext {
         // 3. Managers that depend on registries and core systems
         this.playerEffectManager = new PlayerEffectManager();
         this.questManager = new QuestManager(questRegistry);
-        this.npcManager = new NpcManager(player, dialogueRegistry, worldManager);
         this.itemManager = new ItemManager(itemRegistry, worldManager);
-        this.pfandManager = new PfandManager(itemRegistry, worldManager);
+        player.setItemManager(itemManager);
+        this.npcManager = new NpcManager(player, dialogueRegistry, worldManager, itemManager);
+        this.pfandManager = new PfandManager(itemRegistry, itemManager, worldManager);
         this.zoneRegistry = new ZoneRegistry(itemRegistry, player);
         this.cameraManager = new CameraManager(player);
-        this.ui = new UIManager(batch, player, skin, questManager, worldManager, dayManager);
-        this.dialogueManager = new DialogueManager(ui.getDialogueUI(), player, worldManager, dialogueRegistry);
+        this.ui = new UIManager(batch, player, skin, questManager, worldManager, dayManager, npcManager, itemManager);
+        this.dialogueManager = new DialogueManager(ui.getDialogueUI(), player, worldManager, dialogueRegistry, npcManager);
         this.gsm = new GameStateManager(ui);
 
         // 4. High-level logic

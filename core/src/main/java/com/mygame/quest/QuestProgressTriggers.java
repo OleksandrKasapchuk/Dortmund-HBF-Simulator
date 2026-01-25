@@ -38,7 +38,7 @@ public class QuestProgressTriggers {
 
         EventBus.subscribe(Events.DialogueFinishedEvent.class, event -> handleNpcDialogue(event.npcId()));
         EventBus.subscribe(Events.WorldChangedEvent.class, event -> handleWorldChange(event.newWorldId()));
-        EventBus.subscribe(Events.InventoryChangedEvent.class, event -> handleInventoryQuest(event.item(), event.newAmount()));
+        EventBus.subscribe(Events.InventoryChangedEvent.class, event -> handleInventoryQuest(event.item()));
         EventBus.subscribe(Events.CreateItemEvent.class, this::handleCreateItemQuest);
 
         // --- ОБРОБКА ЗАВЕРШЕННЯ КВЕСТУ ---
@@ -51,14 +51,9 @@ public class QuestProgressTriggers {
     }
 
     private void handleCreateItemQuest(Events.CreateItemEvent event){
-        ItemDefinition item = itemRegistry.get("firework");
-        QuestManager.Quest quest = questManager.getQuest("jan.firework.4");
-        if (quest != null && quest.getStatus() == QuestManager.Status.ACTIVE && item.getKey().equals(event.itemKey())) {
-            quest.makeProgress();
-        }
-
+        if ("firework".equals(event.itemKey())) progress("jan.firework.4");
     }
-    private void handleInventoryQuest(ItemDefinition item, int newAmount) {
+    private void handleInventoryQuest(ItemDefinition item) {
         if (item == itemRegistry.get("firework")) progress("jan.firework.1");
     }
 
@@ -71,7 +66,7 @@ public class QuestProgressTriggers {
 
         NPC jan = npcManager.findNpcById("jan");
         World world = worldManager.getWorld("leopold");
-        if (questManager.hasQuest("jan.firework.3") && jan.getWorld() != world && world.getName().equals(worldId)){
+        if (questManager.hasQuest("jan.firework.3") && jan.getWorld() != world){
             EventBus.fire(new Events.ActionRequestEvent("act.quest.jan.firework.2.active"));
         }
     }

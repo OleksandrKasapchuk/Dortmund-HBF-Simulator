@@ -18,7 +18,7 @@ public class QuestZone extends Zone {
         super(id, area);
         this.player = player;
         this.itemRegistry = itemRegistry;
-//        this.enabled = false;
+        this.enabled = false;
     }
 
     @Override
@@ -30,9 +30,6 @@ public class QuestZone extends Zone {
             player.getInventory().removeItem(firework, 1);
             EventBus.fire(new Events.CreateItemEvent("firework", area.x + area.width / 2, area.y));
             enabled = false;
-//            EventBus.fire(new Events.ActionRequestEvent(
-//                "act.quest.zone." + id
-//            ));
         }
     }
 }

@@ -13,6 +13,7 @@ public abstract class Zone {
         this.area = area;
     }
 
+    public String getId(){ return id; }
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;

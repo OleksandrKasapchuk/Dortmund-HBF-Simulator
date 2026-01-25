@@ -11,8 +11,10 @@
   {
     "key": "jan.firework.4",
     "progressable": true,
-    "maxProgress": 2
+    "maxProgress": 2,
+    "onComplete": "act.quest.jan.firework.4.completed"
   },
+  {"key": "jan.firework.5"},
   {
     "key": "jason.smalltalk",
     "progressable": true,

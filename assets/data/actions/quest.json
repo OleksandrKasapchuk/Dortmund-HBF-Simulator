@@ -91,7 +91,6 @@
     "type": "system.composite",
     "actions": [
       { "type": "dialogue.set", "npc": "boss", "node": "delivery.failed" },
-      { "type": "npc.remove", "npc": "boss" },
       {
         "type": "system.timer",
         "delay": 2.0,
@@ -174,7 +173,18 @@
     "actions": [
       { "type": "dialogue.set", "npc": "jan", "node": "firework.3.active" },
       { "type": "quest.complete", "id": "jan.firework.3"},
-      { "type": "quest.start", "id": "jan.firework.4"}
+      { "type": "quest.start", "id": "jan.firework.4"},
+      { "type": "quest.zone.set.enabled", "id": "jan.firework.4.1", "enabled": true},
+      { "type": "quest.zone.set.enabled", "id": "jan.firework.4.2", "enabled": true}
+    ]
+  },
+
+  "act.quest.jan.firework.4.completed": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "quest.complete", "id": "jan.firework.4"},
+      { "type": "quest.start", "id": "jan.firework.5"},
+      { "type": "quest.zone.set.enabled", "id": "jan.firework.5", "enabled": true}
     ]
   }
 }

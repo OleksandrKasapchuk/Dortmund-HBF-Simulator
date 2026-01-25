@@ -62,7 +62,9 @@ public class GameSettings {
     public static class NpcSaveData {
         public String currentNode;
         public String currentTexture;
-
+        public String currentWorld;
+        public float x;
+        public float y;
         public NpcSaveData() {}
         public NpcSaveData(String currentNode, String currentTexture) {
             this.currentNode = currentNode;

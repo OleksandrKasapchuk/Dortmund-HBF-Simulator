@@ -39,6 +39,7 @@ public class Events {
 
     public record PlayerStateChangedEvent(Player.State newState) {}
     public record GameStateChangedEvent(GameStateManager.GameState newState) {}
+
     // ───── Police ─────
     public record PoliceStateChangedEvent(Police.PoliceState newState) {}
 
@@ -46,4 +47,7 @@ public class Events {
     public record MessageEvent(String message) {}
     public record NotEnoughMessageEvent(ItemDefinition item) {}
     public record AddItemMessageEvent(ItemDefinition item, int amount) {}
+
+    // ───── Save ─────
+    public record SaveRequestEvent() {}
 }

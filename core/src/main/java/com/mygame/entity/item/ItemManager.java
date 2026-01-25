@@ -1,6 +1,7 @@
 package com.mygame.entity.item;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
@@ -13,6 +14,7 @@ import com.mygame.game.save.SettingsManager;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +28,10 @@ public class ItemManager {
     private final ItemRegistry itemRegistry;
     private final Map<String, Item> namedItems = new HashMap<>();
     private WorldManager worldManager;
+    private final ArrayList<Item> backgroundItems = new ArrayList<>();
+    private final ArrayList<Item> foregroundItems = new ArrayList<>();
+    private final ArrayList<Item> allItems = new ArrayList<>();
+    private final ArrayList<Item> pfands = new ArrayList<>();
 
     public ItemManager(ItemRegistry itemRegistry, WorldManager worldManager) {
         this.itemRegistry = itemRegistry;
@@ -58,7 +64,7 @@ public class ItemManager {
         if (currentWorld == null) return;
 
         Item item = new Item(itemType, 25, 75, event.x(), event.y(), 200, texture, currentWorld, false, false, false, null, null, 0, null);
-        currentWorld.addBackgroundItem(item);
+        addBackgroundItem(item);
     }
 
 
@@ -99,9 +105,9 @@ public class ItemManager {
 
         // Add item to the correct list based on its properties
         if (props.get("isBackground", false, Boolean.class)) {
-            world.addBackgroundItem(item);
+            addBackgroundItem(item);
         } else {
-            world.addForegroundItem(item);
+            addForegroundItem(item);
         }
 
         registerNamedItem(object, item, itemKey);
@@ -150,6 +156,22 @@ public class ItemManager {
         namedItems.put(itemKey, item);
     }
 
+    public void renderBackgroundItems(SpriteBatch batch) {
+        if (worldManager.getCurrentWorld() == null) return;
+        for (Item item : backgroundItems) {
+            if (item.getWorld() != worldManager.getCurrentWorld()) continue;
+            item.draw(batch);
+        }
+    }
+
+    public void renderForegroundItems(SpriteBatch batch) {
+        if (worldManager.getCurrentWorld() == null) return;
+        for (Item item : foregroundItems) {
+            if (item.getWorld() != worldManager.getCurrentWorld()) continue;
+            item.draw(batch);
+        }
+    }
+
 
     // --- Update items: handle pickups by the player and cooldowns ---
     public void update(float delta, Player player) {
@@ -160,14 +182,13 @@ public class ItemManager {
     }
 
     private void checkPickupsInList(float delta, Player player) {
-        World currentWorld = worldManager.getCurrentWorld();
-        List<Item> items = currentWorld.getAllItems();
-        for (int i = items.size() - 1; i >= 0; i--) {
-            Item item = items.get(i);
+        for (int i = allItems.size() - 1; i >= 0; i--) {
+            Item item = allItems.get(i);
+            if (item.getWorld() != worldManager.getCurrentWorld()) continue;
             item.updateCooldown(delta);
             if (item.canBePickedUp() && item.isPlayerNear(player, item.getDistance())) {
                 player.getInventory().addItem(item.getType(), 1);
-                currentWorld.removeItem(item); // безпечне видалення, бо йдемо з кінця
+                removeItem(item); // безпечне видалення, бо йдемо з кінця
             }
         }
 
@@ -179,5 +200,28 @@ public class ItemManager {
      */
     public Item getItem(String identifier) {
         return namedItems.get(identifier);
+    }
+
+    public List<Item> getBackgroundItems() { return backgroundItems; }
+    public List<Item> getForegroundItems() { return foregroundItems; }
+
+    public List<Item> getAllItems() {return allItems;}
+    public ArrayList<Item> getPfands() { return pfands; }
+
+    public void addBackgroundItem(Item item) {
+        backgroundItems.add(item);
+        allItems.add(item);
+    }
+
+    public void addForegroundItem(Item item) {
+        foregroundItems.add(item);
+        allItems.add(item);
+    }
+
+    public void removeItem(Item item) {
+        backgroundItems.remove(item);
+        foregroundItems.remove(item);
+        pfands.remove(item);
+        allItems.remove(item);
     }
 }

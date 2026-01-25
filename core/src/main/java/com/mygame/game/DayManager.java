@@ -54,6 +54,7 @@ public class DayManager {
     public void setDay(int day){
         this.day = day;
         EventBus.fire(new Events.NewDayEvent(day));
+        EventBus.fire(new Events.SaveRequestEvent());
         System.out.println("New day: " + day);
     }
 
@@ -67,6 +68,7 @@ public class DayManager {
         if (newPhase != currentPhase) {
             currentPhase = newPhase;
             EventBus.fire(new Events.PhaseChangedEvent(newPhase));
+            EventBus.fire(new Events.SaveRequestEvent());
             System.out.println("New phase: " + newPhase);
         }
     }
@@ -80,7 +82,6 @@ public class DayManager {
         TimerManager.setAction(() -> {
             if (currentPhase == Phase.EVENING) nextDay();
             currentTime = 6f;
-            System.out.println("Player slept at " + currentTime + " hours.");
         }, 0.5f);
 
     }

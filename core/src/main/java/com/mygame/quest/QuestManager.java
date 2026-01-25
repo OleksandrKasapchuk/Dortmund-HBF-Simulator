@@ -38,6 +38,7 @@ public class QuestManager {
         if (quest != null && quest.getStatus() == Status.NOT_STARTED) {
             quest.setStatus(Status.ACTIVE);
             EventBus.fire(new Events.QuestStartedEvent(key));
+            EventBus.fire(new Events.SaveRequestEvent());
         }
     }
 
@@ -141,12 +142,14 @@ public class QuestManager {
             this.status = Status.COMPLETED;
             if (progressable) this.progress = maxProgress;
             EventBus.fire(new Events.QuestCompletedEvent(key));
+            EventBus.fire(new Events.SaveRequestEvent());
         }
 
         public void makeProgress() {
             if (!progressable || status != Status.ACTIVE) return;
             this.progress++;
             EventBus.fire(new Events.QuestProgressEvent(key, progress, maxProgress));
+            EventBus.fire(new Events.SaveRequestEvent());
 
             if (this.progress >= maxProgress) {
                 complete();
