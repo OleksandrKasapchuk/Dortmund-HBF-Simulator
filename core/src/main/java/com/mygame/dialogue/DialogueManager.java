@@ -1,13 +1,12 @@
 package com.mygame.dialogue;
 
 import com.mygame.entity.npc.NPC;
+import com.mygame.entity.npc.NpcManager;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.world.WorldManager;
 import com.mygame.ui.inGameUI.DialogueUI;
-
-import java.util.ArrayList;
 
 /**
  * Controls all dialogue logic:
@@ -26,8 +25,9 @@ public class DialogueManager {
     private final DialogueState state = new DialogueState();
     private final TypeWriterController typeWriter = new TypeWriterController();
     private WorldManager worldManager;
-
+    private DialogueRegistry dialogueRegistry;
     private NPC recentlyFinishedForcedNpc;
+    private NpcManager npcManager;
 
     // Prevents multiple interactions per frame
     private float interactCooldown = 0f;
@@ -49,10 +49,12 @@ public class DialogueManager {
         }
     };
 
-    public DialogueManager(DialogueUI dialogueUI, Player player, WorldManager worldManager) {
+    public DialogueManager(DialogueUI dialogueUI, Player player, WorldManager worldManager, DialogueRegistry dialogueRegistry, NpcManager npcManager) {
         this.dialogueUI = dialogueUI;
         this.player = player;
         this.worldManager = worldManager;
+        this.dialogueRegistry = dialogueRegistry;
+        this.npcManager = npcManager;
 
         EventBus.subscribe(Events.InteractEvent.class, e -> handleInteraction());
     }
@@ -85,7 +87,7 @@ public class DialogueManager {
 
         // Forced dialogue → player cannot move
         player.setMovementLocked(state.forced || state.activeNode.isForced());
-
+        EventBus.fire(new Events.DialogueStartedEvent(npc.getId()));
         displayCurrentNode();
     }
 
@@ -98,7 +100,7 @@ public class DialogueManager {
         typeWriter.reset();
         interactCooldown = INTERACT_COOLDOWN_TIME;
 
-        dialogueUI.show(state.activeNpc.getName(), state.activeNode, choiceListener);
+        dialogueUI.show(state.activeNpc, state.activeNode, choiceListener);
 
         // Start with empty text for typewriter animation
         dialogueUI.updateText("");
@@ -127,6 +129,7 @@ public class DialogueManager {
 
         // Fire event when dialogue finishes
         EventBus.fire(new Events.DialogueFinishedEvent(npcId));
+        EventBus.fire(new Events.SaveRequestEvent());
     }
 
     private void handleInteraction() {
@@ -135,7 +138,8 @@ public class DialogueManager {
         if (!state.isActive()) {
             // Standard interaction - start a new dialogue
             if (worldManager.getCurrentWorld() != null) {
-                for (NPC npc : worldManager.getCurrentWorld().getNpcs()) {
+                for (NPC npc : npcManager.getNpcs()) {
+                    if (npc.getWorld() != worldManager.getCurrentWorld()) continue;
                     if (npc.isPlayerNear(player)) {
                         startDialogue(npc);
                         return;
@@ -151,8 +155,16 @@ public class DialogueManager {
                 dialogueUI.updateText(currentPhrase);
             } else {
                 if (state.isLastPhrase()) {
-                    if (state.activeNode.getAction() != null) state.activeNode.getAction().run();
-                    if (state.activeNode.getChoices().isEmpty()) endDialogue();
+                    if (state.activeNode.getAction() != null) EventBus.fire(new Events.ActionRequestEvent(state.activeNode.getAction()));
+                    if (!state.activeNode.getChoices().isEmpty()) return;
+                    String nextNodeName = state.activeNode.getNextNode();
+                    if (nextNodeName != null) {
+                        state.activeNode = dialogueRegistry.getDialogue(state.activeNpc.getId(), nextNodeName);
+                        displayCurrentNode();
+                    }
+                     else {
+                        endDialogue();
+                    }
                 } else {
                     state.textIndex++;
                     state.textCompleted = false;
@@ -171,7 +183,6 @@ public class DialogueManager {
      */
     public void update(float delta) {
         if (worldManager.getCurrentWorld() == null) return;
-        ArrayList<NPC> npcs = worldManager.getCurrentWorld().getNpcs();
 
         // Cooldown
         if (interactCooldown > 0) interactCooldown -= delta;
@@ -190,7 +201,8 @@ public class DialogueManager {
             }
 
             // Police auto-dialog
-            for (NPC npc : npcs) {
+            for (NPC npc : npcManager.getNpcs()) {
+                if (npc.getWorld() != worldManager.getCurrentWorld()) continue;
                 if (npc.getDialogue().isForced() && npc.isPlayerNear(player) && npc != recentlyFinishedForcedNpc) {
                     startForcedDialogue(npc);
                     return;

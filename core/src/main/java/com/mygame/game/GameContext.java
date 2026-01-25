@@ -18,9 +18,9 @@ import com.mygame.quest.QuestProgressTriggers;
 import com.mygame.quest.QuestRegistry;
 import com.mygame.scenario.ScenarioController;
 import com.mygame.ui.UIManager;
-import com.mygame.ui.inGameUI.DarkOverlay;
+import com.mygame.ui.inGameUI.Overlay;
 import com.mygame.world.WorldManager;
-import com.mygame.world.transition.TransitionManager;
+import com.mygame.world.zone.ZoneRegistry;
 
 // GameContext now creates and holds most of the managers.
 public class GameContext {
@@ -29,7 +29,7 @@ public class GameContext {
     public final Player player;
     public final WorldManager worldManager;
     public final DayManager dayManager;
-    public final DarkOverlay darkOverlay;
+    public final Overlay overlay;
 
     // Registries
     public final ItemRegistry itemRegistry;
@@ -43,7 +43,7 @@ public class GameContext {
     public final NpcManager npcManager;
     public final ItemManager itemManager;
     public final PfandManager pfandManager;
-    public final TransitionManager transitionManager;
+    public final ZoneRegistry zoneRegistry;
     public final GameStateManager gsm;
     public final UIManager ui;
     public final CameraManager cameraManager;
@@ -58,8 +58,8 @@ public class GameContext {
         this.player = player;
 
         // 1. Core Systems
-        this.darkOverlay = new DarkOverlay();
-        this.worldManager = new WorldManager(player, darkOverlay);
+        this.overlay = new Overlay();
+        this.worldManager = new WorldManager(player, overlay);
         this.dayManager = new DayManager();
 
         // 2. Registries
@@ -71,13 +71,14 @@ public class GameContext {
         // 3. Managers that depend on registries and core systems
         this.playerEffectManager = new PlayerEffectManager();
         this.questManager = new QuestManager(questRegistry);
-        this.npcManager = new NpcManager(player, dialogueRegistry, worldManager);
         this.itemManager = new ItemManager(itemRegistry, worldManager);
-        this.pfandManager = new PfandManager(itemRegistry, worldManager);
-        this.transitionManager = new TransitionManager();
+        player.setItemManager(itemManager);
+        this.npcManager = new NpcManager(player, dialogueRegistry, worldManager, itemManager);
+        this.pfandManager = new PfandManager(itemRegistry, itemManager, worldManager);
+        this.zoneRegistry = new ZoneRegistry(itemRegistry, player);
         this.cameraManager = new CameraManager(player);
-        this.ui = new UIManager(batch, player, skin, questManager, worldManager, dayManager);
-        this.dialogueManager = new DialogueManager(ui.getDialogueUI(), player, worldManager);
+        this.ui = new UIManager(batch, player, skin, questManager, worldManager, dayManager, npcManager, itemManager);
+        this.dialogueManager = new DialogueManager(ui.getDialogueUI(), player, worldManager, dialogueRegistry, npcManager);
         this.gsm = new GameStateManager(ui);
 
         // 4. High-level logic
@@ -93,7 +94,7 @@ public class GameContext {
     public void update(float delta) {
         dayManager.update(delta);
         worldManager.update(delta);
-        darkOverlay.update(delta);
+        overlay.update(delta);
         npcManager.update(delta);
         dialogueManager.update(delta);
         itemManager.update(delta, player);

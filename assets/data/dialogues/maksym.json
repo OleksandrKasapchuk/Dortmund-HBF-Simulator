@@ -2,7 +2,7 @@
   "maksym": {
     "nodes": {
       "start": "idle",
-      "idle": ["dialogue.maksym.idle.text.1"]
+      "idle": ["dialogue.maksym.idle.1"]
     }
   }
 }

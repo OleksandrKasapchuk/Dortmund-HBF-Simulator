@@ -25,7 +25,6 @@ public class QuestProgressTriggers {
 
     private Set<String> talkedNpcs;
     private Set<String> visited;
-    private int lastFireworkCount = 0;
 
     public QuestProgressTriggers(QuestManager questManager, ItemRegistry itemRegistry, NpcManager npcManager, WorldManager worldManager) {
         this.questManager = questManager;
@@ -39,7 +38,8 @@ public class QuestProgressTriggers {
 
         EventBus.subscribe(Events.DialogueFinishedEvent.class, event -> handleNpcDialogue(event.npcId()));
         EventBus.subscribe(Events.WorldChangedEvent.class, event -> handleWorldChange(event.newWorldId()));
-        EventBus.subscribe(Events.InventoryChangedEvent.class, event -> handleInventoryQuest(event.item(), event.newAmount()));
+        EventBus.subscribe(Events.InventoryChangedEvent.class, event -> handleInventoryQuest(event.item()));
+        EventBus.subscribe(Events.CreateItemEvent.class, this::handleCreateItemQuest);
 
         // --- ОБРОБКА ЗАВЕРШЕННЯ КВЕСТУ ---
         EventBus.subscribe(Events.QuestCompletedEvent.class, event -> {
@@ -50,37 +50,24 @@ public class QuestProgressTriggers {
         });
     }
 
-    private void handleInventoryQuest(ItemDefinition item, int newAmount) {
-        String ITEM_FIREWORK = "firework";
-        if (item == itemRegistry.get(ITEM_FIREWORK)) {
-            if (newAmount > lastFireworkCount) {
-                String QUEST_FIREWORKS = "jan_firework.stage.1";
-                progress(QUEST_FIREWORKS);
-            }
-            lastFireworkCount = newAmount;
-        }
+    private void handleCreateItemQuest(Events.CreateItemEvent event){
+        if ("firework".equals(event.itemKey())) progress("jan.firework.4");
+    }
+    private void handleInventoryQuest(ItemDefinition item) {
+        if (item == itemRegistry.get("firework")) progress("jan.firework.1");
     }
 
     private void handleNpcDialogue(String npcId) {
-        if (talkedNpcs.add(npcId)) {
-            String QUEST_TALK_NPCS = "jason2";
-            progress(QUEST_TALK_NPCS);
-        }
+        if (talkedNpcs.add(npcId)) progress("jason.smalltalk");
     }
 
     private void handleWorldChange(String worldId) {
-        if (visited.add(worldId)) {
-            String QUEST_VISIT_LOCATIONS = "jason1";
-            progress(QUEST_VISIT_LOCATIONS);
-        }
+        if (visited.add(worldId)) progress("jason.tour");
+
         NPC jan = npcManager.findNpcById("jan");
         World world = worldManager.getWorld("leopold");
-        if (questManager.hasQuest("jan_firework.stage.3") && jan.getWorld() != world){
-            jan.setWorld(world);
-            jan.setX(1000);
-            jan.setY(500);
-            worldManager.getCurrentWorld().getNpcs().remove(jan);
-            world.getNpcs().add(jan);
+        if (questManager.hasQuest("jan.firework.3") && jan.getWorld() != world){
+            EventBus.fire(new Events.ActionRequestEvent("act.quest.jan.firework.2.active"));
         }
     }
 

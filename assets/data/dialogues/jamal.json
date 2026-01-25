@@ -3,9 +3,9 @@
     "nodes": {
       "start": "trade.offer",
       "trade.offer": {
-        "texts": ["dialogue.jamal.trade_offer.text.1", "dialogue.jamal.trade_offer.text.2"],
+        "texts": ["dialogue.jamal.trade_offer.1", "dialogue.jamal.trade_offer.2"],
         "choices": [
-          { "text": "dialogue.jamal.trade_offer.choice.1", "action": "inventory.buy_seed" },
+          { "text": "dialogue.jamal.trade_offer.choice.1", "action": "act.inventory.buy_seed" },
           "dialogue.choice.leave"
         ]
       }

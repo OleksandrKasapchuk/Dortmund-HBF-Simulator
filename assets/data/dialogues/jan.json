@@ -1,21 +1,47 @@
 {
   "jan": {
     "nodes": {
-      "start": "fireworks.stage.1.offer",
-      "fireworks.stage.1.offer": {
-        "texts":["dialogue.jan.fireworks.stage.1.offer.text.1", "dialogue.jan.fireworks.stage.1.offer.text.2"],
+      "start": "firework.1.offer",
+
+      "firework.1.offer": {
+        "texts":["dialogue.jan.firework.1.offer.1", "dialogue.jan.firework.1.offer.2"],
         "choices":  [
-          { "text": "dialogue.choice.accept", "action": "quest.jan_firework.stage.1.accept" },
+          { "text": "dialogue.choice.accept", "action": "act.quest.jan.firework.1.accept" },
           "dialogue.choice.leave"
         ]
       },
-      "fireworks.stage.1.active": ["dialogue.jan.fireworks.stage.1.active.text.1"],
-      "fireworks.stage.1.completed": {
-        "onFinish": "quest.jan_firework.stage.2.accept",
-        "texts": ["dialogue.jan.fireworks.stage.2.offer.text.1", "dialogue.jan.fireworks.stage.2.offer.text.2"]
+      "firework.1.active": ["dialogue.jan.firework.1.active.1"],
+
+      "firework.1.completed": {
+        "texts": ["dialogue.jan.firework.1.completed.1"],
+        "next": "firework.2.offer"
       },
-      "fireworks.stage.2.active": {
-        "texts": ["dialogue.jan.fireworks.stage.2.active.text.1"]
+
+      "firework.2.offer": {
+        "onFinish": "act.quest.jan.firework.2.accept",
+        "texts": ["dialogue.jan.firework.2.offer.1"]
+      },
+
+      "firework.2.active": {
+        "texts": ["dialogue.jan.firework.2.active.1"]
+      },
+
+      "firework.2.completed": {
+        "texts": ["dialogue.jan.firework.2.completed.1"],
+        "next": "firework.3.offer"
+      },
+
+      "firework.3.offer": {
+        "texts": ["dialogue.jan.firework.3.offer.1"],
+        "onFinish": "act.quest.jan.firework.3.accept"
+      },
+
+      "firework.3.active": {
+        "texts": ["dialogue.jan.firework.3.active.1"]
+      },
+
+      "firework.5.completed": {
+        "texts": ["dialogue.jan.firework.5.completed.1", "dialogue.jan.firework.5.completed.2"]
       }
     }
   }

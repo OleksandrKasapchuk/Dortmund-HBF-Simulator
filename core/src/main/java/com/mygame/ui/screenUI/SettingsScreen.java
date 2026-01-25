@@ -90,7 +90,7 @@ public class SettingsScreen extends Screen {
 
         // Кнопка НАЗАД (опціонально, бо ESC і так працює)
         root.row();
-        TextButton backBtn = createButton(skin, Assets.ui.get("button.back.text"), 1.5f, () -> EventBus.fire (new Events.ActionRequestEvent("system.settings")));
+        TextButton backBtn = createButton(skin, Assets.ui.get("button.back.text"), 1.5f, () -> EventBus.fire (new Events.ActionRequestEvent("act.system.settings")));
         root.add(backBtn).colspan(2).padTop(50).width(300).height(70);
     }
 

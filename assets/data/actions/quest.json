@@ -1,0 +1,231 @@
+{
+  "act.quest.murat.accept": { "type": "quest.start", "id": "chili"},
+  "act.quest.walter.accept": { "type": "quest.start", "id": "wallet"},
+
+  "act.quest.jason.complete": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "dialogue.set", "npc": "jason", "node": "tour.completed" }
+    ]
+  },
+
+  "act.quest.igo.joint_activate": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "dialogue.set", "npc": "igo", "node": "joint.active" },
+      { "type": "quest.start", "id": "igo" }
+    ]
+  },
+
+  "act.quest.igo.joint_complete": {
+    "type": "inventory.conditionalTrade",
+    "from": "joint",
+    "to": "vape",
+    "fromAmount": 1,
+    "toAmount": 1,
+    "onSuccess": {
+      "type": "system.composite",
+      "actions": [
+        { "type": "quest.complete", "id": "igo" },
+        { "type": "audio.playSound", "id": "lighter" },
+        {
+          "type": "system.timer",
+          "delay": 5.0,
+          "action": { "type": "system.composite", "actions": [
+            { "type": "dialogue.set", "npc": "igo", "node": "joint.completed" },
+            { "type": "npc.setTexture", "npc": "igo", "texture": "igo2"}
+          ]
+          }
+        }
+      ]
+    }
+  },
+  "act.quest.delivery.accept": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "inventory.add", "id": "grass", "amount": 1000 },
+      { "type": "quest.start", "id": "delivery"},
+      { "type": "dialogue.set", "npc": "boss", "node": "delivery.active" }
+    ]
+  },
+
+  "act.quest.boss_end.claim_reward": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "inventory.add", "id": "money", "amount": 50 },
+      { "type": "dialogue.set", "npc": "boss", "node": "idle" },
+      { "type": "quest.complete", "id": "boss_end" }
+    ]
+  },
+
+  "act.quest.delivery.interact_bush": {
+    "type": "inventory.check",
+    "itemId": "grass",
+    "amount": 1000,
+    "action": "act.quest.delivery.complete",
+    "onFail": { "type": "ui.notEnoughMessage", "item": "grass" }
+  },
+
+  "act.quest.delivery.complete": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "quest.complete", "id": "delivery" },
+      { "type": "inventory.remove", "id": "grass", "amount": 1000 },
+      { "type": "audio.playSound", "id": "bush" },
+      {
+        "type": "system.timer",
+        "delay": 2.0,
+        "action": {
+          "type": "system.composite",
+          "actions": [
+            { "type":  "npc.callPolice"},
+            { "type": "dialogue.set", "npc": "summoned_police", "node": "chase.offer" },
+            { "type": "dialogue.force", "npc": "summoned_police" }
+          ]
+        }
+      }
+    ]
+  },
+
+  "act.quest.delivery.fail": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "dialogue.set", "npc": "boss", "node": "delivery.failed" },
+      {
+        "type": "system.timer",
+        "delay": 2.0,
+        "action": {
+          "type": "system.composite",
+          "actions": [
+            { "type": "npc.spawnNearPlayer", "npc": "boss", "offsetX": -100 },
+            { "type": "dialogue.force", "npc": "boss" }
+          ]
+        }
+      }
+    ]
+  },
+  "act.quest.chase.start": {
+    "type": "system.composite",
+    "actions": [
+      { "type":  "quest.start", "id": "chase"},
+      { "type":  "ui.message", "key": "message.boss.chase.run", "duration": 2 },
+      { "type":  "audio.playMusic", "id": "back2" },
+      { "type": "dialogue.set", "npc":  "summoned_police", "node": "chase.failed"},
+      { "type": "custom.startChase"}
+    ]
+  },
+
+  "act.quest.chase.complete": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "audio.resetBack"},
+      { "type": "ui.message", "key": "message.generic.ranAway", "duration": 1.5 },
+      { "type": "dialogue.set", "npc": "boss", "node": "chase.completed" },
+      { "type": "quest.complete", "id": "chase" },
+      { "type": "quest.start", "id": "boss_end"},
+      { "type": "npc.remove", "npc": "summoned_police" }
+    ]
+  },
+
+  "act.quest.chase.restore_ui": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "audio.playMusic", "id": "back2" },
+      { "type": "dialogue.set", "npc": "summoned_police", "node": "chase.failed"}
+    ]
+  },
+
+  "act.quest.jan.firework.1.accept": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "dialogue.set", "npc": "jan", "node": "firework.1.active" },
+      { "type": "quest.start", "id": "jan.firework.1"}
+    ]
+  },
+
+  "act.quest.jan.firework.1.completed": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "dialogue.set", "npc": "jan", "node": "firework.1.completed" },
+      { "type": "quest.start", "id": "jan.firework.2"}
+    ]
+  },
+
+  "act.quest.jan.firework.2.accept": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "dialogue.set", "npc": "jan", "node": "firework.2.active" },
+      { "type": "quest.complete", "id": "jan.firework.2"},
+      { "type": "quest.start", "id": "jan.firework.3"}
+    ]
+  },
+
+  "act.quest.jan.firework.2.active": {
+    "type": "system.composite",
+    "actions": [
+      {"type":  "npc.teleport", "npc": "jan", "world": "leopold", "x": 1000, "y": 500},
+      {"type":  "dialogue.set", "npc": "jan", "node": "firework.2.completed"}
+    ]
+  },
+
+  "act.quest.jan.firework.3.accept": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "dialogue.set", "npc": "jan", "node": "firework.3.active" },
+      { "type": "quest.complete", "id": "jan.firework.3"},
+      { "type": "quest.start", "id": "jan.firework.4"},
+      { "type": "quest.zone.set.enabled", "id": "jan.firework.4.1", "enabled": true},
+      { "type": "quest.zone.set.enabled", "id": "jan.firework.4.2", "enabled": true}
+    ]
+  },
+
+  "act.quest.jan.firework.4.completed": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "quest.complete", "id": "jan.firework.4"},
+      { "type": "quest.start", "id": "jan.firework.5"},
+      { "type": "quest.zone.set.enabled", "id": "jan.firework.5", "enabled": true}
+    ]
+  },
+
+  "act.quest.jan.firework.4.place.firework.1": {
+    "type": "inventory.check", "itemId": "firework",
+    "onFail": {"type": "ui.notEnoughMessage", "item": "firework"},
+    "action": {"type": "system.composite", "actions": [
+      {"type": "inventory.remove", "id": "firework"},
+      {"type": "item.create", "itemId": "firework", "zoneId": "jan.firework.4.1"}
+    ]}
+  },
+
+  "act.quest.jan.firework.4.place.firework.2": {
+    "type": "inventory.check", "itemId": "firework",
+    "onFail": {"type": "ui.notEnoughMessage", "item": "firework"},
+    "action": {"type": "system.composite", "actions": [
+      {"type": "inventory.remove", "id": "firework"},
+      {"type": "item.create", "itemId": "firework", "zoneId": "jan.firework.4.2"}
+    ]}
+  },
+
+  "act.quest.jan.firework.5.completed": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "quest.complete", "id": "jan.firework.5"},
+      { "type": "audio.playSound", "id": "firework_explosion"},
+      { "type": "player.lockMovement", "locked":  true},
+      {
+        "type": "system.timer",
+        "delay": 2.75,
+        "action": {
+          "type": "system.composite",
+          "actions": [
+            { "type": "ui.overlay", "duration": 0.5, "isBlack": false},
+            { "type": "quest.zone.set.enabled", "id": "jan.firework.5", "enabled": false},
+            { "type": "player.lockMovement", "locked":  false},
+            { "type": "dialogue.set", "npc": "jan", "node": "firework.5.completed" },
+            { "type": "item.remove", "itemId": "firework"}
+          ]
+        }
+      }
+    ]
+  }
+}

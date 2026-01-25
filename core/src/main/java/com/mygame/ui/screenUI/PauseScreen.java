@@ -20,10 +20,10 @@ public class PauseScreen extends Screen {
         // Основне меню кнопок
         Table menu = new Table();
 
-        TextButton resumeBtn = createButton(skin, Assets.ui.get("button.resume.text"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("system.pause")));
-        TextButton settingsBtn = createButton(skin, Assets.ui.get("settings.title"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("system.settings")));
+        TextButton resumeBtn = createButton(skin, Assets.ui.get("button.resume.text"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("act.system.pause")));
+        TextButton settingsBtn = createButton(skin, Assets.ui.get("settings.title"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("act.system.settings")));
 
-        TextButton menuBtn = createButton(skin, Assets.ui.get("button.exit.text"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("system.menu")));
+        TextButton menuBtn = createButton(skin, Assets.ui.get("button.exit.text"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("act.system.menu")));
 
         menu.add(resumeBtn).width(500).height(100).padBottom(30).row();
         menu.add(settingsBtn).width(500).height(100).padBottom(30).row();

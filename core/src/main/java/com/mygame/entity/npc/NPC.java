@@ -6,6 +6,7 @@ import com.mygame.assets.Assets;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.Entity;
 import com.mygame.entity.item.Item;
+import com.mygame.entity.item.ItemManager;
 import com.mygame.world.World;
 
 /**
@@ -31,12 +32,12 @@ public class NPC extends Entity {
     private DialogueNode dialogue;
     private String currentDialogueNodeId = "start";
     private String currentTextureKey;
-
+    private ItemManager itemManager;
     public NPC(
         String id, String name,
         int width, int height, float x, float y, Texture texture, World world,
         int directionX, int directionY, float pauseTime, float moveTime,
-        int speed, DialogueNode dialogue
+        int speed, DialogueNode dialogue, ItemManager itemManager
     ) {
         super(width, height, x, y, texture, world);
         this.id = id;
@@ -51,6 +52,7 @@ public class NPC extends Entity {
         this.moveTime = moveTime;
 
         this.speed = speed;
+        this.itemManager = itemManager;
     }
 
     @Override
@@ -102,7 +104,7 @@ public class NPC extends Entity {
 
     private boolean isCollidingWithSolidItems(Rectangle npcRect) {
         if (world == null) return false;
-        for (Item item : world.getAllItems()) {
+        for (Item item : itemManager.getAllItems()) {
             if (item.isSolid()) {
                 Rectangle itemRect = new Rectangle(item.getX(), item.getY(), item.getWidth(), item.getHeight());
                 if (npcRect.overlaps(itemRect)) {

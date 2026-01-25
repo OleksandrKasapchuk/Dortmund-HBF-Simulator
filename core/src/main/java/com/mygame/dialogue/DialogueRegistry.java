@@ -125,19 +125,19 @@ public class DialogueRegistry {
 
     private DialogueNode createSimpleNode(JsonValue nodeData) {
         String[] textKeys = nodeData.asStringArray();
-        return new DialogueNode(null, false, textKeys);
+        return new DialogueNode(null, false,null, textKeys);
     }
 
     private DialogueNode createNodeFromObject(JsonValue nodeData, String npcId) {
-        Runnable onFinish = null;
+        String onFinish = null;
         boolean isForced = nodeData.getBoolean("isForced", false);
-
+        String nextNode = null;
         if (nodeData.has("onFinish")) {
-            onFinish = actionRegistry.getAction(
-                nodeData.getString("onFinish")
-            );
+            onFinish = nodeData.getString("onFinish");
         }
-
+        if (nodeData.has("next")) {
+            nextNode = nodeData.getString("next");
+        }
         if (!nodeData.has("texts")) {
             throw new RuntimeException(
                 "DialogueRegistry: node has no 'texts': " + nodeData
@@ -145,7 +145,7 @@ public class DialogueRegistry {
         }
 
         String[] textKeys = nodeData.get("texts").asStringArray();
-        DialogueNode node = new DialogueNode(onFinish, isForced, textKeys);
+        DialogueNode node = new DialogueNode(onFinish, isForced, nextNode, textKeys);
 
         if (nodeData.has("choices")) {
             addChoicesToNode(node, nodeData.get("choices"), npcId);

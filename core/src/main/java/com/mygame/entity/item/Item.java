@@ -21,6 +21,7 @@ public class Item extends Entity {
     private int distance;
     private String questId;
     private String interactionActionId;
+    private final boolean isDynamic;
 
     private String rewardItemKey;
     private int rewardAmount;
@@ -32,7 +33,7 @@ public class Item extends Entity {
         float x, float y, int distance,
         Texture texture, World world,
         boolean canBePickedUp, boolean solid, boolean searchable, String questId,
-        String rewardItemKey, int rewardAmount, String interactionActionId) {
+        String rewardItemKey, int rewardAmount, String interactionActionId, boolean isDynamic) {
         super(width, height, x, y, texture, world);
         this.type = type;
         this.canBePickedUp = canBePickedUp;
@@ -43,6 +44,7 @@ public class Item extends Entity {
         this.rewardItemKey = rewardItemKey;
         this.rewardAmount = rewardAmount;
         this.interactionActionId = interactionActionId;
+        this.isDynamic = isDynamic;
     }
 
     @Override
@@ -59,8 +61,11 @@ public class Item extends Entity {
     private void search(Player player) {
         searched = true;
         // Замість ActionRegistry.executeAction викликаємо івент
-        EventBus.fire(new Events.ActionRequestEvent("item.search.basic"));
-        TimerManager.setAction(() -> EventBus.fire(new Events.ItemSearchedEvent(player, rewardItemKey, rewardAmount)), 2);
+        EventBus.fire(new Events.ActionRequestEvent("act.item.search.basic"));
+        TimerManager.setAction(() -> {
+            EventBus.fire(new Events.ItemSearchedEvent(player, rewardItemKey, rewardAmount));
+            EventBus.fire(new Events.SaveRequestEvent());
+        }, 2);
     }
 
     public String getUniqueId() {
@@ -89,4 +94,5 @@ public class Item extends Entity {
     public boolean isSearched() { return searched; }
     public boolean isSearchable() {return searchable;}
     public void setSearched(boolean searched) { this.searched = searched; }
+    public boolean isDynamic() { return isDynamic; }
 }

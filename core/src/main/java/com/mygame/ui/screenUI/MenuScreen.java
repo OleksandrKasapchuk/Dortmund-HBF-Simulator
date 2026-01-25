@@ -22,8 +22,8 @@ public class MenuScreen extends Screen {
         // Таблиця для кнопок
         Table menuTable = new Table();
 
-        TextButton startBtn = createButton(skin, Assets.ui.get("button.start.text"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("system.start")));
-        TextButton newGameBtn = createButton(skin, Assets.ui.get("button.newGame.text"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("system.newGame")));
+        TextButton startBtn = createButton(skin, Assets.ui.get("button.start.text"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("act.system.start")));
+        TextButton newGameBtn = createButton(skin, Assets.ui.get("button.newGame.text"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("act.system.newGame")));
 
         menuTable.add(startBtn).width(500).height(120).padBottom(30).row();
         menuTable.add(newGameBtn).width(500).height(120).row();

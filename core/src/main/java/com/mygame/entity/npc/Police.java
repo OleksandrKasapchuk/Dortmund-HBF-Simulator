@@ -3,11 +3,13 @@ package com.mygame.entity.npc;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygame.dialogue.DialogueNode;
+import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.world.World;
-import com.mygame.world.transition.Transition;
+import com.mygame.world.zone.TransitionZone;
+import com.mygame.world.zone.Zone;
 
 import java.util.Objects;
 
@@ -24,22 +26,23 @@ public class Police extends NPC {
     private float targetY;
 
     private boolean movingToTransition = false;
-    private Transition activeTransition = null; // The transition the police is currently moving towards
+    private TransitionZone activeTransition = null; // The transition the police is currently moving towards
 
     private float lostTimer = 0f;
     private static final float MAX_LOST_TIME = 5f; // якщо поліція не бачить 5 секунд — втеча
 
     public Police(String id, String name, int width, int height, float x, float y,
-                  Texture texture, World world, int speed, DialogueNode dialogue) {
+                  Texture texture, World world, int speed, DialogueNode dialogue, ItemManager itemManager) {
         super(id, name, width, height, x, y, texture, world,
             0, 0, 0f, 0f, // Static patrol path, not used for police
-            speed, dialogue);
+            speed, dialogue, itemManager);
     }
 
-    public Transition findTransitionToPlayer(World playerWorld) {
-        for (Transition t : getWorld().getTransitions()) {
+    public TransitionZone findTransitionToPlayer(World playerWorld) {
+        for (Zone zone : getWorld().getZones()) {
+            if (!(zone instanceof TransitionZone t)) continue;
             if (t.targetWorldId.equals(playerWorld.getName())) {
-                Gdx.app.log("Police", "Found a transition to " + playerWorld.getName() + " at " + t.area);
+                Gdx.app.log("Police", "Found a transition to " + playerWorld.getName() + " at " + t.getArea());
                 return t;
             }
         }
@@ -52,7 +55,7 @@ public class Police extends NPC {
      * @param player The player being chased.
      * @return The Transition object if the police enters a transition zone, otherwise null.
      */
-    public Transition update(Player player) {
+    public TransitionZone update(Player player) {
 
         if (Objects.requireNonNull(state) == PoliceState.CHASING) {
             if (player.getWorld() == this.getWorld()) {
@@ -66,17 +69,17 @@ public class Police extends NPC {
                 if (!movingToTransition) {
                     activeTransition = findTransitionToPlayer(player.getWorld());
                     if (activeTransition != null) {
-                        targetX = activeTransition.area.x + activeTransition.area.width / 2;
-                        targetY = activeTransition.area.y + activeTransition.area.height / 2;
+                        targetX = activeTransition.getArea().x + activeTransition.getArea().width / 2;
+                        targetY = activeTransition.getArea().y + activeTransition.getArea().height / 2;
                         movingToTransition = true;
                     }
                 }
 
                 if (movingToTransition && activeTransition != null) {
                     // Якщо поліція досягла зони переходу
-                    if (activeTransition.area.contains(getX(), getY())) {
+                    if (activeTransition.getArea().contains(getX(), getY())) {
                         movingToTransition = false; // Reset for next chase
-                        Transition transitionToReturn = activeTransition;
+                        TransitionZone transitionToReturn = activeTransition;
                         activeTransition = null;
                         setState(PoliceState.TRANSITIONING);
                         return transitionToReturn;

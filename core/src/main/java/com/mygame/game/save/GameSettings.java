@@ -33,10 +33,12 @@ public class GameSettings {
     public Map<String, Integer> inventory;
     public Map<String, QuestSaveData> activeQuests;
     public List<String> completedDialogueEvents;
+    public List<ItemSaveData> createdItems;
 
     public Set<String> talkedNpcs;
     public Set<String> visited;
     public Set<String> searchedItems;
+    public Set<String> enabledQuestZones; // Changed from disabledQuestZones
 
     // NPC State: Mapping NPC ID to their current status (dialogue and texture)
     public Map<String, NpcSaveData> npcStates;
@@ -46,6 +48,24 @@ public class GameSettings {
     public float policeX;
     public float policeY;
     public String policeWorldName;
+
+    public static class ItemSaveData {
+        public String itemKey;
+        public float x;
+        public float y;
+        public String worldName;
+        public boolean searched;
+
+        public ItemSaveData() {}
+
+        public ItemSaveData(String itemKey, float x, float y, String worldName, boolean searched) {
+            this.itemKey = itemKey;
+            this.x = x;
+            this.y = y;
+            this.worldName = worldName;
+            this.searched = searched;
+        }
+    }
 
     public static class QuestSaveData {
         public int progress;
@@ -62,7 +82,9 @@ public class GameSettings {
     public static class NpcSaveData {
         public String currentNode;
         public String currentTexture;
-
+        public String currentWorld;
+        public float x;
+        public float y;
         public NpcSaveData() {}
         public NpcSaveData(String currentNode, String currentTexture) {
             this.currentNode = currentNode;
@@ -83,11 +105,13 @@ public class GameSettings {
         this.activeQuests = new HashMap<>();
         this.completedDialogueEvents = new ArrayList<>();
         this.playerState = Player.State.NORMAL;
+        this.createdItems = new ArrayList<>();
 
         this.talkedNpcs = new HashSet<>();
         this.visited = new HashSet<>();
         this.searchedItems = new HashSet<>();
         this.npcStates = new HashMap<>();
+        this.enabledQuestZones = new HashSet<>(); // Changed from disabledQuestZones
 
         this.policeChaseActive = false;
     }

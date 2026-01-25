@@ -19,8 +19,9 @@ public class QuestRegistry {
             boolean progressable = questJson.getBoolean("progressable", false);
             int maxProgress = questJson.getInt("maxProgress", 1);
             String onComplete = questJson.getString("onComplete", null);
+            boolean notifyComplete = questJson.getBoolean("notify", false);
 
-            register(new QuestDefinition(key, progressable, maxProgress, onComplete));
+            register(new QuestDefinition(key, progressable, maxProgress, onComplete, notifyComplete));
         }
     }
 
@@ -36,5 +37,5 @@ public class QuestRegistry {
         return quests.values();
     }
 
-    public record QuestDefinition(String key, boolean progressable, int maxProgress, String onComplete) {}
+    public record QuestDefinition(String key, boolean progressable, int maxProgress, String onComplete, boolean notifyComplete) {}
 }

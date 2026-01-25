@@ -3,13 +3,13 @@
     "nodes": {
       "start": "trade.offer",
       "trade.offer": {
-        "texts": ["dialogue.baryga.trade_offer.text.1", "dialogue.baryga.trade_offer.text.2"],
+        "texts": ["dialogue.baryga.trade_offer.1", "dialogue.baryga.trade_offer.2"],
         "choices": [
-          { "text": "dialogue.baryga.trade_offer.choice.1", "action": "inventory.baryga_buy_grass" },
+          { "text": "dialogue.baryga.trade_offer.choice.1", "action": "act.inventory.baryga_buy_grass" },
           { "text": "dialogue.choice.leave", "next": "idle" }
         ]
       },
-      "idle": ["dialogue.baryga.idle.text.1"]
+      "idle": ["dialogue.baryga.idle.1"]
     }
   }
 }

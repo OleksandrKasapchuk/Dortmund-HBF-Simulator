@@ -20,7 +20,7 @@ public class BossDeliveryScenario implements Scenario {
                 event.item().getKey().equals("grass") && event.newAmount() < 1000) {
 
                 ctx.questManager.getQuest("delivery").setStatus(QuestManager.Status.NOT_STARTED);
-                EventBus.fire(new Events.ActionRequestEvent("quest.delivery.fail"));
+                EventBus.fire(new Events.ActionRequestEvent("act.quest.delivery.fail"));
             }
         };
 

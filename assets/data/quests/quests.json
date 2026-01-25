@@ -1,26 +1,42 @@
 [
   {
-    "key": "jan_firework.stage.1",
+    "key": "jan.firework.1",
     "progressable": true,
     "maxProgress": 2,
-    "onComplete": "quest.jan_firework.stage.1.complete"
+    "notify": true,
+    "onComplete": "act.quest.jan.firework.1.completed"
   },
-  {"key": "jan_firework.stage.2"},
-  {"key": "jan_firework.stage.3"},
+  {"key": "jan.firework.2"},
+  {"key": "jan.firework.3"},
   {
-    "key": "jason1",
+    "key": "jan.firework.4",
     "progressable": true,
-    "maxProgress": 5
+    "maxProgress": 2,
+    "onComplete": "act.quest.jan.firework.4.completed"
+  },
+  {"key": "jan.firework.5"},
+  {
+    "key": "jason.smalltalk",
+    "progressable": true,
+    "maxProgress": 10,
+    "notify": true
   },
   {
-    "key": "jason2",
+    "key": "jason.tour",
     "progressable": true,
-    "maxProgress": 10
+    "maxProgress": 5,
+    "notify": true
   },
-  {"key": "delivery"},
+  {
+    "key": "delivery",
+    "notify": true
+  },
   {"key": "chase"},
   {"key": "boss_end"},
   {"key": "chili"},
   {"key": "wallet"},
-  {"key": "igo"}
+  {
+    "key": "igo",
+    "notify": true
+  }
 ]

@@ -3,9 +3,9 @@
     "nodes": {
       "start": "revenge.offer",
       "revenge.offer": {
-        "texts": ["dialogue.murat.revenge_offer.text.1", "dialogue.murat.revenge_offer.text.2", "dialogue.murat.revenge_offer.text.3", "dialogue.murat.revenge_offer.text.4", "dialogue.murat.revenge_offer.text.5", "dialogue.murat.revenge_offer.text.6"],
+        "texts": ["dialogue.murat.revenge_offer.1", "dialogue.murat.revenge_offer.2", "dialogue.murat.revenge_offer.3", "dialogue.murat.revenge_offer.4", "dialogue.murat.revenge_offer.5", "dialogue.murat.revenge_offer.6"],
         "choices": [
-          { "text": "dialogue.murat.revenge_offer.choice.1", "action": "quest.murat.accept" },
+          { "text": "dialogue.murat.revenge_offer.choice.1", "action": "act.quest.murat.accept" },
           { "text": "dialogue.murat.revenge_offer.choice.2", "action": null }
         ]
       }

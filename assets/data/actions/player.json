@@ -1,0 +1,27 @@
+{
+  "act.player.state.stoned.enter": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "audio.playMusic", "id": "kaif" },
+      { "type": "dialogue.set", "npc": "police", "node": "check.failed" },
+      { "type": "ui.message", "key": "message.joint", "duration": 1.5 }
+    ]
+  },
+
+  "act.player.state.normal.enter": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "audio.resetBack"},
+      { "type": "dialogue.set", "npc": "police", "node": "check.active" },
+      { "type": "ui.message", "key": "message.ice_tea", "duration": 1.5 }
+    ]
+  },
+
+  "act.player.die": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "audio.playSound", "id": "gunShot" },
+      { "type": "player.die" }
+    ]
+  }
+}

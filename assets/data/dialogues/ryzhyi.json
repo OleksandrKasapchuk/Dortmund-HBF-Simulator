@@ -3,10 +3,10 @@
     "nodes": {
       "start": "money.offer",
       "money.offer": {
-        "texts": ["dialogue.ryzhyi.money_offer.text.1"],
-        "choices": [{ "text": "dialogue.ryzhyi.money_offer.choice.1", "action": "npc.ryzhyi.take_money" }]
+        "texts": ["dialogue.ryzhyi.money_offer.1"],
+        "choices": [{ "text": "dialogue.ryzhyi.money_offer.choice.1", "action": "act.npc.ryzhyi.take_money" }]
       },
-      "money.completed": ["dialogue.ryzhyi.money_completed.text.1"]
+      "money.completed": ["dialogue.ryzhyi.money_completed.1"]
     }
   }
 }

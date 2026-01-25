@@ -8,8 +8,20 @@ public class DataLoader {
 
     public static void load(GameContext ctx, GameSettings settings){
         loadDayData(ctx, settings);
-        loadFromMap(ctx);
+        loadFromMap(ctx, settings);
         loadInventoryAndQuests(ctx, settings);
+        loadCreatedItems(ctx, settings);
+    }
+
+    private static void loadCreatedItems(GameContext ctx, GameSettings settings) {
+        if (settings.createdItems != null) {
+            for (GameSettings.ItemSaveData itemSaveData : settings.createdItems) {
+                World world = ctx.worldManager.getWorld(itemSaveData.worldName);
+                if (world != null) {
+                    ctx.itemManager.createItem(itemSaveData.itemKey, itemSaveData.x, itemSaveData.y, world);
+                }
+            }
+        }
     }
 
     private static void loadDayData(GameContext ctx, GameSettings settings){
@@ -18,11 +30,11 @@ public class DataLoader {
         ctx.dayManager.setTime(isNewGame ? 6f : settings.currentTime);
     }
 
-    private static void loadFromMap(GameContext ctx){
+    private static void loadFromMap(GameContext ctx, GameSettings settings){
         for (World world : ctx.worldManager.getWorlds().values()) {
-            ctx.npcManager.loadNpcsFromMap(world);
+            ctx.npcManager.loadNpcsFromMap(world, settings.npcStates);
             ctx.itemManager.loadItemsFromMap(world);
-            ctx.transitionManager.loadTransitionsFromMap(world);
+            ctx.zoneRegistry.loadZonesFromMap(world);
         }
     }
 

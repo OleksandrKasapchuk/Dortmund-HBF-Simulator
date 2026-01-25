@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.mygame.entity.Entity;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemDefinition;
+import com.mygame.entity.item.ItemManager;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.save.SettingsManager;
@@ -23,6 +24,7 @@ public class Player extends Entity {
     public Touchpad touchpad;
 
     private final InventoryManager inventory = new InventoryManager();
+    private ItemManager itemManager;
     private boolean isMovementLocked = false;
 
     public enum State {
@@ -53,7 +55,11 @@ public class Player extends Entity {
     public void setMovementLocked(boolean locked) {
         this.isMovementLocked = locked;
     }
+    public void setItemManager(ItemManager itemManager) {
+        this.itemManager = itemManager;
+    }
 
+    // --- UPDATE METHOD ---)
     @Override
     public void update(float delta) {
 
@@ -76,7 +82,7 @@ public class Player extends Entity {
         // === PC CONTROLS ===
         if (Gdx.app.getType() != Application.ApplicationType.Android) {
             if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
-                moveSpeed *= 3;
+                moveSpeed *= 5;
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A))
                 dx -= moveSpeed;
             if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D))
@@ -121,7 +127,8 @@ public class Player extends Entity {
      */
     private boolean isCollidingWithSolidItems(Rectangle playerRect) {
         if (world == null) return false;
-        for (Item item : world.getAllItems()) {
+        for (Item item : itemManager.getAllItems()) {
+            if (item.getWorld() != world) continue;
             if (item.isSolid()) {
                 Rectangle itemRect = new Rectangle(item.getX(), item.getY(), item.getWidth(), item.getHeight());
                 if (playerRect.overlaps(itemRect)) {
@@ -147,6 +154,7 @@ public class Player extends Entity {
     public void setState(Player.State state) {
         this.currentState = state;
         EventBus.fire(new Events.PlayerStateChangedEvent(state));
+        EventBus.fire(new Events.SaveRequestEvent());
     }
 
     public State getState() { return currentState; }

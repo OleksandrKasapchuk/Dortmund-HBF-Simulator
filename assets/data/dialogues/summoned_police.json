@@ -3,18 +3,18 @@
     "nodes": {
       "start": "check.active",
       "check.active": {
-        "onFinish": "npc.police.check",
-        "texts": ["dialogue.summoned_police.check_active.text.1"],
+        "onFinish": "act.npc.police.check",
+        "texts": ["dialogue.summoned_police.check_active.1"],
         "isForced": true
       },
       "chase.offer": {
-        "onFinish": "quest.chase.start",
-        "texts": ["dialogue.summoned_police.chase_offer.text.1", "dialogue.summoned_police.chase_offer.text.2"],
+        "onFinish": "act.quest.chase.start",
+        "texts": ["dialogue.summoned_police.chase_offer.1", "dialogue.summoned_police.chase_offer.2"],
         "isForced": true
       },
       "chase.failed": {
-        "onFinish": "player.die",
-        "texts": ["dialogue.summoned_police.chase_failed.text.1"]
+        "onFinish": "act.player.die",
+        "texts": ["dialogue.summoned_police.chase_failed.1"]
       }
     }
   }

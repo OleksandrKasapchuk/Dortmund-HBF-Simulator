@@ -28,7 +28,7 @@ public class QuestManager {
     public QuestManager(QuestRegistry questRegistry) {
         this.questRegistry = questRegistry;
         for (QuestRegistry.QuestDefinition def : questRegistry.getDefinitions()) {
-            quests.add(new Quest(def.key(), def.progressable(), 0, def.maxProgress()));
+            quests.add(new Quest(def.key(), def.progressable(), 0, def.maxProgress(), def.notifyComplete()));
         }
     }
 
@@ -38,6 +38,7 @@ public class QuestManager {
         if (quest != null && quest.getStatus() == Status.NOT_STARTED) {
             quest.setStatus(Status.ACTIVE);
             EventBus.fire(new Events.QuestStartedEvent(key));
+            EventBus.fire(new Events.SaveRequestEvent());
         }
     }
 
@@ -84,13 +85,19 @@ public class QuestManager {
         private int progress;
         private int maxProgress;
         private Status status;
+        private boolean notify;
 
-        public Quest(String key, boolean progressable, int progress, int maxProgress) {
+        public Quest(String key, boolean progressable, int progress, int maxProgress, boolean notify) {
             this.key = key;
             this.progressable = progressable;
             this.progress = progress;
             this.maxProgress = maxProgress;
             this.status = (progress >= maxProgress && maxProgress > 0) ? Status.COMPLETED : Status.NOT_STARTED;
+            this.notify = notify;
+        }
+
+        public boolean getNotify() {
+            return notify;
         }
 
         public String key() {
@@ -135,12 +142,14 @@ public class QuestManager {
             this.status = Status.COMPLETED;
             if (progressable) this.progress = maxProgress;
             EventBus.fire(new Events.QuestCompletedEvent(key));
+            EventBus.fire(new Events.SaveRequestEvent());
         }
 
         public void makeProgress() {
             if (!progressable || status != Status.ACTIVE) return;
             this.progress++;
             EventBus.fire(new Events.QuestProgressEvent(key, progress, maxProgress));
+            EventBus.fire(new Events.SaveRequestEvent());
 
             if (this.progress >= maxProgress) {
                 complete();

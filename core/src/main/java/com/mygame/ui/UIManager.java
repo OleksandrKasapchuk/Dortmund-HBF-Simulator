@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygame.assets.Assets;
 import com.mygame.entity.item.Item;
+import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.npc.NPC;
+import com.mygame.entity.npc.NpcManager;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
@@ -30,6 +32,8 @@ public class UIManager {
     private final Player player;
     private final QuestManager questManager;
     private final WorldManager worldManager;
+    private final NpcManager npcManager;
+    private final ItemManager itemManager;
 
     private final Map<GameStateManager.GameState, Screen> screens = new EnumMap<>(GameStateManager.GameState.class);
     private Screen currentScreen;
@@ -41,11 +45,13 @@ public class UIManager {
 
     private final GlyphLayout layout = new GlyphLayout();
 
-    public UIManager(SpriteBatch batch, Player player, Skin skin, QuestManager questManager, WorldManager worldManager, DayManager dayManager) {
+    public UIManager(SpriteBatch batch, Player player, Skin skin, QuestManager questManager, WorldManager worldManager, DayManager dayManager, NpcManager npcManager, ItemManager itemManager) {
         this.batch = batch;
         this.player = player;
         this.questManager = questManager;
         this.worldManager = worldManager;
+        this.npcManager = npcManager;
+        this.itemManager = itemManager;
 
         createScreens(skin, dayManager);
 
@@ -74,8 +80,12 @@ public class UIManager {
 
     private void subscribeToEvents() {
         EventBus.subscribe(Events.MessageEvent.class, event -> getGameScreen().showInfoMessage(event.message(), 1.5f));
-        EventBus.subscribe(Events.QuestStartedEvent.class, event -> getGameScreen().showInfoMessage(Assets.messages.get("message.quest.new"), 1.5f));
-        EventBus.subscribe(Events.QuestCompletedEvent.class, event -> getGameScreen().showInfoMessage(Assets.messages.format("message.generic.quest.completed", Assets.quests.get("quest." + event.questId() + ".name")), 1.5f));
+        EventBus.subscribe(Events.QuestStartedEvent.class, event -> {
+            if(questManager.getQuest(event.questId()).getNotify()) getGameScreen().showInfoMessage(Assets.messages.get("message.quest.new"), 1.5f);
+        });
+        EventBus.subscribe(Events.QuestCompletedEvent.class, event -> {
+            if(questManager.getQuest(event.questId()).getNotify()) getGameScreen().showInfoMessage(Assets.messages.format("message.generic.quest.completed", Assets.quests.get("quest." + event.questId() + ".name")), 1.5f);
+        });
         EventBus.subscribe(Events.AddItemMessageEvent.class, event -> showEarned(event.item().getNameKey(), event.amount()));
         EventBus.subscribe(Events.NotEnoughMessageEvent.class, event -> showNotEnough(event.item().getNameKey()));
         EventBus.subscribe(Events.InteractEvent.class, e -> handleInteraction());
@@ -91,29 +101,31 @@ public class UIManager {
     }
 
     public void update(float delta) {
-        if (currentScreen instanceof GameScreen) {
-            ((GameScreen) currentScreen).update(delta);
+        if (currentScreen instanceof GameScreen gameScreen) {
+            gameScreen.update(delta);
             inventoryUI.update(player);
-        } else if (currentScreen instanceof MapScreen) {
-            ((MapScreen) currentScreen).update();
+        } else if (currentScreen instanceof MapScreen mapScreen) {
+            mapScreen.update();
         }
         currentScreen.getStage().act(delta);
     }
 
     public void renderWorldElements() {
-        for (NPC npc : worldManager.getCurrentWorld().getNpcs()) {
+        for (NPC npc : npcManager.getNpcs()) {
+            if (npc.getWorld() != worldManager.getCurrentWorld()) continue;
             if (npc.isPlayerNear(player)) {
                 Assets.myFont.draw(batch, Assets.ui.get("interact"), npc.getX() - 100, npc.getY() + npc.getHeight() + 40);
             }
         }
-        for (Item item : worldManager.getCurrentWorld().getAllItems()) {
+        for (Item item : itemManager.getAllItems()) {
+            if (item.getWorld() != worldManager.getCurrentWorld()) continue;
             if ((!item.isInteractable() && !item.isSearchable()) || (item.getQuestId() != null && !questManager.hasQuest(item.getQuestId())) || !item.isPlayerNear(player, item.getDistance()) || item.isSearched()) continue;
             drawText(item.isSearchable() ? Assets.ui.get("interact.search") : Assets.ui.get("interact"), item.getCenterX(), item.getCenterY());
         }
     }
 
     private void handleInteraction() {
-        for (Item item : worldManager.getCurrentWorld().getAllItems()) {
+        for (Item item : itemManager.getAllItems()) {
             if ((!item.isInteractable() && !item.isSearchable()) || (item.getQuestId() != null && !questManager.hasQuest(item.getQuestId())) || !item.isPlayerNear(player, item.getDistance()) || item.isSearched()) continue;
             EventBus.fire(new Events.ItemInteractionEvent(item, player));
             return;

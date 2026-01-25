@@ -37,6 +37,7 @@ public class InventoryManager {
         if (type == null) return;
         items.put(type, items.getOrDefault(type, 0) + amount);
         EventBus.fire(new Events.InventoryChangedEvent(type, getAmount(type)));
+        EventBus.fire(new Events.SaveRequestEvent());
     }
 
     public void removeItem(ItemDefinition type, int count) {
@@ -45,6 +46,7 @@ public class InventoryManager {
         if (current <= count) items.remove(type);
         else items.put(type, current - count);
         EventBus.fire(new Events.InventoryChangedEvent(type, getAmount(type)));
+        EventBus.fire(new Events.SaveRequestEvent());
     }
 
     public boolean hasItem(ItemDefinition type) {

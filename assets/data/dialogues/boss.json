@@ -3,21 +3,21 @@
     "nodes": {
       "start": "delivery.offer",
       "delivery.offer": {
-        "texts": ["dialogue.boss.delivery_offer.text.1", "dialogue.boss.delivery_offer.text.2", "dialogue.boss.delivery_offer.text.3", "dialogue.boss.delivery_offer.text.4"],
+        "texts": ["dialogue.boss.delivery_offer.1", "dialogue.boss.delivery_offer.2", "dialogue.boss.delivery_offer.3", "dialogue.boss.delivery_offer.4"],
         "choices": [
-          { "text": "dialogue.choice.accept", "action": "quest.delivery.accept" },
+          { "text": "dialogue.choice.accept", "action": "act.quest.delivery.accept" },
           "dialogue.choice.leave"
         ]
       },
       "chase.completed": {
-        "texts": ["dialogue.boss.chase_completed.text.1"],
-        "onFinish": "quest.boss_end.claim_reward"
+        "texts": ["dialogue.boss.chase_completed.1"],
+        "onFinish": "act.quest.boss_end.claim_reward"
       },
-      "idle": ["dialogue.boss.idle.text.1"],
-      "delivery.active": ["dialogue.boss.delivery_active.text.1", "dialogue.boss.delivery_active.text.2"],
+      "idle": ["dialogue.boss.idle.1"],
+      "delivery.active": ["dialogue.boss.delivery_active.1", "dialogue.boss.delivery_active.2"],
       "delivery.failed": {
-        "texts": ["dialogue.boss.delivery_failed.text.1", "dialogue.boss.delivery_failed.text.2", "dialogue.boss.delivery_failed.text.3"],
-        "onFinish": "player.die"
+        "texts": ["dialogue.boss.delivery_failed.1", "dialogue.boss.delivery_failed.2", "dialogue.boss.delivery_failed.3"],
+        "onFinish": "act.player.die"
       }
     }
   }
