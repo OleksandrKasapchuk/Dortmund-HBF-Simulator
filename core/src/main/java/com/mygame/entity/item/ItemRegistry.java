@@ -33,8 +33,10 @@ public class ItemRegistry {
             if (item.has("effect") && item.getBoolean("effect")) {
                 effect = "item." + key + ".use";
             }
+            int width = item.getInt("width", 64);
+            int height = item.getInt("height", 64);
 
-            register(new ItemDefinition(key, name, description, effect));
+            register(new ItemDefinition(key, name, description, effect, width, height, pickupable));
         }
     }
 

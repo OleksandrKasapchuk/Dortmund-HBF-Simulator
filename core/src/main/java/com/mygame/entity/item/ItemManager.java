@@ -29,7 +29,6 @@ public class ItemManager {
     private final ArrayList<Item> backgroundItems = new ArrayList<>();
     private final ArrayList<Item> foregroundItems = new ArrayList<>();
     private final ArrayList<Item> allItems = new ArrayList<>();
-    private final ArrayList<Item> pfands = new ArrayList<>();
 
     public ItemManager(ItemRegistry itemRegistry, WorldManager worldManager) {
         this.itemRegistry = itemRegistry;
@@ -65,7 +64,7 @@ public class ItemManager {
         }
 
         String id = itemKey + "_" + UUID.randomUUID(); // Unique ID for dynamic items
-        Item item = new Item(id, itemType, 25, 75, x, y, 200, texture, world, false, false, false, null, null, 0, null, true);
+        Item item = new Item(id, itemType, itemType.getWidth(), itemType.getHeight(), x, y, 75, texture, world, itemType.canBePickedUp(), false, false, null, null, 0, null, true);
         addBackgroundItem(item);
         System.out.println("Created item " + itemKey + " with ID " + id + " at " + x + "," + y + " in world " + world.getName());
     }
@@ -122,11 +121,8 @@ public class ItemManager {
     private Item buildItemFromProperties(MapProperties props, ItemDefinition itemType, World world, String itemKey, String name) {
         float x = props.get("x", 0f, Float.class);
         float y = props.get("y", 0f, Float.class);
-        float width = props.get("width", 64f, Float.class);
-        float height = props.get("height", 64f, Float.class);
 
         boolean isSolid = props.get("isSolid", false, Boolean.class);
-        boolean isPickupable = props.get("isPickupable", false, Boolean.class);
 
         int interactionDistance = props.get("interactionDistance", 200, Integer.class);
 
@@ -144,10 +140,12 @@ public class ItemManager {
             System.err.println("Texture for item '" + itemKey + "' with textureKey '" + textureKey + "' not found!");
             return null;
         }
+        float width = props.get("width", 64f, Float.class);
+        float height = props.get("height", 64f, Float.class);
 
         String id = (name != null && !name.isEmpty()) ? name : itemKey + "_" + world.getName() + "_" + (int)x + "_" + (int)y;
 
-        return new Item(id, itemType, (int) width, (int) height, x, y, interactionDistance, texture, world, isPickupable, isSolid, searchable, questId, rewardItemKey, rewardAmount, interactionActionId, false);
+        return new Item(id, itemType, (int) width,(int) height, x, y, interactionDistance, texture, world, itemType.canBePickedUp(), isSolid, searchable, questId, rewardItemKey, rewardAmount, interactionActionId, false);
     }
 
     private void restoreItemState(Item item, GameSettings settings) {
@@ -189,6 +187,7 @@ public class ItemManager {
             if (item.canBePickedUp() && item.isPlayerNear(player, item.getDistance())) {
                 player.getInventory().addItem(item.getType(), 1);
                 removeItem(item); // безпечне видалення, бо йдемо з кінця
+                System.out.println(item.getId() + " was picked up");
             }
         }
 
@@ -211,7 +210,6 @@ public class ItemManager {
     public List<Item> getForegroundItems() { return foregroundItems; }
 
     public List<Item> getAllItems() {return allItems;}
-    public ArrayList<Item> getPfands() { return pfands; }
 
     public void addBackgroundItem(Item item) {
         backgroundItems.add(item);
@@ -226,13 +224,11 @@ public class ItemManager {
     public void removeItem(Item item) {
         backgroundItems.remove(item);
         foregroundItems.remove(item);
-        pfands.remove(item);
         allItems.remove(item);
     }
     public void removeItemsByKey(String itemKey) {
         allItems.removeIf(item -> item.getType().getKey().equals(itemKey));
         backgroundItems.removeIf(item -> item.getType().getKey().equals(itemKey));
         foregroundItems.removeIf(item -> item.getType().getKey().equals(itemKey));
-        pfands.removeIf(item -> item.getType().getKey().equals(itemKey));
     }
 }

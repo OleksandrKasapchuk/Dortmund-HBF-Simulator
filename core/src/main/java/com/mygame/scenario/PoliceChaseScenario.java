@@ -25,7 +25,7 @@ public class PoliceChaseScenario implements Scenario {
         // Відновлення погоні зі збереження
         if (settings.policeChaseActive) {
             completed = true;
-            EventBus.fire(new Events.ActionRequestEvent("act.npc.callPolice"));
+            EventBus.fire(new Events.ActionRequestEvent("npc.callPolice"));
             Police police = ctx.npcManager.getSummonedPolice();
             if (police != null) {
                 police.setX(settings.policeX);

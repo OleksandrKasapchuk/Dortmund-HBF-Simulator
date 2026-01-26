@@ -107,7 +107,10 @@ public class SaveManager {
                         item.getX(),
                         item.getY(),
                         item.getWorld().getName(),
-                        item.isSearched()))
+                        item.isSearched(),
+                        item.getWidth(),
+                        item.getHeight()
+                ))
                 .collect(Collectors.toList());
     }
 

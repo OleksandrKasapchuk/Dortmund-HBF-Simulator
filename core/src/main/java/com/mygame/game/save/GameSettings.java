@@ -55,15 +55,18 @@ public class GameSettings {
         public float y;
         public String worldName;
         public boolean searched;
-
+        public int width;
+        public int height;
         public ItemSaveData() {}
 
-        public ItemSaveData(String itemKey, float x, float y, String worldName, boolean searched) {
+        public ItemSaveData(String itemKey, float x, float y, String worldName, boolean searched, int width, int height) {
             this.itemKey = itemKey;
             this.x = x;
             this.y = y;
             this.worldName = worldName;
             this.searched = searched;
+            this.width = width;
+            this.height = height;
         }
     }
 

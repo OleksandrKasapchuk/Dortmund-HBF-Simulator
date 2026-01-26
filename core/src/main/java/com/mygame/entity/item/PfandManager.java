@@ -40,7 +40,7 @@ public class PfandManager {
         spawnTimer += delta;
 
         // Spawn a new pfand if interval passed and under max limit
-        if (spawnTimer >= SPAWN_INTERVAL && itemManager.getPfands().size() < MAX_PFANDS) {
+        if (spawnTimer >= SPAWN_INTERVAL && itemManager.getAllItems().stream().filter(item -> "pfand".equals(item.getType().getKey())).count() < MAX_PFANDS) {
             spawnRandomPfand(worldManager.getCurrentWorld());
             spawnTimer = 0f;
         }
@@ -80,18 +80,19 @@ public class PfandManager {
             Item pfand = new Item(id, itemRegistry.get("pfand"), itemWidth, itemHeight, x, y, 75, Assets.getTexture("pfand"), worldManager.getCurrentWorld(), true, false, false, null, null, 0, null, true);
 
             itemManager.addBackgroundItem(pfand);
-            itemManager.getPfands().add(pfand);
             break;
         }
     }
 
     /** Checks if a position is too close to existing pfand items */
     private boolean isTooCloseToOtherPfands(float x, float y) {
-        for (Item p : itemManager.getPfands()) {
-            float dx = p.getX() - x;
-            float dy = p.getY() - y;
-            if (Math.sqrt(dx * dx + dy * dy) < 150f) // Minimum distance between pfands
-                return true;
+        for (Item p : itemManager.getAllItems()) {
+            if ("pfand".equals(p.getType().getKey())) {
+                float dx = p.getX() - x;
+                float dy = p.getY() - y;
+                if (Math.sqrt(dx * dx + dy * dy) < 150f) // Minimum distance between pfands
+                    return true;
+            }
         }
         return false;
     }

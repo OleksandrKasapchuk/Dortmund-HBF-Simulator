@@ -23,6 +23,8 @@ public class ItemActionProvider implements ActionProvider {
                 Rectangle area = zone.getArea();
                 float x = area.x + area.width / 2;
                 float y = area.y + area.height / 2;
+                int width = data.getInt("width", 64);
+                int height = data.getInt("height", 64);
                 EventBus.fire(new Events.CreateItemEvent(itemId, x, y));
             } else {
                 System.err.println("Zone not found: " + zoneId);
