@@ -50,8 +50,8 @@ public class TouchControlsUI {
 
         // Всі кнопки тепер відправляють івенти
         actionListeners.put("ACT", createListener(() -> EventBus.fire(new Events.InteractEvent())));
-        actionListeners.put("INVENTORY", createListener(() -> EventBus.fire(new Events.ActionRequestEvent("act.ui.inventory.toggle"))));
-        actionListeners.put("QUESTS", createListener(() -> EventBus.fire(new Events.ActionRequestEvent("act.ui.quests.toggle"))));
+        actionListeners.put("INVENTORY", createListener(() -> EventBus.fire(new Events.ActionRequestEvent("ui.inventory.toggle"))));
+        actionListeners.put("QUESTS", createListener(() -> EventBus.fire(new Events.ActionRequestEvent("ui.quests.toggle"))));
         actionListeners.put("TOGGLE_PAUSE", createListener(() -> EventBus.fire(new Events.ActionRequestEvent("act.system.pause"))));
         actionListeners.put("TOGGLE_SETTINGS", createListener(() -> EventBus.fire(new Events.ActionRequestEvent("act.system.settings"))));
         actionListeners.put("TOGGLE_MAP", createListener(() -> EventBus.fire(new Events.ActionRequestEvent("act.system.map"))));

@@ -31,11 +31,17 @@ public class ItemActionProvider implements ActionProvider {
 
         registry.registerCreator("item.remove", (c, data) -> () -> {
             String itemId = data.getString("itemId");
-            Item item = c.itemManager.getItem(itemId);
-            if (item != null) {
-                c.itemManager.removeItem(item);
+            boolean removeAll = "all_by_key".equals(data.getString("remove", ""));
+
+            if (removeAll) {
+                c.itemManager.removeItemsByKey(itemId);
             } else {
-                System.err.println("Item to remove not found: " + itemId);
+                Item item = c.itemManager.getItem(itemId);
+                if (item != null) {
+                    c.itemManager.removeItem(item);
+                } else {
+                    System.err.println("Item to remove not found: " + itemId);
+                }
             }
         });
     }

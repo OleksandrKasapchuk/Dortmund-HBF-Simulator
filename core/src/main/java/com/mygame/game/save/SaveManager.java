@@ -134,7 +134,7 @@ public class SaveManager {
         settings.searchedItems = ctx.worldManager.getWorlds().values().stream()
             .flatMap(world -> ctx.itemManager.getAllItems().stream())
             .filter(Item::isSearched)
-            .map(Item::getUniqueId)
+            .map(Item::getId)
             .collect(Collectors.toSet());
     }
 
@@ -174,7 +174,7 @@ public class SaveManager {
     }
     private void saveQuestZones(GameSettings settings) {
         settings.enabledQuestZones = ctx.zoneRegistry.getZones().stream()
-                .filter(zone -> zone.isEnabled())
+                .filter(Zone::isEnabled)
                 .map(Zone::getId)
                 .collect(Collectors.toSet());
     }

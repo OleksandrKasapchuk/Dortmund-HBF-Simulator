@@ -13,6 +13,7 @@ import com.mygame.world.World;
  */
 public class Item extends Entity {
 
+    private final String id;
     private ItemDefinition type;
     private boolean canBePickedUp;
     private boolean solid;
@@ -29,12 +30,13 @@ public class Item extends Entity {
     private float cooldownTimer = 0f;
 
     public Item(
-        ItemDefinition type, int width, int height,
+        String id, ItemDefinition type, int width, int height,
         float x, float y, int distance,
         Texture texture, World world,
         boolean canBePickedUp, boolean solid, boolean searchable, String questId,
         String rewardItemKey, int rewardAmount, String interactionActionId, boolean isDynamic) {
         super(width, height, x, y, texture, world);
+        this.id = id;
         this.type = type;
         this.canBePickedUp = canBePickedUp;
         this.searchable = searchable;
@@ -68,8 +70,8 @@ public class Item extends Entity {
         }, 2);
     }
 
-    public String getUniqueId() {
-        return world.getName() + "_" + (int)getX() + "_" + (int)getY();
+    public String getId() {
+        return id;
     }
 
     public boolean isInteractable() {

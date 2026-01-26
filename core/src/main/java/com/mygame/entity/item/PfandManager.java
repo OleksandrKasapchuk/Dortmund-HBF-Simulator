@@ -7,6 +7,7 @@ import com.mygame.Main;
 import com.mygame.world.WorldManager;
 import com.mygame.world.World;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * PfandManager is responsible for spawning, updating, and rendering collectible "pfand" items in the world.
@@ -75,7 +76,8 @@ public class PfandManager {
             if (isTooCloseToOtherPfands(x, y)) continue;
 
             // Add new pfand to the world
-            Item pfand = new Item(itemRegistry.get("pfand"), itemWidth, itemHeight, x, y, 75, Assets.getTexture("pfand"), worldManager.getCurrentWorld(), true, false, false, null, null, 0, null, true);
+            String id = "pfand_" + UUID.randomUUID();
+            Item pfand = new Item(id, itemRegistry.get("pfand"), itemWidth, itemHeight, x, y, 75, Assets.getTexture("pfand"), worldManager.getCurrentWorld(), true, false, false, null, null, 0, null, true);
 
             itemManager.addBackgroundItem(pfand);
             itemManager.getPfands().add(pfand);
