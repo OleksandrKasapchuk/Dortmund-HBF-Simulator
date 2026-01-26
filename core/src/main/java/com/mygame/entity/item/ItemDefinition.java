@@ -11,12 +11,18 @@ public class ItemDefinition {
     private final String nameKey;       // Key for localization, e.g., "item.money.name"
     private final String descriptionKey; // Key for localization, e.g., "item.money.description"
     private final String effectId;        // Optional effect when the item is used
+    private final int width;
+    private final int height;
+    private final boolean canBePickedUp;
 
-    public ItemDefinition(String key, String nameKey, String descriptionKey, String effect) {
+    public ItemDefinition(String key, String nameKey, String descriptionKey, String effect, int width, int height, boolean canBePickedUp) {
         this.key = key;
         this.nameKey = nameKey;
         this.descriptionKey = descriptionKey;
         this.effectId = effect;
+        this.width = width;
+        this.height = height;
+        this.canBePickedUp = canBePickedUp;
     }
 
     // --- Getters ---
@@ -37,4 +43,16 @@ public class ItemDefinition {
         return effectId != null;
     }
     public String getEffectId(){return effectId;}
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public boolean canBePickedUp() {
+        return canBePickedUp;
+    }
 }

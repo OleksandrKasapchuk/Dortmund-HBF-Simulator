@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.11.2" name="wardrobe" tilewidth="299" tileheight="246" tilecount="12" columns="0">
+<tileset version="1.10" tiledversion="1.11.2" name="wardrobe" tilewidth="935" tileheight="814" tilecount="13" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
   <image source="../images/block/wardrobe.png" width="104" height="122"/>
@@ -36,5 +36,8 @@
  </tile>
  <tile id="12">
   <image source="../images/block/TV.png" width="299" height="178"/>
+ </tile>
+ <tile id="15">
+  <image source="../images/item/pfand_automat.png" width="935" height="814"/>
  </tile>
 </tileset>

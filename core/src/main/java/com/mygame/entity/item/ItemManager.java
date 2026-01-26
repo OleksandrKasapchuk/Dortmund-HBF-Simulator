@@ -15,9 +15,8 @@ import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 /**
  * Manages all items in the game world, including loading them from the map.
@@ -26,12 +25,10 @@ import java.util.Map;
 public class ItemManager {
 
     private final ItemRegistry itemRegistry;
-    private final Map<String, Item> namedItems = new HashMap<>();
     private WorldManager worldManager;
     private final ArrayList<Item> backgroundItems = new ArrayList<>();
     private final ArrayList<Item> foregroundItems = new ArrayList<>();
     private final ArrayList<Item> allItems = new ArrayList<>();
-    private final ArrayList<Item> pfands = new ArrayList<>();
 
     public ItemManager(ItemRegistry itemRegistry, WorldManager worldManager) {
         this.itemRegistry = itemRegistry;
@@ -66,9 +63,10 @@ public class ItemManager {
             return;
         }
 
-        Item item = new Item(itemType, 25, 75, x, y, 200, texture, world, false, false, false, null, null, 0, null, true);
+        String id = itemKey + "_" + UUID.randomUUID(); // Unique ID for dynamic items
+        Item item = new Item(id, itemType, itemType.getWidth(), itemType.getHeight(), x, y, 75, texture, world, itemType.canBePickedUp(), false, false, null, null, 0, null, true);
         addBackgroundItem(item);
-        System.out.println("Created item " + itemKey + " at " + x + "," + y + " in world " + world.getName());
+        System.out.println("Created item " + itemKey + " with ID " + id + " at " + x + "," + y + " in world " + world.getName());
     }
 
 
@@ -107,7 +105,7 @@ public class ItemManager {
             return;
         }
 
-        Item item = buildItemFromProperties(props, itemType, world, itemKey);
+        Item item = buildItemFromProperties(props, itemType, world, itemKey, object.getName());
         if (item == null) return; // Error creating item, message already printed.
 
         restoreItemState(item, settings);
@@ -118,18 +116,13 @@ public class ItemManager {
         } else {
             addForegroundItem(item);
         }
-
-        registerNamedItem(object, item, itemKey);
     }
 
-    private Item buildItemFromProperties(MapProperties props, ItemDefinition itemType, World world, String itemKey) {
+    private Item buildItemFromProperties(MapProperties props, ItemDefinition itemType, World world, String itemKey, String name) {
         float x = props.get("x", 0f, Float.class);
         float y = props.get("y", 0f, Float.class);
-        float width = props.get("width", 64f, Float.class);
-        float height = props.get("height", 64f, Float.class);
 
         boolean isSolid = props.get("isSolid", false, Boolean.class);
-        boolean isPickupable = props.get("isPickupable", false, Boolean.class);
 
         int interactionDistance = props.get("interactionDistance", 200, Integer.class);
 
@@ -147,22 +140,18 @@ public class ItemManager {
             System.err.println("Texture for item '" + itemKey + "' with textureKey '" + textureKey + "' not found!");
             return null;
         }
+        float width = props.get("width", 64f, Float.class);
+        float height = props.get("height", 64f, Float.class);
 
-        return new Item(itemType, (int) width, (int) height, x, y, interactionDistance, texture, world, isPickupable, isSolid, searchable, questId, rewardItemKey, rewardAmount, interactionActionId, false);
+        String id = (name != null && !name.isEmpty()) ? name : itemKey + "_" + world.getName() + "_" + (int)x + "_" + (int)y;
+
+        return new Item(id, itemType, (int) width,(int) height, x, y, interactionDistance, texture, world, itemType.canBePickedUp(), isSolid, searchable, questId, rewardItemKey, rewardAmount, interactionActionId, false);
     }
 
     private void restoreItemState(Item item, GameSettings settings) {
-        if (settings.searchedItems != null && settings.searchedItems.contains(item.getUniqueId())) {
+        if (settings.searchedItems != null && settings.searchedItems.contains(item.getId())) {
             item.setSearched(true);
         }
-    }
-
-    private void registerNamedItem(MapObject object, Item item, String itemKey) {
-        String objectName = object.getName();
-        if (objectName != null && !objectName.isEmpty()) {
-            namedItems.put(objectName, item);
-        }
-        namedItems.put(itemKey, item);
     }
 
     public void renderBackgroundItems(SpriteBatch batch) {
@@ -198,6 +187,7 @@ public class ItemManager {
             if (item.canBePickedUp() && item.isPlayerNear(player, item.getDistance())) {
                 player.getInventory().addItem(item.getType(), 1);
                 removeItem(item); // безпечне видалення, бо йдемо з кінця
+                System.out.println(item.getId() + " was picked up");
             }
         }
 
@@ -208,14 +198,18 @@ public class ItemManager {
      * @return The Item object, or null if not found.
      */
     public Item getItem(String identifier) {
-        return namedItems.get(identifier);
+        for (Item item : allItems) {
+            if (item.getId().equals(identifier)) {
+                return item;
+            }
+        }
+        return null;
     }
 
     public List<Item> getBackgroundItems() { return backgroundItems; }
     public List<Item> getForegroundItems() { return foregroundItems; }
 
     public List<Item> getAllItems() {return allItems;}
-    public ArrayList<Item> getPfands() { return pfands; }
 
     public void addBackgroundItem(Item item) {
         backgroundItems.add(item);
@@ -230,7 +224,11 @@ public class ItemManager {
     public void removeItem(Item item) {
         backgroundItems.remove(item);
         foregroundItems.remove(item);
-        pfands.remove(item);
         allItems.remove(item);
+    }
+    public void removeItemsByKey(String itemKey) {
+        allItems.removeIf(item -> item.getType().getKey().equals(itemKey));
+        backgroundItems.removeIf(item -> item.getType().getKey().equals(itemKey));
+        foregroundItems.removeIf(item -> item.getType().getKey().equals(itemKey));
     }
 }

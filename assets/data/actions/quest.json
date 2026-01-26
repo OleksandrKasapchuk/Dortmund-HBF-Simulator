@@ -222,7 +222,7 @@
             { "type": "quest.zone.set.enabled", "id": "jan.firework.5", "enabled": false},
             { "type": "player.lockMovement", "locked":  false},
             { "type": "dialogue.set", "npc": "jan", "node": "firework.5.completed" },
-            { "type": "item.remove", "itemId": "firework"}
+            { "type": "item.remove", "itemId": "firework", "remove": "all_by_key"}
           ]
         }
       }

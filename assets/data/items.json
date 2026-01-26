@@ -8,7 +8,7 @@
   {"key": "table", "pickupable": false},
   {"key": "pfand", "pickupable": true},
   {"key": "vape", "pickupable": true},
-  {"key": "firework", "pickupable": true},
+  {"key": "firework", "pickupable": false, "width": 25, "height": 75},
   {"key": "bush", "pickupable": false},
   {"key": "pfandAutomat", "pickupable": false},
   {"key": "wardrobe", "pickupable": false},

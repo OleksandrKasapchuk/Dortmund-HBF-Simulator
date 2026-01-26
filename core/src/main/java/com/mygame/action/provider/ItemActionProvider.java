@@ -23,6 +23,8 @@ public class ItemActionProvider implements ActionProvider {
                 Rectangle area = zone.getArea();
                 float x = area.x + area.width / 2;
                 float y = area.y + area.height / 2;
+                int width = data.getInt("width", 64);
+                int height = data.getInt("height", 64);
                 EventBus.fire(new Events.CreateItemEvent(itemId, x, y));
             } else {
                 System.err.println("Zone not found: " + zoneId);
@@ -31,11 +33,17 @@ public class ItemActionProvider implements ActionProvider {
 
         registry.registerCreator("item.remove", (c, data) -> () -> {
             String itemId = data.getString("itemId");
-            Item item = c.itemManager.getItem(itemId);
-            if (item != null) {
-                c.itemManager.removeItem(item);
+            boolean removeAll = "all_by_key".equals(data.getString("remove", ""));
+
+            if (removeAll) {
+                c.itemManager.removeItemsByKey(itemId);
             } else {
-                System.err.println("Item to remove not found: " + itemId);
+                Item item = c.itemManager.getItem(itemId);
+                if (item != null) {
+                    c.itemManager.removeItem(item);
+                } else {
+                    System.err.println("Item to remove not found: " + itemId);
+                }
             }
         });
     }

@@ -15,7 +15,5 @@ public class UiActionProvider implements ActionProvider {
 
         registry.registerAction("ui.inventory.toggle", context.ui::toggleInventoryTable);
         registry.registerAction("ui.quests.toggle", context.ui::toggleQuestTable);
-
-
     }
 }
