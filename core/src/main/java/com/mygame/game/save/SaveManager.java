@@ -107,7 +107,8 @@ public class SaveManager {
                         item.getX(),
                         item.getY(),
                         item.getWorld().getName(),
-                        item.isSearched(),
+                        item.getSearchData(),
+                        item.getInteractionData(),
                         item.getWidth(),
                         item.getHeight()
                 ))
@@ -136,7 +137,7 @@ public class SaveManager {
     private void saveSearchedItems(GameSettings settings){
         settings.searchedItems = ctx.worldManager.getWorlds().values().stream()
             .flatMap(world -> ctx.itemManager.getAllItems().stream())
-            .filter(Item::isSearched)
+            .filter(item -> item.getSearchData() != null && item.getSearchData().isSearched())
             .map(Item::getId)
             .collect(Collectors.toSet());
     }

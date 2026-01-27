@@ -77,7 +77,7 @@ public class PfandManager {
 
             // Add new pfand to the world
             String id = "pfand_" + UUID.randomUUID();
-            Item pfand = new Item(id, itemRegistry.get("pfand"), itemWidth, itemHeight, x, y, 75, Assets.getTexture("pfand"), worldManager.getCurrentWorld(), true, false, false, null, null, 0, null, true);
+            Item pfand = new Item(id, itemRegistry.get("pfand"), itemWidth, itemHeight, x, y,  Assets.getTexture("pfand"), worldManager.getCurrentWorld(), true, false, null, true);
 
             itemManager.addBackgroundItem(pfand);
             break;

@@ -1,5 +1,7 @@
 package com.mygame.game.save;
 
+import com.mygame.entity.item.itemData.InteractionData;
+import com.mygame.entity.item.itemData.SearchData;
 import com.mygame.entity.player.Player;
 import com.mygame.quest.QuestManager;
 
@@ -54,17 +56,19 @@ public class GameSettings {
         public float x;
         public float y;
         public String worldName;
-        public boolean searched;
+        public SearchData searchData;
+        public InteractionData interactionData;
         public int width;
         public int height;
         public ItemSaveData() {}
 
-        public ItemSaveData(String itemKey, float x, float y, String worldName, boolean searched, int width, int height) {
+        public ItemSaveData(String itemKey, float x, float y, String worldName, SearchData searchData, InteractionData interactionData, int width, int height) {
             this.itemKey = itemKey;
             this.x = x;
             this.y = y;
             this.worldName = worldName;
-            this.searched = searched;
+            this.searchData = searchData;
+            this.interactionData = interactionData;
             this.width = width;
             this.height = height;
         }

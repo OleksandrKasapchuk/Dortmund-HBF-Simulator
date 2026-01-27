@@ -6,6 +6,8 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.mygame.assets.Assets;
+import com.mygame.entity.item.itemData.InteractionData;
+import com.mygame.entity.item.itemData.SearchData;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
@@ -50,23 +52,24 @@ public class ItemManager {
         EventBus.subscribe(Events.CreateItemEvent.class, this::handleCreateItemEvent);
     }
 
-    public void createItem(String itemKey, float x, float y, World world) {
+    public Item createItem(String itemKey, float x, float y, World world) {
         ItemDefinition itemType = itemRegistry.get(itemKey);
         if (itemType == null) {
             System.err.println("Item type not found: " + itemKey);
-            return;
+            return null;
         }
 
         Texture texture = Assets.getTexture(itemKey);
         if (texture == null) {
             System.err.println("Texture not found for item: " + itemKey);
-            return;
+            return null;
         }
 
         String id = itemKey + "_" + UUID.randomUUID(); // Unique ID for dynamic items
-        Item item = new Item(id, itemType, itemType.getWidth(), itemType.getHeight(), x, y, 75, texture, world, itemType.canBePickedUp(), false, false, null, null, 0, null, true);
+        Item item = new Item(id, itemType, itemType.getWidth(), itemType.getHeight(), x, y, texture, world, itemType.canBePickedUp(),  false, null,  true);
         addBackgroundItem(item);
         System.out.println("Created item " + itemKey + " with ID " + id + " at " + x + "," + y + " in world " + world.getName());
+        return item;
     }
 
 
@@ -129,9 +132,12 @@ public class ItemManager {
         boolean searchable = props.get("searchable", false, Boolean.class);
         String questId = props.get("questId", null, String.class);
 
-        String rewardItemKey = props.get("rewardItemKey", null, String.class);
-        int rewardAmount = props.get("rewardAmount", 0, Integer.class);
-
+        String rewardItemKey = null;
+        int rewardAmount = 0;
+        if (searchable) {
+            rewardItemKey = props.get("rewardItemKey", null, String.class);
+            rewardAmount = props.get("rewardAmount", 0, Integer.class);
+        }
         String interactionActionId = props.get("onInteractAction", null, String.class);
 
         String textureKey = props.get("textureKey", itemKey, String.class);
@@ -144,13 +150,20 @@ public class ItemManager {
         float height = props.get("height", 64f, Float.class);
 
         String id = (name != null && !name.isEmpty()) ? name : itemKey + "_" + world.getName() + "_" + (int)x + "_" + (int)y;
+        Item item = new Item(id, itemType, (int) width,(int) height, x, y, texture, world, itemType.canBePickedUp(), isSolid, questId, false);
+        if (searchable) {
+            item.setSearchData(new SearchData(rewardItemKey, rewardAmount));
+        }
+        if (interactionActionId != null && !interactionActionId.isEmpty()) {
+            item.setInteractionData(new InteractionData(interactionActionId));
+        }
 
-        return new Item(id, itemType, (int) width,(int) height, x, y, interactionDistance, texture, world, itemType.canBePickedUp(), isSolid, searchable, questId, rewardItemKey, rewardAmount, interactionActionId, false);
+        return item;
     }
 
     private void restoreItemState(Item item, GameSettings settings) {
-        if (settings.searchedItems != null && settings.searchedItems.contains(item.getId())) {
-            item.setSearched(true);
+        if (item.getSearchData() != null && settings.searchedItems != null && settings.searchedItems.contains(item.getId())) {
+            item.getSearchData().markSearched();
         }
     }
 
@@ -183,11 +196,11 @@ public class ItemManager {
         for (int i = allItems.size() - 1; i >= 0; i--) {
             Item item = allItems.get(i);
             if (item.getWorld() != worldManager.getCurrentWorld()) continue;
-            item.updateCooldown(delta);
+            if (item.getInteractionData() != null) item.getInteractionData().updateCooldown(delta);
+
             if (item.canBePickedUp() && item.isPlayerNear(player, item.getDistance())) {
                 player.getInventory().addItem(item.getType(), 1);
                 removeItem(item); // безпечне видалення, бо йдемо з кінця
-                System.out.println(item.getId() + " was picked up");
             }
         }
 
