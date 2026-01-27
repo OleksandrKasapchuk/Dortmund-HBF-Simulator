@@ -12,7 +12,6 @@
     "actions": [
       { "type": "inventory.remove", "id": "pfand", "amount": 1 },
       { "type": "audio.playSound", "id": "pfandAutomat" },
-      { "type": "item.startCooldown", "id": "pfandAutomat", "seconds": 1.9 },
       {
         "type": "system.timer",
         "delay": 1.9,
@@ -34,6 +33,7 @@
     "actions": [
       { "type": "inventory.remove", "id": "grass_seed", "amount": 1 },
       { "type": "audio.playSound", "id": "bush" },
+      { "type": "world.createPlant"},
       {
         "type": "system.timer",
         "delay": 1.9,

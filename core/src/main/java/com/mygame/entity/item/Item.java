@@ -2,10 +2,9 @@ package com.mygame.entity.item;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.mygame.entity.Entity;
+import com.mygame.entity.item.itemData.InteractionData;
+import com.mygame.entity.item.itemData.SearchData;
 import com.mygame.entity.player.Player;
-import com.mygame.events.EventBus;
-import com.mygame.events.Events;
-import com.mygame.managers.TimerManager;
 import com.mygame.world.World;
 
 /**
@@ -17,84 +16,54 @@ public class Item extends Entity {
     private ItemDefinition type;
     private boolean canBePickedUp;
     private boolean solid;
-    private boolean searchable;
-    private boolean searched = false;
     private int distance;
     private String questId;
-    private String interactionActionId;
     private final boolean isDynamic;
 
-    private String rewardItemKey;
-    private int rewardAmount;
+    private InteractionData interactionData;
+    private SearchData searchData;
 
-    private float cooldownTimer = 0f;
-
-    public Item(
-        String id, ItemDefinition type, int width, int height,
-        float x, float y, int distance,
-        Texture texture, World world,
-        boolean canBePickedUp, boolean solid, boolean searchable, String questId,
-        String rewardItemKey, int rewardAmount, String interactionActionId, boolean isDynamic) {
+    public Item(String id, ItemDefinition type, int width, int height, float x, float y, Texture texture, World world,
+        boolean canBePickedUp, boolean solid,  String questId, boolean isDynamic) {
         super(width, height, x, y, texture, world);
         this.id = id;
         this.type = type;
         this.canBePickedUp = canBePickedUp;
-        this.searchable = searchable;
+
+        float baseDistance = 80f; // базова дистанція
+        this.distance = (int)(baseDistance + (width + height) / 4f); // додаємо розмір об'єкта (половина ширини + половина висоти) / 2
         this.solid = solid;
-        this.distance = distance;
         this.questId = questId;
-        this.rewardItemKey = rewardItemKey;
-        this.rewardAmount = rewardAmount;
-        this.interactionActionId = interactionActionId;
+
         this.isDynamic = isDynamic;
     }
 
     @Override
     public void update(float delta) {}
 
-    public void interact(Player player) {
-        if (interactionActionId != null && !interactionActionId.isEmpty()) {
-            EventBus.fire(new Events.ActionRequestEvent(interactionActionId));
-        } else if (searchable && !searched) {
-            search(player);
+    public void interact(Player player){
+        if (interactionData != null){
+            interactionData.interact(player);
+        } else if(searchData != null){
+            searchData.search(player);
         }
     }
-
-    private void search(Player player) {
-        searched = true;
-        // Замість ActionRegistry.executeAction викликаємо івент
-        EventBus.fire(new Events.ActionRequestEvent("act.item.search.basic"));
-        TimerManager.setAction(() -> {
-            EventBus.fire(new Events.ItemSearchedEvent(player, rewardItemKey, rewardAmount));
-            EventBus.fire(new Events.SaveRequestEvent());
-        }, 2);
+    public int getDistance() {
+        return distance;
     }
-
     public String getId() {
         return id;
     }
 
-    public boolean isInteractable() {
-        return interactionActionId != null && !interactionActionId.isEmpty();
-    }
     public ItemDefinition getType() { return type; }
     public boolean canBePickedUp() { return canBePickedUp; }
     public boolean isSolid() { return solid; }
-    public int getDistance() { return distance; }
 
-    public void updateCooldown(float delta) {
-        if (cooldownTimer > 0) {
-            cooldownTimer -= delta;
-            if (cooldownTimer < 0) cooldownTimer = 0;
-        }
-    }
-    public void startCooldown(float seconds) {
-        cooldownTimer = seconds;
-    }
+    public SearchData getSearchData(){return searchData;}
+    public InteractionData getInteractionData(){return interactionData;}
+    public void setInteractionData(InteractionData interactionData){this.interactionData = interactionData;}
+    public void setSearchData(SearchData searchData){this.searchData = searchData;}
 
     public String getQuestId(){ return questId; }
-    public boolean isSearched() { return searched; }
-    public boolean isSearchable() {return searchable;}
-    public void setSearched(boolean searched) { this.searched = searched; }
     public boolean isDynamic() { return isDynamic; }
 }

@@ -20,13 +20,8 @@ public class ItemRegistry {
             String key = item.getString("key");
             boolean pickupable = item.getBoolean("pickupable", false);
 
-            String name = null;
-            String description = null;
-
-            if (pickupable) {
-                name = "item." + key + ".name";
-                description = "item." + key + ".description";
-            }
+            String name = "item." + key + ".name";
+            String description = "item." + key + ".description";
 
             String effect = null;
 

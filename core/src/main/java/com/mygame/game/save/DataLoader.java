@@ -1,5 +1,6 @@
 package com.mygame.game.save;
 
+import com.mygame.entity.item.Item;
 import com.mygame.game.GameContext;
 import com.mygame.quest.QuestManager;
 import com.mygame.world.World;
@@ -18,7 +19,15 @@ public class DataLoader {
             for (GameSettings.ItemSaveData itemSaveData : settings.createdItems) {
                 World world = ctx.worldManager.getWorld(itemSaveData.worldName);
                 if (world != null) {
-                    ctx.itemManager.createItem(itemSaveData.itemKey, itemSaveData.x, itemSaveData.y, world);
+                    Item item = ctx.itemManager.createItem(itemSaveData.itemKey, itemSaveData.x, itemSaveData.y, world);
+                    if (item != null) {
+                        if (itemSaveData.searchData != null) {
+                            item.setSearchData(itemSaveData.searchData);
+                        }
+                        if (itemSaveData.interactionData != null) {
+                            item.setInteractionData(itemSaveData.interactionData);
+                        }
+                    }
                 }
             }
         }

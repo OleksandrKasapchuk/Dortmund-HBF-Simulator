@@ -218,7 +218,7 @@
    <properties>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="pfandAutomat"/>
-    <property name="onInteractAction" value="interact.pfand_automat"/>
+    <property name="onInteractAction" value="act.interact.pfand_automat"/>
    </properties>
   </object>
  </objectgroup>

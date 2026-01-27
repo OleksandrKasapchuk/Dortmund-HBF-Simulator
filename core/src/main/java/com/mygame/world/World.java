@@ -14,6 +14,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
+import com.mygame.entity.Entity;
 import com.mygame.world.zone.QuestZone;
 import com.mygame.world.zone.TransitionZone;
 import com.mygame.world.zone.Zone;
@@ -31,6 +32,7 @@ public class World {
     public int mapHeight;
 
     private final ArrayList<Zone> zones = new ArrayList<>();
+    private final ArrayList<Entity> entities = new ArrayList<>();
 
     private int[] bottomLayersIndices;
     private int[] topLayersIndices;
@@ -176,4 +178,5 @@ public class World {
     public TiledMap getMap() { return map; }
     public String getName() { return name; }
     public ArrayList<Zone> getZones() { return zones; }
+    public ArrayList<Entity> getEntities() { return entities; }
 }

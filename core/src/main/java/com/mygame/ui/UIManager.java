@@ -111,24 +111,58 @@ public class UIManager {
     }
 
     public void renderWorldElements() {
+        // NPC
         for (NPC npc : npcManager.getNpcs()) {
             if (npc.getWorld() != worldManager.getCurrentWorld()) continue;
             if (npc.isPlayerNear(player)) {
                 Assets.myFont.draw(batch, Assets.ui.get("interact"), npc.getX() - 100, npc.getY() + npc.getHeight() + 40);
             }
         }
+
         for (Item item : itemManager.getAllItems()) {
             if (item.getWorld() != worldManager.getCurrentWorld()) continue;
-            if ((!item.isInteractable() && !item.isSearchable()) || (item.getQuestId() != null && !questManager.hasQuest(item.getQuestId())) || !item.isPlayerNear(player, item.getDistance()) || item.isSearched()) continue;
-            drawText(item.isSearchable() ? Assets.ui.get("interact.search") : Assets.ui.get("interact"), item.getCenterX(), item.getCenterY());
+
+            boolean nearPlayer = item.isPlayerNear(player, item.getDistance());
+            boolean questActive = item.getQuestId() != null && !questManager.hasQuest(item.getQuestId());
+
+            // Перевіряємо наявність data
+            boolean hasSearchData = item.getSearchData() != null && !item.getSearchData().isSearched();
+            boolean hasInteractData = item.getInteractionData() != null;
+
+            // Якщо немає жодної data або не пройдені умови — пропускаємо
+            if (questActive || !nearPlayer || (!hasSearchData && !hasInteractData)) continue;
+
+            // Вибір тексту в залежності від того, яка data є
+            String textKey;
+            if (hasSearchData) {
+                textKey = "interact.search";
+            } else { // тільки InteractionData
+                textKey = "interact";
+            }
+
+            drawText(Assets.ui.get(textKey), item.getCenterX(), item.getCenterY() + 20);
         }
+
     }
 
     private void handleInteraction() {
         for (Item item : itemManager.getAllItems()) {
-            if ((!item.isInteractable() && !item.isSearchable()) || (item.getQuestId() != null && !questManager.hasQuest(item.getQuestId())) || !item.isPlayerNear(player, item.getDistance()) || item.isSearched()) continue;
+            if (item.getWorld() != worldManager.getCurrentWorld()) continue;
+
+            boolean nearPlayer = item.isPlayerNear(player, item.getDistance());
+            boolean questBlocked = item.getQuestId() != null && !questManager.hasQuest(item.getQuestId());
+
+            boolean hasSearchData =
+                item.getSearchData() != null && !item.getSearchData().isSearched();
+            boolean hasInteractData =
+                item.getInteractionData() != null;
+
+            // ті самі умови, що і в render
+            if (questBlocked || !nearPlayer || (!hasSearchData && !hasInteractData)) continue;
+
+            // 🔥 пріоритет: search > interact
             EventBus.fire(new Events.ItemInteractionEvent(item, player));
-            return;
+            return; // тільки один item за натиск
         }
     }
 
