@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygame.assets.Assets;
+import com.mygame.entity.Entity;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
@@ -117,6 +118,10 @@ public class WorldManager {
             }
         }
 
+        for (Entity entity : currentWorld.getEntities()) {
+            entity.draw(batch);
+        }
+
         if (inZone && player != null && activeZone.isEnabled()) {
             if (activeZone instanceof TransitionZone tz) {
                 font.draw(batch, Assets.ui.get("world.pressEToTransition"),
@@ -142,6 +147,10 @@ public class WorldManager {
         }
 
         if (currentWorld == null || player == null) return;
+
+        for (Entity entity : currentWorld.getEntities()) {
+            entity.update(delta);
+        }
 
         Rectangle playerBounds = new Rectangle(player.getX(), player.getY(), player.getWidth(), player.getHeight());
 

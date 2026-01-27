@@ -22,7 +22,7 @@ public class PlantEntity extends Entity {
 
     public PlantEntity(float x, float y, World world, Map<Phase, Texture> phaseTextures, float timeToNextPhase) {
         // Start with the seed texture and its dimensions
-        super(100, 150, x, y, phaseTextures.get(Phase.SEED), world);
+        super(75, 100, x, y, phaseTextures.get(Phase.SEED), world);
         this.phaseTextures = phaseTextures;
         this.currentPhase = Phase.SEED;
         this.growthTimer = 0f;

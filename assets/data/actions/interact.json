@@ -33,7 +33,7 @@
     "actions": [
       { "type": "inventory.remove", "id": "grass_seed", "amount": 1 },
       { "type": "audio.playSound", "id": "bush" },
-      { "type": "world.createPlant", "plantKey": "grass" },
+      { "type": "world.createPlant"},
       {
         "type": "system.timer",
         "delay": 1.9,
