@@ -174,8 +174,8 @@
       { "type": "dialogue.set", "npc": "jan", "node": "firework.3.active" },
       { "type": "quest.complete", "id": "jan.firework.3"},
       { "type": "quest.start", "id": "jan.firework.4"},
-      { "type": "quest.zone.set.enabled", "id": "jan.firework.4.1", "enabled": true},
-      { "type": "quest.zone.set.enabled", "id": "jan.firework.4.2", "enabled": true}
+      { "type": "zone.set.enabled", "id": "jan.firework.4.1", "enabled": true},
+      { "type": "zone.set.enabled", "id": "jan.firework.4.2", "enabled": true}
     ]
   },
 
@@ -184,25 +184,25 @@
     "actions": [
       { "type": "quest.complete", "id": "jan.firework.4"},
       { "type": "quest.start", "id": "jan.firework.5"},
-      { "type": "quest.zone.set.enabled", "id": "jan.firework.5", "enabled": true}
+      { "type": "zone.set.enabled", "id": "jan.firework.5", "enabled": true}
     ]
   },
 
-  "act.quest.jan.firework.4.place.firework.1": {
+  "act.quest.jan.firework.4.place.firework": {
     "type": "inventory.check", "itemId": "firework",
     "onFail": {"type": "ui.notEnoughMessage", "item": "firework"},
     "action": {"type": "system.composite", "actions": [
       {"type": "inventory.remove", "id": "firework"},
-      {"type": "item.create", "itemId": "firework", "zoneId": "jan.firework.4.1"}
+      {"type": "item.create", "itemId": "firework"}
     ]}
   },
 
-  "act.quest.jan.firework.4.place.firework.2": {
-    "type": "inventory.check", "itemId": "firework",
-    "onFail": {"type": "ui.notEnoughMessage", "item": "firework"},
+  "act.player.zone.place.weed_plant": {
+    "type": "inventory.check", "itemId": "weed_plant",
+    "onFail": {"type": "ui.notEnoughMessage", "item": "weed_plant"},
     "action": {"type": "system.composite", "actions": [
-      {"type": "inventory.remove", "id": "firework"},
-      {"type": "item.create", "itemId": "firework", "zoneId": "jan.firework.4.2"}
+      {"type": "inventory.remove", "id": "weed_plant"},
+      {"type": "world.createPlant"}
     ]}
   },
 
@@ -219,7 +219,7 @@
           "type": "system.composite",
           "actions": [
             { "type": "ui.overlay", "duration": 0.5, "isBlack": false},
-            { "type": "quest.zone.set.enabled", "id": "jan.firework.5", "enabled": false},
+            { "type": "zone.set.enabled", "id": "jan.firework.5", "enabled": false},
             { "type": "player.lockMovement", "locked":  false},
             { "type": "dialogue.set", "npc": "jan", "node": "firework.5.completed" },
             { "type": "item.remove", "itemId": "firework", "remove": "all_by_key"}

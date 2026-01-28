@@ -1,11 +1,15 @@
 package com.mygame.entity;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.mygame.entity.item.Item;
+import com.mygame.entity.item.ItemDefinition;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
 import com.mygame.world.World;
 
 import java.util.Map;
 
-public class PlantEntity extends Entity {
+public class PlantItem extends Item {
 
     public enum Phase {
         SEED,
@@ -20,9 +24,11 @@ public class PlantEntity extends Entity {
 
     private final Map<Phase, Texture> phaseTextures;
 
-    public PlantEntity(float x, float y, World world, Map<Phase, Texture> phaseTextures, float timeToNextPhase) {
+    public PlantItem(String id, ItemDefinition type, float x, float y, World world, Map<Phase, Texture> phaseTextures,
+                     float timeToNextPhase) {
         // Start with the seed texture and its dimensions
-        super(75, 100, x, y, phaseTextures.get(Phase.SEED), world);
+        super(id, type, 75, 100, x, y, phaseTextures.get(Phase.SEED), world, false, false, null, true);
+
         this.phaseTextures = phaseTextures;
         this.currentPhase = Phase.SEED;
         this.growthTimer = 0f;
@@ -51,16 +57,14 @@ public class PlantEntity extends Entity {
     }
 
     public void harvest() {
-        if (currentPhase == Phase.HARVESTABLE) {
-            // Here, you would add logic to yield an item.
-            // For example, you could fire an event to create the harvested item in the world:
-            // EventBus.fire(new Events.CreateItemEvent("harvested_crop", getX(), getY(), getWorld()));
+        System.out.println("plant");
+        if (!isInteractable())  return;
+        System.out.println("harvested");
+        EventBus.fire(new Events.HarvestPlantEvent(this));
+    }
 
-            // After harvesting, reset the plant to its initial state.
-            currentPhase = Phase.SEED;
-            texture = phaseTextures.get(currentPhase);
-            growthTimer = 0f;
-        }
+    public boolean isInteractable(){
+        return currentPhase == Phase.HARVESTABLE;
     }
 
     public Phase getCurrentPhase() {

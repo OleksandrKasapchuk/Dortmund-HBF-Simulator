@@ -5,13 +5,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygame.assets.Assets;
-import com.mygame.entity.Entity;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.managers.TimerManager;
 import com.mygame.ui.inGameUI.Overlay;
-import com.mygame.world.zone.QuestZone;
+import com.mygame.world.zone.PlaceZone;
 import com.mygame.world.zone.TransitionZone;
 import com.mygame.world.zone.Zone;
 
@@ -118,15 +117,11 @@ public class WorldManager {
             }
         }
 
-        for (Entity entity : currentWorld.getEntities()) {
-            entity.draw(batch);
-        }
-
         if (inZone && player != null && activeZone.isEnabled()) {
             if (activeZone instanceof TransitionZone tz) {
                 font.draw(batch, Assets.ui.get("world.pressEToTransition"),
                     player.getX(), player.getY() + player.getHeight() + 30);
-            } else if (activeZone instanceof QuestZone qz) {
+            } else if (activeZone instanceof PlaceZone qz) {
                 font.draw(batch, Assets.ui.get("interact"),
                     player.getX(), player.getY() + player.getHeight() + 30);
             }
@@ -147,10 +142,6 @@ public class WorldManager {
         }
 
         if (currentWorld == null || player == null) return;
-
-        for (Entity entity : currentWorld.getEntities()) {
-            entity.update(delta);
-        }
 
         Rectangle playerBounds = new Rectangle(player.getX(), player.getY(), player.getWidth(), player.getHeight());
 

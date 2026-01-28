@@ -8,12 +8,12 @@ import com.mygame.events.Events;
 import com.mygame.game.save.GameSettings;
 
 
-public class QuestZone extends Zone {
+public class PlaceZone extends Zone {
     private final Player player;
     private final ItemRegistry itemRegistry;
     private boolean used;
 
-    public QuestZone(String id, Rectangle area, Player player, ItemRegistry itemRegistry, GameSettings settings) {
+    public PlaceZone(String id, Rectangle area, Player player, ItemRegistry itemRegistry, GameSettings settings) {
         super(id, area);
         this.player = player;
         this.itemRegistry = itemRegistry;
@@ -26,13 +26,13 @@ public class QuestZone extends Zone {
         if (!enabled || used) return;
 
         switch (id) {
-            case "jan.firework.4.1": {
-                EventBus.fire(new Events.ActionRequestEvent("act.quest.jan.firework.4.place.firework.1"));
+            case "jan.firework.4.1",  "jan.firework.4.2": {
+                EventBus.fire(new Events.ActionRequestEvent("act.quest.jan.firework.4.place.firework"));
                 enabled = false;
                 break;
             }
-            case "jan.firework.4.2": {
-                EventBus.fire(new Events.ActionRequestEvent("act.quest.jan.firework.4.place.firework.2"));
+            case "weed_plant.1", "weed_plant.2", "weed_plant.3", "weed_plant.4" : {
+                EventBus.fire(new Events.ActionRequestEvent("act.player.zone.place.weed_plant"));
                 enabled = false;
                 break;
             }

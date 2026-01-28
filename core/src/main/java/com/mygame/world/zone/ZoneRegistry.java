@@ -61,9 +61,9 @@ public class ZoneRegistry {
                     world.getZones().add(zone);
                 }
 
-                case "quest" -> {
+                case "place" -> {
                     String key = props.get("key", String.class);
-                    zone = new QuestZone(key, rect, player, itemRegistry, settings);
+                    zone = new PlaceZone(key, rect, player, itemRegistry, settings);
                     zones.add(zone);
                     world.getZones().add(zone);
                 }
@@ -78,6 +78,27 @@ public class ZoneRegistry {
             if (zone.getId().equals(id)) return zone;
         }
         return null;
+    }
+
+    public Zone findNearestZone(float x, float y) {
+        Zone nearest = null;
+        float bestDist = Float.MAX_VALUE;
+
+        for (Zone zone : zones) {
+            Rectangle r = zone.getArea();
+            float cx = r.x + r.width / 2f;
+            float cy = r.y + r.height / 2f;
+
+            float dx = cx - x;
+            float dy = cy - y;
+            float dist = dx * dx + dy * dy; // без sqrt — швидше
+
+            if (dist < bestDist) {
+                bestDist = dist;
+                nearest = zone;
+            }
+        }
+        return nearest;
     }
     public ArrayList<Zone> getZones() {
         return zones;

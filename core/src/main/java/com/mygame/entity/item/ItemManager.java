@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.mygame.assets.Assets;
+import com.mygame.entity.PlantItem;
 import com.mygame.entity.item.itemData.InteractionData;
 import com.mygame.entity.item.itemData.SearchData;
 import com.mygame.entity.player.Player;
@@ -17,7 +18,9 @@ import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -50,6 +53,8 @@ public class ItemManager {
         });
         EventBus.subscribe(Events.ItemInteractionEvent.class,event -> event.item().interact(event.player()));
         EventBus.subscribe(Events.CreateItemEvent.class, this::handleCreateItemEvent);
+        EventBus.subscribe(Events.CreatePlantEvent.class, this::handleCreatePlantEvent);
+        EventBus.subscribe(Events.HarvestPlantEvent.class, this::handleHarvestPlantEvent);
     }
 
     public Item createItem(String itemKey, float x, float y, World world) {
@@ -72,11 +77,33 @@ public class ItemManager {
         return item;
     }
 
+    public void createPlant(float x, float y, World world) {
+        Map<PlantItem.Phase, Texture> textures = new HashMap<>();
+        textures.put(PlantItem.Phase.SEED, Assets.getTexture("plant_1"));
+        textures.put(PlantItem.Phase.SPROUT, Assets.getTexture("plant_2"));
+        textures.put(PlantItem.Phase.FLOWERING, Assets.getTexture("plant_3"));
+        textures.put(PlantItem.Phase.HARVESTABLE, Assets.getTexture("plant_4"));
+
+        // You would also fetch other plant-specific data here, like growth time.
+        float growthTime = 3f; // 60 seconds per phase, for example
+
+        PlantItem plant = new PlantItem("plant_"+UUID.randomUUID(), itemRegistry.get("weed_plant"), x, y, world, textures, growthTime);
+        addForegroundItem(plant);
+    }
+
 
     private void handleCreateItemEvent(Events.CreateItemEvent event) {
         createItem(event.itemKey(), event.x(), event.y(), worldManager.getCurrentWorld());
     }
 
+    private void handleCreatePlantEvent(Events.CreatePlantEvent event) {
+        createPlant(event.x(), event.y(), worldManager.getCurrentWorld());
+    }
+
+    private void handleHarvestPlantEvent(Events.HarvestPlantEvent event) {
+        EventBus.fire(new Events.ActionRequestEvent("act.item.harvest"));
+        removeItem(event.plant());
+    }
 
     /**
      * Loads items from a specific world's Tiled map layer named "items".
@@ -196,7 +223,7 @@ public class ItemManager {
         for (int i = allItems.size() - 1; i >= 0; i--) {
             Item item = allItems.get(i);
             if (item.getWorld() != worldManager.getCurrentWorld()) continue;
-            if (item.getInteractionData() != null) item.getInteractionData().updateCooldown(delta);
+            item.update(delta);
 
             if (item.canBePickedUp() && item.isPlayerNear(player, item.getDistance())) {
                 player.getInventory().addItem(item.getType(), 1);

@@ -127,10 +127,9 @@ public class UIManager {
 
             // Перевіряємо наявність data
             boolean hasSearchData = item.getSearchData() != null && !item.getSearchData().isSearched();
-            boolean hasInteractData = item.getInteractionData() != null;
 
             // Якщо немає жодної data або не пройдені умови — пропускаємо
-            if (questActive || !nearPlayer || (!hasSearchData && !hasInteractData)) continue;
+            if (questActive || !nearPlayer || !item.isInteractable()) continue;
 
             // Вибір тексту в залежності від того, яка data є
             String textKey;
@@ -142,7 +141,6 @@ public class UIManager {
 
             drawText(Assets.ui.get(textKey), item.getCenterX(), item.getCenterY() + 20);
         }
-
     }
 
     private void handleInteraction() {
@@ -154,11 +152,9 @@ public class UIManager {
 
             boolean hasSearchData =
                 item.getSearchData() != null && !item.getSearchData().isSearched();
-            boolean hasInteractData =
-                item.getInteractionData() != null;
 
             // ті самі умови, що і в render
-            if (questBlocked || !nearPlayer || (!hasSearchData && !hasInteractData)) continue;
+            if (questBlocked || !nearPlayer || !item.isInteractable()) continue;
 
             // 🔥 пріоритет: search > interact
             EventBus.fire(new Events.ItemInteractionEvent(item, player));

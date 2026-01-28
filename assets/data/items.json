@@ -9,6 +9,7 @@
   {"key": "pfand", "pickupable": true},
   {"key": "vape", "pickupable": true},
   {"key": "firework", "pickupable": false, "width": 25, "height": 75},
+  {"key": "weed_plant", "pickupable": false},
   {"key": "bush", "pickupable": false},
   {"key": "pfandAutomat", "pickupable": false},
   {"key": "wardrobe", "pickupable": false},
