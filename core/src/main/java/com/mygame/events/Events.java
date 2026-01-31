@@ -34,7 +34,7 @@ public class Events {
     public record ItemUsedEvent(ItemDefinition item) {}
 
     public record CreateItemEvent(String itemKey, float x, float y) {}
-    public record CreatePlantEvent(float x, float y) {}
+    public record CreatePlantEvent(float x, float y, Player player) {}
     public record RemoveItemFromWorldEvent(String id) {}
     public record HarvestPlantEvent(PlantItem plant) {}
 

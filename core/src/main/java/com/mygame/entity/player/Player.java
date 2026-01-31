@@ -63,80 +63,94 @@ public class Player extends Entity {
     @Override
     public void update(float delta) {
 
-        // If movement is locked, do nothing
-        if (isMovementLocked) {
-            return;
-        }
+        if (isMovementLocked) return;
 
-        // State-based movement speed
-        if (currentState == State.STONED) {
-            speed = 150;
-        } else {
-            speed = 500;
-        }
-
+        speed = (currentState == State.STONED) ? 150 : 500;
 
         float moveSpeed = speed * delta;
         float dx = 0, dy = 0;
 
-        // === PC CONTROLS ===
+        // === INPUT ===
         if (Gdx.app.getType() != Application.ApplicationType.Android) {
-            if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
-                moveSpeed *= 5;
-            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A))
-                dx -= moveSpeed;
-            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D))
-                dx += moveSpeed;
-            if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W))
-                dy += moveSpeed;
-            if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S))
-                dy -= moveSpeed;
-        } else if (touchpad != null) { // === ANDROID TOUCHPAD ===
+            if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) moveSpeed *= 5;
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) dx -= moveSpeed;
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) dx += moveSpeed;
+            if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) dy += moveSpeed;
+            if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) dy -= moveSpeed;
+        } else if (touchpad != null) {
             dx = touchpad.getKnobPercentX() * speed * delta;
             dy = touchpad.getKnobPercentY() * speed * delta;
         }
 
-        // --- Collision Detection and Movement ---
-        Rectangle playerRect = new Rectangle(getX(), getY(), getWidth(), getHeight());
+        // --- COLLISION AWARE MOVEMENT ---
+        moveWithPush(dx, dy);
 
-        // Move on X axis
-        playerRect.x += dx;
-        if (!world.isCollidingWithMap(playerRect) && !isCollidingWithSolidItems(playerRect)) {
-            setX(getX() + dx);
-        }
-        playerRect.x = getX(); // Reset X to current position
-
-        // Move on Y axis
-        playerRect.y += dy;
-        if (!world.isCollidingWithMap(playerRect) && !isCollidingWithSolidItems(playerRect)) {
-            setY(getY() + dy);
-        }
-        playerRect.y = getY(); // Reset Y to current position
-
-        // --- World Bounds Clamping ---
+        // --- WORLD BOUNDS ---
         if (world != null) {
-            float clampedX = MathUtils.clamp(getX(), 0, world.mapWidth - getWidth());
-            float clampedY = MathUtils.clamp(getY(), 0, world.mapHeight - getHeight());
-            setX(clampedX);
-            setY(clampedY);
+            setX(MathUtils.clamp(getX(), 0, world.mapWidth - getWidth()));
+            setY(MathUtils.clamp(getY(), 0, world.mapHeight - getHeight()));
         }
     }
+    private void moveWithPush(float dx, float dy) {
 
-    /**
-     * Checks if the player at a new position would collide with any solid items.
-     */
-    private boolean isCollidingWithSolidItems(Rectangle playerRect) {
-        if (world == null) return false;
-        for (Item item : itemManager.getAllItems()) {
-            if (item.getWorld() != world) continue;
-            if (item.isSolid()) {
-                Rectangle itemRect = new Rectangle(item.getX(), item.getY(), item.getWidth(), item.getHeight());
-                if (playerRect.overlaps(itemRect)) {
-                    return true;
-                }
+        Rectangle rect = getBounds();
+
+        // ===== X =====
+        float oldX = getX();
+        rect.x = oldX + dx;
+
+        Item itemX = getCollidingSolidItem(rect);
+
+        if (world.isCollidingWithMap(rect)) {
+            setX(oldX); // ⬅ ЖОРСТКИЙ ROLLBACK
+        }
+        else if (itemX != null) {
+            if (dx > 0) {
+                setX(itemX.getBounds().x - getWidth());
+            } else if (dx < 0) {
+                setX(itemX.getBounds().x + itemX.getBounds().width);
             }
         }
-        return false;
+        else {
+            setX(oldX + dx);
+        }
+
+        rect.x = getX();
+
+
+        // ===== Y =====
+        float oldY = getY();
+        rect.y = oldY + dy;
+
+        Item itemY = getCollidingSolidItem(rect);
+
+        if (world.isCollidingWithMap(rect)) {
+            setY(oldY); // ⬅ ROLLBACK
+        }
+        else if (itemY != null) {
+            if (dy > 0) {
+                setY(itemY.getBounds().y - getHeight());
+            } else if (dy < 0) {
+                setY(itemY.getBounds().y + itemY.getBounds().height);
+            }
+        }
+        else {
+            setY(oldY + dy);
+        }
+
+        rect.y = getY();
+    }
+
+
+    private Item getCollidingSolidItem(Rectangle rect) {
+        for (Item item : itemManager.getAllItems()) {
+            if (!item.isSolid()) continue;
+            if (item.getWorld() != world) continue;
+            if (rect.overlaps(item.getBounds())) {
+                return item;
+            }
+        }
+        return null;
     }
 
     public InventoryManager getInventory() {

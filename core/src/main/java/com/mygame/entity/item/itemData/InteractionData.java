@@ -16,8 +16,10 @@ public class InteractionData {
     }
 
     public void interact(Player player) {
-        if (actionId != null && !actionId.isEmpty()) EventBus.fire(new Events.ActionRequestEvent(actionId));
-        startCooldown(1.9f);
+        if (cooldownTimer <= 0 && actionId != null && !actionId.isEmpty()) {
+            EventBus.fire(new Events.ActionRequestEvent(actionId));
+            startCooldown(1.9f);
+        }
     }
 
     public void updateCooldown(float delta) {

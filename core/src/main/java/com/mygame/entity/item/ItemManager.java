@@ -77,7 +77,7 @@ public class ItemManager {
         return item;
     }
 
-    public void createPlant(float x, float y, World world) {
+    public void createPlant(float x, float y, World world, Player player) {
         Map<PlantItem.Phase, Texture> textures = new HashMap<>();
         textures.put(PlantItem.Phase.SEED, Assets.getTexture("plant_1"));
         textures.put(PlantItem.Phase.SPROUT, Assets.getTexture("plant_2"));
@@ -97,7 +97,7 @@ public class ItemManager {
     }
 
     private void handleCreatePlantEvent(Events.CreatePlantEvent event) {
-        createPlant(event.x(), event.y(), worldManager.getCurrentWorld());
+        createPlant(event.x(), event.y(), worldManager.getCurrentWorld(), event.player());
     }
 
     private void handleHarvestPlantEvent(Events.HarvestPlantEvent event) {

@@ -143,11 +143,9 @@ public class WorldManager {
 
         if (currentWorld == null || player == null) return;
 
-        Rectangle playerBounds = new Rectangle(player.getX(), player.getY(), player.getWidth(), player.getHeight());
-
         activeZone = null;
         for (Zone zone : currentWorld.getZones()) {
-            if (zone.getArea().overlaps(playerBounds)) {
+            if (zone.getArea().overlaps(player.getBounds())) {
                 activeZone = zone;
                 break;
             }

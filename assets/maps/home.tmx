@@ -61,25 +61,25 @@
     <property name="zoneType" value="transition"/>
    </properties>
   </object>
-  <object id="42" gid="2" x="2316.67" y="1935.33" width="100" height="100">
+  <object id="42" gid="2" x="2327.67" y="1893.33" width="80" height="80">
    <properties>
-    <property name="key" value="4"/>
+    <property name="key" value="weed_plant.4"/>
     <property name="zoneType" value="place"/>
    </properties>
   </object>
-  <object id="43" gid="2" x="2315.33" y="1790" width="100" height="100">
+  <object id="43" gid="2" x="2326.66" y="1780" width="80" height="80">
    <properties>
     <property name="key" value="weed_plant.3"/>
     <property name="zoneType" value="place"/>
    </properties>
   </object>
-  <object id="44" gid="2" x="1875.33" y="1786" width="100" height="100">
+  <object id="44" gid="2" x="2215.33" y="1945" width="80" height="80">
    <properties>
     <property name="key" value="weed_plant.2"/>
     <property name="zoneType" value="place"/>
    </properties>
   </object>
-  <object id="45" gid="2" x="1880.67" y="1930" width="100" height="100">
+  <object id="45" gid="2" x="2326.34" y="1679.33" width="80" height="80">
    <properties>
     <property name="key" value="weed_plant.1"/>
     <property name="zoneType" value="place"/>
@@ -182,7 +182,7 @@
     <property name="searchable" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="11" name="table1" gid="10" x="2045" y="1957" width="229" height="114">
+  <object id="11" name="table1" gid="10" x="1870.33" y="1972" width="215.667" height="98">
    <properties>
     <property name="isPickupable" type="bool" value="false"/>
     <property name="isSolid" type="bool" value="true"/>

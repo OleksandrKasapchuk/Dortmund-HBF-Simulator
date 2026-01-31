@@ -1,6 +1,7 @@
 package com.mygame.entity;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemDefinition;
 import com.mygame.events.EventBus;
@@ -27,12 +28,13 @@ public class PlantItem extends Item {
     public PlantItem(String id, ItemDefinition type, float x, float y, World world, Map<Phase, Texture> phaseTextures,
                      float timeToNextPhase) {
         // Start with the seed texture and its dimensions
-        super(id, type, 75, 100, x, y, phaseTextures.get(Phase.SEED), world, false, false, null, true);
+        super(id, type, 75, 100, x, y, phaseTextures.get(Phase.SEED), world, false, true, null, true);
 
         this.phaseTextures = phaseTextures;
         this.currentPhase = Phase.SEED;
         this.growthTimer = 0f;
         this.timeToNextPhase = timeToNextPhase;
+        this.bounds = new Rectangle(x, y, 75, 50);
     }
 
     @Override

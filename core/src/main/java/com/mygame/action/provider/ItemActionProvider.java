@@ -31,11 +31,20 @@ public class ItemActionProvider implements ActionProvider {
 
         registry.registerCreator("world.createPlant", (c, data) -> () -> {
 
-            float x = c.player.getX(); // Placeholder for interacted object's X
-            float y = c.player.getY(); // Placeholder for interacted object's Y
             World world = c.worldManager.getCurrentWorld();
 
-           EventBus.fire(new Events.CreatePlantEvent(x, y));
+            Zone zone = c.zoneRegistry.findNearestZone(c.player.getCenterX(), c.player.getCenterY());
+            if (zone == null) {
+                System.err.println("No zone found near player");
+                return;
+            }
+
+            Rectangle area = zone.getArea();
+            float plantWidth = 75; // Hardcoded from PlantItem
+            float plantHeight = 100; // Hardcoded from PlantItem
+            float x = area.x + area.width / 2 - plantWidth / 2;
+            float y = area.y + area.height / 2 - plantHeight / 2;
+           EventBus.fire(new Events.CreatePlantEvent(x, y, c.player));
         });
         registry.registerCreator("item.remove", (c, data) -> () -> {
             String itemId = data.getString("itemId");
