@@ -34,7 +34,7 @@ public class PlantItem extends Item {
         this.currentPhase = Phase.SEED;
         this.growthTimer = 0f;
         this.timeToNextPhase = timeToNextPhase;
-        this.bounds = new Rectangle(x, y, 75, 50);
+        this.bounds = new Rectangle(x, y, getWidth(), getHeight()/2f);
     }
 
     @Override
@@ -71,5 +71,11 @@ public class PlantItem extends Item {
 
     public Phase getCurrentPhase() {
         return currentPhase;
+    }
+
+    @Override
+    public Rectangle getBounds() {
+        bounds.set(getX(), getY(), getWidth(), getHeight()/2f);
+        return bounds;
     }
 }

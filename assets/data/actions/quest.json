@@ -28,11 +28,11 @@
       "actions": [
         { "type": "quest.complete", "id": "igo" },
         { "type": "audio.playSound", "id": "lighter" },
+        { "type": "dialogue.set", "npc": "igo", "node": "joint.completed" },
         {
           "type": "system.timer",
           "delay": 5.0,
           "action": { "type": "system.composite", "actions": [
-            { "type": "dialogue.set", "npc": "igo", "node": "joint.completed" },
             { "type": "npc.setTexture", "npc": "igo", "texture": "igo2"}
           ]
           }

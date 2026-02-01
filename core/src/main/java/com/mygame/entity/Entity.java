@@ -80,5 +80,8 @@ public abstract class Entity implements Renderable {
     public void setTexture(Texture texture) { this.texture = texture; }
     public Texture getTexture() { return texture; }
 
-    public Rectangle getBounds() {return bounds;}
+    public Rectangle getBounds() {
+        bounds.set(x, y, width, height);
+        return bounds;
+    }
 }

@@ -93,7 +93,7 @@
  <objectgroup id="5" name="npcs">
   <object id="3" name="murat" gid="3" x="2525" y="794" width="70" height="100"/>
   <object id="4" name="talahon1" gid="3" x="1704.76" y="1004.49" width="70" height="100"/>
-  <object id="5" name="talahon2" gid="3" x="1713.24" y="587.515" width="70" height="100"/>
+  <object id="5" name="talahon2" gid="3" x="1725" y="750" width="70" height="100"/>
   <object id="11" name="jamal" gid="3" x="1015" y="2300" width="70" height="100"/>
  </objectgroup>
 </map>
