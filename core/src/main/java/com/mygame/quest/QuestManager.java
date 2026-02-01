@@ -146,14 +146,15 @@ public class QuestManager {
         }
 
         public void makeProgress() {
-            if (!progressable || status != Status.ACTIVE) return;
-            this.progress++;
-            EventBus.fire(new Events.QuestProgressEvent(key, progress, maxProgress));
-            EventBus.fire(new Events.SaveRequestEvent());
-
-            if (this.progress >= maxProgress) {
+            if (status != Status.ACTIVE) return;
+            if (progressable) {
+                this.progress++;
+                EventBus.fire(new Events.QuestProgressEvent(key, progress, maxProgress));
+            }
+            if (!progressable || this.progress >= maxProgress) {
                 complete();
             }
+            EventBus.fire(new Events.SaveRequestEvent());
         }
     }
 }

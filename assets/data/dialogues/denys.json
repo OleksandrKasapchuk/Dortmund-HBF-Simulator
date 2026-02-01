@@ -1,8 +1,22 @@
 {
   "denys": {
     "nodes": {
-      "start": "idle",
-      "idle": ["dialogue.denys.idle.1", "dialogue.denys.idle.2"]
-    }
+      "start": "kebab.offer",
+      "idle": ["dialogue.denys.idle.1"],
+      "kebab.offer": {
+        "texts": ["dialogue.denys.kebab.offer.1", "dialogue.denys.kebab.offer.2", "dialogue.denys.kebab.offer.3"],
+        "choices":  [
+          { "text": "dialogue.choice.accept", "action": "act.quest.denys.kebab.accept"},
+          "dialogue.choice.leave"
+        ]
+      },
+      "kebab.active": {
+        "texts": ["dialogue.denys.kebab.active.1","dialogue.denys.kebab.active.2"],
+        "choices": [
+          { "text": "dialogue.denys.kebab.choice.1", "action": "act.quest.denys.kebab.completed" },
+          "dialogue.choice.leave"
+        ]
+      }
   }
+}
 }

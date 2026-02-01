@@ -11,6 +11,8 @@ import com.mygame.entity.Entity;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemDefinition;
 import com.mygame.entity.item.ItemManager;
+import com.mygame.entity.npc.NPC;
+import com.mygame.entity.npc.NpcManager;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.save.SettingsManager;
@@ -25,6 +27,8 @@ public class Player extends Entity {
 
     private final InventoryManager inventory = new InventoryManager();
     private ItemManager itemManager;
+    private NpcManager npcManager;
+
     private boolean isMovementLocked = false;
 
     public enum State {
@@ -55,9 +59,8 @@ public class Player extends Entity {
     public void setMovementLocked(boolean locked) {
         this.isMovementLocked = locked;
     }
-    public void setItemManager(ItemManager itemManager) {
-        this.itemManager = itemManager;
-    }
+    public void setItemManager(ItemManager itemManager) {this.itemManager = itemManager;}
+    public void setNpcManager(NpcManager npcManager) {this.npcManager = npcManager;}
 
     // --- UPDATE METHOD ---)
     @Override
@@ -100,8 +103,9 @@ public class Player extends Entity {
         rect.x = oldX + dx;
 
         Item itemX = getCollidingSolidItem(rect);
+        NPC npcX = getCollidingNpc(rect);
 
-        if (world.isCollidingWithMap(rect)) {
+        if (world.isCollidingWithMap(rect) || npcX != null) {
             setX(oldX); // ⬅ ЖОРСТКИЙ ROLLBACK
         }
         else if (itemX != null) {
@@ -111,6 +115,7 @@ public class Player extends Entity {
                 setX(itemX.getBounds().x + itemX.getBounds().width);
             }
         }
+
         else {
             setX(oldX + dx);
         }
@@ -123,8 +128,9 @@ public class Player extends Entity {
         rect.y = oldY + dy;
 
         Item itemY = getCollidingSolidItem(rect);
+        NPC npcY = getCollidingNpc(rect);
 
-        if (world.isCollidingWithMap(rect)) {
+        if (world.isCollidingWithMap(rect) || npcY != null) {
             setY(oldY); // ⬅ ROLLBACK
         }
         else if (itemY != null) {
@@ -153,6 +159,15 @@ public class Player extends Entity {
         return null;
     }
 
+    private NPC getCollidingNpc(Rectangle rect) {
+        for (NPC npc : npcManager.getNpcs()) {
+            if (npc.getWorld() != world) continue;
+            if (rect.overlaps(npc.getBounds())) {
+                return npc;
+            }
+        }
+        return null;
+    }
     public InventoryManager getInventory() {
         return inventory;
     }

@@ -135,6 +135,22 @@
     ]
   },
 
+  "act.quest.denys.kebab.accept": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "dialogue.set", "npc": "denys", "node": "kebab.active" },
+      { "type": "quest.start", "id": "denys.kebab"}
+    ]
+  },
+
+  "act.quest.denys.kebab.completed": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "dialogue.set", "npc": "denys", "node": "idle" },
+      { "type": "quest.complete", "id": "denys.kebab"}
+    ]
+  },
+
   "act.quest.jan.firework.1.accept": {
     "type": "system.composite",
     "actions": [
@@ -142,6 +158,7 @@
       { "type": "quest.start", "id": "jan.firework.1"}
     ]
   },
+
 
   "act.quest.jan.firework.1.completed": {
     "type": "system.composite",

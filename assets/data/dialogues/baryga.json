@@ -6,10 +6,9 @@
         "texts": ["dialogue.baryga.trade_offer.1", "dialogue.baryga.trade_offer.2"],
         "choices": [
           { "text": "dialogue.baryga.trade_offer.choice.1", "action": "act.inventory.baryga_buy_grass" },
-          { "text": "dialogue.choice.leave", "next": "idle" }
+          "dialogue.choice.leave"
         ]
-      },
-      "idle": ["dialogue.baryga.idle.1"]
+      }
     }
   }
 }

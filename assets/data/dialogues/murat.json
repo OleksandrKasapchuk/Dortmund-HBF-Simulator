@@ -1,12 +1,12 @@
 {
   "murat": {
     "nodes": {
-      "start": "revenge.offer",
-      "revenge.offer": {
-        "texts": ["dialogue.murat.revenge_offer.1", "dialogue.murat.revenge_offer.2", "dialogue.murat.revenge_offer.3", "dialogue.murat.revenge_offer.4", "dialogue.murat.revenge_offer.5", "dialogue.murat.revenge_offer.6"],
+      "start": "trade.offer",
+      "trade.offer": {
+        "texts": ["dialogue.murat.trade_offer.1", "dialogue.murat.trade_offer.2"],
         "choices": [
-          { "text": "dialogue.murat.revenge_offer.choice.1", "action": "act.quest.murat.accept" },
-          { "text": "dialogue.murat.revenge_offer.choice.2", "action": null }
+          { "text": "dialogue.murat.trade_offer.choice.1", "action": "act.inventory.murat_buy_kebab" },
+          "dialogue.choice.leave"
         ]
       }
     }

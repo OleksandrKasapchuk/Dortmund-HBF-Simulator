@@ -167,28 +167,9 @@
  </objectgroup>
  <objectgroup id="6" name="items"/>
  <objectgroup id="5" name="npcs">
-  <object id="29" gid="3" x="2719.55" y="3304.55" width="70" height="100">
-   <properties>
-    <property name="name" value="baryga"/>
-    <property name="textureKey" value="baryga"/>
-   </properties>
-  </object>
-  <object id="30" gid="3" x="3213.48" y="4101.52" width="70" height="100">
-   <properties>
-    <property name="name" value="chikita"/>
-    <property name="textureKey" value="chikita"/>
-   </properties>
-  </object>
-  <object id="34" gid="3" x="1509" y="5310" width="70" height="100">
-   <properties>
-    <property name="name" value="boss"/>
-    <property name="textureKey" value="boss"/>
-   </properties>
-  </object>
-  <object id="37" gid="3" x="3665" y="1950" width="70" height="100">
-   <properties>
-    <property name="name" value="filip"/>
-   </properties>
-  </object>
+  <object id="29" name="baryga" gid="3" x="2702.88" y="3303.88" width="100" height="100"/>
+  <object id="30" name="chikita" gid="3" x="3213.48" y="4101.52" width="80" height="100"/>
+  <object id="34" name="boss" gid="3" x="1509" y="5310" width="80" height="100"/>
+  <object id="37" name="filip" gid="3" x="3665" y="1950" width="70" height="100"/>
  </objectgroup>
 </map>

@@ -2,7 +2,6 @@ package com.mygame.action.provider;
 
 import com.mygame.action.ActionRegistry;
 import com.mygame.game.GameContext;
-import com.mygame.world.zone.Zone;
 
 public class QuestActionProvider implements ActionProvider {
     @Override

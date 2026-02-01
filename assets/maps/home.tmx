@@ -86,14 +86,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="4" name="npcs">
-  <object id="2" gid="3" x="1821" y="2302" width="70" height="100">
-   <properties>
-    <property name="name" value="denys"/>
-    <property name="textureKey" value="denys"/>
-   </properties>
-  </object>
- </objectgroup>
+ <objectgroup id="4" name="npcs"/>
  <layer id="3" name="collision" width="30" height="36">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -140,7 +133,7 @@
     <property name="isPickupable" type="bool" value="false"/>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="bush"/>
-    <property name="onInteractAction" value="quest.delivery.interact_bush"/>
+    <property name="onInteractAction" value="act.quest.delivery.interact_bush"/>
     <property name="questId" value="delivery"/>
    </properties>
   </object>

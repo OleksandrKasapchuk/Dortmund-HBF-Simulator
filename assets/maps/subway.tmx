@@ -110,12 +110,7 @@
   </object>
  </objectgroup>
  <objectgroup id="4" name="npcs">
-  <object id="11" gid="3" x="2546" y="2466" width="80" height="100">
-   <properties>
-    <property name="name" value="ryzhyi"/>
-    <property name="textureKey" value="ryzhyi"/>
-   </properties>
-  </object>
+  <object id="11" name="ryzhyi" gid="3" x="2546" y="2466" width="80" height="100"/>
  </objectgroup>
  <objectgroup id="5" name="items"/>
 </map>

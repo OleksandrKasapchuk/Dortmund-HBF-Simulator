@@ -15,6 +15,12 @@
     "onComplete": "act.quest.jan.firework.4.completed"
   },
   {"key": "jan.firework.5"},
+
+  {
+    "key": "denys.kebab",
+    "notify": true
+  },
+
   {
     "key": "jason.smalltalk",
     "progressable": true,

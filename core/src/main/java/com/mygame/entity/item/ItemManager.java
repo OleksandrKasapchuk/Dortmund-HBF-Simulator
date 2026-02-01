@@ -84,8 +84,7 @@ public class ItemManager {
         textures.put(PlantItem.Phase.FLOWERING, Assets.getTexture("plant_3"));
         textures.put(PlantItem.Phase.HARVESTABLE, Assets.getTexture("plant_4"));
 
-        // You would also fetch other plant-specific data here, like growth time.
-        float growthTime = 3f; // 60 seconds per phase, for example
+        float growthTime = 10f;
 
         PlantItem plant = new PlantItem("plant_"+UUID.randomUUID(), itemRegistry.get("weed_plant"), x, y, world, textures, growthTime);
         addForegroundItem(plant);

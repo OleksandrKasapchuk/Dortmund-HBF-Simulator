@@ -1,6 +1,7 @@
 {
-  "act.inventory.baryga_buy_grass": { "type": "inventory.trade", "from": "money", "to": "grass", "fromAmount": 10, "toAmount": 1 },
-  "act.inventory.kioskman_buy_pape": { "type": "inventory.trade", "from": "money", "to": "pape", "fromAmount": 5, "toAmount": 1 },
+  "act.inventory.baryga_buy_grass": { "type": "inventory.trade", "from": "money", "to": "grass", "fromAmount": 20, "toAmount": 1 },
+  "act.inventory.kioskman_buy_pape": { "type": "inventory.trade", "from": "money", "to": "pape", "fromAmount": 10, "toAmount": 1 },
   "act.inventory.kioskman_buy_icetea": { "type": "inventory.trade", "from": "money", "to": "ice_tea", "fromAmount": 10, "toAmount": 1 },
-  "act.inventory.buy_seed": { "type": "inventory.trade", "from": "money", "to": "grass_seed", "fromAmount": 5, "toAmount": 1 }
+  "act.inventory.buy_seed": { "type": "inventory.trade", "from": "money", "to": "grass_seed", "fromAmount": 50, "toAmount": 1 },
+  "act.inventory.murat_buy_kebab": { "type": "inventory.trade", "from": "money", "to": "kebab", "fromAmount": 25, "toAmount": 1 }
 }

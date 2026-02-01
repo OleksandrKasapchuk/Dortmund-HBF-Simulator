@@ -91,25 +91,9 @@
   </object>
  </objectgroup>
  <objectgroup id="5" name="npcs">
-  <object id="3" gid="3" x="2525" y="794" width="70" height="100">
-   <properties>
-    <property name="name" value="murat"/>
-   </properties>
-  </object>
-  <object id="4" gid="3" x="1704.76" y="1004.49" width="70" height="100">
-   <properties>
-    <property name="name" value="talahon1"/>
-   </properties>
-  </object>
-  <object id="5" gid="3" x="1713.24" y="587.515" width="70" height="100">
-   <properties>
-    <property name="name" value="talahon2"/>
-   </properties>
-  </object>
-  <object id="11" gid="3" x="1015" y="2300" width="70" height="100">
-   <properties>
-    <property name="name" value="jamal"/>
-   </properties>
-  </object>
+  <object id="3" name="murat" gid="3" x="2525" y="794" width="70" height="100"/>
+  <object id="4" name="talahon1" gid="3" x="1704.76" y="1004.49" width="70" height="100"/>
+  <object id="5" name="talahon2" gid="3" x="1713.24" y="587.515" width="70" height="100"/>
+  <object id="11" name="jamal" gid="3" x="1015" y="2300" width="70" height="100"/>
  </objectgroup>
 </map>
