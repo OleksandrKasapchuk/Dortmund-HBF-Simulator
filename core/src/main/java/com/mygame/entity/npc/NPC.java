@@ -78,7 +78,7 @@ public class NPC extends Entity {
             float dx = directionX * speed * delta;
             float dy = directionY * speed * delta;
 
-            Rectangle npcRect = new Rectangle(getX(), getY(), getWidth(), getHeight());
+            Rectangle npcRect = getBounds();
 
             // --- Collision detection on X ---
             npcRect.x += dx;

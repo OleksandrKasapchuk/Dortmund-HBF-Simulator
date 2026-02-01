@@ -23,7 +23,8 @@
     "action": {
       "type": "system.composite", "actions": [
         {"type": "inventory.remove", "id": "vape", "amount": "1"},
-        {"type": "dialogue.set", "npc": "talahon2", "node": "vape.completed"}
+        {"type": "dialogue.set", "npc": "talahon2", "node": "vape.completed"},
+        {"type":  "npc.teleport", "npc": "talahon2", "world": "kamp", "x": 1725, "y": 2500}
       ]
     }
   },

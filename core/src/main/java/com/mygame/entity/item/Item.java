@@ -2,6 +2,7 @@ package com.mygame.entity.item;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.mygame.entity.Entity;
+import com.mygame.entity.PlantItem;
 import com.mygame.entity.item.itemData.InteractionData;
 import com.mygame.entity.item.itemData.SearchData;
 import com.mygame.entity.player.Player;
@@ -39,15 +40,24 @@ public class Item extends Entity {
     }
 
     @Override
-    public void update(float delta) {}
+    public void update(float delta) {
+        if (interactionData != null) {
+            interactionData.updateCooldown(delta);
+        }
+    }
 
     public void interact(Player player){
+        if (this instanceof PlantItem plantItem) {
+            plantItem.harvest();
+            return;
+        }
         if (interactionData != null){
             interactionData.interact(player);
         } else if(searchData != null){
             searchData.search(player);
         }
     }
+
     public int getDistance() {
         return distance;
     }
@@ -59,6 +69,9 @@ public class Item extends Entity {
     public boolean canBePickedUp() { return canBePickedUp; }
     public boolean isSolid() { return solid; }
 
+    public boolean isInteractable(){
+        return interactionData != null || searchData != null;
+    }
     public SearchData getSearchData(){return searchData;}
     public InteractionData getInteractionData(){return interactionData;}
     public void setInteractionData(InteractionData interactionData){this.interactionData = interactionData;}

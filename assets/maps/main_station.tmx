@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="44" height="55" tilewidth="100" tileheight="100" infinite="0" nextlayerid="8" nextobjectid="54">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="44" height="55" tilewidth="100" tileheight="100" infinite="0" nextlayerid="8" nextobjectid="55">
  <tileset firstgid="1" source="plate.tsx"/>
  <tileset firstgid="2" source="brick.tsx"/>
  <tileset firstgid="3" name="igo" tilewidth="70" tileheight="100" tilecount="1" columns="1">
@@ -14,6 +14,7 @@
  <tileset firstgid="10" source="3d_left_side_corner.tsx"/>
  <tileset firstgid="11" source="3d_right_side_corner.tsx"/>
  <tileset firstgid="12" source="wardrobe.tsx"/>
+ <tileset firstgid="28" source="npc.tsx"/>
  <layer id="1" name="background" width="44" height="55" opacity="0.95">
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -167,51 +168,15 @@
   </object>
  </objectgroup>
  <objectgroup id="6" name="npcs">
-  <object id="17" gid="3" x="2823.67" y="4410" width="70" height="100">
-   <properties>
-    <property name="name" value="kamil"/>
-    <property name="textureKey" value="kamil"/>
-   </properties>
-  </object>
-  <object id="18" gid="3" x="2804" y="3702" width="70" height="100">
-   <properties>
-    <property name="name" value="igo"/>
-    <property name="textureKey" value="igo"/>
-   </properties>
-  </object>
-  <object id="24" gid="3" x="1408.52" y="2711.45" width="70" height="100">
-   <properties>
-    <property name="name" value="police"/>
-    <property name="textureKey" value="police"/>
-   </properties>
-  </object>
-  <object id="28" gid="3" x="217" y="4004" width="70" height="100">
-   <properties>
-    <property name="name" value="kioskman"/>
-    <property name="textureKey" value="kioskman"/>
-   </properties>
-  </object>
-  <object id="32" gid="3" x="919.55" y="4498.48" width="70" height="100">
-   <properties>
-    <property name="name" value="jason"/>
-    <property name="textureKey" value="jason"/>
-   </properties>
-  </object>
-  <object id="41" gid="3" x="2121" y="4892" width="70" height="100">
-   <properties>
-    <property name="name" value="dmitri"/>
-   </properties>
-  </object>
-  <object id="43" gid="3" x="1029" y="3002" width="70" height="100">
-   <properties>
-    <property name="name" value="jan"/>
-   </properties>
-  </object>
-  <object id="44" gid="3" x="1165" y="4738" width="70" height="100">
-   <properties>
-    <property name="name" value="maksym"/>
-   </properties>
-  </object>
+  <object id="17" name="kamil" gid="3" x="2823.67" y="4410" width="70" height="100"/>
+  <object id="18" name="igo" gid="3" x="2761.33" y="3706" width="80" height="220"/>
+  <object id="24" name="police" gid="3" x="946.52" y="2701.45" width="90" height="200"/>
+  <object id="28" name="kioskman" gid="3" x="217" y="4004" width="70" height="100"/>
+  <object id="32" name="jason" gid="3" x="919.55" y="4498.48" width="80" height="220"/>
+  <object id="41" name="dmitri" gid="3" x="2125" y="4812" width="70" height="100"/>
+  <object id="43" name="jan" gid="3" x="1029" y="3002" width="70" height="100"/>
+  <object id="44" name="maksym" gid="3" x="1165" y="4738" width="70" height="100"/>
+  <object id="54" name="denys" gid="28" x="1109" y="3418" width="70" height="100"/>
  </objectgroup>
  <objectgroup id="7" name="items">
   <object id="53" gid="27" x="3200" y="2600" width="200" height="200">

@@ -37,7 +37,7 @@ public class NpcManager {
 
         for (MapObject object : npcLayer.getObjects()) {
             MapProperties props = object.getProperties();
-            String npcId = props.get("name", String.class);
+            String npcId = object.getName();
             if (npcId != null && findNpcById(npcId.toLowerCase()) == null) {
                 createNpcFromMap(npcId, props, world, npcStates);
             }
@@ -73,15 +73,17 @@ public class NpcManager {
         String npcName = getNpcName(npcId);
         DialogueNode initialDialogue = dialogueRegistry.getInitialDialogue(npcIdLower);
         int speed = props.get("speed", 50, Integer.class);
-
+        float width = props.get("width", 100f, Float.class);
+        float height = props.get("height", 100f, Float.class);
         if ("police".equalsIgnoreCase(npcId)) {
-            return new Police("police", npcName, 100, 100, x, y, texture, targetWorld, speed, initialDialogue, itemManager);
+            return new Police("police", npcName, (int) width, (int) height, x, y, texture, targetWorld, speed, initialDialogue, itemManager);
         } else {
             int directionX = props.get("directionX", 0, Integer.class);
             int directionY = props.get("directionY", 0, Integer.class);
             float pauseTime = props.get("pauseTime", 0f, Float.class);
             float moveTime = props.get("moveTime", 0f, Float.class);
-            return new NPC(npcIdLower, npcName, 100, 100, x, y, texture, targetWorld, directionX, directionY, pauseTime, moveTime, speed, initialDialogue, itemManager);
+
+            return new NPC(npcIdLower, npcName, (int) width, (int) height, x, y, texture, targetWorld, directionX, directionY, pauseTime, moveTime, speed, initialDialogue, itemManager);
         }
     }
 

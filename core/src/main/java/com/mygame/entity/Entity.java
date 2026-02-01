@@ -2,6 +2,7 @@ package com.mygame.entity;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.mygame.entity.player.Player;
 import com.mygame.world.World;
 
@@ -21,6 +22,8 @@ public abstract class Entity implements Renderable {
     private float x;             // position X
     private float y;             // position Y
 
+    protected Rectangle bounds;
+
     public Entity(int width, int height, float x, float y, Texture texture, World world) {
         this.width = width;
         this.height = height;
@@ -28,6 +31,7 @@ public abstract class Entity implements Renderable {
         this.y = y;
         this.texture = texture;
         this.world = world;
+        this.bounds = new Rectangle(x, y, width, height);
     }
 
     /**
@@ -75,4 +79,9 @@ public abstract class Entity implements Renderable {
     }
     public void setTexture(Texture texture) { this.texture = texture; }
     public Texture getTexture() { return texture; }
+
+    public Rectangle getBounds() {
+        bounds.set(x, y, width, height);
+        return bounds;
+    }
 }

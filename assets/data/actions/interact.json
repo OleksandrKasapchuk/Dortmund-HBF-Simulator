@@ -33,12 +33,14 @@
     "actions": [
       { "type": "inventory.remove", "id": "grass_seed", "amount": 1 },
       { "type": "audio.playSound", "id": "bush" },
-      { "type": "world.createPlant"},
       {
         "type": "system.timer",
         "delay": 1.9,
-        "action": { "type": "ui.message", "key": "message.grass_planted", "duration": 1.0 }
+        "action": {"type": "system.composite", "actions": [
+          { "type": "inventory.add", "id": "weed_plant", "amount": 1 },
+          { "type":  "zone.enable_next_available", "prefix": "weed_plant"}
+          ]
       }
-    ]
+    }]
   }
 }

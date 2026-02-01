@@ -74,6 +74,7 @@ public class GameContext {
         this.itemManager = new ItemManager(itemRegistry, worldManager);
         player.setItemManager(itemManager);
         this.npcManager = new NpcManager(player, dialogueRegistry, worldManager, itemManager);
+        player.setNpcManager(npcManager);
         this.pfandManager = new PfandManager(itemRegistry, itemManager, worldManager);
         this.zoneRegistry = new ZoneRegistry(itemRegistry, player);
         this.cameraManager = new CameraManager(player);

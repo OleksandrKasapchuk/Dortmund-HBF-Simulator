@@ -15,7 +15,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygame.entity.Entity;
-import com.mygame.world.zone.QuestZone;
+import com.mygame.world.zone.PlaceZone;
 import com.mygame.world.zone.TransitionZone;
 import com.mygame.world.zone.Zone;
 
@@ -157,7 +157,7 @@ public class World {
             if (zone instanceof TransitionZone tz) {
                 shapeRenderer.setColor(Color.WHITE); // білий для переходів
                 shapeRenderer.rect(tz.getArea().x, tz.getArea().y, tz.getArea().width, tz.getArea().height);
-            } else if (zone instanceof QuestZone qz) {
+            } else if (zone instanceof PlaceZone qz) {
                 shapeRenderer.setColor(Color.YELLOW); // жовтий для квестів
                 shapeRenderer.rect(qz.getArea().x, qz.getArea().y, qz.getArea().width, qz.getArea().height);
             } else {

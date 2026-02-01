@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="36" tilewidth="100" tileheight="100" infinite="0" nextlayerid="6" nextobjectid="35">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="36" tilewidth="100" tileheight="100" infinite="0" nextlayerid="6" nextobjectid="46">
  <tileset firstgid="1" source="plate.tsx"/>
  <tileset firstgid="2" source="brick.tsx"/>
  <tileset firstgid="3" source="npc.tsx"/>
@@ -61,15 +61,32 @@
     <property name="zoneType" value="transition"/>
    </properties>
   </object>
- </objectgroup>
- <objectgroup id="4" name="npcs">
-  <object id="2" gid="3" x="1821" y="2302" width="70" height="100">
+  <object id="42" gid="2" x="2327.67" y="1893.33" width="80" height="80">
    <properties>
-    <property name="name" value="denys"/>
-    <property name="textureKey" value="denys"/>
+    <property name="key" value="weed_plant.4"/>
+    <property name="zoneType" value="place"/>
+   </properties>
+  </object>
+  <object id="43" gid="2" x="2326.66" y="1780" width="80" height="80">
+   <properties>
+    <property name="key" value="weed_plant.3"/>
+    <property name="zoneType" value="place"/>
+   </properties>
+  </object>
+  <object id="44" gid="2" x="2215.33" y="1945" width="80" height="80">
+   <properties>
+    <property name="key" value="weed_plant.2"/>
+    <property name="zoneType" value="place"/>
+   </properties>
+  </object>
+  <object id="45" gid="2" x="2326.34" y="1679.33" width="80" height="80">
+   <properties>
+    <property name="key" value="weed_plant.1"/>
+    <property name="zoneType" value="place"/>
    </properties>
   </object>
  </objectgroup>
+ <objectgroup id="4" name="npcs"/>
  <layer id="3" name="collision" width="30" height="36">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -116,7 +133,7 @@
     <property name="isPickupable" type="bool" value="false"/>
     <property name="isSolid" type="bool" value="true"/>
     <property name="itemKey" value="bush"/>
-    <property name="onInteractAction" value="quest.delivery.interact_bush"/>
+    <property name="onInteractAction" value="act.quest.delivery.interact_bush"/>
     <property name="questId" value="delivery"/>
    </properties>
   </object>
@@ -158,7 +175,7 @@
     <property name="searchable" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="11" name="table1" gid="10" x="2045" y="1957" width="229" height="114">
+  <object id="11" name="table1" gid="10" x="1870.33" y="1972" width="215.667" height="98">
    <properties>
     <property name="isPickupable" type="bool" value="false"/>
     <property name="isSolid" type="bool" value="true"/>

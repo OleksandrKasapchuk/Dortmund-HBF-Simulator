@@ -1,5 +1,6 @@
 package com.mygame.events;
 
+import com.mygame.entity.PlantItem;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemDefinition;
 import com.mygame.entity.npc.Police;
@@ -33,7 +34,10 @@ public class Events {
     public record ItemUsedEvent(ItemDefinition item) {}
 
     public record CreateItemEvent(String itemKey, float x, float y) {}
+    public record CreatePlantEvent(float x, float y, Player player) {}
     public record RemoveItemFromWorldEvent(String id) {}
+    public record HarvestPlantEvent(PlantItem plant) {}
+
 
     public record ActionRequestEvent(String actionId) {} // Нова подія
     public record InteractEvent() {}

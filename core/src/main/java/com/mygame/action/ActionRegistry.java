@@ -15,7 +15,6 @@ import com.mygame.action.provider.PlayerActionProvider;
 import com.mygame.action.provider.QuestActionProvider;
 import com.mygame.action.provider.SystemActionProvider;
 import com.mygame.action.provider.UiActionProvider;
-import com.mygame.action.provider.WorldActionProvider;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.GameContext;
@@ -54,7 +53,6 @@ public class ActionRegistry {
         providers.add(new NpcActionProvider());
         providers.add(new UiActionProvider());
         providers.add(new CustomActionProvider());
-        providers.add(new WorldActionProvider());
     }
 
     public void registerCreator(String type, ActionCreator creator) {
