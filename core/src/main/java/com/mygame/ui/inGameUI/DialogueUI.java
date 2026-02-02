@@ -72,7 +72,7 @@ public class DialogueUI {
         dialogueLabel = new Label("", skin);
         dialogueLabel.setFontScale(1.5f);
         dialogueLabel.setWrap(true);
-        dialogueTable.add(dialogueLabel).expand().fillX().align(Align.left).row();
+        dialogueTable.add(dialogueLabel).expand().fillX().padRight(256 + 40).align(Align.left).row();
 
 
         // Table to hold choice buttons

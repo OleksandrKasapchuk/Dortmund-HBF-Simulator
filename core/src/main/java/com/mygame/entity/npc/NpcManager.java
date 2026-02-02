@@ -1,6 +1,5 @@
 package com.mygame.entity.npc;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
@@ -69,27 +68,23 @@ public class NpcManager {
             }
         }
 
-        Texture texture = getNpcTexture(npcId + ".3d");
-        if (texture == null) {
-            texture = getNpcTexture(npcId);
-        }
-        Texture face_texture = getNpcTexture(npcId);
-
+        String textureKey = (Assets.getTexture(npcId + ".3d") != null) ? npcId + ".3d" : npcId;
 
         String npcName = getNpcName(npcId);
         DialogueNode initialDialogue = dialogueRegistry.getInitialDialogue(npcIdLower);
         int speed = props.get("speed", 50, Integer.class);
         float width = props.get("width", 100f, Float.class);
         float height = props.get("height", 100f, Float.class);
+
         if ("police".equalsIgnoreCase(npcId)) {
-            return new Police("police", npcName, (int) width, (int) height, x, y, texture, face_texture, targetWorld, speed, initialDialogue, itemManager);
+            return new Police("police", npcName, (int) width, (int) height, x, y, textureKey, npcId, targetWorld, speed, initialDialogue, itemManager);
         } else {
             int directionX = props.get("directionX", 0, Integer.class);
             int directionY = props.get("directionY", 0, Integer.class);
             float pauseTime = props.get("pauseTime", 0f, Float.class);
             float moveTime = props.get("moveTime", 0f, Float.class);
 
-            return new NPC(npcIdLower, npcName, (int) width, (int) height, x, y, texture, face_texture, targetWorld, directionX, directionY, pauseTime, moveTime, speed, initialDialogue, itemManager);
+            return new NPC(npcIdLower, npcName, (int) width, (int) height, x, y, textureKey, npcId, targetWorld, directionX, directionY, pauseTime, moveTime, speed, initialDialogue, itemManager);
         }
     }
 
@@ -114,14 +109,6 @@ public class NpcManager {
         } catch (Exception e) {
             return npcId; // Fallback to id
         }
-    }
-
-    private Texture getNpcTexture(String npcId) {
-        Texture texture = Assets.getTexture(npcId.toLowerCase());
-        if (texture == null) {
-            System.err.println("Texture for '" + npcId + "' not found! Using fallback.");
-        }
-        return texture;
     }
 
     public void renderNpcs(SpriteBatch batch) {
@@ -155,7 +142,7 @@ public class NpcManager {
         if (currentWorld == null) return;
 
         Police summonedPolice = new Police("summoned_police", Assets.npcs.get("npc.police.name"),
-                100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police.3d"), Assets.getTexture("police"),
+                100, 100, player.getX(), player.getY() - 300, "police.3d", "police",
                 currentWorld, 200, dialogueRegistry.getDialogue("summoned_police", "chase.offer"), itemManager);
         npcs.add(summonedPolice);
     }
