@@ -1,7 +1,6 @@
 package com.mygame.entity.npc;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.player.Player;
@@ -32,8 +31,8 @@ public class Police extends NPC {
     private static final float MAX_LOST_TIME = 5f; // якщо поліція не бачить 5 секунд — втеча
 
     public Police(String id, String name, int width, int height, float x, float y,
-                  Texture texture, World world, int speed, DialogueNode dialogue, ItemManager itemManager) {
-        super(id, name, width, height, x, y, texture, world,
+                  String textureKey, String faceTextureKey, World world, int speed, DialogueNode dialogue, ItemManager itemManager) {
+        super(id, name, width, height, x, y, textureKey, faceTextureKey, world,
             0, 0, 0f, 0f, // Static patrol path, not used for police
             speed, dialogue, itemManager);
     }

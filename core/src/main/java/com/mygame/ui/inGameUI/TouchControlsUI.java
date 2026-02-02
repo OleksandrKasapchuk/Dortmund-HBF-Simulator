@@ -36,7 +36,7 @@ public class TouchControlsUI {
         touchpadStyle.background = new TextureRegionDrawable(new TextureRegion(bgTexture));
 
         Touchpad touchpad = new Touchpad(10, touchpadStyle);
-        touchpad.setBounds(150, 150, 200, 200);
+        touchpad.setBounds(50, 75, 200, 200);
         gameStage.addActor(touchpad);
         player.touchpad = touchpad;
 

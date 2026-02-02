@@ -72,7 +72,7 @@ public class DialogueUI {
         dialogueLabel = new Label("", skin);
         dialogueLabel.setFontScale(1.5f);
         dialogueLabel.setWrap(true);
-        dialogueTable.add(dialogueLabel).expand().fillX().align(Align.left).row();
+        dialogueTable.add(dialogueLabel).expand().fillX().padRight(256 + 40).align(Align.left).row();
 
 
         // Table to hold choice buttons
@@ -94,7 +94,7 @@ public class DialogueUI {
         updateText("");  // clear dialogue text initially
         choiceTable.clear();  // remove previous choices
 
-        showPortrait(npc.getTexture());
+        showPortrait(npc.getFace_texture());
 
         createChoices(node, listener);
         showChoices(false);       // initially hide choices

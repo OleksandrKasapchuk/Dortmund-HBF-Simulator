@@ -60,7 +60,7 @@ public class UIManager {
 
         questUI = new QuestUI(skin, getGameScreen().getStage(), 1200, 900, questManager);
         inventoryUI = new InventoryUI(getGameScreen().getStage(), skin);
-        dialogueUI = new DialogueUI(skin, getGameScreen().getStage(), 1950, 250, 25f, 10f);
+        dialogueUI = new DialogueUI(skin, getGameScreen().getStage(), 1500, 350, 250f, 10f);
 
         subscribeToEvents();
 

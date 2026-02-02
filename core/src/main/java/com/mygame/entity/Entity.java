@@ -77,6 +77,7 @@ public abstract class Entity implements Renderable {
         float dy = player.getCenterY() - this.getCenterY();
         return Math.sqrt(dx * dx + dy * dy) < distance;
     }
+
     public void setTexture(Texture texture) { this.texture = texture; }
     public Texture getTexture() { return texture; }
 
