@@ -69,21 +69,27 @@ public class NpcManager {
             }
         }
 
-        Texture texture = getNpcTexture(npcId);
+        Texture texture = getNpcTexture(npcId + ".3d");
+        if (texture == null) {
+            texture = getNpcTexture(npcId);
+        }
+        Texture face_texture = getNpcTexture(npcId);
+
+
         String npcName = getNpcName(npcId);
         DialogueNode initialDialogue = dialogueRegistry.getInitialDialogue(npcIdLower);
         int speed = props.get("speed", 50, Integer.class);
         float width = props.get("width", 100f, Float.class);
         float height = props.get("height", 100f, Float.class);
         if ("police".equalsIgnoreCase(npcId)) {
-            return new Police("police", npcName, (int) width, (int) height, x, y, texture, targetWorld, speed, initialDialogue, itemManager);
+            return new Police("police", npcName, (int) width, (int) height, x, y, texture, face_texture, targetWorld, speed, initialDialogue, itemManager);
         } else {
             int directionX = props.get("directionX", 0, Integer.class);
             int directionY = props.get("directionY", 0, Integer.class);
             float pauseTime = props.get("pauseTime", 0f, Float.class);
             float moveTime = props.get("moveTime", 0f, Float.class);
 
-            return new NPC(npcIdLower, npcName, (int) width, (int) height, x, y, texture, targetWorld, directionX, directionY, pauseTime, moveTime, speed, initialDialogue, itemManager);
+            return new NPC(npcIdLower, npcName, (int) width, (int) height, x, y, texture, face_texture, targetWorld, directionX, directionY, pauseTime, moveTime, speed, initialDialogue, itemManager);
         }
     }
 
@@ -114,7 +120,6 @@ public class NpcManager {
         Texture texture = Assets.getTexture(npcId.toLowerCase());
         if (texture == null) {
             System.err.println("Texture for '" + npcId + "' not found! Using fallback.");
-            texture = Assets.getTexture("zoe");
         }
         return texture;
     }
@@ -150,7 +155,7 @@ public class NpcManager {
         if (currentWorld == null) return;
 
         Police summonedPolice = new Police("summoned_police", Assets.npcs.get("npc.police.name"),
-                100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police"),
+                100, 100, player.getX(), player.getY() - 300, Assets.getTexture("police.3d"), Assets.getTexture("police"),
                 currentWorld, 200, dialogueRegistry.getDialogue("summoned_police", "chase.offer"), itemManager);
         npcs.add(summonedPolice);
     }

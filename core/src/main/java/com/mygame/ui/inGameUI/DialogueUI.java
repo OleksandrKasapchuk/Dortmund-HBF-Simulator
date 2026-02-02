@@ -94,7 +94,7 @@ public class DialogueUI {
         updateText("");  // clear dialogue text initially
         choiceTable.clear();  // remove previous choices
 
-        showPortrait(npc.getTexture());
+        showPortrait(npc.getFace_texture());
 
         createChoices(node, listener);
         showChoices(false);       // initially hide choices

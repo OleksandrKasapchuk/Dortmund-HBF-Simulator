@@ -32,8 +32,8 @@ public class Police extends NPC {
     private static final float MAX_LOST_TIME = 5f; // якщо поліція не бачить 5 секунд — втеча
 
     public Police(String id, String name, int width, int height, float x, float y,
-                  Texture texture, World world, int speed, DialogueNode dialogue, ItemManager itemManager) {
-        super(id, name, width, height, x, y, texture, world,
+                  Texture texture, Texture face_texture, World world, int speed, DialogueNode dialogue, ItemManager itemManager) {
+        super(id, name, width, height, x, y, texture, face_texture, world,
             0, 0, 0f, 0f, // Static patrol path, not used for police
             speed, dialogue, itemManager);
     }

@@ -33,9 +33,15 @@ public class NPC extends Entity {
     private String currentDialogueNodeId = "start";
     private String currentTextureKey;
     private ItemManager itemManager;
+    private Texture face_texture;
+
+    public Texture getFace_texture() {
+        return face_texture;
+    }
+
     public NPC(
         String id, String name,
-        int width, int height, float x, float y, Texture texture, World world,
+        int width, int height, float x, float y, Texture texture, Texture face_texture, World world,
         int directionX, int directionY, float pauseTime, float moveTime,
         int speed, DialogueNode dialogue, ItemManager itemManager
     ) {
@@ -53,6 +59,7 @@ public class NPC extends Entity {
 
         this.speed = speed;
         this.itemManager = itemManager;
+        this.face_texture = face_texture;
     }
 
     @Override
