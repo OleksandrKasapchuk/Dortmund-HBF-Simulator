@@ -34,6 +34,8 @@
   { "key": "dmitri.3d", "path": "images/npc/dmitri_3d.png" },
   { "key": "maksym", "path": "images/npc/maksym.png" },
 
+  { "key": "ihor", "path": "images/npc/ihor.png" },
+
   { "key": "deathBack", "path": "images/background/deathScreen.jpg" },
   { "key": "menuBack", "path": "images/background/menu.jpg" },
   { "key": "menuBlurBack", "path": "images/background/menublur.jpg" },
