@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.mygame.entity.Entity;
 import com.mygame.entity.item.Item;
-import com.mygame.entity.item.ItemDefinition;
 import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.npc.NPC;
 import com.mygame.entity.npc.NpcManager;
@@ -25,7 +24,8 @@ public class Player extends Entity {
     private NpcManager npcManager;
 
     private boolean isMovementLocked = false;
-    private PlayerMovementController controller;
+    private PlayerMovementController movementController;
+    private PlayerStatusController statusController;
 
     public enum State {
         NORMAL("player.state.normal"),
@@ -47,7 +47,8 @@ public class Player extends Entity {
 
     public Player(int speed, int width, int height, float x, float y, Texture texture, World world) {
         super(width, height, x, y, texture, world);
-        this.controller = new PlayerMovementController();
+        this.statusController = new PlayerStatusController();
+        this.movementController = new PlayerMovementController();
         this.currentState = SettingsManager.load().playerState;
     }
 
@@ -59,8 +60,9 @@ public class Player extends Entity {
     // --- UPDATE METHOD ---
     @Override
     public void update(float delta) {
+        statusController.update(delta);
         if (isMovementLocked) return;
-        controller.update(this, delta);
+        movementController.update(this, delta);
     }
 
     public Item getCollidingSolidItem(Rectangle rect) {
@@ -84,16 +86,7 @@ public class Player extends Entity {
         return null;
     }
 
-    public InventoryManager getInventory() {
-        return inventory;
-    }
-
-    public void useItem(ItemDefinition item) {
-        if (inventory.isUsable(item) && inventory.hasItem(item)) {
-            inventory.removeItem(item, 1);
-            EventBus.fire(new Events.ItemUsedEvent(item));
-        }
-    }
+    public InventoryManager getInventory() {return inventory;}
 
     // State setters
     public void setState(Player.State state) {
@@ -103,4 +96,6 @@ public class Player extends Entity {
     }
 
     public State getState() { return currentState; }
+
+    public PlayerStatusController getStatusController() {return statusController;}
 }

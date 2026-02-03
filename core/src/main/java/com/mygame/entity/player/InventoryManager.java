@@ -24,6 +24,7 @@ public class InventoryManager {
     // --- Constructor: initializes empty inventory ---
     public InventoryManager() {
         items = new LinkedHashMap<>();       // Preserve insertion order
+        EventBus.subscribe(Events.ItemUsedEvent.class, event -> useItem(event.item()));
     }
 
     /**
@@ -47,6 +48,12 @@ public class InventoryManager {
         else items.put(type, current - count);
         EventBus.fire(new Events.InventoryChangedEvent(type, getAmount(type)));
         EventBus.fire(new Events.SaveRequestEvent());
+    }
+
+    public void useItem(ItemDefinition item) {
+        if (isUsable(item) && hasItem(item)) {
+            removeItem(item, 1);
+        }
     }
 
     public boolean hasItem(ItemDefinition type) {
