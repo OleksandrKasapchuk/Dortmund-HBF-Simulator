@@ -61,17 +61,23 @@ public class InventoryUI {
         titleLabel.setColor(Color.GOLD);
         inventoryTable.add(titleLabel).colspan(4).expandX().center().row();
 
+        // 1. Створюємо окрему таблицю для статусів
+        Table statusSubTable = new Table();
+        statusSubTable.align(Align.left);
+
         statusLabel = new Label("", skin);
         statusLabel.setFontScale(1.5f);
-        inventoryTable.add(statusLabel).left().padBottom(40).colspan(4).row();
+        statusSubTable.add(statusLabel).padRight(60); // Великий відступ між ними
 
         hungerLabel = new Label("", skin);
         hungerLabel.setFontScale(1.5f);
-        inventoryTable.add(hungerLabel).left().padBottom(40).colspan(4).row();
+        statusSubTable.add(hungerLabel).padRight(60);
 
         thirstLabel = new Label("", skin);
         thirstLabel.setFontScale(1.5f);
-        inventoryTable.add(thirstLabel).left().padBottom(40).colspan(4).row();
+        statusSubTable.add(thirstLabel);
+
+        inventoryTable.add(statusSubTable).colspan(4).left().padBottom(40).row();
 
         // create cached slots
         for (int i = 0; i < MAX_SLOTS; i++) {
@@ -95,13 +101,10 @@ public class InventoryUI {
 
     public void update(Player player) {
         if (!visible) return;
-        Runtime runtime = Runtime.getRuntime();
-        System.out.println("Used memory before: " + (runtime.totalMemory() - runtime.freeMemory())/1024 + " KB");
 
-        long start = System.nanoTime();
-        statusLabel.setText(Assets.ui.get("inventory.status") + Assets.ui.get(player.getState().getLocalizationKey()));
-        hungerLabel.setText(String.valueOf(player.getStatusController().getHunger()));
-        thirstLabel.setText(String.valueOf(player.getStatusController().getThirst()));
+        statusLabel.setText(Assets.ui.format("inventory.status", Assets.ui.get(player.getState().getLocalizationKey())));
+        hungerLabel.setText(Assets.ui.format("inventory.hunger", player.getStatusController().getHunger()));
+        thirstLabel.setText(Assets.ui.format("inventory.thirst", player.getStatusController().getThirst()));
 
         int i = 0;
         for (ItemDefinition item : player.getInventory().getItems().keySet()) {
@@ -116,12 +119,6 @@ public class InventoryUI {
         for (; i < MAX_SLOTS; i++) {
             slots.get(i).setVisible(false);
         }
-        long end = System.nanoTime();
-        System.out.println("Inventory update time: " + (end - start)/1_000_000f + " ms");
-
-        Runtime runtime2 = Runtime.getRuntime();
-        System.out.println("Used memory after: " + (runtime2.totalMemory() - runtime2.freeMemory())/1024 + " KB");
-
     }
 
     public boolean isVisible() { return visible; }
@@ -135,6 +132,7 @@ public class InventoryUI {
         TextButton useButton;
         Label descriptionLabel;
         Skin skin;
+
         InventorySlot(Skin skin) {
             itemLabel = new Label("", skin);
             itemLabel.setFontScale(1.5f);
@@ -146,7 +144,7 @@ public class InventoryUI {
         }
 
         void set(ItemDefinition item, int amount, Player player) {
-            itemLabel.setText(Assets.items.get(item.getNameKey()));
+            itemLabel.setText(Assets.items.get(item.getNameKey()) + ": ");
             countLabel.setText(String.valueOf(amount));
             descriptionLabel.setText(Assets.items.get(item.getDescriptionKey()));
 
