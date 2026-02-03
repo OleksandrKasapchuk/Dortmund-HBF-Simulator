@@ -175,7 +175,7 @@
   <object id="32" name="jason" gid="3" x="919.55" y="4498.48" width="80" height="220"/>
   <object id="41" name="dmitri" gid="3" x="2125" y="4812" width="80" height="220"/>
   <object id="43" name="jan" gid="3" x="1029" y="3002" width="70" height="100"/>
-  <object id="44" name="maksym" gid="3" x="1165" y="4738" width="70" height="100"/>
+  <object id="44" name="maksym" gid="3" x="2777" y="2490" width="70" height="100"/>
   <object id="54" name="denys" gid="29" x="1109" y="3418" width="80" height="220"/>
  </objectgroup>
  <objectgroup id="7" name="items">

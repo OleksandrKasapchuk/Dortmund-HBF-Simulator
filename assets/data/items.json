@@ -1,7 +1,7 @@
 [
   {"key": "money", "pickupable": true},
-  {"key": "grass", "pickupable": true},
-  {"key": "grass_seed", "pickupable": true},
+  {"key": "weed", "pickupable": true},
+  {"key": "weed_seed", "pickupable": true},
   {"key": "pape", "pickupable": true},
   {"key": "joint", "pickupable": true, "effect": "true"},
   {"key": "ice_tea", "pickupable": true, "effect": "true"},

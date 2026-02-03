@@ -14,7 +14,7 @@
     "type": "system.composite",
     "actions": [
       { "type": "audio.playSound", "id": "harvest" },
-      { "type": "inventory.add", "id": "grass", "amount": 10}
+      { "type": "inventory.add", "id": "weed", "amount": 10}
     ]
   },
 

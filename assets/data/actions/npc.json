@@ -31,11 +31,11 @@
 
   "act.npc.police.check": {
     "type": "inventory.check",
-    "items": ["grass", "joint", "vape"],
+    "items": ["weed", "joint", "vape"],
     "onSuccess": {
       "type": "system.composite",
       "actions": [
-        { "type": "inventory.remove", "items": ["grass", "joint", "vape"], "amount": 9999 },
+        { "type": "inventory.remove", "items": ["weed", "joint", "vape"], "amount": 9999 },
         { "type": "ui.message", "key": "message.police.stuffLost" }
       ]
     },
@@ -43,15 +43,15 @@
   },
 
   "act.npc.chikita.craft": {
-    "type": "inventory.check", "itemId": "grass",
-    "onFail": { "type": "ui.notEnoughMessage", "item": "grass" },
+    "type": "inventory.check", "itemId": "weed",
+    "onFail": { "type": "ui.notEnoughMessage", "item": "weed" },
     "action": {
       "type": "inventory.check", "itemId": "pape",
       "onFail": { "type": "ui.notEnoughMessage", "item": "pape" },
       "action": {
         "type": "system.composite",
         "actions": [
-          { "type": "inventory.remove", "id": "grass" },
+          { "type": "inventory.remove", "id": "weed" },
           { "type": "inventory.remove", "id": "pape" },
           { "type": "player.lockMovement", "locked": true },
           { "type": "audio.playSound", "id": "kosyak" },

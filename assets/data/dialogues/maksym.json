@@ -2,7 +2,13 @@
   "maksym": {
     "nodes": {
       "start": "idle",
-      "idle": ["dialogue.maksym.idle.1"]
+      "idle": {
+        "texts":["dialogue.maksym.idle.1", "dialogue.maksym.idle.2", "dialogue.maksym.idle.3"],
+        "choices":  [
+          { "text": "dialogue.maksym.choice.accept", "action": "act.inventory.maksym.sell.weed" },
+          "dialogue.choice.leave"
+        ]
+      }
     }
   }
 }

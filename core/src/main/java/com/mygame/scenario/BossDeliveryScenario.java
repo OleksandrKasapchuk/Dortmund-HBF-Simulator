@@ -17,7 +17,7 @@ public class BossDeliveryScenario implements Scenario {
     public void init() {
         inventoryListener = event -> {
             if (ctx.questManager.hasQuest("delivery") &&
-                event.item().getKey().equals("grass") && event.newAmount() < 1000) {
+                event.item().getKey().equals("weed") && event.newAmount() < 1000) {
 
                 ctx.questManager.getQuest("delivery").setStatus(QuestManager.Status.NOT_STARTED);
                 EventBus.fire(new Events.ActionRequestEvent("act.quest.delivery.fail"));

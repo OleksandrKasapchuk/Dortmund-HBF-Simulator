@@ -132,7 +132,6 @@ public class UIManager {
             if (questActive || !nearPlayer || !item.isInteractable()) continue;
 
             // Вибір тексту в залежності від того, яка data є
-            String textKey;
             if (hasSearchData) {
                 drawText(Assets.ui.get("interact.search"), item.getCenterX(), item.getCenterY() + 20);
             } else if (item.getInteractionData() != null){ // тільки InteractionData

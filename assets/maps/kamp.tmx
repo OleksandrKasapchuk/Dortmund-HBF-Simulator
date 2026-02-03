@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="100" tileheight="100" infinite="0" nextlayerid="6" nextobjectid="12">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="100" tileheight="100" infinite="0" nextlayerid="6" nextobjectid="13">
  <tileset firstgid="1" source="plate.tsx"/>
  <tileset firstgid="2" source="brick.tsx"/>
  <tileset firstgid="3" source="npc.tsx"/>
@@ -11,6 +11,7 @@
  <tileset firstgid="9" source="3d_side_left.tsx"/>
  <tileset firstgid="10" source="3d_side_right.tsx"/>
  <tileset firstgid="11" source="3d_left_side_corner.tsx"/>
+ <tileset firstgid="12" source="wardrobe.tsx"/>
  <layer id="2" name="background" width="30" height="30" opacity="0.95">
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -92,8 +93,17 @@
  </objectgroup>
  <objectgroup id="5" name="npcs">
   <object id="3" name="murat" gid="3" x="2555.3" y="854.606" width="80" height="220"/>
-  <object id="4" name="talahon1" gid="3" x="1704.76" y="1004.49" width="70" height="100"/>
+  <object id="4" name="talahon1" gid="3" x="1714.76" y="1095.16" width="70" height="100"/>
   <object id="5" name="talahon2" gid="3" x="1725" y="750" width="70" height="100"/>
   <object id="11" name="jamal" gid="3" x="1015" y="2300" width="70" height="100"/>
+  <object id="12" gid="28" x="516.667" y="2133" width="60" height="90">
+   <properties>
+    <property name="isSolid" type="bool" value="true"/>
+    <property name="itemKey" value="trash_can"/>
+    <property name="rewardAmount" type="int" value="1"/>
+    <property name="rewardItemKey" value="pfand"/>
+    <property name="searchable" type="bool" value="true"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>
