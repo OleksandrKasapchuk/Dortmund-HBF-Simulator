@@ -8,8 +8,15 @@
   },
 
   "act.item.ice_tea.use": {
-    "type": "system.timer", "delay": 1.0, "action": { "type": "player.setState", "key": "normal" }
+    "type": "system.composite",
+    "actions": [
+      {"type": "player.drink", "amount": 20},
+      {"type": "system.timer", "delay": 1.0, "action": { "type": "player.setState", "key": "normal" }}
+    ]
   },
+
+  "act.item.kebab.use": {"type": "player.eat", "amount": 20},
+
   "act.item.harvest": {
     "type": "system.composite",
     "actions": [

@@ -26,7 +26,7 @@ public class ItemRegistry {
             String effect = null;
 
             if (item.has("effect") && item.getBoolean("effect")) {
-                effect = "item." + key + ".use";
+                effect = "act.item." + key + ".use";
             }
             int width = item.getInt("width", 64);
             int height = item.getInt("height", 64);

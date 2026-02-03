@@ -17,13 +17,20 @@ public class PlayerStatusController {
         thirst = Math.max(thirst, 0);
     }
 
-    public void eat(float amount) { hunger = Math.min(100, hunger + amount); }
+    public void eat(float amount) {
+        if (amount < 0) return;
+        hunger = Math.min(100, hunger + amount);
+    }
 
-    public void drink(float amount) { thirst = Math.min(100, thirst + amount); }
+    public void drink(float amount) {
+        if (amount < 0) return;
+        thirst = Math.min(100, thirst + amount);
+    }
 
     public boolean isStarving() {return hunger <= 0;}
 
     public int getHunger() {return (int) hunger;}
-
     public int getThirst() {return (int) thirst;}
+    public void setHunger(float hunger) {this.hunger = hunger;}
+    public void setThirst(float thirst) {this.thirst = thirst;}
 }

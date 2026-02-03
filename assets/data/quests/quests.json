@@ -39,8 +39,6 @@
   },
   {"key": "chase"},
   {"key": "boss_end"},
-  {"key": "chili"},
-  {"key": "wallet"},
   {
     "key": "igo",
     "notify": true
