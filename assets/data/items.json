@@ -22,5 +22,6 @@
   {"key": "big_plant", "pickupable": false},
   {"key": "small_plant", "pickupable": false},
   {"key": "lamp", "pickupable": false},
-  {"key": "TV", "pickupable": false}
+  {"key": "TV", "pickupable": false},
+  {"key": "trash_can", "pickupable": false}
 ]

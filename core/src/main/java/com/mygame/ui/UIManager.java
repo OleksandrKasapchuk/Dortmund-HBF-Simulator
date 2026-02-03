@@ -134,12 +134,10 @@ public class UIManager {
             // Вибір тексту в залежності від того, яка data є
             String textKey;
             if (hasSearchData) {
-                textKey = "interact.search";
-            } else { // тільки InteractionData
-                textKey = "interact";
+                drawText(Assets.ui.get("interact.search"), item.getCenterX(), item.getCenterY() + 20);
+            } else if (item.getInteractionData() != null){ // тільки InteractionData
+                drawText(Assets.ui.get("interact"), item.getCenterX(), item.getCenterY() + 20);
             }
-
-            drawText(Assets.ui.get(textKey), item.getCenterX(), item.getCenterY() + 20);
         }
     }
 
