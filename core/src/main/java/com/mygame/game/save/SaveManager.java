@@ -74,8 +74,7 @@ public class SaveManager {
 
             if (ctx.worldManager.getCurrentWorld() != null) settings.currentWorldName = ctx.worldManager.getCurrentWorld().getName();
 
-            settings.currentDay = ctx.dayManager.getDay();
-            settings.currentTime = ctx.dayManager.getCurrentTime();
+            saveTime(settings);
 
             saveInventory(settings);
 
@@ -98,7 +97,10 @@ public class SaveManager {
             e.printStackTrace();
         }
     }
-
+    private void saveTime(GameSettings settings){
+        settings.currentDay = ctx.dayManager.getDay();
+        settings.currentTime = ctx.dayManager.getCurrentTime();
+    }
     private void saveCreatedItems(GameSettings settings) {
         settings.createdItems = ctx.itemManager.getAllItems().stream()
                 .filter(Item::isDynamic)
@@ -124,6 +126,8 @@ public class SaveManager {
         settings.playerState = ctx.player.getState();
         settings.playerX = ctx.player.getX();
         settings.playerY = ctx.player.getY();
+        settings.playerHunger = ctx.player.getStatusController().getHunger();
+        settings.playerThirst = ctx.player.getStatusController().getThirst();
     }
 
     private void saveActiveQuests(GameSettings settings){

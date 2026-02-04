@@ -113,10 +113,6 @@ public class DialogueUI {
         portraitImage.setVisible(true);
     }
 
-    public void hidePortrait() {
-        if (portraitImage != null) portraitImage.setVisible(false);
-    }
-
     private void createChoices(DialogueNode node, ChoiceListener listener){
         // Create buttons for each choice
         for (DialogueNode.Choice choice : node.getChoices()) {

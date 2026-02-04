@@ -18,13 +18,22 @@
 
   { "key": "zoe", "path": "images/npc/zoe.png" },
   { "key": "boss", "path": "images/npc/boss.png" },
+  { "key": "boss.3d", "path": "images/npc/boss_3d.png" },
   { "key": "kamil", "path": "images/npc/kamil.png" },
+
   { "key": "jan", "path": "images/npc/jan.png" },
+  { "key": "jan.3d", "path": "images/npc/jan_3d.png" },
+
   { "key": "filip", "path": "images/npc/filip.png" },
+
   { "key": "jason", "path": "images/npc/jason.png" },
   { "key": "jason.3d", "path": "images/npc/jason_3d.png" },
+
   { "key": "talahon1", "path": "images/npc/talahon1.png" },
+  { "key": "talahon1.3d", "path": "images/npc/talahon1_3d.png" },
+
   { "key": "talahon2", "path": "images/npc/talahon2.png" },
+  { "key": "talahon2.3d", "path": "images/npc/talahon2_3d.png" },
 
   { "key": "murat", "path": "images/npc/murat.png" },
   { "key": "murat.3d", "path": "images/npc/murat_3d.png" },
@@ -34,10 +43,11 @@
   { "key": "dmitri.3d", "path": "images/npc/dmitri_3d.png" },
   { "key": "maksym", "path": "images/npc/maksym.png" },
 
+  { "key": "ihor", "path": "images/npc/ihor.png" },
+
   { "key": "deathBack", "path": "images/background/deathScreen.jpg" },
   { "key": "menuBack", "path": "images/background/menu.jpg" },
   { "key": "menuBlurBack", "path": "images/background/menublur.jpg" },
-  { "key": "spoon", "path": "images/item/spoon.png" },
   { "key": "pfand", "path": "images/item/pfand.png" },
   { "key": "plant_1", "path": "images/item/plant/plant_1.png" },
   { "key": "plant_2", "path": "images/item/plant/plant_2.png" },
@@ -58,5 +68,6 @@
   {"key": "big_plant", "path": "images/block/big_plant.png"},
   {"key": "small_plant", "path": "images/block/small_plant.png"},
   {"key": "lamp", "path": "images/block/lamp.png"},
-  {"key": "TV", "path": "images/block/TV.png"}
+  {"key": "TV", "path": "images/block/TV.png"},
+  {"key": "trash_can", "path": "images/block/trash_can.png"}
 ]

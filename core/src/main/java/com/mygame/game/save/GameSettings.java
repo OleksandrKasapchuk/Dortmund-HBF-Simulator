@@ -26,6 +26,8 @@ public class GameSettings {
     public float playerX;
     public float playerY;
     public Player.State playerState;
+    public float playerHunger;
+    public float playerThirst;
 
     public String currentWorldName;
 
@@ -107,6 +109,8 @@ public class GameSettings {
         this.muteAll = false;
         this.playerX = 200;
         this.playerY = 200;
+        this.playerHunger = 100;
+        this.playerThirst = 100;
         this.currentWorldName = "main";
         this.inventory = new HashMap<>();
         this.activeQuests = new HashMap<>();

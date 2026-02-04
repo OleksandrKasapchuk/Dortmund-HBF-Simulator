@@ -5,7 +5,7 @@
       "trade.offer": {
         "texts": ["dialogue.murat.trade_offer.1", "dialogue.murat.trade_offer.2"],
         "choices": [
-          { "text": "dialogue.murat.trade_offer.choice.1", "action": "act.inventory.murat_buy_kebab" },
+          { "text": "dialogue.murat.trade_offer.choice.1", "action": "act.inventory.murat.buy.kebab" },
           "dialogue.choice.leave"
         ]
       }

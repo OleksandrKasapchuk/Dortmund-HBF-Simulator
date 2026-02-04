@@ -1,0 +1,8 @@
+{
+  "ihor": {
+    "nodes": {
+      "start": "idle",
+      "idle": ["dialogue.ihor.idle.1"]
+    }
+  }
+}

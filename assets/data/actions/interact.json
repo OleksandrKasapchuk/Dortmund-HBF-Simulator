@@ -22,16 +22,16 @@
 
   "act.interact.table_plant": {
     "type": "inventory.check",
-    "itemId": "grass_seed",
+    "itemId": "weed_seed",
     "amount": 1,
     "action": "act.interact.table_plant.success",
-    "onFail": { "type": "ui.notEnoughMessage", "item": "grass_seed" }
+    "onFail": { "type": "ui.notEnoughMessage", "item": "weed_seed" }
   },
 
   "act.interact.table_plant.success": {
     "type": "system.composite",
     "actions": [
-      { "type": "inventory.remove", "id": "grass_seed", "amount": 1 },
+      { "type": "inventory.remove", "id": "weed_seed", "amount": 1 },
       { "type": "audio.playSound", "id": "bush" },
       {
         "type": "system.timer",

@@ -58,11 +58,20 @@ tasks.register('checkLocalization') {
           def missing = mainKeys - currentKeys
           def extra = currentKeys - mainKeys
 
+          // Ігноруємо специфічні для мови ключі (відмінки, множина)
+          def ignorableExtra = extra.findAll { key ->
+              key.toString().endsWith('.accusative') ||
+              key.toString().endsWith('.one') ||
+              key.toString().endsWith('.few') ||
+              key.toString().endsWith('.many')
+          }
+          def actualExtra = extra - ignorableExtra
+
           if (!missing.isEmpty()) {
             errors << "File [${subDir.name}/${file.name}] is MISSING keys: ${missing}"
           }
-          if (!extra.isEmpty()) {
-            errors << "File [${subDir.name}/${file.name}] has EXTRA keys: ${extra}"
+          if (!actualExtra.isEmpty()) {
+            errors << "File [${subDir.name}/${file.name}] has EXTRA keys: ${actualExtra}"
           }
         }
       }

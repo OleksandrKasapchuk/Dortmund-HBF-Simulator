@@ -36,5 +36,8 @@ public class PlayerActionProvider implements ActionProvider {
         registry.registerCreator("player.lockMovement", (c, data) -> () -> c.player.setMovementLocked(data.getBoolean("locked")));
 
         registry.registerAction("player.sleep", context.dayManager::sleep);
+
+        registry.registerCreator("player.eat", (c, data) -> () -> context.player.getStatusController().eat(data.getFloat("amount")));
+        registry.registerCreator("player.drink", (c, data) -> () -> context.player.getStatusController().drink(data.getFloat("amount")));
     }
 }

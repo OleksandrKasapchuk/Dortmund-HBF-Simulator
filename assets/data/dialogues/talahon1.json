@@ -4,7 +4,6 @@
       "start": "idle",
       "idle": {
         "texts": ["dialogue.talahon1.idle.1", "dialogue.talahon1.idle.2", "dialogue.talahon1.idle.3"],
-        "isForced": true
       }
     }
   }

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -14,6 +15,8 @@ import com.badlogic.gdx.utils.Align;
 import com.mygame.assets.Assets;
 import com.mygame.entity.player.Player;
 import com.mygame.entity.item.ItemDefinition;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
 
 import java.util.Map;
 
@@ -26,9 +29,14 @@ public class InventoryUI {
 
     private final Skin skin;
     private final Table inventoryTable;
+    private final Table itemsTable;
+
     private final Texture inventoryBgTexture;
     private boolean visible = false;
-
+    private Label titleLabel;
+    private Label statusLabel;
+    private Label hungerLabel;
+    private Label thirstLabel;
     /**
      * Creates the InventoryUI and adds it to the given stage.
      *
@@ -55,8 +63,38 @@ public class InventoryUI {
 
         inventoryTable.setVisible(false);
         stage.addActor(inventoryTable);
-    }
 
+        titleLabel = new Label(Assets.ui.get("inventory.title"), skin);
+        titleLabel.setFontScale(2.5f);
+        titleLabel.setColor(Color.GOLD);
+        inventoryTable.add(titleLabel).colspan(4).expandX().center().row();
+
+        // 1. Створюємо окрему таблицю для статусів
+        Table statusSubTable = new Table();
+        statusSubTable.align(Align.left);
+
+        statusLabel = new Label("", skin);
+        statusLabel.setFontScale(1.5f);
+        statusSubTable.add(statusLabel).padRight(60); // Великий відступ між ними
+
+        hungerLabel = new Label("", skin);
+        hungerLabel.setFontScale(1.5f);
+        statusSubTable.add(hungerLabel).padRight(60);
+
+        thirstLabel = new Label("", skin);
+        thirstLabel.setFontScale(1.5f);
+        statusSubTable.add(thirstLabel);
+
+        inventoryTable.add(statusSubTable).colspan(4).left().padBottom(40).row();
+
+        // Створюємо окрему таблицю для предметів
+        itemsTable = new Table();
+        itemsTable.align(Align.topLeft);
+
+        ScrollPane scrollPane = new ScrollPane(itemsTable, skin);
+        scrollPane.setScrollingDisabled(true, false);
+        inventoryTable.add(scrollPane).expand().fill().colspan(4);
+    }
     /**
      * Toggles the inventory visibility.
      * If shown, updates the inventory contents.
@@ -72,18 +110,11 @@ public class InventoryUI {
      */
     public void update(Player player) {
         if (!visible) return;
-        inventoryTable.clear();
+        statusLabel.setText(Assets.ui.format("inventory.status", Assets.ui.get(player.getState().getLocalizationKey())));
+        hungerLabel.setText(Assets.ui.format("inventory.hunger", player.getStatusController().getHunger()));
+        thirstLabel.setText(Assets.ui.format("inventory.thirst", player.getStatusController().getThirst()));
 
-        // Title
-        Label titleLabel = new Label(Assets.ui.get("inventory.title"), skin);
-        titleLabel.setFontScale(2.5f);
-        titleLabel.setColor(Color.GOLD);
-        inventoryTable.add(titleLabel).colspan(4).expandX().center().row();
-
-        Label statusLabel = new Label(Assets.ui.get("inventory.status") + Assets.ui.get(player.getState().getLocalizationKey()), skin);
-        statusLabel.setFontScale(1.5f);
-        inventoryTable.add(statusLabel).left().padBottom(40).colspan(4).row();
-
+        itemsTable.clear(); // Очищуємо ТІЛЬКИ список предметів
         listItems(player);
     }
 
@@ -99,8 +130,8 @@ public class InventoryUI {
             Label countLabel = new Label(String.valueOf(amount), skin);
             countLabel.setFontScale(1.5f);
 
-            inventoryTable.add(itemLabel).left();
-            inventoryTable.add(countLabel).left().padRight(20);
+            itemsTable.add(itemLabel).left();
+            itemsTable.add(countLabel).left().padRight(20);
 
 
             // Add USE button if item is usable
@@ -111,13 +142,13 @@ public class InventoryUI {
                     @Override
                     public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event,
                                              float x, float y, int pointer, int button) {
-                        player.useItem(entry.getKey());
+                        EventBus.fire(new Events.ItemUsedEvent(entry.getKey()));
                         return true;
                     }
                 });
-                inventoryTable.add(useButton).left();
+                itemsTable.add(useButton).left();
             } else {
-                inventoryTable.add(); // IMPORTANT: Add empty cell to keep alignment
+                itemsTable.add(); // IMPORTANT: Add empty cell to keep alignment
             }
 
             // --- Description ---
@@ -125,9 +156,9 @@ public class InventoryUI {
             String description = Assets.items.get(descriptionKey);
             Label descriptionLabel = new Label(description, skin);
             descriptionLabel.setFontScale(1.2f); // Smaller font for description
-            inventoryTable.add(descriptionLabel).expandX().right().padRight(20);
+            itemsTable.add(descriptionLabel).expandX().right().padRight(20);
 
-            inventoryTable.row().padBottom(20);
+            itemsTable.row().padBottom(20);
         }
     }
     /** Returns whether the inventory is currently visible */

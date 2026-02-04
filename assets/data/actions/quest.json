@@ -43,7 +43,7 @@
   "act.quest.delivery.accept": {
     "type": "system.composite",
     "actions": [
-      { "type": "inventory.add", "id": "grass", "amount": 1000 },
+      { "type": "inventory.add", "id": "weed", "amount": 1000 },
       { "type": "quest.start", "id": "delivery"},
       { "type": "dialogue.set", "npc": "boss", "node": "delivery.active" }
     ]
@@ -60,17 +60,17 @@
 
   "act.quest.delivery.interact_bush": {
     "type": "inventory.check",
-    "itemId": "grass",
+    "itemId": "weed",
     "amount": 1000,
     "action": "act.quest.delivery.complete",
-    "onFail": { "type": "ui.notEnoughMessage", "item": "grass" }
+    "onFail": { "type": "ui.notEnoughMessage", "item": "weed" }
   },
 
   "act.quest.delivery.complete": {
     "type": "system.composite",
     "actions": [
       { "type": "quest.complete", "id": "delivery" },
-      { "type": "inventory.remove", "id": "grass", "amount": 1000 },
+      { "type": "inventory.remove", "id": "weed", "amount": 1000 },
       { "type": "audio.playSound", "id": "bush" },
       {
         "type": "system.timer",
@@ -144,11 +144,17 @@
   },
 
   "act.quest.denys.kebab.completed": {
-    "type": "system.composite",
-    "actions": [
-      { "type": "dialogue.set", "npc": "denys", "node": "idle" },
-      { "type": "quest.complete", "id": "denys.kebab"}
-    ]
+    "type": "inventory.check",
+    "itemId": "kebab",
+    "amount": 1,
+    "action": {
+      "type": "system.composite",
+      "actions": [
+        { "type": "dialogue.set", "npc": "denys", "node": "idle" },
+        { "type": "quest.complete", "id": "denys.kebab"}
+      ]
+    },
+    "onFail": { "type": "ui.notEnoughMessage", "item": "kebab" }
   },
 
   "act.quest.jan.firework.1.accept": {
