@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygame.action.ActionRegistry;
 import com.mygame.dialogue.DialogueManager;
 import com.mygame.dialogue.DialogueRegistry;
+import com.mygame.entity.InteractionManager;
 import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.item.PfandManager;
@@ -49,6 +50,7 @@ public class GameContext {
     public final CameraManager cameraManager;
     public final SaveManager saveManager;
     public final DialogueManager dialogueManager;
+    public final InteractionManager interactionManager;
 
     // Logic
     public final QuestProgressTriggers questProgressTriggers;
@@ -75,6 +77,7 @@ public class GameContext {
         player.setItemManager(itemManager);
         this.npcManager = new NpcManager(player, dialogueRegistry, worldManager, itemManager);
         player.setNpcManager(npcManager);
+        this.interactionManager = new InteractionManager(batch, player, questManager, worldManager, npcManager, itemManager);
         this.pfandManager = new PfandManager(itemRegistry, itemManager, worldManager);
         this.zoneRegistry = new ZoneRegistry(itemRegistry, player);
         this.cameraManager = new CameraManager(player);

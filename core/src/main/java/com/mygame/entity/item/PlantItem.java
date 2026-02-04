@@ -1,9 +1,7 @@
-package com.mygame.entity;
+package com.mygame.entity.item;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
-import com.mygame.entity.item.Item;
-import com.mygame.entity.item.ItemDefinition;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.world.World;

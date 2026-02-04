@@ -1,6 +1,6 @@
 package com.mygame.events;
 
-import com.mygame.entity.PlantItem;
+import com.mygame.entity.item.PlantItem;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemDefinition;
 import com.mygame.entity.npc.Police;

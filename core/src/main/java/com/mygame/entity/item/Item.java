@@ -2,7 +2,6 @@ package com.mygame.entity.item;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.mygame.entity.Entity;
-import com.mygame.entity.PlantItem;
 import com.mygame.entity.item.itemData.InteractionData;
 import com.mygame.entity.item.itemData.SearchData;
 import com.mygame.entity.player.Player;

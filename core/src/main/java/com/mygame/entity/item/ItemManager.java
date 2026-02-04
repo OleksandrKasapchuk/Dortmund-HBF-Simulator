@@ -6,7 +6,6 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.mygame.assets.Assets;
-import com.mygame.entity.PlantItem;
 import com.mygame.entity.item.itemData.InteractionData;
 import com.mygame.entity.item.itemData.SearchData;
 import com.mygame.entity.player.Player;
