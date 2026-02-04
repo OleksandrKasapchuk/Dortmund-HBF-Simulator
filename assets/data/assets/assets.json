@@ -39,7 +39,6 @@
   { "key": "deathBack", "path": "images/background/deathScreen.jpg" },
   { "key": "menuBack", "path": "images/background/menu.jpg" },
   { "key": "menuBlurBack", "path": "images/background/menublur.jpg" },
-  { "key": "spoon", "path": "images/item/spoon.png" },
   { "key": "pfand", "path": "images/item/pfand.png" },
   { "key": "plant_1", "path": "images/item/plant/plant_1.png" },
   { "key": "plant_2", "path": "images/item/plant/plant_2.png" },

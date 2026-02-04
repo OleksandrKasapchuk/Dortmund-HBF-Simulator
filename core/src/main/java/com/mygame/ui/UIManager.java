@@ -21,6 +21,7 @@ import com.mygame.ui.inGameUI.InventoryUI;
 import com.mygame.ui.inGameUI.QuestUI;
 import com.mygame.ui.inGameUI.TouchControlsUI;
 import com.mygame.ui.screenUI.*;
+import com.mygame.util.I18nUtils;
 import com.mygame.world.WorldManager;
 
 import java.util.EnumMap;
@@ -86,8 +87,18 @@ public class UIManager {
         EventBus.subscribe(Events.QuestCompletedEvent.class, event -> {
             if(questManager.getQuest(event.questId()).getNotify()) getGameScreen().showInfoMessage(Assets.messages.format("message.generic.quest.completed", Assets.quests.get("quest." + event.questId() + ".name")), 1.5f);
         });
-        EventBus.subscribe(Events.AddItemMessageEvent.class, event -> showEarned(event.item().getNameKey(), event.amount()));
-        EventBus.subscribe(Events.NotEnoughMessageEvent.class, event -> showNotEnough(event.item().getNameKey()));
+        EventBus.subscribe(Events.AddItemMessageEvent.class, event -> showEarned(event.item().getKey(), event.amount()));
+        EventBus.subscribe(Events.NotEnoughMessageEvent.class, event -> showNotEnough(event.item().getKey()));
+        EventBus.subscribe(Events.ItemFoundEvent.class, e -> {
+
+            if (!e.found()) {
+                getGameScreen().showInfoMessage(Assets.messages.get("message.not_found"), 1.5f);
+                return;
+            }
+
+            showFound(e.itemKey(), e.amount());
+        });
+
         EventBus.subscribe(Events.InteractEvent.class, e -> handleInteraction());
         EventBus.subscribe(Events.GameStateChangedEvent.class, e -> setCurrentStage(e.newState()));
     }
@@ -192,12 +203,30 @@ public class UIManager {
     public GameScreen getGameScreen() { return (GameScreen) screens.get(GameStateManager.GameState.PLAYING); }
     public DialogueUI getDialogueUI(){ return dialogueUI; }
 
-    public void showEarned(String thing, int amount) {
-        getGameScreen().showInfoMessage(Assets.messages.format("message.generic.got", amount, Assets.items.get(thing)), 1.5f);
+    private String resolveItemName(String itemKey, int amount) {
+        if (amount == 1) {
+            return I18nUtils.getAccusative(Assets.items, itemKey);
+        }
+        return I18nUtils.getPluralized(Assets.items, itemKey, amount);
     }
 
-    public void showNotEnough(String thing) {
-        getGameScreen().showInfoMessage(Assets.messages.format("message.generic.not_enough", Assets.items.get(thing)), 1.5f);
+    public void showEarned(String itemKey, int amount) {
+        String itemName = resolveItemName(itemKey, amount);
+
+        getGameScreen().showInfoMessage(Assets.messages.format("message.generic.got", amount, itemName), 1.5f);
+    }
+
+    private void showFound(String itemKey, int amount) {
+        String itemName = resolveItemName(itemKey, amount);
+
+        getGameScreen().showInfoMessage(
+            Assets.messages.format("message.found",  itemName, amount),
+            1.5f
+        );
+    }
+
+    public void showNotEnough(String itemKey) {
+        getGameScreen().showInfoMessage(Assets.messages.format("message.generic.not_enough", I18nUtils.getPluralized(Assets.items, itemKey, 0)), 1.5f);
     }
 
     public void drawText(String text, float x, float y) {

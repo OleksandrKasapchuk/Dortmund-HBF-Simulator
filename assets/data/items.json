@@ -9,6 +9,7 @@
   {"key": "pfand", "pickupable": true},
   {"key": "vape", "pickupable": true},
   {"key": "kebab", "pickupable": true, "effect": "true"},
+  {"key": "beer", "pickupable": true, "effect": "true"},
   {"key": "firework", "pickupable": false, "width": 25, "height": 75},
   {"key": "weed_plant", "pickupable": false},
   {"key": "bush", "pickupable": false},

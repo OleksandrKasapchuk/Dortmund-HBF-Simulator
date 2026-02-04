@@ -39,16 +39,18 @@ public class ItemManager {
         this.itemRegistry = itemRegistry;
         this.worldManager = worldManager;
 
-        // Підписка на подію обшуку предмета
         EventBus.subscribe(Events.ItemSearchedEvent.class, event -> {
+
             if (event.itemKey() != null && !event.itemKey().isEmpty()) {
                 ItemDefinition reward = itemRegistry.get(event.itemKey());
+
                 if (reward != null) {
                     event.player().getInventory().addItem(reward, event.amount());
-                    EventBus.fire(new Events.MessageEvent(event.amount() + " " + Assets.ui.format("ui.found", Assets.items.get(reward.getNameKey()))));
+
+                    EventBus.fire(new Events.ItemFoundEvent(reward.getKey(), event.amount(), true));
                 }
             } else {
-                EventBus.fire(new Events.MessageEvent(Assets.ui.get("ui.not_found")));
+                EventBus.fire(new Events.ItemFoundEvent(null, 0, false));
             }
         });
         EventBus.subscribe(Events.ItemInteractionEvent.class,event -> event.item().interact(event.player()));

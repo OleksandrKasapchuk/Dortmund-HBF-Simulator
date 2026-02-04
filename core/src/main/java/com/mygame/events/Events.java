@@ -29,9 +29,11 @@ public class Events {
     public record PhaseChangedEvent(DayManager.Phase newPhase) {}
 
     public record InventoryChangedEvent(ItemDefinition item, int newAmount) {}
+
     public record ItemInteractionEvent(Item item, Player player){}
     public record ItemSearchedEvent(Player player, String itemKey, int amount) {}
     public record ItemUsedEvent(ItemDefinition item) {}
+    public record ItemFoundEvent(String itemKey, int amount, boolean found) {}
 
     public record CreateItemEvent(String itemKey, float x, float y) {}
     public record CreatePlantEvent(float x, float y, Player player) {}
