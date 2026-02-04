@@ -18,13 +18,22 @@
 
   { "key": "zoe", "path": "images/npc/zoe.png" },
   { "key": "boss", "path": "images/npc/boss.png" },
+  { "key": "boss.3d", "path": "images/npc/boss_3d.png" },
   { "key": "kamil", "path": "images/npc/kamil.png" },
+
   { "key": "jan", "path": "images/npc/jan.png" },
+  { "key": "jan.3d", "path": "images/npc/jan_3d.png" },
+
   { "key": "filip", "path": "images/npc/filip.png" },
+
   { "key": "jason", "path": "images/npc/jason.png" },
   { "key": "jason.3d", "path": "images/npc/jason_3d.png" },
+
   { "key": "talahon1", "path": "images/npc/talahon1.png" },
+  { "key": "talahon1.3d", "path": "images/npc/talahon1_3d.png" },
+
   { "key": "talahon2", "path": "images/npc/talahon2.png" },
+  { "key": "talahon2.3d", "path": "images/npc/talahon2_3d.png" },
 
   { "key": "murat", "path": "images/npc/murat.png" },
   { "key": "murat.3d", "path": "images/npc/murat_3d.png" },
