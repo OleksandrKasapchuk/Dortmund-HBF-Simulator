@@ -52,7 +52,7 @@ public class InWorldUIRenderer {
             // Вибір тексту в залежності від того, яка data є
             if (hasSearchData) {
                 drawText(Assets.ui.get("interact.search"), item.getCenterX(), item.getCenterY() + 20);
-            } else if (item.getInteractionData() != null){ // тільки InteractionData
+            } else { // тільки InteractionData
                 drawText(Assets.ui.get("interact"), item.getCenterX(), item.getCenterY() + 20);
             }
         }

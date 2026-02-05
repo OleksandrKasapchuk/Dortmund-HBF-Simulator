@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.mygame.entity.Entity;
 import com.mygame.entity.item.itemData.InteractionData;
 import com.mygame.entity.item.itemData.SearchData;
+import com.mygame.entity.item.plant.PlantItem;
 import com.mygame.entity.player.Player;
 import com.mygame.world.World;
 
@@ -69,7 +70,7 @@ public class Item extends Entity {
     public boolean isSolid() { return solid; }
 
     public boolean isInteractable(){
-        return interactionData != null || searchData != null;
+        return interactionData != null || (searchData != null && !searchData.isSearched());
     }
     public SearchData getSearchData(){return searchData;}
     public InteractionData getInteractionData(){return interactionData;}

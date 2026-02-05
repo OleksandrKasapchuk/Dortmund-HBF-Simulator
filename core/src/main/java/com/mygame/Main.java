@@ -68,11 +68,11 @@ public class Main extends ApplicationAdapter {
 
         if (currentWorld != null) {
             // 4. Draw background items (carpets, etc.)
-            ctx.itemManager.renderBackgroundItems(batch);
+            ctx.entityRenderer.renderEntities(batch, ctx.itemManager.getBackgroundItems());
 
             // 5. Draw player and NPCs
             ctx.player.draw(batch);
-            ctx.npcManager.renderNpcs(batch);
+            ctx.entityRenderer.renderEntities(batch, ctx.npcManager.getNpcs());
         }
 
         batch.end();
@@ -83,7 +83,7 @@ public class Main extends ApplicationAdapter {
         // 7. Draw foreground items (e.g., items on tables) over the walls
         batch.begin();
         if (currentWorld != null) {
-            ctx.itemManager.renderForegroundItems(batch);
+            ctx.entityRenderer.renderEntities(batch, ctx.itemManager.getForegroundItems());
         }
 
         // Draw non-gameplay world elements like transition texts

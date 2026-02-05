@@ -6,9 +6,12 @@ import com.mygame.action.ActionRegistry;
 import com.mygame.dialogue.DialogueManager;
 import com.mygame.dialogue.DialogueRegistry;
 import com.mygame.entity.InteractionManager;
+import com.mygame.entity.item.ItemEventHandler;
 import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.item.ItemRegistry;
+import com.mygame.entity.EntityRenderer;
 import com.mygame.entity.item.PfandManager;
+import com.mygame.entity.item.plant.PlantSystem;
 import com.mygame.entity.npc.NpcManager;
 import com.mygame.entity.player.Player;
 import com.mygame.entity.player.PlayerEffectManager;
@@ -45,6 +48,10 @@ public class GameContext {
     public final ItemManager itemManager;
     public final PfandManager pfandManager;
     public final ZoneRegistry zoneRegistry;
+    public final PlantSystem plantSystem;
+    public final ItemEventHandler itemEventHandler;
+    public final EntityRenderer entityRenderer;
+
     public final GameStateManager gsm;
     public final UIManager ui;
     public final CameraManager cameraManager;
@@ -73,13 +80,16 @@ public class GameContext {
         // 3. Managers that depend on registries and core systems
         this.playerEffectManager = new PlayerEffectManager();
         this.questManager = new QuestManager(questRegistry);
-        this.itemManager = new ItemManager(itemRegistry, worldManager);
+        this.zoneRegistry = new ZoneRegistry(itemRegistry, player);
+        this.itemManager = new ItemManager(itemRegistry, worldManager, zoneRegistry);
+        this.plantSystem = new PlantSystem(itemManager, itemRegistry, zoneRegistry, worldManager);
+        this.itemEventHandler = new ItemEventHandler(itemRegistry, itemManager, worldManager);
+        this.entityRenderer = new EntityRenderer(worldManager);
         player.setItemManager(itemManager);
         this.npcManager = new NpcManager(player, dialogueRegistry, worldManager, itemManager);
         player.setNpcManager(npcManager);
-        this.interactionManager = new InteractionManager(batch, player, questManager, worldManager, npcManager, itemManager);
         this.pfandManager = new PfandManager(itemRegistry, itemManager, worldManager);
-        this.zoneRegistry = new ZoneRegistry(itemRegistry, player);
+        this.interactionManager = new InteractionManager(batch, player, questManager, worldManager, npcManager, itemManager);
         this.cameraManager = new CameraManager(player);
         this.ui = new UIManager(batch, player, skin, questManager, worldManager, dayManager, npcManager, itemManager);
         this.dialogueManager = new DialogueManager(ui.getDialogueUI(), player, worldManager, dialogueRegistry, npcManager);

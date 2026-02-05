@@ -44,8 +44,9 @@ public class ItemActionProvider implements ActionProvider {
             float plantHeight = 100; // Hardcoded from PlantItem
             float x = area.x + area.width / 2 - plantWidth / 2;
             float y = area.y + area.height / 2 - plantHeight / 2;
-           EventBus.fire(new Events.CreatePlantEvent(x, y, c.player));
+           EventBus.fire(new Events.CreatePlantEvent(x, y, c.player, zone.getId()));
         });
+
         registry.registerCreator("item.remove", (c, data) -> () -> {
             String itemId = data.getString("itemId");
             boolean removeAll = "all_by_key".equals(data.getString("remove", ""));

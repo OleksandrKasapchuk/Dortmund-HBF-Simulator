@@ -85,6 +85,11 @@ public class ZoneRegistry {
         float bestDist = Float.MAX_VALUE;
 
         for (Zone zone : zones) {
+            if (zone instanceof PlaceZone && ((PlaceZone) zone).isOccupied()) {
+                System.out.println("Skipping zone: " + zone.getId());
+                continue; // Ignore occupied place zones
+            }
+
             Rectangle r = zone.getArea();
             float cx = r.x + r.width / 2f;
             float cy = r.y + r.height / 2f;

@@ -111,16 +111,6 @@ public class NpcManager {
         }
     }
 
-    public void renderNpcs(SpriteBatch batch) {
-        World currentWorld = worldManager.getCurrentWorld();
-        if (currentWorld == null) return;
-        for (NPC npc : npcs) {
-            if (npc.getWorld() != worldManager.getCurrentWorld()) continue;
-            npc.draw(batch);
-        }
-    }
-
-
     public void update(float delta) {
         World currentWorld = worldManager.getCurrentWorld();
         if (currentWorld == null) return;

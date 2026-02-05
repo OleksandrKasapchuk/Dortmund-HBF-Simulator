@@ -52,16 +52,25 @@ public class PlayerMovementController {
 
         if (player.getWorld().isCollidingWithMap(rect) || npcX != null) {
             player.setX(oldX); // ⬅ ЖОРСТКИЙ ROLLBACK
-        }
-        else if (itemX != null) {
-            if (dx > 0) {
-                player.setX(itemX.getBounds().x - player.getWidth());
-            } else if (dx < 0) {
-                player.setX(itemX.getBounds().x + itemX.getBounds().width);
+        } else if (itemX != null) {
+            float playerCenterX = oldX + player.getWidth() / 2f;
+            float itemCenterX = itemX.getBounds().x + itemX.getBounds().width / 2f;
+            float newPlayerX;
+            if (playerCenterX < itemCenterX) {
+                newPlayerX = itemX.getBounds().x - player.getWidth();
+            } else {
+                newPlayerX = itemX.getBounds().x + itemX.getBounds().width;
             }
-        }
 
-        else {
+            Rectangle tempRect = new Rectangle(player.getBounds());
+            tempRect.x = newPlayerX;
+
+            if (player.getWorld().isCollidingWithMap(tempRect)) {
+                player.setX(oldX);
+            } else {
+                player.setX(newPlayerX);
+            }
+        } else {
             player.setX(oldX + dx);
         }
 
@@ -77,19 +86,28 @@ public class PlayerMovementController {
 
         if (player.getWorld().isCollidingWithMap(rect) || npcY != null) {
             player.setY(oldY); // ⬅ ROLLBACK
-        }
-        else if (itemY != null) {
-            if (dy > 0) {
-                player.setY(itemY.getBounds().y - player.getHeight());
-            } else if (dy < 0) {
-                player.setY(itemY.getBounds().y + itemY.getBounds().height);
+        } else if (itemY != null) {
+            float playerCenterY = oldY + player.getHeight() / 2f;
+            float itemCenterY = itemY.getBounds().y + itemY.getBounds().height / 2f;
+            float newPlayerY;
+            if (playerCenterY < itemCenterY) {
+                newPlayerY = itemY.getBounds().y - player.getHeight();
+            } else {
+                newPlayerY = itemY.getBounds().y + itemY.getBounds().height;
             }
-        }
-        else {
+
+            Rectangle tempRect = new Rectangle(player.getBounds());
+            tempRect.x = player.getX(); // Use resolved X
+            tempRect.y = newPlayerY;
+
+            if (player.getWorld().isCollidingWithMap(tempRect)) {
+                player.setY(oldY);
+            } else {
+                player.setY(newPlayerY);
+            }
+        } else {
             player.setY(oldY + dy);
         }
-
-        rect.y = player.getY();
     }
 
     private void clampToWorld(Player player) {
