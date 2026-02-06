@@ -6,7 +6,7 @@ public class PlayerStatusController {
     private float vibe = 100f;
     private float hungerDrainPerSecond = 0.05f;
     private float thirstDrainPerSecond = 0.075f;
-    private float vibeDrainPerSecond = 0.05f;
+    private float vibeDrainPerSecond = 0.1f;
 
 
     public void update(float delta) {
@@ -38,8 +38,10 @@ public class PlayerStatusController {
     public float getHunger() {return hunger;}
     public float getThirst() {return thirst;}
 
-    public boolean isStarving() {return hunger <= 0;}
 
+    public boolean isHungry() {return hunger <= 0;}
+    public boolean isThirsty() {return thirst <= 0;}
+    public boolean isStressed() {return vibe <= 0;}
 
     public void setHunger(float hunger) {this.hunger = hunger;}
     public void setThirst(float thirst) {this.thirst = thirst;}

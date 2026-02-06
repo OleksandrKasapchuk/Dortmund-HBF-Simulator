@@ -11,9 +11,10 @@ import com.mygame.world.World;
 
 public class PlayerMovementController {
 
+    private float speedMultiplier = 1;
+    private int baseSpeed = 500;
     public void update(Player player, float delta) {
 
-        int baseSpeed = 500;
         int speed = player.getState() == Player.State.STONED ? 150 : baseSpeed;
 
         float moveSpeed = speed * delta;
@@ -34,7 +35,10 @@ public class PlayerMovementController {
             dx = player.touchpad.getKnobPercentX() * speed * delta;
             dy = player.touchpad.getKnobPercentY() * speed * delta;
         }
+        dx *= speedMultiplier;
+        dy *= speedMultiplier;
 
+        // === MOVEMENT ===
         moveWithCollision(player, dx, dy);
         clampToWorld(player);
     }
@@ -108,6 +112,10 @@ public class PlayerMovementController {
         } else {
             player.setY(oldY + dy);
         }
+    }
+
+    public void setSpeedMultiplier(float multiplier) {
+        this.speedMultiplier = multiplier;
     }
 
     private void clampToWorld(Player player) {

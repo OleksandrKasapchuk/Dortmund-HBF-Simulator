@@ -17,7 +17,7 @@
       "delivery.active": ["dialogue.boss.delivery_active.1", "dialogue.boss.delivery_active.2"],
       "delivery.failed": {
         "texts": ["dialogue.boss.delivery_failed.1", "dialogue.boss.delivery_failed.2", "dialogue.boss.delivery_failed.3"],
-        "onFinish": "act.player.die"
+        "onFinish": "act.player.act.player.kill"
       }
     }
   }

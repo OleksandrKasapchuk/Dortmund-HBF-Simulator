@@ -26,6 +26,7 @@ public class Player extends Entity {
     private boolean isMovementLocked = false;
     private PlayerMovementController movementController;
     private PlayerStatusController statusController;
+    private PlayerEffectController effectController;
 
     public enum State {
         NORMAL("player.state.normal"),
@@ -50,6 +51,7 @@ public class Player extends Entity {
         this.statusController = new PlayerStatusController();
         this.movementController = new PlayerMovementController();
         this.currentState = SettingsManager.load().playerState;
+        this.effectController = new PlayerEffectController();
     }
 
     // Lock/unlock movement (used for dialogues, cutscenes etc.)
@@ -61,6 +63,7 @@ public class Player extends Entity {
     @Override
     public void update(float delta) {
         statusController.update(delta);
+        effectController.update(this, delta);
         if (isMovementLocked) return;
         movementController.update(this, delta);
     }
@@ -98,4 +101,5 @@ public class Player extends Entity {
     public State getState() { return currentState; }
 
     public PlayerStatusController getStatusController() {return statusController;}
+    public PlayerMovementController getMovementController(){return movementController;}
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygame.entity.player.Player;
+import com.mygame.entity.player.PlayerEffectController;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.world.World;
@@ -40,6 +41,7 @@ public class CameraManager {
         EventBus.subscribe(Events.DialogueStartedEvent.class, e -> setZoom(0.75f));
         EventBus.subscribe(Events.DialogueFinishedEvent.class, e -> setZoom(1f));
         EventBus.subscribe(Events.CameraShakeEvent.class, e -> shake(e.duration(), e.intensity()));
+        EventBus.subscribe(PlayerEffectController.CameraShakeType.class, e -> shake(e.duration, e.intensity));
     }
 
     /** Updates camera position and handles shake effects */
