@@ -7,6 +7,7 @@
         "choices": [
           { "text": "dialogue.kioskman.trade_offer.choice.1", "action": "act.inventory.kioskman.buy.pape" },
           { "text": "dialogue.kioskman.trade_offer.choice.2", "action": "act.inventory.kioskman.buy.icetea" },
+          { "text": "dialogue.kioskman.trade_offer.choice.3", "action": "act.inventory.kioskman.buy.beer" },
           "dialogue.choice.leave"
         ]
       }

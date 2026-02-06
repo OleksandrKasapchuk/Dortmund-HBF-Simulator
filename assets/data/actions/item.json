@@ -23,7 +23,7 @@
     "type": "system.composite",
     "actions": [
       {"type": "player.drink", "amount": 15},
-      {"type": "system.timer", "delay": 1.0, "action": { "type": "player.setState", "key": "normal" }}
+      {"type": "player.addVibe", "amount": 10}
     ]
   },
 
