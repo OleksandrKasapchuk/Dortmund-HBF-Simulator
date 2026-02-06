@@ -1,6 +1,5 @@
 package com.mygame.entity.npc;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
@@ -149,6 +148,7 @@ public class NpcManager {
         if (npc == null) return;
         npcs.remove(npc);
     }
+
     public void teleportNpc(String npcId, World targetWorld, float x, float y) {
         NPC npc = findNpcById(npcId);
         if (npc == null || targetWorld == null) return;

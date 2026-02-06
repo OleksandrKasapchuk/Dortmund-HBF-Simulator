@@ -128,6 +128,7 @@ public class SaveManager {
         settings.playerY = ctx.player.getY();
         settings.playerHunger = ctx.player.getStatusController().getHunger();
         settings.playerThirst = ctx.player.getStatusController().getThirst();
+        settings.playerVibe = ctx.player.getStatusController().getVibe();
     }
 
     private void saveActiveQuests(GameSettings settings){

@@ -38,6 +38,7 @@ public class GameInitializer {
         player = new Player(500, 80, 80, settings.playerX, settings.playerY, Assets.getTexture("zoe"), null);
         player.getStatusController().setHunger(settings.playerHunger);
         player.getStatusController().setThirst(settings.playerThirst);
+        player.getStatusController().setVibe(settings.playerVibe);
         player.setState(settings.playerState);
 
         // 2. Створюємо реєстр менеджерів, передаючи туди вже існуючого гравця

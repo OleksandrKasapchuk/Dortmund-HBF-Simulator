@@ -66,25 +66,18 @@ public class Main extends ApplicationAdapter {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
-        if (currentWorld != null) {
-            // 4. Draw background items (carpets, etc.)
-            ctx.entityRenderer.renderEntities(batch, ctx.itemManager.getBackgroundItems());
+        // 4. Draw background items (carpets, etc.)
+        ctx.entityRenderer.renderEntities(batch, ctx.itemManager.getBackgroundItems());
 
-            // 5. Draw player and NPCs
-            ctx.player.draw(batch);
-            ctx.entityRenderer.renderEntities(batch, ctx.npcManager.getNpcs());
-        }
-
-        batch.end();
+        // 5. Draw player and NPCs
+        ctx.player.draw(batch);
+        ctx.entityRenderer.renderEntities(batch, ctx.npcManager.getNpcs());
 
         // 6. Render the collision layer (walls), which now covers the player
         ctx.worldManager.renderTopLayers(camera);
 
         // 7. Draw foreground items (e.g., items on tables) over the walls
-        batch.begin();
-        if (currentWorld != null) {
-            ctx.entityRenderer.renderEntities(batch, ctx.itemManager.getForegroundItems());
-        }
+        ctx.entityRenderer.renderEntities(batch, ctx.itemManager.getForegroundItems());
 
         // Draw non-gameplay world elements like transition texts
         ctx.worldManager.drawEntities(batch, Assets.myFont);
@@ -96,7 +89,6 @@ public class Main extends ApplicationAdapter {
         if (currentWorld != null) {
             currentWorld.drawZones(shapeRenderer, camera);
         }
-
 
         // 9. Draw screen-space UI
         ctx.ui.render();
