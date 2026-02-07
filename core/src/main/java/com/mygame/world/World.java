@@ -20,6 +20,7 @@ import com.mygame.world.zone.TransitionZone;
 import com.mygame.world.zone.Zone;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class World {
     private final String name;
@@ -106,8 +107,6 @@ public class World {
 
     private boolean isOverlappingWithRectangle(Rectangle rect, RectangleMapObject mapObject, float tileWorldX, float tileWorldY) {
         Rectangle mapRect = mapObject.getRectangle();
-        // LibGDX Tiled importer flips the Y-axis for objects within tiles.
-        // We must account for this by subtracting the object's Y from the tile's height.
         float objectWorldY = tileWorldY + (tileHeight - (mapRect.y + mapRect.height));
         Rectangle worldRect = new Rectangle(mapRect.x + tileWorldX, objectWorldY, mapRect.width, mapRect.height);
         return Intersector.overlaps(worldRect, rect);
@@ -139,16 +138,6 @@ public class World {
         }
     }
 
-    public void renderTopLayers(OrthographicCamera camera) {
-        mapRenderer.setView(camera);
-        float bottomBuffer = 40f;
-        mapRenderer.getViewBounds().y -= bottomBuffer;
-        mapRenderer.getViewBounds().height += bottomBuffer;
-        if (topLayersIndices.length > 0) {
-            mapRenderer.render(topLayersIndices);
-        }
-    }
-
     public void drawZones(ShapeRenderer shapeRenderer, OrthographicCamera camera) {
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -161,7 +150,6 @@ public class World {
                 shapeRenderer.setColor(Color.YELLOW); // жовтий для квестів
                 shapeRenderer.rect(qz.getArea().x, qz.getArea().y, qz.getArea().width, qz.getArea().height);
             } else {
-                // просто для загальних зон
                 shapeRenderer.setColor(Color.CYAN);
                 shapeRenderer.rect(zone.getArea().x, zone.getArea().y, zone.getArea().width, zone.getArea().height);
             }
@@ -179,4 +167,17 @@ public class World {
     public String getName() { return name; }
     public ArrayList<Zone> getZones() { return zones; }
     public ArrayList<Entity> getEntities() { return entities; }
+
+    public OrthogonalTiledMapRenderer getMapRenderer() {
+        return mapRenderer;
+    }
+
+    public List<TiledMapTileLayer> getTopLayers() {
+        List<TiledMapTileLayer> layers = new ArrayList<>();
+        if (topLayersIndices == null) return layers;
+        for (int index : topLayersIndices) {
+            layers.add((TiledMapTileLayer) map.getLayers().get(index));
+        }
+        return layers;
+    }
 }

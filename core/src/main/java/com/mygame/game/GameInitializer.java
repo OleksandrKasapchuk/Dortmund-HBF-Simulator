@@ -2,7 +2,6 @@ package com.mygame.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.mygame.assets.Assets;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.game.save.DataLoader;
@@ -35,7 +34,7 @@ public class GameInitializer {
         GameSettings settings = SettingsManager.load();
 
         // 1. Створюємо гравця з початковими даними, але без світу
-        player = new Player(500, 80, 80, settings.playerX, settings.playerY, Assets.getTexture("zoe"), null);
+        player = new Player(500, 80, 160, settings.playerX, settings.playerY, null);
         player.getStatusController().setHunger(settings.playerHunger);
         player.getStatusController().setThirst(settings.playerThirst);
         player.getStatusController().setVibe(settings.playerVibe);

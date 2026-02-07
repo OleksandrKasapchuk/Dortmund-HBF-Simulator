@@ -99,9 +99,9 @@ public class WorldManager {
     }
 
     public void renderTopLayers(OrthographicCamera camera) {
-        if (currentWorld != null) {
-            currentWorld.renderTopLayers(camera);
-        }
+//        if (currentWorld != null) {
+//            currentWorld.renderTopLayers(camera);
+//        }
     }
 
     public void drawEntities(SpriteBatch batch, BitmapFont font) {

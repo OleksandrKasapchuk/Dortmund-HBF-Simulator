@@ -1,8 +1,8 @@
 package com.mygame.entity.player;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.mygame.assets.Assets;
 import com.mygame.entity.Entity;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemManager;
@@ -42,12 +42,26 @@ public class Player extends Entity {
             return localizationKey;
         }
     }
+    public enum WalkFrame {
+        IDLE,
+        LEFT,
+        RIGHT
+    }
+    private WalkFrame currentWalkFrame = WalkFrame.IDLE;
+
+    private float walkAnimTimer = 0f;
+    private float walkAnimInterval = 0.1f; // швидкість анімації
+    private float walkBobbingTimer = 0f; // таймер для коливань
+    private final int baseHeight; // базова висота
+
+    private boolean stepRightNext = true; // щоб чергувати ноги
 
     private State currentState;
 
 
-    public Player(int speed, int width, int height, float x, float y, Texture texture, World world) {
-        super(width, height, x, y, texture, world);
+    public Player(int speed, int width, int height, float x, float y, World world) {
+        super(width, height, x, y,  Assets.getTexture("zoe.3d"), world);
+        this.baseHeight = height;
         this.statusController = new PlayerStatusController();
         this.movementController = new PlayerMovementController();
         this.currentState = SettingsManager.load().playerState;
@@ -66,7 +80,58 @@ public class Player extends Entity {
         effectController.update(this, delta);
         if (isMovementLocked) return;
         movementController.update(this, delta);
+        updateWalkAnimation(delta, movementController.isMoving);
+        updateTexture(movementController.isMoving);
     }
+
+    private void updateWalkAnimation(float delta, boolean isMoving) {
+        if (!isMoving) {
+            currentWalkFrame = WalkFrame.IDLE;
+            walkAnimTimer = 0f;
+            walkBobbingTimer = 0f; // Скидаємо таймер коливань
+            return;
+        }
+
+        walkAnimTimer += delta;
+        walkBobbingTimer += delta; // Оновлюємо таймер коливань
+
+        if (walkAnimTimer >= walkAnimInterval) {
+            walkAnimTimer = 0f;
+
+            if (currentWalkFrame == WalkFrame.IDLE) {
+                currentWalkFrame = stepRightNext ? WalkFrame.RIGHT : WalkFrame.LEFT;
+            } else {
+                currentWalkFrame = WalkFrame.IDLE;
+                stepRightNext = !stepRightNext;
+            }
+        }
+    }
+
+    private void updateTexture(boolean isMoving) {
+        if (!isMoving) {
+            setTexture(Assets.getTexture("zoe.3d"));
+            setHeight(baseHeight);
+            return;
+        }
+
+        // Плавна зміна висоти за допомогою синусоїди
+        float bobbingAmount = (float) (Math.sin(walkBobbingTimer * 20f) * 5f);
+        setHeight(baseHeight + (int) bobbingAmount);
+
+        switch (currentWalkFrame) {
+            case LEFT:
+                setTexture(Assets.getTexture("zoe.3d_left"));
+                break;
+            case RIGHT:
+                setTexture(Assets.getTexture("zoe.3d_right"));
+                break;
+            default:
+                // Залишаємось на останній текстурі кроку, поки не зупинимось
+                // Це запобігає мерехтінню до idle текстури під час ходьби
+                break;
+        }
+    }
+
 
     public Item getCollidingSolidItem(Rectangle rect) {
         for (Item item : itemManager.getAllItems()) {
@@ -102,4 +167,10 @@ public class Player extends Entity {
 
     public PlayerStatusController getStatusController() {return statusController;}
     public PlayerMovementController getMovementController(){return movementController;}
+
+    @Override
+    public Rectangle getBounds() {
+        bounds.set(getX(), getY(), getWidth(), getHeight()*0.3f);
+        return bounds;
+    }
 }

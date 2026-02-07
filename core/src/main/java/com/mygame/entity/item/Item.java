@@ -30,11 +30,11 @@ public class Item extends Entity {
         this.id = id;
         this.type = type;
         this.canBePickedUp = canBePickedUp;
-
         float baseDistance = 80f; // базова дистанція
         this.distance = (int)(baseDistance + (width + height) / 4f); // додаємо розмір об'єкта (половина ширини + половина висоти) / 2
         this.solid = solid;
         this.questId = questId;
+        this.hasShadow = false;
 
         this.isDynamic = isDynamic;
     }

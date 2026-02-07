@@ -6,11 +6,17 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.mygame.assets.Assets;
+import com.mygame.entity.Renderable;
 import com.mygame.game.GameContext;
 import com.mygame.game.GameInitializer;
 import com.mygame.assets.audio.MusicManager;
 import com.mygame.world.World;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class Main extends ApplicationAdapter {
 
@@ -52,47 +58,59 @@ public class Main extends ApplicationAdapter {
         GameContext ctx = gameInitializer.getContext();
         World currentWorld = ctx.worldManager.getCurrentWorld();
 
-        // 1. Update all logic
         ctx.player.update(delta);
         gameInitializer.getManagerRegistry().update(delta);
 
-        // 2. Get the updated camera
         OrthographicCamera camera = gameInitializer.getManagerRegistry().getCameraManager().getCamera();
-
-        // 3. Render the absolute bottom layer (background/floor)
         ctx.worldManager.renderBottomLayers(camera);
 
         SpriteBatch batch = gameInitializer.getBatch();
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
-        // 4. Draw background items (carpets, etc.)
         ctx.entityRenderer.renderEntities(batch, ctx.itemManager.getBackgroundItems());
 
-        // 5. Draw player and NPCs
-        ctx.player.draw(batch);
-        ctx.entityRenderer.renderEntities(batch, ctx.npcManager.getNpcs());
+        List<Renderable> renderables = new ArrayList<>();
+        renderables.add(ctx.player);
+        renderables.addAll(ctx.npcManager.getNpcs().stream().filter(npc -> npc.getWorld()==currentWorld).toList());
+        renderables.addAll(ctx.itemManager.getForegroundItems().stream().filter(item -> item.getWorld() == currentWorld).toList());
+        renderables.sort(Comparator.comparing(Renderable::getY).reversed());
 
-        // 6. Render the collision layer (walls), which now covers the player
-        ctx.worldManager.renderTopLayers(camera);
+        if (currentWorld != null) {
+            renderWithSortedEntities(batch, currentWorld, renderables);
+        }
 
-        // 7. Draw foreground items (e.g., items on tables) over the walls
-        ctx.entityRenderer.renderEntities(batch, ctx.itemManager.getForegroundItems());
-
-        // Draw non-gameplay world elements like transition texts
         ctx.worldManager.drawEntities(batch, Assets.myFont);
         ctx.ui.renderWorldElements();
 
         batch.end();
 
-
         if (currentWorld != null) {
             currentWorld.drawZones(shapeRenderer, camera);
         }
 
-        // 9. Draw screen-space UI
         ctx.ui.render();
         ctx.overlay.render();
+    }
+
+    private void renderWithSortedEntities(SpriteBatch batch, World world, List<Renderable> sortedRenderables) {
+        List<TiledMapTileLayer> topLayers = world.getTopLayers();
+
+        for (TiledMapTileLayer layer : topLayers) {
+            for (int row = layer.getHeight() - 1; row >= 0; row--) {
+                for (Renderable entity : sortedRenderables) {
+                    if (Math.floor(entity.getY() / world.tileHeight) == row) {
+                        entity.draw(batch);
+                    }
+                }
+                for (int col = 0; col < layer.getWidth(); col++) {
+                    TiledMapTileLayer.Cell cell = layer.getCell(col, row);
+                    if (cell != null) {
+                        batch.draw(cell.getTile().getTextureRegion(), col * world.tileWidth, row * world.tileHeight);
+                    }
+                }
+            }
+        }
     }
 
     @Override
