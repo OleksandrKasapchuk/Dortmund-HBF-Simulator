@@ -170,11 +170,11 @@
  <objectgroup id="6" name="npcs">
   <object id="17" name="kamil" gid="3" x="2823.67" y="4410" width="70" height="100"/>
   <object id="18" name="igo" gid="3" x="2761.33" y="3706" width="80" height="170"/>
-  <object id="24" name="police" gid="3" x="946.52" y="2701.45" width="90" height="200"/>
+  <object id="24" name="police" gid="3" x="946.52" y="2701.45" width="80" height="170"/>
   <object id="28" name="kioskman" gid="3" x="217" y="4004" width="80" height="170"/>
   <object id="32" name="jason" gid="3" x="919.55" y="4498.48" width="80" height="170"/>
   <object id="41" name="dmitri" gid="3" x="2125" y="4812" width="80" height="170"/>
-  <object id="43" name="jan" gid="3" x="1029" y="3002" width="110" height="220"/>
+  <object id="43" name="jan" gid="3" x="1029" y="3002" width="80" height="170"/>
   <object id="44" name="maksym" gid="3" x="2777" y="2490" width="70" height="100"/>
   <object id="54" name="denys" gid="29" x="1109" y="3418" width="80" height="170"/>
   <object id="74" name="ihor" gid="3" x="1205" y="4794" width="80" height="170"/>

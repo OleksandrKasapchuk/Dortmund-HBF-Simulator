@@ -13,7 +13,7 @@ public class PlayerMovementController {
 
     private float speedMultiplier = 1;
     private int baseSpeed = 500;
-    public boolean isMoving;
+    private boolean isMoving;
 
     public void update(Player player, float delta) {
         isMoving = false;
@@ -79,9 +79,8 @@ public class PlayerMovementController {
         }
     }
 
-    public void setSpeedMultiplier(float multiplier) {
-        this.speedMultiplier = multiplier;
-    }
+    public void setSpeedMultiplier(float multiplier) {this.speedMultiplier = multiplier;}
+    public boolean getMoving() {return isMoving;}
 
     private void clampToWorld(Player player) {
         World world = player.getWorld();
