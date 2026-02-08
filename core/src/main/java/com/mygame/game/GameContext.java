@@ -24,6 +24,7 @@ import com.mygame.scenario.ScenarioController;
 import com.mygame.ui.UIManager;
 import com.mygame.ui.inGameUI.Overlay;
 import com.mygame.world.WorldManager;
+import com.mygame.world.zone.ZoneManager;
 import com.mygame.world.zone.ZoneRegistry;
 
 // GameContext now creates and holds most of the managers.
@@ -51,6 +52,7 @@ public class GameContext {
     public final PlantSystem plantSystem;
     public final ItemEventHandler itemEventHandler;
     public final EntityRenderer entityRenderer;
+    public final ZoneManager zoneManager;
 
     public final GameStateManager gsm;
     public final UIManager ui;
@@ -84,14 +86,15 @@ public class GameContext {
         this.itemManager = new ItemManager(itemRegistry, worldManager, zoneRegistry);
         this.plantSystem = new PlantSystem(itemManager, itemRegistry, zoneRegistry, worldManager);
         this.itemEventHandler = new ItemEventHandler(itemRegistry, itemManager, worldManager);
-        this.entityRenderer = new EntityRenderer(worldManager);
+        this.cameraManager = new CameraManager(player);
+        this.entityRenderer = new EntityRenderer(worldManager, cameraManager.getCamera());
+        this.zoneManager = new ZoneManager(worldManager, player);
         player.setItemManager(itemManager);
         this.npcManager = new NpcManager(player, dialogueRegistry, worldManager, itemManager);
         player.setNpcManager(npcManager);
         this.pfandManager = new PfandManager(itemRegistry, itemManager, worldManager);
         this.interactionManager = new InteractionManager(batch, player, questManager, worldManager, npcManager, itemManager);
-        this.cameraManager = new CameraManager(player);
-        this.ui = new UIManager(batch, player, skin, questManager, worldManager, dayManager, npcManager, itemManager);
+        this.ui = new UIManager(batch, player, skin, questManager, worldManager, dayManager, npcManager, itemManager, zoneManager);
         this.dialogueManager = new DialogueManager(ui.getDialogueUI(), player, worldManager, dialogueRegistry, npcManager);
         this.gsm = new GameStateManager(ui);
 
@@ -107,7 +110,7 @@ public class GameContext {
 
     public void update(float delta) {
         dayManager.update(delta);
-        worldManager.update(delta);
+        zoneManager.update(delta);
         overlay.update(delta);
         npcManager.update(delta);
         dialogueManager.update(delta);
