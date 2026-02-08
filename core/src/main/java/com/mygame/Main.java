@@ -32,6 +32,7 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
+        long startTime = System.nanoTime(); // старт таймера
         float delta = Gdx.graphics.getDeltaTime();
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.15f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -47,6 +48,9 @@ public class Main extends ApplicationAdapter {
                 ctx.ui.render();
                 break;
         }
+        long endTime = System.nanoTime(); // кінець таймера
+        float ms = (endTime - startTime) / 1_000_000f; // конвертація в мс
+        Gdx.app.log("RenderDebug", "Frame render time: " + ms + " ms");
     }
 
     private void renderGame(float delta) {

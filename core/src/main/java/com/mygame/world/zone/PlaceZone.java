@@ -19,7 +19,7 @@ public class PlaceZone extends Zone {
         this.player = player;
         this.itemRegistry = itemRegistry;
 
-        this.enabled = settings.enabledQuestZones != null && settings.enabledQuestZones.contains(id);
+        this.enabled = settings.enabledZones != null && settings.enabledZones.contains(id);
     }
 
     @Override

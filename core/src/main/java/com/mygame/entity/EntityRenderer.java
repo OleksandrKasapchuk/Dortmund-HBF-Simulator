@@ -1,6 +1,5 @@
 package com.mygame.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -46,8 +45,6 @@ public class EntityRenderer {
     }
 
     public void renderWithSortedEntities(SpriteBatch batch, World world) {
-        long startTime = System.nanoTime(); // старт таймера
-
         float camLeft = camera.position.x - camera.viewportWidth / 2f;
         float camRight = camera.position.x + camera.viewportWidth / 2f;
         float camBottom = camera.position.y - camera.viewportHeight / 2f;
@@ -100,8 +97,6 @@ public class EntityRenderer {
                 }
             }
         }
-        long endTime = System.nanoTime(); // кінець таймера
-        float ms = (endTime - startTime) / 1_000_000f; // конвертація в мс
-        Gdx.app.log("RenderDebug", "Frame render time: " + ms + " ms");
+
     }
 }

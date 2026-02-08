@@ -14,7 +14,6 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
-import com.mygame.entity.Entity;
 import com.mygame.world.zone.PlaceZone;
 import com.mygame.world.zone.TransitionZone;
 import com.mygame.world.zone.Zone;
@@ -33,10 +32,13 @@ public class World {
     public int mapHeight;
 
     private final ArrayList<Zone> zones = new ArrayList<>();
-    private final ArrayList<Entity> entities = new ArrayList<>();
 
     private int[] bottomLayersIndices;
     private int[] topLayersIndices;
+    private final List<TiledMapTileLayer> topLayers = new ArrayList<>();
+    private final Rectangle tmpRect = new Rectangle();
+    private final Polygon playerPoly = new Polygon();
+    private final Polygon worldPoly = new Polygon();
 
     public World(String name, String pathToMapFile) {
         this.name = name;
@@ -45,6 +47,9 @@ public class World {
         this.collisionLayer = (TiledMapTileLayer) this.map.getLayers().get("collision");
         initializeRenderLayers();
         initializeMapDimensions();
+        for (int index : topLayersIndices) {
+            topLayers.add((TiledMapTileLayer) map.getLayers().get(index));
+        }
     }
 
     private void initializeRenderLayers() {
@@ -108,16 +113,16 @@ public class World {
     private boolean isOverlappingWithRectangle(Rectangle rect, RectangleMapObject mapObject, float tileWorldX, float tileWorldY) {
         Rectangle mapRect = mapObject.getRectangle();
         float objectWorldY = tileWorldY + (tileHeight - (mapRect.y + mapRect.height));
-        Rectangle worldRect = new Rectangle(mapRect.x + tileWorldX, objectWorldY, mapRect.width, mapRect.height);
+        Rectangle worldRect = tmpRect.set(mapRect.x + tileWorldX, objectWorldY, mapRect.width, mapRect.height);
         return Intersector.overlaps(worldRect, rect);
     }
 
     private boolean isOverlappingWithPolygon(Rectangle rect, PolygonMapObject mapObject, float tileWorldX, float tileWorldY) {
         Polygon mapPoly = mapObject.getPolygon();
-        Polygon worldPoly = new Polygon(mapPoly.getVertices());
+        worldPoly.setVertices(mapPoly.getVertices());
         worldPoly.setPosition(tileWorldX, tileWorldY);
 
-        Polygon playerPoly = new Polygon(new float[]{
+        playerPoly.setVertices(new float[]{
                 rect.x, rect.y,
                 rect.x, rect.y + rect.height,
                 rect.x + rect.width, rect.y + rect.height,
@@ -166,18 +171,10 @@ public class World {
     public TiledMap getMap() { return map; }
     public String getName() { return name; }
     public ArrayList<Zone> getZones() { return zones; }
-    public ArrayList<Entity> getEntities() { return entities; }
 
     public OrthogonalTiledMapRenderer getMapRenderer() {
         return mapRenderer;
     }
 
-    public List<TiledMapTileLayer> getTopLayers() {
-        List<TiledMapTileLayer> layers = new ArrayList<>();
-        if (topLayersIndices == null) return layers;
-        for (int index : topLayersIndices) {
-            layers.add((TiledMapTileLayer) map.getLayers().get(index));
-        }
-        return layers;
-    }
+    public List<TiledMapTileLayer> getTopLayers() { return topLayers; }
 }
