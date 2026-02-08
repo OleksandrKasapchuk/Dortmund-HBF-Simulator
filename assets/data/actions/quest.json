@@ -1,7 +1,4 @@
 {
-  "act.quest.murat.accept": { "type": "quest.start", "id": "chili"},
-  "act.quest.walter.accept": { "type": "quest.start", "id": "wallet"},
-
   "act.quest.jason.complete": {
     "type": "system.composite",
     "actions": [
@@ -9,15 +6,28 @@
     ]
   },
 
-  "act.quest.igo.joint_activate": {
+  "act.quest.igo.joint.accept": {
     "type": "system.composite",
     "actions": [
       { "type": "dialogue.set", "npc": "igo", "node": "joint.active" },
-      { "type": "quest.start", "id": "igo" }
+      { "type": "quest.start", "id": "igo.joint" }
     ]
   },
 
-  "act.quest.igo.joint_complete": {
+  "act.quest.igo.party.complete": {
+    "type": "inventory.check",
+    "itemId": "vape",
+    "item": "vape",
+    "action": {
+      "type": "system.composite", "actions": [
+        {"type": "inventory.remove", "id": "vape", "amount": "1"},
+        {"type": "dialogue.set", "npc": "talahon2", "node": "vape.completed"},
+        {"type":  "npc.teleport", "npc": "talahon2", "world": "kamp", "x": 1725, "y": 2500}
+      ]
+    }
+  },
+
+  "act.quest.igo.joint.complete": {
     "type": "inventory.conditionalTrade",
     "from": "joint",
     "to": "vape",
@@ -26,20 +36,30 @@
     "onSuccess": {
       "type": "system.composite",
       "actions": [
-        { "type": "quest.complete", "id": "igo" },
+        { "type": "quest.complete", "id": "igo.joint" },
         { "type": "audio.playSound", "id": "lighter" },
         { "type": "dialogue.set", "npc": "igo", "node": "joint.completed" },
         {
           "type": "system.timer",
           "delay": 5.0,
           "action": { "type": "system.composite", "actions": [
-            { "type": "npc.setTexture", "npc": "igo", "texture": "igo2"}
+            { "type": "npc.setTexture", "npc": "igo", "texture": "igo2"},
+            { "type": "dialogue.set", "npc": "igo", "node": "party.offer" }
           ]
           }
         }
       ]
     }
   },
+
+  "act.quest.igo.party.accept": {
+    "type": "system.composite",
+    "actions": [
+      { "type": "quest.start", "id": "igo.party"},
+      { "type": "dialogue.set", "npc": "igo", "node": "party.active" }
+    ]
+  },
+
   "act.quest.delivery.accept": {
     "type": "system.composite",
     "actions": [
