@@ -1,8 +1,8 @@
 package com.mygame.entity.player;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.mygame.assets.Assets;
 import com.mygame.entity.Entity;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemManager;
@@ -26,6 +26,8 @@ public class Player extends Entity {
     private boolean isMovementLocked = false;
     private PlayerMovementController movementController;
     private PlayerStatusController statusController;
+    private PlayerEffectController effectController;
+    private PlayerAnimationController animationController;
 
     public enum State {
         NORMAL("player.state.normal"),
@@ -45,11 +47,13 @@ public class Player extends Entity {
     private State currentState;
 
 
-    public Player(int speed, int width, int height, float x, float y, Texture texture, World world) {
-        super(width, height, x, y, texture, world);
+    public Player(int speed, int width, int height, float x, float y, World world) {
+        super(width, height, x, y,  Assets.getTexture("zoe.3d"), world);
+        this.animationController = new PlayerAnimationController(this, height);
         this.statusController = new PlayerStatusController();
         this.movementController = new PlayerMovementController();
         this.currentState = SettingsManager.load().playerState;
+        this.effectController = new PlayerEffectController();
     }
 
     // Lock/unlock movement (used for dialogues, cutscenes etc.)
@@ -61,9 +65,13 @@ public class Player extends Entity {
     @Override
     public void update(float delta) {
         statusController.update(delta);
+        effectController.update(this, delta);
         if (isMovementLocked) return;
         movementController.update(this, delta);
+        animationController.update(delta, movementController.getMoving());
     }
+
+
 
     public Item getCollidingSolidItem(Rectangle rect) {
         for (Item item : itemManager.getAllItems()) {
@@ -98,4 +106,11 @@ public class Player extends Entity {
     public State getState() { return currentState; }
 
     public PlayerStatusController getStatusController() {return statusController;}
+    public PlayerMovementController getMovementController(){return movementController;}
+
+    @Override
+    public Rectangle getBounds() {
+        bounds.set(getX(), getY(), getWidth(), getHeight()*0.3f);
+        return bounds;
+    }
 }

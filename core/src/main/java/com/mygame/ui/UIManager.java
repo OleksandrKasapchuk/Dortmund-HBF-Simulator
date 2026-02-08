@@ -19,6 +19,7 @@ import com.mygame.ui.inGameUI.TouchControlsUI;
 import com.mygame.ui.screenUI.*;
 import com.mygame.util.I18nUtils;
 import com.mygame.world.WorldManager;
+import com.mygame.world.zone.ZoneManager;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -40,12 +41,12 @@ public class UIManager {
     private TouchControlsUI touchControlsUI;
     private UIEventHandler uiEventHandler;
 
-    public UIManager(SpriteBatch batch, Player player, Skin skin, QuestManager questManager, WorldManager worldManager, DayManager dayManager, NpcManager npcManager, ItemManager itemManager) {
+    public UIManager(SpriteBatch batch, Player player, Skin skin, QuestManager questManager, WorldManager worldManager, DayManager dayManager, NpcManager npcManager, ItemManager itemManager, ZoneManager zoneManager) {
         this.batch = batch;
         this.player = player;
         this.questManager = questManager;
         this.worldManager = worldManager;
-        this.inWorldUIRenderer = new InWorldUIRenderer(batch, player, questManager, worldManager, npcManager, itemManager);
+        this.inWorldUIRenderer = new InWorldUIRenderer(batch, player, questManager, worldManager, npcManager, itemManager, zoneManager);
         createScreens(skin, dayManager);
 
         currentScreen = screens.get(GameStateManager.GameState.MENU);

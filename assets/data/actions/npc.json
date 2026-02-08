@@ -16,10 +16,10 @@
       { "type": "dialogue.set", "npc": "jason", "node": "tour.active" }
     ]
   },
+
   "act.npc.talahon2.give_vape": {
     "type": "inventory.check",
     "itemId": "vape",
-    "item": "vape",
     "action": {
       "type": "system.composite", "actions": [
         {"type": "inventory.remove", "id": "vape", "amount": "1"},

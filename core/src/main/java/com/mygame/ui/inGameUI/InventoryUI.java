@@ -37,6 +37,7 @@ public class InventoryUI {
     private Label statusLabel;
     private Label hungerLabel;
     private Label thirstLabel;
+    private Label vibeLabel;
     /**
      * Creates the InventoryUI and adds it to the given stage.
      *
@@ -83,7 +84,11 @@ public class InventoryUI {
 
         thirstLabel = new Label("", skin);
         thirstLabel.setFontScale(1.5f);
-        statusSubTable.add(thirstLabel);
+        statusSubTable.add(thirstLabel).padRight(60);
+
+        vibeLabel = new Label("", skin);
+        vibeLabel.setFontScale(1.5f);
+        statusSubTable.add(vibeLabel);
 
         inventoryTable.add(statusSubTable).colspan(4).left().padBottom(40).row();
 
@@ -111,9 +116,9 @@ public class InventoryUI {
     public void update(Player player) {
         if (!visible) return;
         statusLabel.setText(Assets.ui.format("inventory.status", Assets.ui.get(player.getState().getLocalizationKey())));
-        hungerLabel.setText(Assets.ui.format("inventory.hunger", player.getStatusController().getHunger()));
-        thirstLabel.setText(Assets.ui.format("inventory.thirst", player.getStatusController().getThirst()));
-
+        hungerLabel.setText(Assets.ui.format("inventory.hunger", (int) player.getStatusController().getHunger()));
+        thirstLabel.setText(Assets.ui.format("inventory.thirst", (int) player.getStatusController().getThirst()));
+        vibeLabel.setText(Assets.ui.format("inventory.vibe", (int) player.getStatusController().getVibe()));
         itemsTable.clear(); // Очищуємо ТІЛЬКИ список предметів
         listItems(player);
     }

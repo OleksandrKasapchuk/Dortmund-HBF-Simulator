@@ -1,5 +1,6 @@
 package com.mygame.entity;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -17,12 +18,14 @@ public abstract class Entity implements Renderable {
     private int height;
 
     protected Texture texture;   // sprite of the entity
+    protected static Texture shadowTexture;   // shadow texture, now static and shared
     protected World world;       // reference to the world (for collisions etc.)
 
     private float x;             // position X
     private float y;             // position Y
 
     protected Rectangle bounds;
+    protected boolean hasShadow = true;
 
     public Entity(int width, int height, float x, float y, Texture texture, World world) {
         this.width = width;
@@ -32,7 +35,21 @@ public abstract class Entity implements Renderable {
         this.texture = texture;
         this.world = world;
         this.bounds = new Rectangle(x, y, width, height);
+
+        if (shadowTexture == null) {
+            shadowTexture = createShadowTexture();
+        }
     }
+
+    private static Texture createShadowTexture() {
+        Pixmap pixmap = new Pixmap(64, 32, Pixmap.Format.RGBA8888);
+        pixmap.setColor(0, 0, 0, 0.4f); // Semi-transparent black
+        pixmap.fillCircle(32, 16, 15);
+        Texture texture = new Texture(pixmap);
+        pixmap.dispose();
+        return texture;
+    }
+
 
     /**
      * Every entity must implement its own update logic.
@@ -43,6 +60,14 @@ public abstract class Entity implements Renderable {
      * Renders the entity sprite.
      */
     public void draw(SpriteBatch batch) {
+        // Draw shadow first, then the entity
+        if (hasShadow && shadowTexture != null) {
+            // Make the shadow wider than the entity for a better visual effect.
+            float shadowWidth = width * 2f;
+            float shadowX = x - (shadowWidth - width) / 2f;
+            // By setting the shadow's height as a ratio of its width, we ensure it's a nice ellipse.
+            batch.draw(shadowTexture, shadowX, y - 8, shadowWidth, shadowWidth / 3f);
+        }
         batch.draw(this.texture, x, y, width, height);
     }
 
@@ -55,7 +80,8 @@ public abstract class Entity implements Renderable {
 
     public int getWidth() { return width; }
     public int getHeight() { return height; }
-
+    public void setWidth(int width) { this.width = width; }
+    public void setHeight(int height) { this.height = height; }
     // --- Setters ---
     public void setX(float x) { this.x = x; }
     public void setY(float y) { this.y = y; }

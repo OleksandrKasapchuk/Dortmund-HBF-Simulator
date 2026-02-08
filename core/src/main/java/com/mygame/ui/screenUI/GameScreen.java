@@ -1,8 +1,10 @@
 package com.mygame.ui.screenUI;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Queue;
 import com.mygame.assets.Assets;
@@ -26,6 +28,27 @@ public class GameScreen extends Screen {
     private record Message(String text, float duration) {}
     private final Queue<Message> messageQueue = new Queue<>();
     private WorldManager worldManager;
+
+    private float fpsTimer = 0f;
+    private Label fpsLabel;
+    private StringBuilder fpsBuilder = new StringBuilder(32);
+
+    public void updateDebug(float delta) {
+        fpsTimer += delta;
+
+        if (fpsTimer >= 0.25f) {
+            fpsTimer = 0f;
+
+            fpsBuilder.setLength(0);
+            fpsBuilder.append("FPS: ")
+                .append(Gdx.graphics.getFramesPerSecond()).append("   MS: ")
+                .append(Gdx.graphics.getDeltaTime() * 1000f);
+
+
+            fpsLabel.setText(fpsBuilder);
+        }
+    }
+
 
     public GameScreen(Skin skin, WorldManager worldManager, DayManager dayManager, Player player) {
         super();
@@ -64,6 +87,21 @@ public class GameScreen extends Screen {
             }
         });
 
+        Label.LabelStyle style = new Label.LabelStyle();
+        style.font = Assets.myFont; // твій font
+
+        fpsLabel = new Label("FPS: 0", style);
+        fpsLabel.setPosition(10, Gdx.graphics.getHeight() - 10);
+        fpsLabel.setAlignment(Align.topLeft);
+
+        Table debugTable = new Table();
+        debugTable.setFillParent(true);
+        debugTable.top().left().pad(10);
+
+        debugTable.add(fpsLabel).left().top();
+
+        stage.addActor(debugTable);
+
         updateMoney(player.getInventory().getMoney());
         updatePhase(dayManager.getCurrentPhase());
     }
@@ -95,7 +133,7 @@ public class GameScreen extends Screen {
                 infoLabel.setVisible(false);
             }
         }
-
+        updateDebug(delta);
         if (infoMessageTimer <= 0 && !messageQueue.isEmpty()) {
             Message nextMessage = messageQueue.removeFirst();
             infoLabel.setText(nextMessage.text());

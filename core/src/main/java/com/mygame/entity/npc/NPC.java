@@ -145,4 +145,10 @@ public class NPC extends Entity {
     public String getId(){ return id; }
     public String getName() { return this.name; }
     public int getSpeed() { return speed; }
+
+    @Override
+    public Rectangle getBounds() {
+        bounds.set(getX(), getY(), getWidth(), getHeight()*0.2f);
+        return bounds;
+    }
 }

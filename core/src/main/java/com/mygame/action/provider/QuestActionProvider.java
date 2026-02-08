@@ -2,6 +2,7 @@ package com.mygame.action.provider;
 
 import com.mygame.action.ActionRegistry;
 import com.mygame.game.GameContext;
+import com.mygame.world.zone.PlaceZone;
 
 public class QuestActionProvider implements ActionProvider {
     @Override
@@ -13,7 +14,7 @@ public class QuestActionProvider implements ActionProvider {
         registry.registerCreator("zone.enable_next_available", (c, data) -> () -> {
             String prefix = data.getString("prefix");
             c.zoneRegistry.getZones().stream()
-                    .filter(zone -> !zone.isEnabled() && zone.getId().startsWith(prefix))
+                    .filter(zone -> !zone.isEnabled() && zone.getId().startsWith(prefix) && (zone instanceof PlaceZone placeZone) && !placeZone.isOccupied())
                     .findFirst()
                     .ifPresent(zone -> zone.setEnabled(true));
         });

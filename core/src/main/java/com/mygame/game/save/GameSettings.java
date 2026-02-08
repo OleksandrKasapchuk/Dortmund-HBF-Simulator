@@ -28,6 +28,7 @@ public class GameSettings {
     public Player.State playerState;
     public float playerHunger;
     public float playerThirst;
+    public float playerVibe;
 
     public String currentWorldName;
 
@@ -42,7 +43,7 @@ public class GameSettings {
     public Set<String> talkedNpcs;
     public Set<String> visited;
     public Set<String> searchedItems;
-    public Set<String> enabledQuestZones; // Changed from disabledQuestZones
+    public Set<String> enabledZones; // Changed from disabledQuestZones
 
     // NPC State: Mapping NPC ID to their current status (dialogue and texture)
     public Map<String, NpcSaveData> npcStates;
@@ -111,6 +112,7 @@ public class GameSettings {
         this.playerY = 200;
         this.playerHunger = 100;
         this.playerThirst = 100;
+        this.playerVibe = 100;
         this.currentWorldName = "main";
         this.inventory = new HashMap<>();
         this.activeQuests = new HashMap<>();
@@ -122,7 +124,7 @@ public class GameSettings {
         this.visited = new HashSet<>();
         this.searchedItems = new HashSet<>();
         this.npcStates = new HashMap<>();
-        this.enabledQuestZones = new HashSet<>(); // Changed from disabledQuestZones
+        this.enabledZones = new HashSet<>(); // Changed from disabledQuestZones
 
         this.policeChaseActive = false;
     }

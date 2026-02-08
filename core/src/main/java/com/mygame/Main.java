@@ -12,6 +12,7 @@ import com.mygame.game.GameInitializer;
 import com.mygame.assets.audio.MusicManager;
 import com.mygame.world.World;
 
+
 public class Main extends ApplicationAdapter {
 
     private static GameInitializer gameInitializer;
@@ -31,6 +32,7 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
+        long startTime = System.nanoTime(); // старт таймера
         float delta = Gdx.graphics.getDeltaTime();
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.15f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -46,62 +48,41 @@ public class Main extends ApplicationAdapter {
                 ctx.ui.render();
                 break;
         }
+        long endTime = System.nanoTime(); // кінець таймера
+        float ms = (endTime - startTime) / 1_000_000f; // конвертація в мс
+        Gdx.app.log("RenderDebug", "Frame render time: " + ms + " ms");
     }
 
     private void renderGame(float delta) {
         GameContext ctx = gameInitializer.getContext();
         World currentWorld = ctx.worldManager.getCurrentWorld();
 
-        // 1. Update all logic
         ctx.player.update(delta);
         gameInitializer.getManagerRegistry().update(delta);
 
-        // 2. Get the updated camera
         OrthographicCamera camera = gameInitializer.getManagerRegistry().getCameraManager().getCamera();
-
-        // 3. Render the absolute bottom layer (background/floor)
         ctx.worldManager.renderBottomLayers(camera);
 
         SpriteBatch batch = gameInitializer.getBatch();
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
-        if (currentWorld != null) {
-            // 4. Draw background items (carpets, etc.)
-            ctx.itemManager.renderBackgroundItems(batch);
+        ctx.entityRenderer.renderUnsorted(batch, ctx.itemManager.getBackgroundItems());
 
-            // 5. Draw player and NPCs
-            ctx.player.draw(batch);
-            ctx.npcManager.renderNpcs(batch);
-        }
+         ctx.entityRenderer.collectRenderableEntities(currentWorld, ctx.player, ctx.npcManager.getNpcs(), ctx.itemManager.getForegroundItems());
 
-        batch.end();
+        ctx.entityRenderer.renderWithSortedEntities(batch, currentWorld);
 
-        // 6. Render the collision layer (walls), which now covers the player
-        ctx.worldManager.renderTopLayers(camera);
-
-        // 7. Draw foreground items (e.g., items on tables) over the walls
-        batch.begin();
-        if (currentWorld != null) {
-            ctx.itemManager.renderForegroundItems(batch);
-        }
-
-        // Draw non-gameplay world elements like transition texts
-        ctx.worldManager.drawEntities(batch, Assets.myFont);
         ctx.ui.renderWorldElements();
 
         batch.end();
 
+        currentWorld.drawZones(shapeRenderer, camera);
 
-        if (currentWorld != null) {
-            currentWorld.drawZones(shapeRenderer, camera);
-        }
-
-
-        // 9. Draw screen-space UI
         ctx.ui.render();
         ctx.overlay.render();
     }
+
 
     @Override
     public void resize(int width, int height) {

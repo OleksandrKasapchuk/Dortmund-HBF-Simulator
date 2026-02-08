@@ -15,10 +15,6 @@ import com.mygame.game.GameStateManager;
 import com.mygame.quest.QuestManager;
 import com.mygame.world.zone.Zone;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 public class SaveManager {
 
     private final GameContext ctx;
@@ -34,7 +30,6 @@ public class SaveManager {
     public SaveManager(GameContext ctx) {
         this.ctx = ctx;
         EventBus.subscribe(Events.SaveRequestEvent.class, e -> requestSave());
-        Gdx.app.log("AutoSaveManager", "Smart event-based saving initialized.");
     }
 
     public void update(float delta) {
@@ -87,13 +82,12 @@ public class SaveManager {
             saveNpcStates(settings);
 
             saveSummonedPolice(settings);
-            saveQuestZones(settings);
+            saveZones(settings);
             saveCreatedItems(settings);
 
             SettingsManager.save(settings);
             Gdx.app.log("AutoSaveManager", "Game saved successfully. World: " + settings.currentWorldName);
         } catch (Exception e) {
-            Gdx.app.error("AutoSaveManager", "Critical error during save: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -101,25 +95,24 @@ public class SaveManager {
         settings.currentDay = ctx.dayManager.getDay();
         settings.currentTime = ctx.dayManager.getCurrentTime();
     }
+
     private void saveCreatedItems(GameSettings settings) {
-        settings.createdItems = ctx.itemManager.getAllItems().stream()
-                .filter(Item::isDynamic)
-                .map(item -> new GameSettings.ItemSaveData(
-                        item.getType().getKey(),
-                        item.getX(),
-                        item.getY(),
-                        item.getWorld().getName(),
-                        item.getSearchData(),
-                        item.getInteractionData(),
-                        item.getWidth(),
-                        item.getHeight()
-                ))
-                .collect(Collectors.toList());
+        settings.createdItems.clear();
+        for (Item item : ctx.itemManager.getAllItems()) {
+            if (!item.isDynamic()) continue;
+            settings.createdItems.add(new GameSettings.ItemSaveData(
+                item.getType().getKey(),
+                item.getX(), item.getY(),
+                item.getWorld().getName(),
+                item.getSearchData(), item.getInteractionData(),
+                item.getWidth(), item.getHeight()
+            ));
+        }
     }
 
     private void saveInventory(GameSettings settings){
-        settings.inventory = ctx.player.getInventory().getItems().entrySet().stream()
-            .collect(Collectors.toMap(entry -> entry.getKey().getKey(), Map.Entry::getValue));
+        settings.inventory.clear();
+        ctx.player.getInventory().getItems().forEach((key, value) -> settings.inventory.put(key.getKey(), value));
     }
 
     private void savePlayerData(GameSettings settings){
@@ -128,28 +121,30 @@ public class SaveManager {
         settings.playerY = ctx.player.getY();
         settings.playerHunger = ctx.player.getStatusController().getHunger();
         settings.playerThirst = ctx.player.getStatusController().getThirst();
+        settings.playerVibe = ctx.player.getStatusController().getVibe();
     }
 
     private void saveActiveQuests(GameSettings settings){
-        settings.activeQuests = ctx.questManager.getQuests().stream()
-            .collect(Collectors.toMap(
-                QuestManager.Quest::key,
-                quest -> new GameSettings.QuestSaveData(quest.progress(), quest.getStatus())
-            ));
+        for (QuestManager.Quest quest : ctx.questManager.getQuests()) {
+            GameSettings.QuestSaveData data = settings.activeQuests.computeIfAbsent(quest.key(), k -> new GameSettings.QuestSaveData());
+            data.progress = quest.progress();
+            data.status = quest.getStatus();
+        }
     }
 
     private void saveSearchedItems(GameSettings settings){
-        settings.searchedItems = ctx.worldManager.getWorlds().values().stream()
-            .flatMap(world -> ctx.itemManager.getAllItems().stream())
-            .filter(item -> item.getSearchData() != null && item.getSearchData().isSearched())
-            .map(Item::getId)
-            .collect(Collectors.toSet());
+        settings.searchedItems.clear();
+        for (Item item : ctx.itemManager.getAllItems()) {
+            if (item.getSearchData() != null && item.getSearchData().isSearched()) {
+                settings.searchedItems.add(item.getId());
+            }
+        }
     }
 
     private void saveQuestTriggers(GameSettings settings){
         if (ctx.questProgressTriggers != null) {
-            settings.talkedNpcs = new HashSet<>(ctx.questProgressTriggers.getTalkedNpcs());
-            settings.visited = new HashSet<>(ctx.questProgressTriggers.getVisited());
+            settings.talkedNpcs.addAll(ctx.questProgressTriggers.getTalkedNpcs());
+            settings.visited.addAll(ctx.questProgressTriggers.getVisited());
         }
     }
 
@@ -166,25 +161,19 @@ public class SaveManager {
     }
 
     private void saveNpcStates(GameSettings settings) {
-        settings.npcStates = ctx.npcManager.getNpcs().stream().collect(Collectors.toMap(
-                NPC::getId,
-                npc -> {
-                    GameSettings.NpcSaveData data = new GameSettings.NpcSaveData(npc.getCurrentDialogueNodeId(), npc.getCurrentTextureKey());
-                    data.x = npc.getX();
-                    data.y = npc.getY();
-                    if (npc.getWorld() != null) {
-                        data.currentWorld = npc.getWorld().getName();
-                    }
-                    return data;
-                },
-                (existing, replacement) -> existing
-        ));
+        for (NPC npc : ctx.npcManager.getNpcs()) {
+            GameSettings.NpcSaveData data = settings.npcStates.computeIfAbsent(npc.getId(), k -> new GameSettings.NpcSaveData());
+            data.currentNode = npc.getCurrentDialogueNodeId();
+            data.currentTexture = npc.getCurrentTextureKey();
+            data.x = npc.getX();
+            data.y = npc.getY();
+            data.currentWorld = npc.getWorld() != null ? npc.getWorld().getName() : null;
+        }
     }
-    private void saveQuestZones(GameSettings settings) {
-        settings.enabledQuestZones = ctx.zoneRegistry.getZones().stream()
-                .filter(Zone::isEnabled)
-                .map(Zone::getId)
-                .collect(Collectors.toSet());
+    private void saveZones(GameSettings settings) {
+        settings.enabledZones.clear();
+        for (Zone zone : ctx.zoneRegistry.getZones()) {
+            if (zone.isEnabled()) settings.enabledZones.add(zone.getId());
+        }
     }
-
 }

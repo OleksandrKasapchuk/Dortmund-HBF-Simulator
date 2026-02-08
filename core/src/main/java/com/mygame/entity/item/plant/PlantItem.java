@@ -1,7 +1,9 @@
-package com.mygame.entity.item;
+package com.mygame.entity.item.plant;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
+import com.mygame.entity.item.Item;
+import com.mygame.entity.item.ItemDefinition;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.world.World;
@@ -20,11 +22,12 @@ public class PlantItem extends Item {
     private Phase currentPhase;
     private float growthTimer;
     private final float timeToNextPhase; // Time in seconds for each phase
+    private String zoneId;
 
     private final Map<Phase, Texture> phaseTextures;
 
     public PlantItem(String id, ItemDefinition type, float x, float y, World world, Map<Phase, Texture> phaseTextures,
-                     float timeToNextPhase) {
+                     float timeToNextPhase, String zoneId) {
         // Start with the seed texture and its dimensions
         super(id, type, 75, 100, x, y, phaseTextures.get(Phase.SEED), world, false, true, null, true);
 
@@ -33,6 +36,7 @@ public class PlantItem extends Item {
         this.growthTimer = 0f;
         this.timeToNextPhase = timeToNextPhase;
         this.bounds = new Rectangle(x, y, getWidth(), getHeight()/2f);
+        this.zoneId = zoneId;
     }
 
     @Override
@@ -57,9 +61,7 @@ public class PlantItem extends Item {
     }
 
     public void harvest() {
-        System.out.println("plant");
         if (!isInteractable())  return;
-        System.out.println("harvested");
         EventBus.fire(new Events.HarvestPlantEvent(this));
     }
 
@@ -75,5 +77,8 @@ public class PlantItem extends Item {
     public Rectangle getBounds() {
         bounds.set(getX(), getY(), getWidth(), getHeight()/2f);
         return bounds;
+    }
+    public String getZoneId() {
+        return zoneId;
     }
 }

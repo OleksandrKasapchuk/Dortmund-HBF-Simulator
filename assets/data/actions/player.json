@@ -17,10 +17,17 @@
     ]
   },
 
-  "act.player.die": {
+  "act.player.kill": {
     "type": "system.composite",
     "actions": [
       { "type": "audio.playSound", "id": "gunShot" },
+      { "type": "player.die" }
+    ]
+  },
+
+  "act.player.die": {
+    "type": "system.composite",
+    "actions": [
       { "type": "player.die" }
     ]
   }

@@ -16,12 +16,17 @@
   { "key": "kioskman.3d", "path": "images/npc/kioskman_3d.png" },
   { "key": "kioskman", "path": "images/npc/kioskman.png" },
 
-  { "key": "zoe", "path": "images/npc/zoe.png" },
+  { "key": "zoe", "path": "images/npc/zoe/zoe.png" },
+
+  { "key": "zoe.3d", "path": "images/npc/zoe/zoe_3d.png" },
+  { "key": "zoe.3d_left", "path": "images/npc/zoe/zoe_3d_left.png" },
+  { "key": "zoe.3d_right", "path": "images/npc/zoe/zoe_3d_right.png" },
+
   { "key": "boss", "path": "images/npc/boss.png" },
   { "key": "boss.3d", "path": "images/npc/boss_3d.png" },
   { "key": "kamil", "path": "images/npc/kamil.png" },
 
-  { "key": "jan", "path": "images/npc/jan.png" },
+  { "key": "jan", "path": "images/npc/jan2.png" },
   { "key": "jan.3d", "path": "images/npc/jan_3d.png" },
 
   { "key": "filip", "path": "images/npc/filip.png" },

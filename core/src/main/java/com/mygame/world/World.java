@@ -14,12 +14,12 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
-import com.mygame.entity.Entity;
 import com.mygame.world.zone.PlaceZone;
 import com.mygame.world.zone.TransitionZone;
 import com.mygame.world.zone.Zone;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class World {
     private final String name;
@@ -32,10 +32,13 @@ public class World {
     public int mapHeight;
 
     private final ArrayList<Zone> zones = new ArrayList<>();
-    private final ArrayList<Entity> entities = new ArrayList<>();
 
     private int[] bottomLayersIndices;
     private int[] topLayersIndices;
+    private final List<TiledMapTileLayer> topLayers = new ArrayList<>();
+    private final Rectangle tmpRect = new Rectangle();
+    private final Polygon playerPoly = new Polygon();
+    private final Polygon worldPoly = new Polygon();
 
     public World(String name, String pathToMapFile) {
         this.name = name;
@@ -44,6 +47,9 @@ public class World {
         this.collisionLayer = (TiledMapTileLayer) this.map.getLayers().get("collision");
         initializeRenderLayers();
         initializeMapDimensions();
+        for (int index : topLayersIndices) {
+            topLayers.add((TiledMapTileLayer) map.getLayers().get(index));
+        }
     }
 
     private void initializeRenderLayers() {
@@ -106,19 +112,17 @@ public class World {
 
     private boolean isOverlappingWithRectangle(Rectangle rect, RectangleMapObject mapObject, float tileWorldX, float tileWorldY) {
         Rectangle mapRect = mapObject.getRectangle();
-        // LibGDX Tiled importer flips the Y-axis for objects within tiles.
-        // We must account for this by subtracting the object's Y from the tile's height.
         float objectWorldY = tileWorldY + (tileHeight - (mapRect.y + mapRect.height));
-        Rectangle worldRect = new Rectangle(mapRect.x + tileWorldX, objectWorldY, mapRect.width, mapRect.height);
+        Rectangle worldRect = tmpRect.set(mapRect.x + tileWorldX, objectWorldY, mapRect.width, mapRect.height);
         return Intersector.overlaps(worldRect, rect);
     }
 
     private boolean isOverlappingWithPolygon(Rectangle rect, PolygonMapObject mapObject, float tileWorldX, float tileWorldY) {
         Polygon mapPoly = mapObject.getPolygon();
-        Polygon worldPoly = new Polygon(mapPoly.getVertices());
+        worldPoly.setVertices(mapPoly.getVertices());
         worldPoly.setPosition(tileWorldX, tileWorldY);
 
-        Polygon playerPoly = new Polygon(new float[]{
+        playerPoly.setVertices(new float[]{
                 rect.x, rect.y,
                 rect.x, rect.y + rect.height,
                 rect.x + rect.width, rect.y + rect.height,
@@ -139,16 +143,6 @@ public class World {
         }
     }
 
-    public void renderTopLayers(OrthographicCamera camera) {
-        mapRenderer.setView(camera);
-        float bottomBuffer = 40f;
-        mapRenderer.getViewBounds().y -= bottomBuffer;
-        mapRenderer.getViewBounds().height += bottomBuffer;
-        if (topLayersIndices.length > 0) {
-            mapRenderer.render(topLayersIndices);
-        }
-    }
-
     public void drawZones(ShapeRenderer shapeRenderer, OrthographicCamera camera) {
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -161,7 +155,6 @@ public class World {
                 shapeRenderer.setColor(Color.YELLOW); // жовтий для квестів
                 shapeRenderer.rect(qz.getArea().x, qz.getArea().y, qz.getArea().width, qz.getArea().height);
             } else {
-                // просто для загальних зон
                 shapeRenderer.setColor(Color.CYAN);
                 shapeRenderer.rect(zone.getArea().x, zone.getArea().y, zone.getArea().width, zone.getArea().height);
             }
@@ -178,5 +171,10 @@ public class World {
     public TiledMap getMap() { return map; }
     public String getName() { return name; }
     public ArrayList<Zone> getZones() { return zones; }
-    public ArrayList<Entity> getEntities() { return entities; }
+
+    public OrthogonalTiledMapRenderer getMapRenderer() {
+        return mapRenderer;
+    }
+
+    public List<TiledMapTileLayer> getTopLayers() { return topLayers; }
 }

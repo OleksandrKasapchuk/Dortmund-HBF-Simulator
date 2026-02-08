@@ -11,9 +11,12 @@ import com.mygame.world.World;
 
 public class PlayerMovementController {
 
-    public void update(Player player, float delta) {
+    private float speedMultiplier = 1;
+    private int baseSpeed = 500;
+    private boolean isMoving;
 
-        int baseSpeed = 500;
+    public void update(Player player, float delta) {
+        isMoving = false;
         int speed = player.getState() == Player.State.STONED ? 150 : baseSpeed;
 
         float moveSpeed = speed * delta;
@@ -34,7 +37,10 @@ public class PlayerMovementController {
             dx = player.touchpad.getKnobPercentX() * speed * delta;
             dy = player.touchpad.getKnobPercentY() * speed * delta;
         }
-
+        dx *= speedMultiplier;
+        dy *= speedMultiplier;
+        if (dy < 0) isMoving = true;
+        // === MOVEMENT ===
         moveWithCollision(player, dx, dy);
         clampToWorld(player);
     }
@@ -50,18 +56,9 @@ public class PlayerMovementController {
         Item itemX = player.getCollidingSolidItem(rect);
         NPC npcX = player.getCollidingNpc(rect);
 
-        if (player.getWorld().isCollidingWithMap(rect) || npcX != null) {
-            player.setX(oldX); // ⬅ ЖОРСТКИЙ ROLLBACK
-        }
-        else if (itemX != null) {
-            if (dx > 0) {
-                player.setX(itemX.getBounds().x - player.getWidth());
-            } else if (dx < 0) {
-                player.setX(itemX.getBounds().x + itemX.getBounds().width);
-            }
-        }
-
-        else {
+        if (player.getWorld().isCollidingWithMap(rect) || npcX != null || itemX != null) {
+            player.setX(oldX);
+        } else {
             player.setX(oldX + dx);
         }
 
@@ -75,22 +72,15 @@ public class PlayerMovementController {
         Item itemY = player.getCollidingSolidItem(rect);
         NPC npcY = player.getCollidingNpc(rect);
 
-        if (player.getWorld().isCollidingWithMap(rect) || npcY != null) {
-            player.setY(oldY); // ⬅ ROLLBACK
-        }
-        else if (itemY != null) {
-            if (dy > 0) {
-                player.setY(itemY.getBounds().y - player.getHeight());
-            } else if (dy < 0) {
-                player.setY(itemY.getBounds().y + itemY.getBounds().height);
-            }
-        }
-        else {
+        if (player.getWorld().isCollidingWithMap(rect) || npcY != null || itemY != null) {
+            player.setY(oldY);
+        } else {
             player.setY(oldY + dy);
         }
-
-        rect.y = player.getY();
     }
+
+    public void setSpeedMultiplier(float multiplier) {this.speedMultiplier = multiplier;}
+    public boolean getMoving() {return isMoving;}
 
     private void clampToWorld(Player player) {
         World world = player.getWorld();
@@ -99,5 +89,4 @@ public class PlayerMovementController {
         player.setX(MathUtils.clamp(player.getX(), 0, world.mapWidth - player.getWidth()));
         player.setY(MathUtils.clamp(player.getY(), 0, world.mapHeight - player.getHeight()));
     }
-
 }

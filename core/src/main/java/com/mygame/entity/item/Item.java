@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.mygame.entity.Entity;
 import com.mygame.entity.item.itemData.InteractionData;
 import com.mygame.entity.item.itemData.SearchData;
+import com.mygame.entity.item.plant.PlantItem;
 import com.mygame.entity.player.Player;
 import com.mygame.world.World;
 
@@ -29,11 +30,11 @@ public class Item extends Entity {
         this.id = id;
         this.type = type;
         this.canBePickedUp = canBePickedUp;
-
         float baseDistance = 80f; // базова дистанція
         this.distance = (int)(baseDistance + (width + height) / 4f); // додаємо розмір об'єкта (половина ширини + половина висоти) / 2
         this.solid = solid;
         this.questId = questId;
+        this.hasShadow = false;
 
         this.isDynamic = isDynamic;
     }
@@ -69,7 +70,7 @@ public class Item extends Entity {
     public boolean isSolid() { return solid; }
 
     public boolean isInteractable(){
-        return interactionData != null || searchData != null;
+        return interactionData != null || (searchData != null && !searchData.isSearched());
     }
     public SearchData getSearchData(){return searchData;}
     public InteractionData getInteractionData(){return interactionData;}

@@ -3,21 +3,37 @@
     "nodes": {
       "start": "joint.offer",
       "joint.offer": {
-        "texts": ["dialogue.igo.joint_offer.1", "dialogue.igo.joint_offer.2", "dialogue.igo.joint_offer.3"],
+        "texts": ["dialogue.igo.joint.offer.1", "dialogue.igo.joint.offer.2", "dialogue.igo.joint.offer.3"],
 
         "choices": [
-          { "text": "dialogue.choice.accept", "action": "act.quest.igo.joint_activate" },
+          { "text": "dialogue.choice.accept", "action": "act.quest.igo.joint.accept" },
           "dialogue.choice.leave"
         ]
       },
       "joint.active": {
-        "texts": ["dialogue.igo.joint_active.1"],
+        "texts": ["dialogue.igo.joint.active.1"],
         "choices": [
-          { "text": "dialogue.igo.joint_active.choice.1", "action": "act.quest.igo.joint_complete" },
+          { "text": "dialogue.igo.joint.active.choice.1", "action": "act.quest.igo.joint.complete" },
           "dialogue.choice.leave"
         ]
       },
-      "joint.completed": ["dialogue.igo.joint_completed.1"]
+      "joint.completed": ["dialogue.igo.joint.completed.1"],
+
+      "party.offer": {
+        "texts": ["dialogue.igo.party.offer.1", "dialogue.igo.party.offer.2", "dialogue.igo.party.offer.3", "dialogue.igo.party.offer.4"],
+        "choices": [
+          { "text": "dialogue.choice.accept", "action": "act.quest.igo.party.accept" },
+          "dialogue.choice.leave"
+        ]
+      },
+
+      "party.active": {
+        "texts": ["dialogue.igo.party.active.1", "dialogue.igo.party.active.2"],
+        "choices": [
+          { "text": "dialogue.igo.party.active.choice.1", "action": "act.quest.igo.party.complete" },
+          "dialogue.choice.leave"
+        ]
+      }
     }
   }
 }
