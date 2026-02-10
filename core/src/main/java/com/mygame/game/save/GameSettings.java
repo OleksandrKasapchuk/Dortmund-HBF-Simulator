@@ -17,8 +17,9 @@ import java.util.Set;
  * Needs a no-arg constructor for JSON serialization.
  */
 public class GameSettings {
+    public String id;
     public String language;
-
+    public String player_name;
     public float musicVolume;
     public float soundVolume;
     public boolean muteAll;
@@ -104,6 +105,7 @@ public class GameSettings {
 
     public GameSettings() {
         // Default settings
+        this.player_name = "Player";
         this.language = "en";
         this.musicVolume = 1.0f;
         this.soundVolume = 1.0f;

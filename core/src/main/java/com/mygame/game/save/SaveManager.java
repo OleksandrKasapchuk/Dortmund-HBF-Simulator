@@ -1,6 +1,9 @@
 package com.mygame.game.save;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.mygame.Main;
 import com.mygame.assets.audio.MusicManager;
 import com.mygame.assets.audio.SoundManager;
@@ -46,6 +49,42 @@ public class SaveManager {
         burstTimer = BURST_DELAY;
     }
 
+    public void saveGameToServer(GameSettings settings) {
+        try {
+            Net.HttpRequest postRequest = new Net.HttpRequest(Net.HttpMethods.POST);
+            postRequest.setUrl("http://localhost:8000/api/save/?format=json");
+            postRequest.setHeader("Content-Type", "application/json");
+
+            // Перетворюємо GameSettings у JSON напряму
+            Json json = new Json();
+            json.setOutputType(JsonWriter.OutputType.json);
+            json.setUsePrototypes(false);
+
+            String jsonData = json.toJson(settings);
+            Gdx.app.log("SaveManager", "Sending JSON: " + jsonData);
+            postRequest.setContent(jsonData);
+
+            Gdx.net.sendHttpRequest(postRequest, new Net.HttpResponseListener() {
+                @Override
+                public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                    Gdx.app.log("SaveManager", httpResponse.getResultAsString());
+                }
+
+                @Override
+                public void failed(Throwable t) {
+                    t.printStackTrace();
+                }
+
+                @Override
+                public void cancelled() {}
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void saveGame() {
         Gdx.app.log("AutoSaveManager", "Starting save process...");
 
@@ -70,21 +109,15 @@ public class SaveManager {
             if (ctx.worldManager.getCurrentWorld() != null) settings.currentWorldName = ctx.worldManager.getCurrentWorld().getName();
 
             saveTime(settings);
-
             saveInventory(settings);
-
             saveActiveQuests(settings);
-
             saveQuestTriggers(settings);
-
             saveSearchedItems(settings);
-
             saveNpcStates(settings);
-
             saveSummonedPolice(settings);
             saveZones(settings);
             saveCreatedItems(settings);
-
+            saveGameToServer(settings);
             SettingsManager.save(settings);
             Gdx.app.log("AutoSaveManager", "Game saved successfully. World: " + settings.currentWorldName);
         } catch (Exception e) {

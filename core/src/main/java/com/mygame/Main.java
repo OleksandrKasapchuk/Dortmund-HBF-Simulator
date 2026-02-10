@@ -22,23 +22,24 @@ public class Main extends ApplicationAdapter {
     public void create() {
         Assets.load();                            // Load textures, sounds, music
         gameInitializer = new GameInitializer();
-        gameInitializer.initGame();               // Initialize all game objects
+        restartGame();              // Initialize all game objects
         shapeRenderer = new ShapeRenderer();
     }
 
     public static void restartGame() {
-        gameInitializer.initGame();
+        gameInitializer.initGame(); // init тільки після завантаження
     }
 
     @Override
     public void render() {
-        long startTime = System.nanoTime(); // старт таймера
         float delta = Gdx.graphics.getDeltaTime();
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.15f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        gameInitializer.getManagerRegistry().getGameInputHandler().update();
-        GameContext ctx = gameInitializer.getContext();
+        if (gameInitializer.getManagerRegistry() != null){
+            gameInitializer.getManagerRegistry().getGameInputHandler().update();
+            GameContext ctx = gameInitializer.getContext();
+
 
         switch (ctx.gsm.getState()) {
             case PLAYING:
@@ -47,10 +48,7 @@ public class Main extends ApplicationAdapter {
             default:
                 ctx.ui.render();
                 break;
-        }
-        long endTime = System.nanoTime(); // кінець таймера
-        float ms = (endTime - startTime) / 1_000_000f; // конвертація в мс
-        Gdx.app.log("RenderDebug", "Frame render time: " + ms + " ms");
+        }}
     }
 
     private void renderGame(float delta) {
@@ -86,7 +84,9 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void resize(int width, int height) {
-        gameInitializer.getManagerRegistry().resize(width, height);
+        if (gameInitializer.getManagerRegistry() != null) {
+            gameInitializer.getManagerRegistry().resize(width, height);
+        }
     }
 
     @Override
