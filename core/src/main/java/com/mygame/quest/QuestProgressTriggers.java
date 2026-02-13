@@ -6,7 +6,7 @@ import com.mygame.entity.npc.NPC;
 import com.mygame.entity.npc.NpcManager;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
-import com.mygame.game.save.GameSettings;
+import com.mygame.game.save.data.ServerSaveData;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;
@@ -32,7 +32,7 @@ public class QuestProgressTriggers {
         this.npcManager = npcManager;
         this.worldManager = worldManager;
         // Прогрес квестів
-        GameSettings settings = SettingsManager.load();
+        ServerSaveData settings = SettingsManager.loadServer();
         talkedNpcs = settings.talkedNpcs;
         visited = settings.visited;
 

@@ -12,14 +12,15 @@ import com.mygame.ui.UIManager;
 public class GameStateManager {
 
     // --- Enum of possible game states ---
-    public enum GameState { MENU, PLAYING, PAUSED, SETTINGS, DEATH, MAP }
+    public enum GameState { MENU, PLAYING, PAUSED, SETTINGS, DEATH, MAP, AUTH }
 
     private GameState state; // Current state of the game
     private final UIManager uiManager;
+
     // --- Constructor ---
     public GameStateManager(UIManager uiManager) {
         this.uiManager = uiManager;
-        setState(GameState.MENU);
+        setState(GameState.AUTH);
     }
 
     // --- Get the current game state ---

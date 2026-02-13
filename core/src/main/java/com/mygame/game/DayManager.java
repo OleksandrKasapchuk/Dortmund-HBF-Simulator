@@ -36,7 +36,7 @@ public class DayManager {
     }
 
     public void update(float delta) {
-        currentTime += delta; // баланс
+        currentTime += delta * 0.1f; // баланс
 
         if (currentTime >= DAY_LENGTH) {
             nextDay();
@@ -55,7 +55,6 @@ public class DayManager {
         this.day = day;
         EventBus.fire(new Events.NewDayEvent(day));
         EventBus.fire(new Events.SaveRequestEvent());
-        System.out.println("New day: " + day);
     }
 
 
@@ -68,8 +67,6 @@ public class DayManager {
         if (newPhase != currentPhase) {
             currentPhase = newPhase;
             EventBus.fire(new Events.PhaseChangedEvent(newPhase));
-            EventBus.fire(new Events.SaveRequestEvent());
-            System.out.println("New phase: " + newPhase);
         }
     }
 

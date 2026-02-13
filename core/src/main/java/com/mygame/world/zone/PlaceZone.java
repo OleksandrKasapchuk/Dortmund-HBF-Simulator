@@ -6,7 +6,7 @@ import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
-import com.mygame.game.save.GameSettings;
+import com.mygame.game.save.data.ServerSaveData;
 
 
 public class PlaceZone extends Zone {
@@ -14,7 +14,7 @@ public class PlaceZone extends Zone {
     private final ItemRegistry itemRegistry;
     private Item placedItem;
 
-    public PlaceZone(String id, Rectangle area, Player player, ItemRegistry itemRegistry, GameSettings settings) {
+    public PlaceZone(String id, Rectangle area, Player player, ItemRegistry itemRegistry, ServerSaveData settings) {
         super(id, area);
         this.player = player;
         this.itemRegistry = itemRegistry;

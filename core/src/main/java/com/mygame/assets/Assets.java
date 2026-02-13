@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.mygame.game.save.GameSettings;
+import com.mygame.game.save.data.ClientSaveData;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.assets.audio.MusicManager;
 import com.mygame.assets.audio.SoundManager;
@@ -40,7 +40,8 @@ public class Assets {
     public static BitmapFont myFont;
 
     public static void load() {
-        GameSettings settings = SettingsManager.load();
+        ClientSaveData settings = SettingsManager.loadClient();
+
         currentLocale = new Locale(settings.language);
         MusicManager.setVolume(settings.musicVolume);
         SoundManager.setVolume(settings.soundVolume);

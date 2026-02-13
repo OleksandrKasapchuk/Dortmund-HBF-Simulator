@@ -11,7 +11,7 @@ import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.game.save.DataLoader;
 import com.mygame.managers.ManagerRegistry;
-import com.mygame.game.save.GameSettings;
+import com.mygame.game.save.data.ServerSaveData;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.ui.load.SkinLoader;
 import com.mygame.assets.audio.MusicManager;
@@ -48,10 +48,10 @@ public class GameInitializer {
                         gdxJson.setIgnoreUnknownFields(true);
                         gdxJson.setOutputType(JsonWriter.OutputType.json);
 
-                        GameSettings settings = gdxJson.fromJson(GameSettings.class, json);
+                        ServerSaveData settings = gdxJson.fromJson(ServerSaveData.class, json);
 
                         Gdx.app.postRunnable(() -> {
-                            SettingsManager.save(settings);
+                            SettingsManager.saveServer(settings);
                             initGame(); // створюємо SpriteBatch і все інше вже безпечно
                         });
                     } catch (SerializationException e) {
@@ -95,7 +95,7 @@ public class GameInitializer {
 
         skin = SkinLoader.loadSkin();
 
-        GameSettings settings = SettingsManager.load();
+        ServerSaveData settings = SettingsManager.loadServer();
 
         // 1. Створюємо гравця з початковими даними, але без світу
         player = new Player(500, 80, 160, settings.playerX, settings.playerY, null);

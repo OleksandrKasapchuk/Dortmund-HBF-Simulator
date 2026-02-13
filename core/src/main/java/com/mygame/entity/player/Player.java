@@ -52,7 +52,7 @@ public class Player extends Entity {
         this.animationController = new PlayerAnimationController(this, height);
         this.statusController = new PlayerStatusController();
         this.movementController = new PlayerMovementController();
-        this.currentState = SettingsManager.load().playerState;
+        this.currentState = SettingsManager.loadServer().playerState;
         this.effectController = new PlayerEffectController();
     }
 

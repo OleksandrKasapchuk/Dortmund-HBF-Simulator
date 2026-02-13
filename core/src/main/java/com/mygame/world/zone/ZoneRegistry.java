@@ -6,7 +6,7 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygame.entity.item.ItemRegistry;
 import com.mygame.entity.player.Player;
-import com.mygame.game.save.GameSettings;
+import com.mygame.game.save.data.ServerSaveData;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.world.World;
 
@@ -26,7 +26,7 @@ public class ZoneRegistry {
     public void loadZonesFromMap(World world) {
         MapLayer zoneLayer = world.getMap().getLayers().get("zones");
         if (zoneLayer == null) return;
-        GameSettings settings = SettingsManager.load();
+        ServerSaveData settings = SettingsManager.loadServer();
         for (MapObject object : zoneLayer.getObjects()) {
 
             Rectangle rect;

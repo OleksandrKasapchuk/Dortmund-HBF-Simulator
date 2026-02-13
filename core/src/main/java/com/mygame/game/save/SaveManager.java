@@ -15,6 +15,8 @@ import com.mygame.events.Events;
 import com.mygame.game.GameContext;
 import com.mygame.game.GameInitializer;
 import com.mygame.game.GameStateManager;
+import com.mygame.game.save.data.ClientSaveData;
+import com.mygame.game.save.data.ServerSaveData;
 import com.mygame.quest.QuestManager;
 import com.mygame.world.zone.Zone;
 
@@ -33,6 +35,7 @@ public class SaveManager {
     public SaveManager(GameContext ctx) {
         this.ctx = ctx;
         EventBus.subscribe(Events.SaveRequestEvent.class, e -> requestSave());
+        EventBus.subscribe(Events.ClientSaveEvent.class, e -> saveLocal());
     }
 
     public void update(float delta) {
@@ -40,7 +43,7 @@ public class SaveManager {
         if (burstTimer > 0) burstTimer -= delta;
 
         if (pendingSave && saveCooldown <= 0 && burstTimer <= 0) {
-            saveGame();
+            saveServer();
         }
     }
 
@@ -49,19 +52,18 @@ public class SaveManager {
         burstTimer = BURST_DELAY;
     }
 
-    public void saveGameToServer(GameSettings settings) {
+    public void saveGameToServer(ServerSaveData settings) {
         try {
             Net.HttpRequest postRequest = new Net.HttpRequest(Net.HttpMethods.POST);
             postRequest.setUrl("http://localhost:8000/api/save/?format=json");
             postRequest.setHeader("Content-Type", "application/json");
 
             // Перетворюємо GameSettings у JSON напряму
-            Json json = new Json();
+            Json json = SettingsManager.json;
             json.setOutputType(JsonWriter.OutputType.json);
             json.setUsePrototypes(false);
 
             String jsonData = json.toJson(settings);
-            Gdx.app.log("SaveManager", "Sending JSON: " + jsonData);
             postRequest.setContent(jsonData);
 
             Gdx.net.sendHttpRequest(postRequest, new Net.HttpResponseListener() {
@@ -84,8 +86,14 @@ public class SaveManager {
         }
     }
 
+    public void saveLocal(){
+        ClientSaveData settings = SettingsManager.loadClient();
+        settings.musicVolume = MusicManager.getVolume();
+        settings.soundVolume = SoundManager.getVolume();
+        SettingsManager.saveClient(settings);
+    }
 
-    public void saveGame() {
+    public void saveServer(){
         Gdx.app.log("AutoSaveManager", "Starting save process...");
 
         pendingSave = false;
@@ -99,10 +107,8 @@ public class SaveManager {
         if (ctx.gsm.getState() == GameStateManager.GameState.DEATH) return;
 
         try {
-            GameSettings settings = SettingsManager.load();
+            ServerSaveData settings = SettingsManager.loadServer();
 
-            settings.musicVolume = MusicManager.getVolume();
-            settings.soundVolume = SoundManager.getVolume();
 
             savePlayerData(settings);
 
@@ -118,22 +124,24 @@ public class SaveManager {
             saveZones(settings);
             saveCreatedItems(settings);
             saveGameToServer(settings);
-            SettingsManager.save(settings);
+            SettingsManager.saveServer(settings);
             Gdx.app.log("AutoSaveManager", "Game saved successfully. World: " + settings.currentWorldName);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    private void saveTime(GameSettings settings){
+
+
+    private void saveTime(ServerSaveData settings){
         settings.currentDay = ctx.dayManager.getDay();
         settings.currentTime = ctx.dayManager.getCurrentTime();
     }
 
-    private void saveCreatedItems(GameSettings settings) {
+    private void saveCreatedItems(ServerSaveData settings) {
         settings.createdItems.clear();
         for (Item item : ctx.itemManager.getAllItems()) {
             if (!item.isDynamic()) continue;
-            settings.createdItems.add(new GameSettings.ItemSaveData(
+            settings.createdItems.add(new ServerSaveData.ItemSaveData(
                 item.getType().getKey(),
                 item.getX(), item.getY(),
                 item.getWorld().getName(),
@@ -143,12 +151,12 @@ public class SaveManager {
         }
     }
 
-    private void saveInventory(GameSettings settings){
+    private void saveInventory(ServerSaveData settings){
         settings.inventory.clear();
         ctx.player.getInventory().getItems().forEach((key, value) -> settings.inventory.put(key.getKey(), value));
     }
 
-    private void savePlayerData(GameSettings settings){
+    private void savePlayerData(ServerSaveData settings){
         settings.playerState = ctx.player.getState();
         settings.playerX = ctx.player.getX();
         settings.playerY = ctx.player.getY();
@@ -157,15 +165,15 @@ public class SaveManager {
         settings.playerVibe = ctx.player.getStatusController().getVibe();
     }
 
-    private void saveActiveQuests(GameSettings settings){
+    private void saveActiveQuests(ServerSaveData settings){
         for (QuestManager.Quest quest : ctx.questManager.getQuests()) {
-            GameSettings.QuestSaveData data = settings.activeQuests.computeIfAbsent(quest.key(), k -> new GameSettings.QuestSaveData());
+            ServerSaveData.QuestSaveData data = settings.activeQuests.computeIfAbsent(quest.key(), k -> new ServerSaveData.QuestSaveData());
             data.progress = quest.progress();
             data.status = quest.getStatus();
         }
     }
 
-    private void saveSearchedItems(GameSettings settings){
+    private void saveSearchedItems(ServerSaveData settings){
         settings.searchedItems.clear();
         for (Item item : ctx.itemManager.getAllItems()) {
             if (item.getSearchData() != null && item.getSearchData().isSearched()) {
@@ -174,28 +182,25 @@ public class SaveManager {
         }
     }
 
-    private void saveQuestTriggers(GameSettings settings){
+    private void saveQuestTriggers(ServerSaveData settings){
         if (ctx.questProgressTriggers != null) {
             settings.talkedNpcs.addAll(ctx.questProgressTriggers.getTalkedNpcs());
             settings.visited.addAll(ctx.questProgressTriggers.getVisited());
         }
     }
 
-    private void saveSummonedPolice(GameSettings settings){
+    private void saveSummonedPolice(ServerSaveData settings){
         Police summonedPolice = ctx.npcManager.getSummonedPolice();
         if (summonedPolice != null && summonedPolice.getState() == Police.PoliceState.CHASING) {
-            settings.policeChaseActive = true;
             settings.policeX = summonedPolice.getX();
             settings.policeY = summonedPolice.getY();
             settings.policeWorldName = summonedPolice.getWorld().getName();
-        } else {
-            settings.policeChaseActive = false;
         }
     }
 
-    private void saveNpcStates(GameSettings settings) {
+    private void saveNpcStates(ServerSaveData settings) {
         for (NPC npc : ctx.npcManager.getNpcs()) {
-            GameSettings.NpcSaveData data = settings.npcStates.computeIfAbsent(npc.getId(), k -> new GameSettings.NpcSaveData());
+            ServerSaveData.NpcSaveData data = settings.npcStates.computeIfAbsent(npc.getId(), k -> new ServerSaveData.NpcSaveData());
             data.currentNode = npc.getCurrentDialogueNodeId();
             data.currentTexture = npc.getCurrentTextureKey();
             data.x = npc.getX();
@@ -203,7 +208,7 @@ public class SaveManager {
             data.currentWorld = npc.getWorld() != null ? npc.getWorld().getName() : null;
         }
     }
-    private void saveZones(GameSettings settings) {
+    private void saveZones(ServerSaveData settings) {
         settings.enabledZones.clear();
         for (Zone zone : ctx.zoneRegistry.getZones()) {
             if (zone.isEnabled()) settings.enabledZones.add(zone.getId());

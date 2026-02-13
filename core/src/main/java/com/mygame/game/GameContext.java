@@ -27,7 +27,7 @@ import com.mygame.world.WorldManager;
 import com.mygame.world.zone.ZoneManager;
 import com.mygame.world.zone.ZoneRegistry;
 
-// GameContext now creates and holds most of the managers.
+
 public class GameContext {
 
     // Core Objects
@@ -124,7 +124,8 @@ public class GameContext {
 
     public void dispose(boolean save) {
         if (save && saveManager != null) {
-            saveManager.saveGame();
+            saveManager.saveLocal();
+//            saveManager.saveServer();
         }
         if (ui != null) ui.dispose();
         if (worldManager != null) worldManager.disposeWorlds();

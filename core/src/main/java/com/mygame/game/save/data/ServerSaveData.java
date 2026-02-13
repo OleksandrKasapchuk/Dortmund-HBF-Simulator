@@ -1,4 +1,4 @@
-package com.mygame.game.save;
+package com.mygame.game.save.data;
 
 import com.mygame.entity.item.itemData.InteractionData;
 import com.mygame.entity.item.itemData.SearchData;
@@ -16,14 +16,9 @@ import java.util.Set;
  * A simple data class to hold game settings.
  * Needs a no-arg constructor for JSON serialization.
  */
-public class GameSettings {
+public class ServerSaveData {
     public String id;
-    public String language;
     public String player_name;
-    public float musicVolume;
-    public float soundVolume;
-    public boolean muteAll;
-
     public float playerX;
     public float playerY;
     public Player.State playerState;
@@ -50,7 +45,6 @@ public class GameSettings {
     public Map<String, NpcSaveData> npcStates;
 
     // Police chase save data
-    public boolean policeChaseActive;
     public float policeX;
     public float policeY;
     public String policeWorldName;
@@ -103,13 +97,9 @@ public class GameSettings {
         }
     }
 
-    public GameSettings() {
+    public ServerSaveData() {
         // Default settings
         this.player_name = "Player";
-        this.language = "en";
-        this.musicVolume = 1.0f;
-        this.soundVolume = 1.0f;
-        this.muteAll = false;
         this.playerX = 200;
         this.playerY = 200;
         this.playerHunger = 100;
@@ -127,7 +117,5 @@ public class GameSettings {
         this.searchedItems = new HashSet<>();
         this.npcStates = new HashMap<>();
         this.enabledZones = new HashSet<>(); // Changed from disabledQuestZones
-
-        this.policeChaseActive = false;
     }
 }

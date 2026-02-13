@@ -4,60 +4,68 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
-import com.badlogic.gdx.utils.SerializationException;
+import com.mygame.game.save.data.ClientSaveData;
+import com.mygame.game.save.data.ServerSaveData;
 
-/**
- * Manages loading and saving game settings to a JSON file.
- */
 public class SettingsManager {
 
-    private static final String SETTINGS_FILE = "assets/data/saving/settings.json";
-    private static final Json json = new Json();
+    private static final String SERVER_SETTINGS_FILE = "assets/data/saving/server.json";
+    private static final String CLIENT_SETTINGS_FILE = "assets/data/saving/client.json";
+    public static final Json json = new Json();
+
+    private static ServerSaveData cachedServer;
+    private static ClientSaveData cachedClient;
 
     static {
-        // Налаштовуємо стандартний JSON формат без тегів класів
         json.setOutputType(JsonWriter.OutputType.json);
-        // Завжди зберігати значення за замовчуванням (щоб списки не зникали)
         json.setIgnoreUnknownFields(true);
     }
 
-    public static void save(GameSettings settings) {
-        FileHandle file = Gdx.files.local(SETTINGS_FILE);
+    // --- Save ---
+    public static void saveClient(ClientSaveData settings) {
+        save(CLIENT_SETTINGS_FILE, settings);
+        cachedClient = settings; // оновлюємо кеш
+    }
+
+    public static void saveServer(ServerSaveData settings) {
+        save(SERVER_SETTINGS_FILE, settings);
+        cachedServer = settings; // оновлюємо кеш
+    }
+
+    public static <T> void save(String fileName, T settings) {
+        FileHandle file = Gdx.files.local(fileName);
         try {
-            // Використовуємо prettyPrint для читабельності
             file.writeString(json.prettyPrint(settings), false);
         } catch (Exception e) {
             Gdx.app.error("SettingsManager", "Error saving settings", e);
         }
     }
 
-    public static void resetSettings() {
-        GameSettings newSettings = new GameSettings();
-        newSettings.language = SettingsManager.load().language;
-        newSettings.musicVolume = SettingsManager.load().musicVolume;
-        newSettings.soundVolume = SettingsManager.load().soundVolume;
-
-        SettingsManager.save(newSettings);
+    // --- Load без постійної алокації ---
+    public static ClientSaveData loadClient() {
+        if (cachedClient != null) return cachedClient;
+        cachedClient = load(CLIENT_SETTINGS_FILE, ClientSaveData.class, new ClientSaveData());
+        return cachedClient;
     }
 
+    public static ServerSaveData loadServer() {
+        if (cachedServer != null) return cachedServer;
+        cachedServer = load(SERVER_SETTINGS_FILE, ServerSaveData.class, new ServerSaveData());
+        return cachedServer;
+    }
 
-    public static GameSettings load() {
-        FileHandle file = Gdx.files.local(SETTINGS_FILE);
-        if (file.exists()) {
-            try {
-                GameSettings settings = json.fromJson(GameSettings.class, file);
-                // Гарантуємо, що списки не будуть null після завантаження
-                if (settings.completedDialogueEvents == null) settings.completedDialogueEvents = new java.util.ArrayList<>();
-                if (settings.talkedNpcs == null) settings.talkedNpcs = new java.util.HashSet<>();
-                if (settings.visited == null) settings.visited = new java.util.HashSet<>();
-                if (settings.enabledZones == null) settings.enabledZones = new java.util.HashSet<>();
-                return settings;
-            } catch (SerializationException e) {
-                Gdx.app.error("SettingsManager", "Error loading settings, creating new.", e);
-                return new GameSettings();
-            }
-        } else {
-            return new GameSettings();
+    public static <T> T load(String fileName, Class<T> type, T defaultValue) {
+        FileHandle file = Gdx.files.local(fileName);
+        if (!file.exists()) return defaultValue;
+        try {
+            return json.fromJson(type, file);
+        } catch (Exception e) {
+            Gdx.app.error("SettingsManager", "Failed to load " + fileName, e);
+            return defaultValue;
         }
+    }
+
+    public static void resetSettings(){
+        saveServer(new ServerSaveData());
     }
 }
