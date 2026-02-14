@@ -5,15 +5,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygame.entity.player.Player;
 import com.mygame.game.GameContext;
 import com.mygame.game.GameInputHandler;
+import com.mygame.game.GameStateManager;
+import com.mygame.ui.UIManager;
 
 public class ManagerRegistry {
 
     private final GameContext ctx;
     private final GameInputHandler gameInputHandler;
 
-    public ManagerRegistry(SpriteBatch batch, Player player, Skin skin) {
+    public ManagerRegistry(SpriteBatch batch, Player player, Skin skin, UIManager ui, GameStateManager gsm) {
         // 1. Create the context, which now creates and holds all managers
-        this.ctx = new GameContext(batch, player, skin);
+        this.ctx = new GameContext(batch, player, skin, ui, gsm);
 
         // 2. Create remaining objects that need the context
         this.gameInputHandler = new GameInputHandler(ctx.gsm, ctx.ui);
@@ -25,7 +27,6 @@ public class ManagerRegistry {
 
     public void resize(int width, int height) {
         ctx.cameraManager.resize(width, height, ctx.worldManager.getCurrentWorld());
-        ctx.ui.resize(width, height);
     }
 
     public void dispose() {

@@ -1,17 +1,18 @@
 {
-"id": null,
-"player_name": "Player",
-"playerX": 1594.6238,
-"playerY": 1897.0918,
+"username": "admin",
+"playerX": 2028.8306,
+"playerY": 2028.6682,
 "playerState": "NORMAL",
-"playerHunger": 99.228165,
-"playerThirst": 98.84236,
-"playerVibe": 98.45644,
+"playerHunger": 92.518326,
+"playerThirst": 88.77767,
+"playerVibe": 85.03676,
 "currentWorldName": "main",
 "currentDay": 1,
-"currentTime": 7.543572,
+"currentTime": 20.96311,
 "inventory": {
-	"class": "java.util.HashMap"
+	"class": "java.util.HashMap",
+	"money": 20,
+	"pfand": 3
 },
 "activeQuests": {
 	"class": "java.util.HashMap",
@@ -28,8 +29,8 @@
 		"status": "NOT_STARTED"
 	},
 	"jason.smalltalk": {
-		"progress": 0,
-		"status": "NOT_STARTED"
+		"progress": 2,
+		"status": "ACTIVE"
 	},
 	"boss_end": {
 		"progress": 0,
@@ -41,7 +42,7 @@
 	},
 	"jason.tour": {
 		"progress": 0,
-		"status": "NOT_STARTED"
+		"status": "ACTIVE"
 	},
 	"jan.firework.2": {
 		"progress": 0,
@@ -69,10 +70,114 @@
 	}
 },
 "completedDialogueEvents": [],
-"createdItems": [],
+"createdItems": [
+	{
+		"itemKey": "pfand",
+		"x": 471.31735,
+		"y": 4685.728,
+		"worldName": "main",
+		"searchData": null,
+		"interactionData": null,
+		"width": 64,
+		"height": 64
+	},
+	{
+		"itemKey": "pfand",
+		"x": 3192.8845,
+		"y": 512.2175,
+		"worldName": "main",
+		"searchData": null,
+		"interactionData": null,
+		"width": 64,
+		"height": 64
+	},
+	{
+		"itemKey": "pfand",
+		"x": 892.5007,
+		"y": 4615.0186,
+		"worldName": "main",
+		"searchData": null,
+		"interactionData": null,
+		"width": 64,
+		"height": 64
+	},
+	{
+		"itemKey": "pfand",
+		"x": 958.862,
+		"y": 842.18945,
+		"worldName": "main",
+		"searchData": null,
+		"interactionData": null,
+		"width": 64,
+		"height": 64
+	},
+	{
+		"itemKey": "pfand",
+		"x": 3002.12,
+		"y": 3971.1833,
+		"worldName": "main",
+		"searchData": null,
+		"interactionData": null,
+		"width": 64,
+		"height": 64
+	},
+	{
+		"itemKey": "pfand",
+		"x": 727.64594,
+		"y": 4003.3218,
+		"worldName": "main",
+		"searchData": null,
+		"interactionData": null,
+		"width": 64,
+		"height": 64
+	},
+	{
+		"itemKey": "pfand",
+		"x": 3550.4517,
+		"y": 2088.3547,
+		"worldName": "main",
+		"searchData": null,
+		"interactionData": null,
+		"width": 64,
+		"height": 64
+	},
+	{
+		"itemKey": "pfand",
+		"x": 2840.0344,
+		"y": 79.6862,
+		"worldName": "main",
+		"searchData": null,
+		"interactionData": null,
+		"width": 64,
+		"height": 64
+	},
+	{
+		"itemKey": "pfand",
+		"x": 216.98065,
+		"y": 5394.528,
+		"worldName": "main",
+		"searchData": null,
+		"interactionData": null,
+		"width": 60,
+		"height": 60
+	},
+	{
+		"itemKey": "pfand",
+		"x": 2731.511,
+		"y": 5231.725,
+		"worldName": "main",
+		"searchData": null,
+		"interactionData": null,
+		"width": 60,
+		"height": 60
+	}
+],
 "talkedNpcs": {
 	"class": "java.util.HashSet",
-	"items": []
+	"items": [
+		"ihor",
+		"jason"
+	]
 },
 "visited": {
 	"class": "java.util.HashSet",
@@ -203,7 +308,7 @@
 		"y": 2082
 	},
 	"jason": {
-		"currentNode": "start",
+		"currentNode": "tour.active",
 		"currentTexture": "jason.3d",
 		"currentWorld": "main",
 		"x": 919.55,

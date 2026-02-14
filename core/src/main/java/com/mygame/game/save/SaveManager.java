@@ -15,6 +15,7 @@ import com.mygame.events.Events;
 import com.mygame.game.GameContext;
 import com.mygame.game.GameInitializer;
 import com.mygame.game.GameStateManager;
+import com.mygame.game.auth.AuthManager;
 import com.mygame.game.save.data.ClientSaveData;
 import com.mygame.game.save.data.ServerSaveData;
 import com.mygame.quest.QuestManager;
@@ -53,10 +54,16 @@ public class SaveManager {
     }
 
     public void saveGameToServer(ServerSaveData settings) {
+        if (!AuthManager.hasToken()) {
+            Gdx.app.log("SaveManager", "No token, skipping server save.");
+            return;
+        }
+
         try {
             Net.HttpRequest postRequest = new Net.HttpRequest(Net.HttpMethods.POST);
             postRequest.setUrl("http://localhost:8000/api/save/?format=json");
             postRequest.setHeader("Content-Type", "application/json");
+            postRequest.setHeader("Authorization", "Token " + AuthManager.getToken());
 
             // Перетворюємо GameSettings у JSON напряму
             Json json = SettingsManager.json;
@@ -64,6 +71,7 @@ public class SaveManager {
             json.setUsePrototypes(false);
 
             String jsonData = json.toJson(settings);
+            Gdx.app.log("SaveManager", "JSON Data: " + jsonData);
             postRequest.setContent(jsonData);
 
             Gdx.net.sendHttpRequest(postRequest, new Net.HttpResponseListener() {
@@ -108,8 +116,8 @@ public class SaveManager {
 
         try {
             ServerSaveData settings = SettingsManager.loadServer();
-
-
+            settings.username = AuthManager.getUsername(); // Ensure username is always up-to-date
+            System.out.println(settings.username);
             savePlayerData(settings);
 
             if (ctx.worldManager.getCurrentWorld() != null) settings.currentWorldName = ctx.worldManager.getCurrentWorld().getName();

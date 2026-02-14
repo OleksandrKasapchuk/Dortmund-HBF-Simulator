@@ -17,17 +17,19 @@ public class Main extends ApplicationAdapter {
 
     private static GameInitializer gameInitializer;
     private ShapeRenderer shapeRenderer;
+    private boolean loading = true;
 
     @Override
     public void create() {
         Assets.load();                            // Load textures, sounds, music
         gameInitializer = new GameInitializer();
-        restartGame();              // Initialize all game objects
         shapeRenderer = new ShapeRenderer();
+        restartGame();              // Initialize all game objects
     }
 
     public static void restartGame() {
-        gameInitializer.initGame(); // init тільки після завантаження
+        gameInitializer.initGame();
+        gameInitializer.loadGameFromServer();
     }
 
     @Override
@@ -39,16 +41,15 @@ public class Main extends ApplicationAdapter {
         if (gameInitializer.getManagerRegistry() != null){
             gameInitializer.getManagerRegistry().getGameInputHandler().update();
             GameContext ctx = gameInitializer.getContext();
-
-
-        switch (ctx.gsm.getState()) {
+        }
+        switch (gameInitializer.getGameStateManager().getState()) {
             case PLAYING:
                 renderGame(delta);
                 break;
             default:
-                ctx.ui.render();
+                gameInitializer.getUiManager().render();
                 break;
-        }}
+        }
     }
 
     private void renderGame(float delta) {
@@ -67,17 +68,17 @@ public class Main extends ApplicationAdapter {
 
         ctx.entityRenderer.renderUnsorted(batch, ctx.itemManager.getBackgroundItems());
 
-         ctx.entityRenderer.collectRenderableEntities(currentWorld, ctx.player, ctx.npcManager.getNpcs(), ctx.itemManager.getForegroundItems());
+        ctx.entityRenderer.collectRenderableEntities(currentWorld, ctx.player, ctx.npcManager.getNpcs(), ctx.itemManager.getForegroundItems());
 
         ctx.entityRenderer.renderWithSortedEntities(batch, currentWorld);
 
-        ctx.ui.renderWorldElements();
+        gameInitializer.getUiManager().renderWorldElements();
 
         batch.end();
 
         currentWorld.drawZones(shapeRenderer, camera);
 
-        ctx.ui.render();
+        gameInitializer.getUiManager().render();
         ctx.overlay.render();
     }
 
@@ -87,6 +88,7 @@ public class Main extends ApplicationAdapter {
         if (gameInitializer.getManagerRegistry() != null) {
             gameInitializer.getManagerRegistry().resize(width, height);
         }
+        gameInitializer.getUiManager().resize(width, height);
     }
 
     @Override

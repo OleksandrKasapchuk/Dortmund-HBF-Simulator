@@ -3,6 +3,7 @@ package com.mygame.game.save.data;
 import com.mygame.entity.item.itemData.InteractionData;
 import com.mygame.entity.item.itemData.SearchData;
 import com.mygame.entity.player.Player;
+import com.mygame.game.auth.AuthManager;
 import com.mygame.quest.QuestManager;
 
 import java.util.ArrayList;
@@ -17,8 +18,7 @@ import java.util.Set;
  * Needs a no-arg constructor for JSON serialization.
  */
 public class ServerSaveData {
-    public String id;
-    public String player_name;
+    public String username;
     public float playerX;
     public float playerY;
     public Player.State playerState;
@@ -99,7 +99,7 @@ public class ServerSaveData {
 
     public ServerSaveData() {
         // Default settings
-        this.player_name = "Player";
+        this.username = AuthManager.getUsername();
         this.playerX = 200;
         this.playerY = 200;
         this.playerHunger = 100;

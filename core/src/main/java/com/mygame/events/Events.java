@@ -60,4 +60,6 @@ public class Events {
     public record ClientSaveEvent() {}
 
     public record CameraShakeEvent(float duration, float intensity){}
+
+    public record TokenEvent(){}
 }

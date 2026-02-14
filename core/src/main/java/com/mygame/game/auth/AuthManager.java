@@ -2,19 +2,35 @@ package com.mygame.game.auth;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
 
 public class AuthManager {
 
-    private static Json json = new Json();
+    private static final String PREF_NAME = "MyGameSession";
+    private static final String TOKEN_KEY = "token";
+    private static final String USERNAME_KEY = "username";
 
+    private static Json json = new Json();
     private static String token;
+    private static String username;
+
+    static {
+        loadSession();
+    }
+
+    private static void loadSession() {
+        Preferences prefs = Gdx.app.getPreferences(PREF_NAME);
+        token = prefs.getString(TOKEN_KEY, null);
+        username = prefs.getString(USERNAME_KEY, null);
+    }
 
     public static void login(String username, String password, HttpCallback callback) {
         LoginRequest requestObj = new LoginRequest(username, password);
         request("http://127.0.0.1:8000/auth/login/", requestObj, callback);
     }
+
     public static void register(String username, String password, String confirm, HttpCallback callback) {
         if (!password.equals(confirm)) return;
 
@@ -24,6 +40,10 @@ public class AuthManager {
 
     public static String getToken() {
         return token;
+    }
+
+    public static String getUsername() {
+        return username;
     }
 
     public static <T> void request(String url, T requestObj, HttpCallback callback){
@@ -40,14 +60,14 @@ public class AuthManager {
 
             @Override
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
-                Gdx.app.postRunnable(() ->
-                    callback.onSuccess(httpResponse.getResultAsString()));
+                byte[] raw = httpResponse.getResult();
+                String text = new String(raw);
+                Gdx.app.postRunnable(() -> callback.onSuccess(text));
             }
 
             @Override
             public void failed(Throwable t) {
-                Gdx.app.postRunnable(() ->
-                    callback.onFailure(t));
+                Gdx.app.postRunnable(() -> callback.onFailure(t));
             }
 
             @Override
@@ -62,7 +82,26 @@ public class AuthManager {
         void onFailure(Throwable t);
         void onCancelled();
     }
-    public static void setToken(String newToken){
+
+    public static void setSession(String newToken, String newUsername) {
         token = newToken;
+        username = newUsername;
+        Preferences prefs = Gdx.app.getPreferences(PREF_NAME);
+        prefs.putString(TOKEN_KEY, newToken);
+        prefs.putString(USERNAME_KEY, newUsername);
+        prefs.flush();
+    }
+
+    public static void logout() {
+        token = null;
+        username = null;
+        Preferences prefs = Gdx.app.getPreferences(PREF_NAME);
+        prefs.remove(TOKEN_KEY);
+        prefs.remove(USERNAME_KEY);
+        prefs.flush();
+    }
+
+    public static boolean hasToken(){
+        return token != null && !token.isEmpty();
     }
 }

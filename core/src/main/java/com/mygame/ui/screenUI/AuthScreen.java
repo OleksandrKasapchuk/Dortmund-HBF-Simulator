@@ -1,7 +1,6 @@
 package com.mygame.ui.screenUI;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
+
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -11,18 +10,23 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.mygame.assets.Assets;
+import com.mygame.events.EventBus;
+import com.mygame.events.Events;
 import com.mygame.game.auth.AuthManager;
+import com.mygame.ui.UIManager;
 
-import java.util.Map;
+import java.util.function.Consumer;
 
 public class AuthScreen extends Screen {
 
-    public AuthScreen(Skin skin) {
+    private final UIManager uiManager;
+
+    public AuthScreen(Skin skin, UIManager uiManager) {
         super();
+        this.uiManager = uiManager;
 
         Image backgroundImage = new Image(Assets.getTexture("menuBlurBack"));
         backgroundImage.setFillParent(true);
@@ -41,15 +45,9 @@ public class AuthScreen extends Screen {
 
         TextButton registerBtn = new TextButton("Register", skin);
 
-        registerTable.add(new Label(Assets.ui.get("ui.auth.username"), skin)).pad(5);
-        registerTable.add(regUsername).pad(5).row();
-
-        registerTable.add(new Label(Assets.ui.get("ui.auth.password"), skin)).pad(5);
-        registerTable.add(regPassword).pad(5).row();
-
-        registerTable.add(new Label(Assets.ui.get("ui.auth.confirm"), skin)).pad(5);
-        registerTable.add(regConfirm).pad(5).row();
-
+        addUsernameRow(registerTable, skin, regUsername);
+        addPasswordRow(registerTable, skin, regPassword);
+        addConfirmRow(registerTable, skin, regConfirm);
         registerTable.add(registerBtn).colspan(2).padTop(10);
 
         // --- Логін форма ---
@@ -62,10 +60,8 @@ public class AuthScreen extends Screen {
 
         Table loginTable = new Table();
         loginTable.center();
-        loginTable.add(new Label(Assets.ui.get("ui.auth.username"), skin)).pad(5);
-        loginTable.add(usernameField).pad(5).row();
-        loginTable.add(new Label(Assets.ui.get("ui.auth.password"), skin)).pad(5);
-        loginTable.add(passwordField).pad(5).row();
+        addUsernameRow(loginTable, skin, usernameField);
+        addPasswordRow(loginTable, skin, passwordField);
         loginTable.add(loginButton).colspan(2).padTop(10);
 
         loginButton.addListener(new ChangeListener() {
@@ -77,40 +73,7 @@ public class AuthScreen extends Screen {
 
                 if(username.isEmpty() || password.isEmpty()) return;
 
-                AuthManager.login(username, password, new AuthManager.HttpCallback() {
-                    @Override
-                    public void onSuccess(String response) {
-                        System.out.println("Login success: " + response);
-
-                        JsonReader reader = new JsonReader();
-                        JsonValue jsonValue = reader.parse(response.trim());
-
-                        String token = jsonValue.getString("token", null);
-                        String username = jsonValue.getString("username", null);
-
-                        if (token != null) {
-                            AuthManager.setToken(token);
-
-                            Preferences prefs = Gdx.app.getPreferences("MyGameSession");
-                            prefs.putString("token", token);
-                            prefs.flush();
-
-                            System.out.println("Token saved: " + token + ", username: " + username);
-                        } else {
-                            System.out.println("Token not found in response!");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-                        t.printStackTrace();
-                    }
-
-                    @Override
-                    public void onCancelled() {
-                        System.out.println("Login cancelled");
-                    }
-                });
+                AuthManager.login(username, password, createAuthCallback("Login", AuthScreen.this::handleAuthenticationSuccess));
             }
         });
 
@@ -124,24 +87,7 @@ public class AuthScreen extends Screen {
 
                 if(username.isEmpty() || password.isEmpty()) return;
 
-                AuthManager.register(username, password, confirm,
-                    new AuthManager.HttpCallback() {
-
-                        @Override
-                        public void onSuccess(String response) {
-                            System.out.println("Register success: " + response);
-                        }
-
-                        @Override
-                        public void onFailure(Throwable t) {
-                            t.printStackTrace();
-                        }
-
-                        @Override
-                        public void onCancelled() {
-                            System.out.println("Register cancelled");
-                        }
-                    });
+                AuthManager.register(username, password, confirm, createAuthCallback("Register", AuthScreen.this::handleAuthenticationSuccess));
             }
         });
 
@@ -172,5 +118,57 @@ public class AuthScreen extends Screen {
 
         root.add(formStack).center().padBottom(50).row();
         root.add(switchBtn).padBottom(30);
+    }
+
+    private void handleAuthenticationSuccess(String response) {
+        JsonReader reader = new JsonReader();
+        JsonValue jsonValue = reader.parse(response.trim());
+
+        String token = jsonValue.getString("token", null);
+        String responseUsername = jsonValue.getString("username", null);
+
+        if (token != null) {
+            AuthManager.setSession(token, responseUsername);
+            EventBus.fire(new Events.TokenEvent());
+        } else {
+            System.out.println("Token not found in response!");
+        }
+    }
+
+    private AuthManager.HttpCallback createAuthCallback(String action, Consumer<String> onSuccessAction) {
+        return new AuthManager.HttpCallback() {
+            @Override
+            public void onSuccess(String response) {
+                System.out.println(action + " success: " + response);
+                if (onSuccessAction != null) {
+                    onSuccessAction.accept(response);
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                t.printStackTrace();
+            }
+
+            @Override
+            public void onCancelled() {
+                System.out.println(action + " cancelled");
+            }
+        };
+    }
+
+    private void addUsernameRow(Table table, Skin skin, TextField field) {
+        table.add(new Label(Assets.ui.get("ui.auth.username"), skin)).pad(5);
+        table.add(field).pad(5).row();
+    }
+
+    private void addPasswordRow(Table table, Skin skin, TextField field) {
+        table.add(new Label(Assets.ui.get("ui.auth.password"), skin)).pad(5);
+        table.add(field).pad(5).row();
+    }
+
+    private void addConfirmRow(Table table, Skin skin, TextField field) {
+        table.add(new Label(Assets.ui.get("ui.auth.confirm"), skin)).pad(5);
+        table.add(field).pad(5).row();
     }
 }
