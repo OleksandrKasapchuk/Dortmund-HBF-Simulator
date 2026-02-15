@@ -38,7 +38,7 @@ public class GameInitializer {
 
         try {
             Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.GET);
-            request.setUrl("http://localhost:8000/api/load/?format=json&username=" + AuthManager.getUsername());
+            request.setUrl("https://hbf-simulator-backend.onrender.com/api/load/?format=json&username=" + AuthManager.getUsername());
             request.setHeader("Authorization", "Token " + AuthManager.getToken());
             System.out.println("Token: " + AuthManager.getToken());
             Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {

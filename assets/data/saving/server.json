@@ -1,14 +1,14 @@
 {
 "username": "admin",
-"playerX": 2028.8306,
-"playerY": 2028.6682,
+"playerX": 2535.0508,
+"playerY": 389.06058,
 "playerState": "NORMAL",
-"playerHunger": 92.518326,
-"playerThirst": 88.77767,
-"playerVibe": 85.03676,
-"currentWorldName": "main",
-"currentDay": 1,
-"currentTime": 20.96311,
+"playerHunger": 89.95709,
+"playerThirst": 84.935486,
+"playerVibe": 79.914024,
+"currentWorldName": "leopold",
+"currentDay": 2,
+"currentTime": 2.0847645,
 "inventory": {
 	"class": "java.util.HashMap",
 	"money": 20,
@@ -41,7 +41,7 @@
 		"status": "NOT_STARTED"
 	},
 	"jason.tour": {
-		"progress": 0,
+		"progress": 1,
 		"status": "ACTIVE"
 	},
 	"jan.firework.2": {
@@ -69,7 +69,9 @@
 		"status": "NOT_STARTED"
 	}
 },
-"completedDialogueEvents": [],
+"completedDialogueEvents": [
+	""
+],
 "createdItems": [
 	{
 		"itemKey": "pfand",
@@ -158,14 +160,64 @@
 		"worldName": "main",
 		"searchData": null,
 		"interactionData": null,
-		"width": 60,
-		"height": 60
+		"width": 64,
+		"height": 64
 	},
 	{
 		"itemKey": "pfand",
 		"x": 2731.511,
 		"y": 5231.725,
 		"worldName": "main",
+		"searchData": null,
+		"interactionData": null,
+		"width": 64,
+		"height": 64
+	},
+	{
+		"itemKey": "pfand",
+		"x": 3208.1152,
+		"y": 344.751,
+		"worldName": "leopold",
+		"searchData": null,
+		"interactionData": null,
+		"width": 64,
+		"height": 64
+	},
+	{
+		"itemKey": "pfand",
+		"x": 646.7948,
+		"y": 5041.0625,
+		"worldName": "leopold",
+		"searchData": null,
+		"interactionData": null,
+		"width": 60,
+		"height": 60
+	},
+	{
+		"itemKey": "pfand",
+		"x": 3263.538,
+		"y": 3117.9805,
+		"worldName": "leopold",
+		"searchData": null,
+		"interactionData": null,
+		"width": 60,
+		"height": 60
+	},
+	{
+		"itemKey": "pfand",
+		"x": 1324.8949,
+		"y": 1537.5756,
+		"worldName": "leopold",
+		"searchData": null,
+		"interactionData": null,
+		"width": 60,
+		"height": 60
+	},
+	{
+		"itemKey": "pfand",
+		"x": 2275.3884,
+		"y": 5079.3022,
+		"worldName": "leopold",
 		"searchData": null,
 		"interactionData": null,
 		"width": 60,
@@ -182,6 +234,7 @@
 "visited": {
 	"class": "java.util.HashSet",
 	"items": [
+		"leopold",
 		"main"
 	]
 },

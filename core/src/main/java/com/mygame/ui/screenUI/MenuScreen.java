@@ -4,13 +4,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.mygame.assets.Assets;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
+import com.mygame.game.GameStateManager;
+import com.mygame.game.auth.AuthManager;
 
 /**
  * Адаптивне головне меню.
  */
 public class MenuScreen extends Screen {
 
-    public MenuScreen(Skin skin) {
+    public MenuScreen(Skin skin, GameStateManager gsm) {
         super();
 
         // Фонове зображення
@@ -24,9 +26,14 @@ public class MenuScreen extends Screen {
 
         TextButton startBtn = createButton(skin, Assets.ui.get("button.start.text"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("act.system.start")));
         TextButton newGameBtn = createButton(skin, Assets.ui.get("button.newGame.text"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("act.system.newGame")));
+        TextButton logoutBtn = createButton(skin, "Logout", 1.8f, () -> {
+            AuthManager.logout();
+            gsm.setState(GameStateManager.GameState.AUTH);
+        });
 
         menuTable.add(startBtn).width(500).height(120).padBottom(30).row();
-        menuTable.add(newGameBtn).width(500).height(120).row();
+        menuTable.add(newGameBtn).width(500).height(120).padBottom(30).row();
+        menuTable.add(logoutBtn).width(500).height(120).row();
 
         // Розміщуємо таблицю по центру екрану (або знизу, як вам подобається)
         root.add(menuTable).expand().bottom().padBottom(100);

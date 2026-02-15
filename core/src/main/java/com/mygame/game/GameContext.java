@@ -95,7 +95,7 @@ public class GameContext {
         player.setItemManager(itemManager);
         this.npcManager = new NpcManager(player, dialogueRegistry, worldManager, itemManager);
         player.setNpcManager(npcManager);
-        this.ui.init(player, questManager, worldManager, dayManager, npcManager, itemManager, zoneManager);
+        this.ui.init(player, questManager, worldManager, dayManager, npcManager, itemManager, zoneManager, gsm);
         this.pfandManager = new PfandManager(itemRegistry, itemManager, worldManager);
         this.interactionManager = new InteractionManager(batch, player, questManager, worldManager, npcManager, itemManager);
         this.dialogueManager = new DialogueManager(ui.getDialogueUI(), player, worldManager, dialogueRegistry, npcManager);

@@ -31,6 +31,7 @@ public class UIManager {
     private WorldManager worldManager;
     private InWorldUIRenderer inWorldUIRenderer;
     private Skin skin;
+    private GameStateManager gsm;
 
     private final Map<GameStateManager.GameState, Screen> screens = new EnumMap<>(GameStateManager.GameState.class);
     private Screen currentScreen;
@@ -51,8 +52,9 @@ public class UIManager {
         screens.put(GameStateManager.GameState.AUTH, new AuthScreen(skin, this));
     }
 
-    public void init(Player player, QuestManager questManager, WorldManager worldManager, DayManager dayManager, NpcManager npcManager, ItemManager itemManager, ZoneManager zoneManager){
+    public void init(Player player, QuestManager questManager, WorldManager worldManager, DayManager dayManager, NpcManager npcManager, ItemManager itemManager, ZoneManager zoneManager, GameStateManager gsm){
         this.player = player;
+        this.gsm = gsm;
         this.questManager = questManager;
         this.worldManager = worldManager;
         this.inWorldUIRenderer = new InWorldUIRenderer(batch, player, questManager, worldManager, npcManager, itemManager, zoneManager);
@@ -71,7 +73,7 @@ public class UIManager {
 
     private void createScreens(Skin skin, DayManager dayManager) {
         screens.put(GameStateManager.GameState.PLAYING, new GameScreen(skin, worldManager, dayManager, player));
-        screens.put(GameStateManager.GameState.MENU, new MenuScreen(skin));
+        screens.put(GameStateManager.GameState.MENU, new MenuScreen(skin, gsm));
         screens.put(GameStateManager.GameState.PAUSED, new PauseScreen(skin));
         screens.put(GameStateManager.GameState.SETTINGS, new SettingsScreen(skin));
         screens.put(GameStateManager.GameState.DEATH, new DeathScreen(skin));

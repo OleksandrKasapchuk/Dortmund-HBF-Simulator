@@ -28,14 +28,14 @@ public class AuthManager {
 
     public static void login(String username, String password, HttpCallback callback) {
         LoginRequest requestObj = new LoginRequest(username, password);
-        request("http://127.0.0.1:8000/auth/login/", requestObj, callback);
+        request("https://hbf-simulator-backend.onrender.com/auth/login/", requestObj, callback);
     }
 
     public static void register(String username, String password, String confirm, HttpCallback callback) {
         if (!password.equals(confirm)) return;
 
         RegisterRequest requestObj = new RegisterRequest(username, password, confirm);
-        request("http://127.0.0.1:8000/auth/register/", requestObj, callback);
+        request("https://hbf-simulator-backend.onrender.com/auth/register/", requestObj, callback);
     }
 
     public static String getToken() {

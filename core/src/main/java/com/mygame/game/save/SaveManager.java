@@ -61,7 +61,7 @@ public class SaveManager {
 
         try {
             Net.HttpRequest postRequest = new Net.HttpRequest(Net.HttpMethods.POST);
-            postRequest.setUrl("http://localhost:8000/api/save/?format=json");
+            postRequest.setUrl("https://hbf-simulator-backend.onrender.com/api/save/?format=json");
             postRequest.setHeader("Content-Type", "application/json");
             postRequest.setHeader("Authorization", "Token " + AuthManager.getToken());
 

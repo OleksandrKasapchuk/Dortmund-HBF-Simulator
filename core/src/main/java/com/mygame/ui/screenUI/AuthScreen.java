@@ -43,8 +43,17 @@ public class AuthScreen extends Screen {
         regPassword.setPasswordMode(true);
         regConfirm.setPasswordMode(true);
 
-        TextButton registerBtn = new TextButton("Register", skin);
+        TextButton registerBtn = createButton(skin, "Register", 2f, () -> {
+            String username = regUsername.getText();
+            String password = regPassword.getText();
+            String confirm = regConfirm.getText();
 
+            if(username.isEmpty() || password.isEmpty()) return;
+
+            AuthManager.register(username, password, confirm, createAuthCallback("Register", AuthScreen.this::handleAuthenticationSuccess));
+        });
+
+        registerBtn.setSize(400, 60);
         addUsernameRow(registerTable, skin, regUsername);
         addPasswordRow(registerTable, skin, regPassword);
         addConfirmRow(registerTable, skin, regConfirm);
@@ -56,40 +65,23 @@ public class AuthScreen extends Screen {
         passwordField.setPasswordMode(true);
         passwordField.setPasswordCharacter('*');
 
-        TextButton loginButton = new TextButton(Assets.ui.get("ui.auth.login"), skin);
+        TextButton loginButton = createButton(skin, Assets.ui.get("ui.auth.login"), 2f, () ->{
+            System.out.println("Login tried: ");
+            String username = usernameField.getText();
+            String password = passwordField.getText();
+
+            if(username.isEmpty() || password.isEmpty()) return;
+
+            AuthManager.login(username, password, createAuthCallback("Login", AuthScreen.this::handleAuthenticationSuccess));
+        });
+
+        loginButton.setSize(400, 60);
 
         Table loginTable = new Table();
         loginTable.center();
         addUsernameRow(loginTable, skin, usernameField);
         addPasswordRow(loginTable, skin, passwordField);
         loginTable.add(loginButton).colspan(2).padTop(10);
-
-        loginButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Login tried: ");
-                String username = usernameField.getText();
-                String password = passwordField.getText();
-
-                if(username.isEmpty() || password.isEmpty()) return;
-
-                AuthManager.login(username, password, createAuthCallback("Login", AuthScreen.this::handleAuthenticationSuccess));
-            }
-        });
-
-        registerBtn.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-
-                String username = regUsername.getText();
-                String password = regPassword.getText();
-                String confirm = regConfirm.getText();
-
-                if(username.isEmpty() || password.isEmpty()) return;
-
-                AuthManager.register(username, password, confirm, createAuthCallback("Register", AuthScreen.this::handleAuthenticationSuccess));
-            }
-        });
 
 
         Stack formStack = new Stack();
@@ -98,8 +90,8 @@ public class AuthScreen extends Screen {
 
         registerTable.setVisible(false);
 
-        TextButton switchBtn = new TextButton("Switch to Register", skin);
-
+        TextButton switchBtn =  createButton(skin,  "Switch to Register", 2f, () -> {});
+        switchBtn.setSize(400, 60);
         switchBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -158,17 +150,20 @@ public class AuthScreen extends Screen {
     }
 
     private void addUsernameRow(Table table, Skin skin, TextField field) {
-        table.add(new Label(Assets.ui.get("ui.auth.username"), skin)).pad(5);
-        table.add(field).pad(5).row();
+        Label label = createLabel(skin, Assets.ui.get("ui.auth.username"), 2f);
+        table.add(label).pad(5);
+        table.add(field).pad(10).width(400).height(60).row();
     }
 
     private void addPasswordRow(Table table, Skin skin, TextField field) {
-        table.add(new Label(Assets.ui.get("ui.auth.password"), skin)).pad(5);
-        table.add(field).pad(5).row();
+        Label label = createLabel(skin, Assets.ui.get("ui.auth.password"), 2f);
+        table.add(label).pad(5);
+        table.add(field).pad(10).width(400).height(60).row();
     }
 
     private void addConfirmRow(Table table, Skin skin, TextField field) {
-        table.add(new Label(Assets.ui.get("ui.auth.confirm"), skin)).pad(5);
-        table.add(field).pad(5).row();
+        Label label = createLabel(skin, Assets.ui.get("ui.auth.confirm"), 2f);
+        table.add(label).pad(5);
+        table.add(field).pad(10).width(400).height(60).row();
     }
 }
