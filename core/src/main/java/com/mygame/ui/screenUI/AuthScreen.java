@@ -1,6 +1,7 @@
 package com.mygame.ui.screenUI;
 
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -41,7 +42,9 @@ public class AuthScreen extends Screen {
         TextField regConfirm = new TextField("", skin);
 
         regPassword.setPasswordMode(true);
+        regPassword.setPasswordCharacter('*');
         regConfirm.setPasswordMode(true);
+        regConfirm.setPasswordCharacter('*');
 
         TextButton registerBtn = createButton(skin, "Register", 2f, () -> {
             String username = regUsername.getText();
@@ -113,18 +116,19 @@ public class AuthScreen extends Screen {
     }
 
     private void handleAuthenticationSuccess(String response) {
-        JsonReader reader = new JsonReader();
-        JsonValue jsonValue = reader.parse(response.trim());
+        Gdx.app.postRunnable(() -> { // <--- ОСЬ ЦЯ ЗМІНА
+            JsonReader reader = new JsonReader();
+            JsonValue jsonValue = reader.parse(response.trim());
+            String token = jsonValue.getString("token", null);
+            String responseUsername = jsonValue.getString("username", null);
+            if (token != null) {
+                AuthManager.setSession(token, responseUsername);
+                EventBus.fire(new Events.TokenEvent());
+            } else {
+                System.out.println("Token not found in response!");
+            }
+        });
 
-        String token = jsonValue.getString("token", null);
-        String responseUsername = jsonValue.getString("username", null);
-
-        if (token != null) {
-            AuthManager.setSession(token, responseUsername);
-            EventBus.fire(new Events.TokenEvent());
-        } else {
-            System.out.println("Token not found in response!");
-        }
     }
 
     private AuthManager.HttpCallback createAuthCallback(String action, Consumer<String> onSuccessAction) {

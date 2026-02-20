@@ -9,9 +9,6 @@ import com.mygame.quest.QuestManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A simple data class to hold game settings.
@@ -31,22 +28,22 @@ public class ServerSaveData {
     public int currentDay;
     public float currentTime;
 
-    public Map<String, Integer> inventory;
-    public Map<String, QuestSaveData> activeQuests;
-    public List<String> completedDialogueEvents;
-    public List<ItemSaveData> createdItems;
+    public HashMap<String, Integer> inventory;
+    public HashMap<String, QuestSaveData> activeQuests;
+    public ArrayList<String> completedDialogueEvents;
+    public ArrayList<ItemSaveData> createdItems;
 
-    public Set<String> talkedNpcs;
-    public Set<String> visited;
-    public Set<String> searchedItems;
-    public Set<String> enabledZones; // Changed from disabledQuestZones
+    public HashSet<String> talkedNpcs;
+    public HashSet<String> visited;
+    public HashSet<String> searchedItems;
+    public HashSet<String> enabledZones; // Changed from disabledQuestZones
 
     // NPC State: Mapping NPC ID to their current status (dialogue and texture)
-    public Map<String, NpcSaveData> npcStates;
+    public HashMap<String, NpcSaveData> npcStates;
 
     // Police chase save data
-    public float policeX;
-    public float policeY;
+    public Float policeX;
+    public Float policeY;
     public String policeWorldName;
 
     public static class ItemSaveData {

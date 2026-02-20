@@ -5,6 +5,8 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
+import com.mygame.game.GameInitializer;
+import com.mygame.game.save.SettingsManager;
 
 public class AuthManager {
 
@@ -15,9 +17,14 @@ public class AuthManager {
     private static Json json = new Json();
     private static String token;
     private static String username;
+    private static GameInitializer gameInitializer;
 
     static {
         loadSession();
+    }
+
+    public static void init(GameInitializer gameInitializer) {
+        AuthManager.gameInitializer = gameInitializer;
     }
 
     private static void loadSession() {
@@ -62,7 +69,10 @@ public class AuthManager {
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
                 byte[] raw = httpResponse.getResult();
                 String text = new String(raw);
-                Gdx.app.postRunnable(() -> callback.onSuccess(text));
+                Gdx.app.postRunnable(() -> {
+                    // Спочатку викликаємо callback, щоб зберегти токен
+                    callback.onSuccess(text);
+                });
             }
 
             @Override
@@ -95,10 +105,12 @@ public class AuthManager {
     public static void logout() {
         token = null;
         username = null;
+        SettingsManager.resetSettings();
         Preferences prefs = Gdx.app.getPreferences(PREF_NAME);
         prefs.remove(TOKEN_KEY);
         prefs.remove(USERNAME_KEY);
         prefs.flush();
+        gameInitializer.initGame();
     }
 
     public static boolean hasToken(){

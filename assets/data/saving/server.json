@@ -1,18 +1,16 @@
 {
-"username": "admin",
-"playerX": 2535.0508,
-"playerY": 389.06058,
+"username": "popo",
+"playerX": 1445.3246,
+"playerY": 2234.15,
 "playerState": "NORMAL",
-"playerHunger": 89.95709,
-"playerThirst": 84.935486,
-"playerVibe": 79.914024,
-"currentWorldName": "leopold",
-"currentDay": 2,
-"currentTime": 2.0847645,
+"playerHunger": 98.253334,
+"playerThirst": 97.38019,
+"playerVibe": 96.50683,
+"currentWorldName": "main",
+"currentDay": 1,
+"currentTime": 9.493092,
 "inventory": {
-	"class": "java.util.HashMap",
-	"money": 20,
-	"pfand": 3
+	"class": "java.util.HashMap"
 },
 "activeQuests": {
 	"class": "java.util.HashMap",
@@ -29,8 +27,8 @@
 		"status": "NOT_STARTED"
 	},
 	"jason.smalltalk": {
-		"progress": 2,
-		"status": "ACTIVE"
+		"progress": 0,
+		"status": "NOT_STARTED"
 	},
 	"boss_end": {
 		"progress": 0,
@@ -41,8 +39,8 @@
 		"status": "NOT_STARTED"
 	},
 	"jason.tour": {
-		"progress": 1,
-		"status": "ACTIVE"
+		"progress": 0,
+		"status": "NOT_STARTED"
 	},
 	"jan.firework.2": {
 		"progress": 0,
@@ -69,114 +67,12 @@
 		"status": "NOT_STARTED"
 	}
 },
-"completedDialogueEvents": [
-	""
-],
+"completedDialogueEvents": [],
 "createdItems": [
 	{
 		"itemKey": "pfand",
-		"x": 471.31735,
-		"y": 4685.728,
-		"worldName": "main",
-		"searchData": null,
-		"interactionData": null,
-		"width": 64,
-		"height": 64
-	},
-	{
-		"itemKey": "pfand",
-		"x": 3192.8845,
-		"y": 512.2175,
-		"worldName": "main",
-		"searchData": null,
-		"interactionData": null,
-		"width": 64,
-		"height": 64
-	},
-	{
-		"itemKey": "pfand",
-		"x": 892.5007,
-		"y": 4615.0186,
-		"worldName": "main",
-		"searchData": null,
-		"interactionData": null,
-		"width": 64,
-		"height": 64
-	},
-	{
-		"itemKey": "pfand",
-		"x": 958.862,
-		"y": 842.18945,
-		"worldName": "main",
-		"searchData": null,
-		"interactionData": null,
-		"width": 64,
-		"height": 64
-	},
-	{
-		"itemKey": "pfand",
-		"x": 3002.12,
-		"y": 3971.1833,
-		"worldName": "main",
-		"searchData": null,
-		"interactionData": null,
-		"width": 64,
-		"height": 64
-	},
-	{
-		"itemKey": "pfand",
-		"x": 727.64594,
-		"y": 4003.3218,
-		"worldName": "main",
-		"searchData": null,
-		"interactionData": null,
-		"width": 64,
-		"height": 64
-	},
-	{
-		"itemKey": "pfand",
-		"x": 3550.4517,
-		"y": 2088.3547,
-		"worldName": "main",
-		"searchData": null,
-		"interactionData": null,
-		"width": 64,
-		"height": 64
-	},
-	{
-		"itemKey": "pfand",
-		"x": 2840.0344,
-		"y": 79.6862,
-		"worldName": "main",
-		"searchData": null,
-		"interactionData": null,
-		"width": 64,
-		"height": 64
-	},
-	{
-		"itemKey": "pfand",
-		"x": 216.98065,
-		"y": 5394.528,
-		"worldName": "main",
-		"searchData": null,
-		"interactionData": null,
-		"width": 64,
-		"height": 64
-	},
-	{
-		"itemKey": "pfand",
-		"x": 2731.511,
-		"y": 5231.725,
-		"worldName": "main",
-		"searchData": null,
-		"interactionData": null,
-		"width": 64,
-		"height": 64
-	},
-	{
-		"itemKey": "pfand",
-		"x": 3208.1152,
-		"y": 344.751,
+		"x": 3689.656,
+		"y": 2787.8345,
 		"worldName": "leopold",
 		"searchData": null,
 		"interactionData": null,
@@ -185,9 +81,9 @@
 	},
 	{
 		"itemKey": "pfand",
-		"x": 646.7948,
-		"y": 5041.0625,
-		"worldName": "leopold",
+		"x": 366.69513,
+		"y": 4795.352,
+		"worldName": "main",
 		"searchData": null,
 		"interactionData": null,
 		"width": 60,
@@ -195,9 +91,9 @@
 	},
 	{
 		"itemKey": "pfand",
-		"x": 3263.538,
-		"y": 3117.9805,
-		"worldName": "leopold",
+		"x": 975.04193,
+		"y": 3032.0112,
+		"worldName": "main",
 		"searchData": null,
 		"interactionData": null,
 		"width": 60,
@@ -205,19 +101,9 @@
 	},
 	{
 		"itemKey": "pfand",
-		"x": 1324.8949,
-		"y": 1537.5756,
-		"worldName": "leopold",
-		"searchData": null,
-		"interactionData": null,
-		"width": 60,
-		"height": 60
-	},
-	{
-		"itemKey": "pfand",
-		"x": 2275.3884,
-		"y": 5079.3022,
-		"worldName": "leopold",
+		"x": 3296.0444,
+		"y": 483.31235,
+		"worldName": "main",
 		"searchData": null,
 		"interactionData": null,
 		"width": 60,
@@ -227,7 +113,6 @@
 "talkedNpcs": {
 	"class": "java.util.HashSet",
 	"items": [
-		"ihor",
 		"jason"
 	]
 },
@@ -235,7 +120,8 @@
 	"class": "java.util.HashSet",
 	"items": [
 		"leopold",
-		"main"
+		"main",
+		"kamp"
 	]
 },
 "searchedItems": {
@@ -276,19 +162,19 @@
 		"x": 2702.88,
 		"y": 2696.12
 	},
-	"murat": {
-		"currentNode": "start",
-		"currentTexture": "murat.3d",
-		"currentWorld": "kamp",
-		"x": 2555.3,
-		"y": 2145.394
-	},
 	"kamil": {
 		"currentNode": "start",
 		"currentTexture": "kamil",
 		"currentWorld": "main",
 		"x": 2823.67,
 		"y": 1090
+	},
+	"murat": {
+		"currentNode": "start",
+		"currentTexture": "murat.3d",
+		"currentWorld": "kamp",
+		"x": 2555.3,
+		"y": 2145.394
 	},
 	"kioskman": {
 		"currentNode": "start",
@@ -332,19 +218,19 @@
 		"x": 1705.43,
 		"y": 1808.84
 	},
-	"talahon2": {
-		"currentNode": "start",
-		"currentTexture": "talahon2.3d",
-		"currentWorld": "kamp",
-		"x": 1793,
-		"y": 2218
-	},
 	"chikita": {
 		"currentNode": "start",
 		"currentTexture": "chikita",
 		"currentWorld": "leopold",
 		"x": 3213.48,
 		"y": 1898.48
+	},
+	"talahon2": {
+		"currentNode": "start",
+		"currentTexture": "talahon2.3d",
+		"currentWorld": "kamp",
+		"x": 1793,
+		"y": 2218
 	},
 	"jan": {
 		"currentNode": "start",
@@ -361,7 +247,7 @@
 		"y": 2082
 	},
 	"jason": {
-		"currentNode": "tour.active",
+		"currentNode": "start",
 		"currentTexture": "jason.3d",
 		"currentWorld": "main",
 		"x": 919.55,

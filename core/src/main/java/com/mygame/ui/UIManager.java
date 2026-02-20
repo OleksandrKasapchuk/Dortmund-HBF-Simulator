@@ -46,8 +46,8 @@ public class UIManager {
         this.batch = batch;
         this.skin = skin;
 
-        screens.put(GameStateManager.GameState.LOADING, new LoadingScreen(skin)); // новий порожній екран
-        currentScreen = screens.get(GameStateManager.GameState.LOADING);
+        screens.put(GameStateManager.GameState.LOADING_SERVER, new LoadingServerScreen(skin));
+        currentScreen = screens.get(GameStateManager.GameState.LOADING_SERVER);
         Gdx.input.setInputProcessor(currentScreen.getStage());
         screens.put(GameStateManager.GameState.AUTH, new AuthScreen(skin, this));
     }
@@ -98,7 +98,9 @@ public class UIManager {
         currentScreen.getStage().act(delta);
     }
 
-
+    public void setServerStatus(String text) {
+         if (screens.get(GameStateManager.GameState.LOADING_SERVER) instanceof LoadingServerScreen loadingServer) loadingServer.setStatus(text);
+    }
 
     public void render() {currentScreen.getStage().draw();}
 

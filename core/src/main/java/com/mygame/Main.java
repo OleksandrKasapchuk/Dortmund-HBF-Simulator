@@ -21,10 +21,10 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void create() {
-        Assets.load();                            // Load textures, sounds, music
+        Assets.load();
         gameInitializer = new GameInitializer();
         shapeRenderer = new ShapeRenderer();
-        restartGame();              // Initialize all game objects
+        restartGame();
     }
 
     public static void restartGame() {
