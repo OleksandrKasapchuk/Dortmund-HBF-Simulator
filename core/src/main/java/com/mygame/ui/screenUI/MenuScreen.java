@@ -26,16 +26,19 @@ public class MenuScreen extends Screen {
 
         TextButton startBtn = createButton(skin, Assets.ui.get("button.start.text"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("act.system.start")));
         TextButton newGameBtn = createButton(skin, Assets.ui.get("button.newGame.text"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("act.system.newGame")));
+        TextButton accountBtn = createButton(skin, Assets.ui.get("button.account.text"), 1.8f, () -> EventBus.fire(new Events.ActionRequestEvent("act.system.account")));
+
         TextButton logoutBtn = createButton(skin, "Logout", 1.8f, () -> {
             AuthManager.logout();
             gsm.setState(GameStateManager.GameState.AUTH);
         });
 
-        menuTable.add(startBtn).width(500).height(120).padBottom(30).row();
-        menuTable.add(newGameBtn).width(500).height(120).padBottom(30).row();
-        menuTable.add(logoutBtn).width(500).height(120).row();
+        menuTable.add(startBtn).width(450).height(100).padBottom(20).row();
+        menuTable.add(newGameBtn).width(450).height(100).padBottom(20).row();
+        menuTable.add(accountBtn).width(450).height(100).padBottom(20).row();
+        menuTable.add(logoutBtn).width(450).height(100).row();
 
         // Розміщуємо таблицю по центру екрану (або знизу, як вам подобається)
-        root.add(menuTable).expand().bottom().padBottom(100);
+        root.add(menuTable).expand().bottom().left().padBottom(50).padLeft(150);
     }
 }

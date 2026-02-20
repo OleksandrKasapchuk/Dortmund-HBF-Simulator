@@ -73,14 +73,6 @@ public class SettingsManager {
             return defaultValue;
         }
     }
-
-    /**
-     * Очищує кеш серверних даних. Має викликатися при виході з акаунта.
-     */
-    public static void clearServerCache() {
-        cachedServer = null;
-    }
-
     /**
      * Цей метод тепер просто скидає кеш до дефолтних значень.
      */

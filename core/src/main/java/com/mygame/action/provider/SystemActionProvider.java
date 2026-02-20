@@ -25,12 +25,13 @@ public class SystemActionProvider implements ActionProvider {
         registry.registerAction("act.system.start", context.gsm::startGame);
         registry.registerAction("act.system.newGame", () -> {
             SettingsManager.resetSettings();
-            Main.restartGame();
-            Main.getGameInitializer().getManagerRegistry().getContext().gsm.startGame();
+            Main.getGameInitializer().initAuthorithed();
+            context.gsm.startGame();
         });
         registry.registerAction("act.system.pause", context.gsm::togglePause);
         registry.registerAction("act.system.settings", context.gsm::toggleSettings);
         registry.registerAction("act.system.map", context.gsm::toggleMap);
         registry.registerAction("act.system.menu", context.gsm::exitToMenu);
+        registry.registerAction("act.system.account", context.gsm::toggleAccount);
     }
 }
