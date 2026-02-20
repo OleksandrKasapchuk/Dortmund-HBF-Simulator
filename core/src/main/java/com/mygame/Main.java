@@ -17,40 +17,39 @@ public class Main extends ApplicationAdapter {
 
     private static GameInitializer gameInitializer;
     private ShapeRenderer shapeRenderer;
+    private boolean loading = true;
 
     @Override
     public void create() {
-        Assets.load();                            // Load textures, sounds, music
+        Assets.load();
         gameInitializer = new GameInitializer();
-        gameInitializer.initGame();               // Initialize all game objects
         shapeRenderer = new ShapeRenderer();
+        restartGame();
     }
 
     public static void restartGame() {
         gameInitializer.initGame();
+        gameInitializer.loadGameFromServer();
     }
 
     @Override
     public void render() {
-        long startTime = System.nanoTime(); // старт таймера
         float delta = Gdx.graphics.getDeltaTime();
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.15f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        gameInitializer.getManagerRegistry().getGameInputHandler().update();
-        GameContext ctx = gameInitializer.getContext();
-
-        switch (ctx.gsm.getState()) {
+        if (gameInitializer.getManagerRegistry() != null){
+            gameInitializer.getManagerRegistry().getGameInputHandler().update();
+            GameContext ctx = gameInitializer.getContext();
+        }
+        switch (gameInitializer.getGameStateManager().getState()) {
             case PLAYING:
                 renderGame(delta);
                 break;
             default:
-                ctx.ui.render();
+                gameInitializer.getUiManager().render();
                 break;
         }
-        long endTime = System.nanoTime(); // кінець таймера
-        float ms = (endTime - startTime) / 1_000_000f; // конвертація в мс
-        Gdx.app.log("RenderDebug", "Frame render time: " + ms + " ms");
     }
 
     private void renderGame(float delta) {
@@ -69,24 +68,27 @@ public class Main extends ApplicationAdapter {
 
         ctx.entityRenderer.renderUnsorted(batch, ctx.itemManager.getBackgroundItems());
 
-         ctx.entityRenderer.collectRenderableEntities(currentWorld, ctx.player, ctx.npcManager.getNpcs(), ctx.itemManager.getForegroundItems());
+        ctx.entityRenderer.collectRenderableEntities(currentWorld, ctx.player, ctx.npcManager.getNpcs(), ctx.itemManager.getForegroundItems());
 
         ctx.entityRenderer.renderWithSortedEntities(batch, currentWorld);
 
-        ctx.ui.renderWorldElements();
+        gameInitializer.getUiManager().renderWorldElements();
 
         batch.end();
 
         currentWorld.drawZones(shapeRenderer, camera);
 
-        ctx.ui.render();
+        gameInitializer.getUiManager().render();
         ctx.overlay.render();
     }
 
 
     @Override
     public void resize(int width, int height) {
-        gameInitializer.getManagerRegistry().resize(width, height);
+        if (gameInitializer.getManagerRegistry() != null) {
+            gameInitializer.getManagerRegistry().resize(width, height);
+        }
+        gameInitializer.getUiManager().resize(width, height);
     }
 
     @Override

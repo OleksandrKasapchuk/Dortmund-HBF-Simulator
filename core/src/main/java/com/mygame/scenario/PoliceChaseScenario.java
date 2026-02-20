@@ -4,7 +4,7 @@ import com.mygame.entity.npc.Police;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.GameContext;
-import com.mygame.game.save.GameSettings;
+import com.mygame.game.save.data.ServerSaveData;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.managers.TimerManager;
 import com.mygame.world.World;
@@ -20,10 +20,10 @@ public class PoliceChaseScenario implements Scenario {
 
     @Override
     public void init() {
-        GameSettings settings = SettingsManager.load();
+        ServerSaveData settings = SettingsManager.loadServer();
 
         // Відновлення погоні зі збереження
-        if (settings.policeChaseActive) {
+        if (ctx.questManager.hasQuest("chase")) {
             completed = true;
             EventBus.fire(new Events.ActionRequestEvent("npc.callPolice"));
             Police police = ctx.npcManager.getSummonedPolice();

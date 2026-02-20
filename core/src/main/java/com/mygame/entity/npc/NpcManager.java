@@ -8,7 +8,7 @@ import com.mygame.dialogue.DialogueNode;
 import com.mygame.dialogue.DialogueRegistry;
 import com.mygame.entity.item.ItemManager;
 import com.mygame.entity.player.Player;
-import com.mygame.game.save.GameSettings;
+import com.mygame.game.save.data.ServerSaveData;
 import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 
@@ -29,7 +29,7 @@ public class NpcManager {
         this.itemManager = itemManager;
     }
 
-    public void loadNpcsFromMap(World world, Map<String, GameSettings.NpcSaveData> npcStates) {
+    public void loadNpcsFromMap(World world, Map<String, ServerSaveData.NpcSaveData> npcStates) {
         MapLayer npcLayer = world.getMap().getLayers().get("npcs");
         if (npcLayer == null) return;
 
@@ -42,21 +42,21 @@ public class NpcManager {
         }
     }
 
-    private void createNpcFromMap(String npcId, MapProperties props, World world, Map<String, GameSettings.NpcSaveData> npcStates) {
+    private void createNpcFromMap(String npcId, MapProperties props, World world, Map<String, ServerSaveData.NpcSaveData> npcStates) {
         NPC npc = createNpcInstance(npcId, props, world, npcStates);
         restoreNpcState(npc, npcStates);
         npcs.add(npc);
         System.out.println("SUCCESS: Loaded '" + npcId + "' from map (Node: " + npc.getCurrentDialogueNodeId() + ", Tex: " + npc.getCurrentTextureKey() + ")");
     }
 
-    private NPC createNpcInstance(String npcId, MapProperties props, World world, Map<String, GameSettings.NpcSaveData> npcStates) {
+    private NPC createNpcInstance(String npcId, MapProperties props, World world, Map<String, ServerSaveData.NpcSaveData> npcStates) {
         float x = props.get("x", 0f, Float.class);
         float y = props.get("y", 0f, Float.class);
         World targetWorld = world;
         String npcIdLower = npcId.toLowerCase();
 
         if (npcStates != null && npcStates.containsKey(npcIdLower)) {
-            GameSettings.NpcSaveData state = npcStates.get(npcIdLower);
+            ServerSaveData.NpcSaveData state = npcStates.get(npcIdLower);
             if (state.currentWorld != null) {
                 World savedWorld = worldManager.getWorld(state.currentWorld);
                 if (savedWorld != null) {
@@ -87,9 +87,9 @@ public class NpcManager {
         }
     }
 
-    private void restoreNpcState(NPC npc, Map<String, GameSettings.NpcSaveData> npcStates) {
+    private void restoreNpcState(NPC npc, Map<String, ServerSaveData.NpcSaveData> npcStates) {
         if (npcStates != null && npcStates.containsKey(npc.getId())) {
-            GameSettings.NpcSaveData state = npcStates.get(npc.getId());
+            ServerSaveData.NpcSaveData state = npcStates.get(npc.getId());
 
             if (state.currentNode != null) {
                 npc.setDialogue(dialogueRegistry.getDialogue(npc.getId(), state.currentNode));

@@ -7,7 +7,7 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.mygame.assets.Assets;
 import com.mygame.entity.item.itemData.InteractionData;
 import com.mygame.entity.item.itemData.SearchData;
-import com.mygame.game.save.GameSettings;
+import com.mygame.game.save.data.ServerSaveData;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.world.World;
 
@@ -29,13 +29,13 @@ public class ItemLoader {
         if (itemLayer == null) {
             return; // No items layer in this world, which is fine.
         }
-        GameSettings settings = SettingsManager.load();
+        ServerSaveData settings = SettingsManager.loadServer();
         for (MapObject object : itemLayer.getObjects()) {
             createAndAddItemFromMapObject(object, world, settings, itemManager);
         }
     }
 
-    private void createAndAddItemFromMapObject(MapObject object, World world, GameSettings settings, ItemManager itemManager) {
+    private void createAndAddItemFromMapObject(MapObject object, World world, ServerSaveData settings, ItemManager itemManager) {
         MapProperties props = object.getProperties();
         String itemKey = props.get("itemKey", String.class);
 
@@ -103,7 +103,7 @@ public class ItemLoader {
         return item;
     }
 
-    private void restoreItemState(Item item, GameSettings settings) {
+    private void restoreItemState(Item item, ServerSaveData settings) {
         if (item.getSearchData() != null && settings.searchedItems != null && settings.searchedItems.contains(item.getId())) {
             item.getSearchData().markSearched();
         }

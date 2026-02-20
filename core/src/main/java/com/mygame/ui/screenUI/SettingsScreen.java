@@ -8,7 +8,8 @@ import com.mygame.assets.Assets;
 import com.mygame.Main;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
-import com.mygame.game.save.GameSettings;
+import com.mygame.game.save.data.ClientSaveData;
+import com.mygame.game.save.data.ServerSaveData;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.assets.audio.MusicManager;
 import com.mygame.assets.audio.SoundManager;
@@ -95,9 +96,9 @@ public class SettingsScreen extends Screen {
     }
 
     private void setLanguage(String languageCode) {
-        GameSettings settings = SettingsManager.load();
+        ClientSaveData settings = SettingsManager.loadClient();
         settings.language = languageCode;
-        SettingsManager.save(settings);
+        SettingsManager.saveClient(settings);
         Assets.loadBundle(new Locale(languageCode));
         Main.restartGame();
     }

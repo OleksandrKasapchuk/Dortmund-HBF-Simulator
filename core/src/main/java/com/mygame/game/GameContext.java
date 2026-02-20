@@ -15,6 +15,7 @@ import com.mygame.entity.item.plant.PlantSystem;
 import com.mygame.entity.npc.NpcManager;
 import com.mygame.entity.player.Player;
 import com.mygame.entity.player.PlayerEffectManager;
+import com.mygame.game.auth.AuthManager;
 import com.mygame.game.save.SaveManager;
 import com.mygame.managers.CameraManager;
 import com.mygame.quest.QuestManager;
@@ -27,7 +28,7 @@ import com.mygame.world.WorldManager;
 import com.mygame.world.zone.ZoneManager;
 import com.mygame.world.zone.ZoneRegistry;
 
-// GameContext now creates and holds most of the managers.
+
 public class GameContext {
 
     // Core Objects
@@ -54,8 +55,8 @@ public class GameContext {
     public final EntityRenderer entityRenderer;
     public final ZoneManager zoneManager;
 
-    public final GameStateManager gsm;
-    public final UIManager ui;
+    public UIManager ui;
+    public GameStateManager gsm;
     public final CameraManager cameraManager;
     public final SaveManager saveManager;
     public final DialogueManager dialogueManager;
@@ -65,7 +66,9 @@ public class GameContext {
     public final QuestProgressTriggers questProgressTriggers;
     public final ScenarioController scController;
 
-    public GameContext(SpriteBatch batch, Player player, Skin skin) {
+    public GameContext(SpriteBatch batch, Player player, Skin skin, UIManager ui, GameStateManager gsm) {
+        this.ui = ui;
+        this.gsm = gsm;
         this.player = player;
 
         // 1. Core Systems
@@ -92,11 +95,10 @@ public class GameContext {
         player.setItemManager(itemManager);
         this.npcManager = new NpcManager(player, dialogueRegistry, worldManager, itemManager);
         player.setNpcManager(npcManager);
+        this.ui.init(player, questManager, worldManager, dayManager, npcManager, itemManager, zoneManager, gsm);
         this.pfandManager = new PfandManager(itemRegistry, itemManager, worldManager);
         this.interactionManager = new InteractionManager(batch, player, questManager, worldManager, npcManager, itemManager);
-        this.ui = new UIManager(batch, player, skin, questManager, worldManager, dayManager, npcManager, itemManager, zoneManager);
         this.dialogueManager = new DialogueManager(ui.getDialogueUI(), player, worldManager, dialogueRegistry, npcManager);
-        this.gsm = new GameStateManager(ui);
 
         // 4. High-level logic
         this.questProgressTriggers = new QuestProgressTriggers(questManager, itemRegistry, npcManager, worldManager);
@@ -124,7 +126,10 @@ public class GameContext {
 
     public void dispose(boolean save) {
         if (save && saveManager != null) {
-            saveManager.saveGame();
+            saveManager.saveLocal();
+            if (AuthManager.hasToken()){
+                saveManager.saveServer();
+            }
         }
         if (ui != null) ui.dispose();
         if (worldManager != null) worldManager.disposeWorlds();

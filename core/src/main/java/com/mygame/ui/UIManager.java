@@ -25,12 +25,13 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public class UIManager {
-
-    private final SpriteBatch batch;
-    private final Player player;
-    private final QuestManager questManager;
-    private final WorldManager worldManager;
-    private final InWorldUIRenderer inWorldUIRenderer;
+    private SpriteBatch batch;
+    private Player player;
+    private QuestManager questManager;
+    private WorldManager worldManager;
+    private InWorldUIRenderer inWorldUIRenderer;
+    private Skin skin;
+    private GameStateManager gsm;
 
     private final Map<GameStateManager.GameState, Screen> screens = new EnumMap<>(GameStateManager.GameState.class);
     private Screen currentScreen;
@@ -41,16 +42,23 @@ public class UIManager {
     private TouchControlsUI touchControlsUI;
     private UIEventHandler uiEventHandler;
 
-    public UIManager(SpriteBatch batch, Player player, Skin skin, QuestManager questManager, WorldManager worldManager, DayManager dayManager, NpcManager npcManager, ItemManager itemManager, ZoneManager zoneManager) {
+    public UIManager(SpriteBatch batch, Skin skin) {
         this.batch = batch;
+        this.skin = skin;
+
+        screens.put(GameStateManager.GameState.LOADING_SERVER, new LoadingServerScreen(skin));
+        currentScreen = screens.get(GameStateManager.GameState.LOADING_SERVER);
+        Gdx.input.setInputProcessor(currentScreen.getStage());
+        screens.put(GameStateManager.GameState.AUTH, new AuthScreen(skin, this));
+    }
+
+    public void init(Player player, QuestManager questManager, WorldManager worldManager, DayManager dayManager, NpcManager npcManager, ItemManager itemManager, ZoneManager zoneManager, GameStateManager gsm){
         this.player = player;
+        this.gsm = gsm;
         this.questManager = questManager;
         this.worldManager = worldManager;
         this.inWorldUIRenderer = new InWorldUIRenderer(batch, player, questManager, worldManager, npcManager, itemManager, zoneManager);
         createScreens(skin, dayManager);
-
-        currentScreen = screens.get(GameStateManager.GameState.MENU);
-        Gdx.input.setInputProcessor(currentScreen.getStage());
 
         questUI = new QuestUI(skin, getGameScreen().getStage(), 1200, 900, questManager);
         inventoryUI = new InventoryUI(getGameScreen().getStage(), skin);
@@ -65,7 +73,7 @@ public class UIManager {
 
     private void createScreens(Skin skin, DayManager dayManager) {
         screens.put(GameStateManager.GameState.PLAYING, new GameScreen(skin, worldManager, dayManager, player));
-        screens.put(GameStateManager.GameState.MENU, new MenuScreen(skin));
+        screens.put(GameStateManager.GameState.MENU, new MenuScreen(skin, gsm));
         screens.put(GameStateManager.GameState.PAUSED, new PauseScreen(skin));
         screens.put(GameStateManager.GameState.SETTINGS, new SettingsScreen(skin));
         screens.put(GameStateManager.GameState.DEATH, new DeathScreen(skin));
@@ -90,7 +98,9 @@ public class UIManager {
         currentScreen.getStage().act(delta);
     }
 
-
+    public void setServerStatus(String text) {
+         if (screens.get(GameStateManager.GameState.LOADING_SERVER) instanceof LoadingServerScreen loadingServer) loadingServer.setStatus(text);
+    }
 
     public void render() {currentScreen.getStage().draw();}
 

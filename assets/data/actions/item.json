@@ -6,7 +6,7 @@
       { "type": "system.timer", "delay": 4.0,
         "action": { "type": "system.composite", "actions": [
         { "type": "player.setState", "key": "stoned" },
-        {"type": "player.addVibe", "amount": 20}
+        {"type": "player.addVibe", "amount": 40}
       ]}
       }]
     },
@@ -27,7 +27,7 @@
     ]
   },
 
-  "act.item.kebab.use": {"type": "player.eat", "amount": 20},
+  "act.item.kebab.use": {"type": "player.eat", "amount": 30},
 
   "act.item.harvest": {
     "type": "system.composite",

@@ -1,0 +1,281 @@
+{
+"username": "popo",
+"playerX": 1445.3246,
+"playerY": 2234.15,
+"playerState": "NORMAL",
+"playerHunger": 98.253334,
+"playerThirst": 97.38019,
+"playerVibe": 96.50683,
+"currentWorldName": "main",
+"currentDay": 1,
+"currentTime": 9.493092,
+"inventory": {
+	"class": "java.util.HashMap"
+},
+"activeQuests": {
+	"class": "java.util.HashMap",
+	"delivery": {
+		"progress": 0,
+		"status": "NOT_STARTED"
+	},
+	"denys.kebab": {
+		"progress": 0,
+		"status": "NOT_STARTED"
+	},
+	"igo.joint": {
+		"progress": 0,
+		"status": "NOT_STARTED"
+	},
+	"jason.smalltalk": {
+		"progress": 0,
+		"status": "NOT_STARTED"
+	},
+	"boss_end": {
+		"progress": 0,
+		"status": "NOT_STARTED"
+	},
+	"chase": {
+		"progress": 0,
+		"status": "NOT_STARTED"
+	},
+	"jason.tour": {
+		"progress": 0,
+		"status": "NOT_STARTED"
+	},
+	"jan.firework.2": {
+		"progress": 0,
+		"status": "NOT_STARTED"
+	},
+	"jan.firework.3": {
+		"progress": 0,
+		"status": "NOT_STARTED"
+	},
+	"jan.firework.1": {
+		"progress": 0,
+		"status": "NOT_STARTED"
+	},
+	"igo.party": {
+		"progress": 0,
+		"status": "NOT_STARTED"
+	},
+	"jan.firework.4": {
+		"progress": 0,
+		"status": "NOT_STARTED"
+	},
+	"jan.firework.5": {
+		"progress": 0,
+		"status": "NOT_STARTED"
+	}
+},
+"completedDialogueEvents": [],
+"createdItems": [
+	{
+		"itemKey": "pfand",
+		"x": 3689.656,
+		"y": 2787.8345,
+		"worldName": "leopold",
+		"searchData": null,
+		"interactionData": null,
+		"width": 64,
+		"height": 64
+	},
+	{
+		"itemKey": "pfand",
+		"x": 366.69513,
+		"y": 4795.352,
+		"worldName": "main",
+		"searchData": null,
+		"interactionData": null,
+		"width": 60,
+		"height": 60
+	},
+	{
+		"itemKey": "pfand",
+		"x": 975.04193,
+		"y": 3032.0112,
+		"worldName": "main",
+		"searchData": null,
+		"interactionData": null,
+		"width": 60,
+		"height": 60
+	},
+	{
+		"itemKey": "pfand",
+		"x": 3296.0444,
+		"y": 483.31235,
+		"worldName": "main",
+		"searchData": null,
+		"interactionData": null,
+		"width": 60,
+		"height": 60
+	}
+],
+"talkedNpcs": {
+	"class": "java.util.HashSet",
+	"items": [
+		"jason"
+	]
+},
+"visited": {
+	"class": "java.util.HashSet",
+	"items": [
+		"leopold",
+		"main",
+		"kamp"
+	]
+},
+"searchedItems": {
+	"class": "java.util.HashSet",
+	"items": []
+},
+"enabledZones": {
+	"class": "java.util.HashSet",
+	"items": [
+		"1",
+		"12",
+		"2",
+		"5",
+		"29",
+		"40"
+	]
+},
+"npcStates": {
+	"class": "java.util.HashMap",
+	"jamal": {
+		"currentNode": "start",
+		"currentTexture": "jamal",
+		"currentWorld": "kamp",
+		"x": 1015,
+		"y": 700
+	},
+	"boss": {
+		"currentNode": "start",
+		"currentTexture": "boss.3d",
+		"currentWorld": "leopold",
+		"x": 1509,
+		"y": 690
+	},
+	"baryga": {
+		"currentNode": "start",
+		"currentTexture": "baryga",
+		"currentWorld": "leopold",
+		"x": 2702.88,
+		"y": 2696.12
+	},
+	"kamil": {
+		"currentNode": "start",
+		"currentTexture": "kamil",
+		"currentWorld": "main",
+		"x": 2823.67,
+		"y": 1090
+	},
+	"murat": {
+		"currentNode": "start",
+		"currentTexture": "murat.3d",
+		"currentWorld": "kamp",
+		"x": 2555.3,
+		"y": 2145.394
+	},
+	"kioskman": {
+		"currentNode": "start",
+		"currentTexture": "kioskman.3d",
+		"currentWorld": "main",
+		"x": 217,
+		"y": 1496
+	},
+	"ryzhyi": {
+		"currentNode": "start",
+		"currentTexture": "ryzhyi",
+		"currentWorld": "subway",
+		"x": 2546,
+		"y": 1534
+	},
+	"igo": {
+		"currentNode": "start",
+		"currentTexture": "igo.3d",
+		"currentWorld": "main",
+		"x": 2761.33,
+		"y": 1794
+	},
+	"ihor": {
+		"currentNode": "start",
+		"currentTexture": "ihor",
+		"currentWorld": "main",
+		"x": 1205,
+		"y": 706
+	},
+	"police": {
+		"currentNode": "start",
+		"currentTexture": "police.3d",
+		"currentWorld": "main",
+		"x": 946.52,
+		"y": 2798.55
+	},
+	"talahon1": {
+		"currentNode": "start",
+		"currentTexture": "talahon1.3d",
+		"currentWorld": "kamp",
+		"x": 1705.43,
+		"y": 1808.84
+	},
+	"chikita": {
+		"currentNode": "start",
+		"currentTexture": "chikita",
+		"currentWorld": "leopold",
+		"x": 3213.48,
+		"y": 1898.48
+	},
+	"talahon2": {
+		"currentNode": "start",
+		"currentTexture": "talahon2.3d",
+		"currentWorld": "kamp",
+		"x": 1793,
+		"y": 2218
+	},
+	"jan": {
+		"currentNode": "start",
+		"currentTexture": "jan.3d",
+		"currentWorld": "main",
+		"x": 1029,
+		"y": 2498
+	},
+	"denys": {
+		"currentNode": "start",
+		"currentTexture": "denys.3d",
+		"currentWorld": "main",
+		"x": 1109,
+		"y": 2082
+	},
+	"jason": {
+		"currentNode": "start",
+		"currentTexture": "jason.3d",
+		"currentWorld": "main",
+		"x": 919.55,
+		"y": 1001.52
+	},
+	"maksym": {
+		"currentNode": "start",
+		"currentTexture": "maksym",
+		"currentWorld": "main",
+		"x": 2777,
+		"y": 3010
+	},
+	"dmitri": {
+		"currentNode": "start",
+		"currentTexture": "dmitri.3d",
+		"currentWorld": "main",
+		"x": 2125,
+		"y": 688
+	},
+	"filip": {
+		"currentNode": "start",
+		"currentTexture": "filip",
+		"currentWorld": "leopold",
+		"x": 3665,
+		"y": 4050
+	}
+},
+"policeX": 0,
+"policeY": 0,
+"policeWorldName": null
+}

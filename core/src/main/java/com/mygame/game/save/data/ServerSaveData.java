@@ -1,28 +1,21 @@
-package com.mygame.game.save;
+package com.mygame.game.save.data;
 
 import com.mygame.entity.item.itemData.InteractionData;
 import com.mygame.entity.item.itemData.SearchData;
 import com.mygame.entity.player.Player;
+import com.mygame.game.auth.AuthManager;
 import com.mygame.quest.QuestManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A simple data class to hold game settings.
  * Needs a no-arg constructor for JSON serialization.
  */
-public class GameSettings {
-    public String language;
-
-    public float musicVolume;
-    public float soundVolume;
-    public boolean muteAll;
-
+public class ServerSaveData {
+    public String username;
     public float playerX;
     public float playerY;
     public Player.State playerState;
@@ -35,23 +28,22 @@ public class GameSettings {
     public int currentDay;
     public float currentTime;
 
-    public Map<String, Integer> inventory;
-    public Map<String, QuestSaveData> activeQuests;
-    public List<String> completedDialogueEvents;
-    public List<ItemSaveData> createdItems;
+    public HashMap<String, Integer> inventory;
+    public HashMap<String, QuestSaveData> activeQuests;
+    public ArrayList<String> completedDialogueEvents;
+    public ArrayList<ItemSaveData> createdItems;
 
-    public Set<String> talkedNpcs;
-    public Set<String> visited;
-    public Set<String> searchedItems;
-    public Set<String> enabledZones; // Changed from disabledQuestZones
+    public HashSet<String> talkedNpcs;
+    public HashSet<String> visited;
+    public HashSet<String> searchedItems;
+    public HashSet<String> enabledZones; // Changed from disabledQuestZones
 
     // NPC State: Mapping NPC ID to their current status (dialogue and texture)
-    public Map<String, NpcSaveData> npcStates;
+    public HashMap<String, NpcSaveData> npcStates;
 
     // Police chase save data
-    public boolean policeChaseActive;
-    public float policeX;
-    public float policeY;
+    public Float policeX;
+    public Float policeY;
     public String policeWorldName;
 
     public static class ItemSaveData {
@@ -102,12 +94,9 @@ public class GameSettings {
         }
     }
 
-    public GameSettings() {
+    public ServerSaveData() {
         // Default settings
-        this.language = "en";
-        this.musicVolume = 1.0f;
-        this.soundVolume = 1.0f;
-        this.muteAll = false;
+        this.username = AuthManager.getUsername();
         this.playerX = 200;
         this.playerY = 200;
         this.playerHunger = 100;
@@ -125,7 +114,5 @@ public class GameSettings {
         this.searchedItems = new HashSet<>();
         this.npcStates = new HashMap<>();
         this.enabledZones = new HashSet<>(); // Changed from disabledQuestZones
-
-        this.policeChaseActive = false;
     }
 }
