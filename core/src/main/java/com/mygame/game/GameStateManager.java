@@ -12,7 +12,7 @@ import com.mygame.ui.UIManager;
 public class GameStateManager {
 
     // --- Enum of possible game states ---
-    public enum GameState { MENU, PLAYING, PAUSED, SETTINGS, DEATH, MAP, AUTH, LOADING_SERVER }
+    public enum GameState { MENU, PLAYING, PAUSED, SETTINGS, DEATH, MAP, AUTH, LOADING_SERVER, USER_INFO }
 
     private GameState state; // Current state of the game
     private final UIManager uiManager;
@@ -44,6 +44,15 @@ public class GameStateManager {
             setState(GameState.MENU);
         }
     }
+
+    public void toggleAccount() {
+        if (state == GameState.MENU || state == GameState.PAUSED) {
+            setState(GameState.USER_INFO);
+        } else if (state == GameState.USER_INFO) {
+            setState(GameState.MENU);
+        }
+    }
+
     // --- Toggle pause state ---
     public void togglePause() {
         if (state == GameState.PAUSED) {
