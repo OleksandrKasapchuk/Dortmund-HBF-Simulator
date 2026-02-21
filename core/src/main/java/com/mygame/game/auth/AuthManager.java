@@ -5,6 +5,7 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
+import com.mygame.Config;
 import com.mygame.game.GameInitializer;
 import com.mygame.game.save.SettingsManager;
 
@@ -35,14 +36,14 @@ public class AuthManager {
 
     public static void login(String username, String password, HttpCallback callback) {
         LoginRequest requestObj = new LoginRequest(username, password);
-        request("https://hbf-simulator-backend.onrender.com/auth/login/", requestObj, callback);
+        request(Config.getServerUrl() + "/auth/login/", requestObj, callback);
     }
 
     public static void register(String username, String password, String confirm, HttpCallback callback) {
         if (!password.equals(confirm)) return;
 
         RegisterRequest requestObj = new RegisterRequest(username, password, confirm);
-        request("https://hbf-simulator-backend.onrender.com/auth/register/", requestObj, callback);
+        request(Config.getServerUrl() + "/auth/register/", requestObj, callback);
     }
 
     public static String getToken() {

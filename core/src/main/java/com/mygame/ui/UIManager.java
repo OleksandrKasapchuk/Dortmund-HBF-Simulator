@@ -78,7 +78,7 @@ public class UIManager {
         screens.put(GameStateManager.GameState.SETTINGS, new SettingsScreen(skin));
         screens.put(GameStateManager.GameState.DEATH, new DeathScreen(skin));
         screens.put(GameStateManager.GameState.MAP, new MapScreen(skin, worldManager));
-        screens.put(GameStateManager.GameState.USER_INFO, new UserInfoScreen(skin));
+        screens.put(GameStateManager.GameState.USER_INFO, new UserInfoScreen(skin, dayManager));
     }
 
     public void setCurrentStage(GameStateManager.GameState state) {
