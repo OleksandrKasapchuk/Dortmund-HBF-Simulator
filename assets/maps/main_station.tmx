@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="44" height="55" tilewidth="100" tileheight="100" infinite="0" nextlayerid="9" nextobjectid="75">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="44" height="55" tilewidth="100" tileheight="100" infinite="0" nextlayerid="9" nextobjectid="77">
  <tileset firstgid="1" source="plate.tsx"/>
  <tileset firstgid="2" source="brick.tsx"/>
  <tileset firstgid="3" name="igo" tilewidth="70" tileheight="100" tilecount="1" columns="1">
-  <image source="../images/npc/igo.png" width="70" height="100"/>
+  <image source="../images/npc/igo.png" width="127" height="180"/>
  </tileset>
  <tileset firstgid="4" source="blackbrick.tsx"/>
  <tileset firstgid="5" source="3d_brick.tsx"/>
@@ -170,14 +170,31 @@
  <objectgroup id="6" name="npcs">
   <object id="17" name="kamil" gid="3" x="2823.67" y="4410" width="70" height="100"/>
   <object id="18" name="igo" gid="3" x="2761.33" y="3706" width="80" height="170"/>
-  <object id="24" name="police" gid="3" x="946.52" y="2701.45" width="80" height="170"/>
-  <object id="28" name="kioskman" gid="3" x="217" y="4004" width="80" height="170"/>
+  <object id="24" name="police_1" gid="3" x="946.52" y="2701.45" width="80" height="170">
+   <properties>
+    <property name="textureKey" value="police.right.3d"/>
+    <property name="type" value="police"/>
+   </properties>
+  </object>
+  <object id="28" name="kioskman" gid="3" x="217" y="4004" width="60" height="170"/>
   <object id="32" name="jason" gid="3" x="919.55" y="4498.48" width="80" height="170"/>
   <object id="41" name="dmitri" gid="3" x="2125" y="4812" width="80" height="170"/>
   <object id="43" name="jan" gid="3" x="1029" y="3002" width="80" height="170"/>
   <object id="44" name="maksym" gid="3" x="2777" y="2490" width="70" height="100"/>
   <object id="54" name="denys" gid="29" x="1109" y="3418" width="80" height="170"/>
   <object id="74" name="ihor" gid="3" x="1205" y="4794" width="80" height="170"/>
+  <object id="75" name="police_3" gid="3" x="2060" y="424.091" width="80" height="170">
+   <properties>
+    <property name="textureKey" value="police.front.3d"/>
+    <property name="type" value="police"/>
+   </properties>
+  </object>
+  <object id="76" name="police_2" gid="3" x="1669.09" y="427.121" width="80" height="170">
+   <properties>
+    <property name="textureKey" value="police.front.3d"/>
+    <property name="type" value="police"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="7" name="items">
   <object id="53" gid="27" x="3200" y="2600" width="200" height="200">

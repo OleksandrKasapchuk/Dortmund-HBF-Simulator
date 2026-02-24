@@ -32,7 +32,7 @@ public class Police extends NPC {
 
     public Police(String id, String name, int width, int height, float x, float y,
                   String textureKey, String faceTextureKey, World world, int speed, DialogueNode dialogue, ItemManager itemManager) {
-        super(id, name, width, height, x, y, textureKey, faceTextureKey, world,
+        super(id, name, "police", width, height, x, y, textureKey, faceTextureKey, world,
             0, 0, 0f, 0f, // Static patrol path, not used for police
             speed, dialogue, itemManager);
     }

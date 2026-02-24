@@ -21,9 +21,11 @@ public class UserInfoScreen extends Screen {
 
     private final Table leaderboardTable = new Table();
     private final Skin skin;
+    private Label dayLabel;
 
     public UserInfoScreen(Skin skin, DayManager dayManager){
         super();
+        EventBus.subscribe(Events.NewDayEvent.class, event -> updateDay(event.newDayCount()));
         this.skin = skin;
 
         // --- TOP BAR ---
@@ -44,7 +46,7 @@ public class UserInfoScreen extends Screen {
         Label usernameLabel = createLabel(skin, Assets.ui.get("ui.auth.username") + ": " + AuthManager.getUsername(), 1.5f);
         userTable.add(usernameLabel).padBottom(50).left().row();
 
-        Label dayLabel = createLabel(skin, Assets.ui.format("ui.day", dayManager.getDay()), 1.5f  );
+        dayLabel = createLabel(skin, Assets.ui.format("ui.day", dayManager.getDay()), 1.5f  );
         userTable.add(dayLabel).padBottom(50).left().row();
 
         // --- LEADERBOARD ---
@@ -63,6 +65,10 @@ public class UserInfoScreen extends Screen {
         // initial load
         showLoading();
         loadLeaderboard();
+    }
+
+    public void updateDay(int day) {
+        dayLabel.setText(Assets.ui.format("ui.day", day));
     }
 
     // ---------- UI STATES ----------

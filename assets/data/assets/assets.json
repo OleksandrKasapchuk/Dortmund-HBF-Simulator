@@ -10,10 +10,11 @@
   { "key": "baryga", "path": "images/npc/baryga.png" },
   { "key": "chikita", "path": "images/npc/chikita.png" },
 
-  { "key": "police.3d", "path": "images/npc/police_3d.png" },
+  { "key": "police.front.3d", "path": "images/npc/police_3d_front.png" },
+  { "key": "police.right.3d", "path": "images/npc/police_3d_right.png" },
   { "key": "police", "path": "images/npc/police.png" },
 
-  { "key": "kioskman.3d", "path": "images/npc/kioskman_3d.png" },
+  { "key": "kioskman.3d", "path": "images/npc/kioskman_3d_2.png" },
   { "key": "kioskman", "path": "images/npc/kioskman.png" },
 
   { "key": "zoe", "path": "images/npc/zoe/zoe.png" },
