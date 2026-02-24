@@ -27,7 +27,6 @@ public class GameScreen extends Screen {
 
     private record Message(String text, float duration) {}
     private final Queue<Message> messageQueue = new Queue<>();
-    private WorldManager worldManager;
 
     private float fpsTimer = 0f;
     private Label fpsLabel;
@@ -50,9 +49,8 @@ public class GameScreen extends Screen {
     }
 
 
-    public GameScreen(Skin skin, WorldManager worldManager, DayManager dayManager, Player player) {
+    public GameScreen(Skin skin, DayManager dayManager, Player player) {
         super();
-        this.worldManager = worldManager;
 
         // Налаштування root таблиці для HUD
         root.top().pad(30);

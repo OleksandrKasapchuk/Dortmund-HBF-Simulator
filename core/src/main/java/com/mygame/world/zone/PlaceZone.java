@@ -2,22 +2,16 @@ package com.mygame.world.zone;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.mygame.entity.item.Item;
-import com.mygame.entity.item.ItemRegistry;
-import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.save.data.ServerSaveData;
 
 
 public class PlaceZone extends Zone {
-    private final Player player;
-    private final ItemRegistry itemRegistry;
     private Item placedItem;
 
-    public PlaceZone(String id, Rectangle area, Player player, ItemRegistry itemRegistry, ServerSaveData settings) {
+    public PlaceZone(String id, Rectangle area, ServerSaveData settings) {
         super(id, area);
-        this.player = player;
-        this.itemRegistry = itemRegistry;
 
         this.enabled = settings.enabledZones != null && settings.enabledZones.contains(id);
     }

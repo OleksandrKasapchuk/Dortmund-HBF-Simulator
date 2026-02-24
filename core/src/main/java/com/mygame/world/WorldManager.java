@@ -1,10 +1,8 @@
 package com.mygame.world;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
-import com.mygame.ui.inGameUI.Overlay;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,18 +12,13 @@ public class WorldManager {
     private final Map<String, World> worlds = new HashMap<>();
     private World currentWorld;
 
-    // Context for event handlers and updates
-    private Player player;
-    private Overlay overlay;
 
-    public WorldManager(Player player, Overlay overlay) {
+    public WorldManager() {
         addWorld(new World("main", "maps/main_station.tmx"));
         addWorld(new World("leopold", "maps/leopold.tmx"));
         addWorld(new World("subway", "maps/subway.tmx"));
         addWorld(new World("home", "maps/home.tmx"));
         addWorld(new World("kamp", "maps/kamp.tmx"));
-        this.player = player;
-        this.overlay = overlay;
     }
 
 

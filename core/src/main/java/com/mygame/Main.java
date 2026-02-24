@@ -17,7 +17,6 @@ public class Main extends ApplicationAdapter {
 
     private static GameInitializer gameInitializer;
     private ShapeRenderer shapeRenderer;
-    private boolean loading = true;
 
     @Override
     public void create() {
@@ -40,7 +39,6 @@ public class Main extends ApplicationAdapter {
 
         if (gameInitializer.getManagerRegistry() != null){
             gameInitializer.getManagerRegistry().getGameInputHandler().update();
-            GameContext ctx = gameInitializer.getContext();
         }
         switch (gameInitializer.getGameStateManager().getState()) {
             case PLAYING:
