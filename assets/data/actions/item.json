@@ -15,9 +15,13 @@
     "type": "system.composite",
     "actions": [
       {"type": "player.drink", "amount": 20},
+      {"type": "player.eat", "amount": 3},
       {"type": "system.timer", "delay": 1.0, "action": { "type": "player.setState", "key": "normal" }}
     ]
   },
+
+  "act.item.water.use": {"type": "player.drink", "amount": 25},
+  "act.item.bun.use": {"type": "player.eat", "amount": 15},
 
   "act.item.beer.use": {
     "type": "system.composite",
@@ -27,7 +31,7 @@
     ]
   },
 
-  "act.item.kebab.use": {"type": "player.eat", "amount": 30},
+  "act.item.kebab.use": {"type": "player.eat", "amount": 40},
 
   "act.item.harvest": {
     "type": "system.composite",

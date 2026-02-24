@@ -55,8 +55,12 @@ public class World {
     private void initializeRenderLayers() {
         ArrayList<Integer> bottomIndices = new ArrayList<>();
         int backgroundIndex = this.map.getLayers().getIndex("background");
+        int backgroundIndex2 = this.map.getLayers().getIndex("decoration");
         if (backgroundIndex != -1) {
             bottomIndices.add(backgroundIndex);
+        }
+        if (backgroundIndex2 != -1) {
+            bottomIndices.add(backgroundIndex2);
         }
         this.bottomLayersIndices = bottomIndices.stream().mapToInt(i -> i).toArray();
 

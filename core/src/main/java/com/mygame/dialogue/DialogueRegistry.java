@@ -69,28 +69,28 @@ public class DialogueRegistry {
         this.actionRegistry = actionRegistry;
     }
 
-    public DialogueNode getInitialDialogue(String npcId) {
-        return getDialogue(npcId, "start");
+    public DialogueNode getInitialDialogue(String type) {
+        return getDialogue(type, "start");
     }
 
-    public DialogueNode getDialogue(String npcId, String nodeName) {
-        String fullNodeId = npcId + "." + nodeName;
+    public DialogueNode getDialogue(String type, String nodeName) {
+        String fullNodeId = type + "." + nodeName;
 
         if (builtNodes.containsKey(fullNodeId)) {
             return builtNodes.get(fullNodeId);
         }
 
-        DialogueNode node = buildNode(npcId, nodeName);
+        DialogueNode node = buildNode(type, nodeName);
         builtNodes.put(fullNodeId, node);
         return node;
     }
 
-    private DialogueNode buildNode(String npcId, String nodeName) {
-        JsonValue npcData = npcDialogueData.get(npcId);
+    private DialogueNode buildNode(String type, String nodeName) {
+        JsonValue npcData = npcDialogueData.get(type);
 
         if (npcData == null) {
             throw new RuntimeException(
-                "DialogueRegistry: NPC '" + npcId + "' not found"
+                "DialogueRegistry: NPC '" + type + "' not found"
             );
         }
 
@@ -99,13 +99,13 @@ public class DialogueRegistry {
 
         if (nodeData == null) {
             throw new RuntimeException(
-                "DialogueRegistry: Node '" + nodeName + "' not found for NPC '" + npcId + "'"
+                "DialogueRegistry: Node '" + nodeName + "' not found for NPC '" + type + "'"
             );
         }
 
         // Redirect
         if (nodeData.isString()) {
-            return getDialogue(npcId, nodeData.asString());
+            return getDialogue(type, nodeData.asString());
         }
 
         // Simple node: ["text.key.1", "text.key.2"]
@@ -115,7 +115,7 @@ public class DialogueRegistry {
 
         // Full node object
         if (nodeData.isObject()) {
-            return createNodeFromObject(nodeData, npcId);
+            return createNodeFromObject(nodeData, type);
         }
 
         throw new RuntimeException(

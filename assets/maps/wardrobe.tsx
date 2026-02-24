@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.11.2" name="wardrobe" tilewidth="935" tileheight="814" tilecount="14" columns="0">
+<tileset version="1.10" tiledversion="1.11.2" name="wardrobe" tilewidth="935" tileheight="814" tilecount="18" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
   <image source="../images/block/wardrobe.png" width="104" height="122"/>
@@ -41,6 +41,18 @@
   <image source="../images/item/pfand_automat.png" width="935" height="814"/>
  </tile>
  <tile id="16">
-  <image source="../images/block/trash_can.png" width="43" height="70"/>
+  <image source="../images/block/trash_can.png" width="85" height="139"/>
+ </tile>
+ <tile id="17">
+  <image source="../images/block/trash/mud1.png" width="100" height="100"/>
+ </tile>
+ <tile id="18">
+  <image source="../images/block/trash/paper1.png" width="107" height="107"/>
+ </tile>
+ <tile id="19">
+  <image source="../images/block/trash/trash1.png" width="100" height="100"/>
+ </tile>
+ <tile id="20">
+  <image source="../images/block/trash/trash2.png" width="114" height="100"/>
  </tile>
 </tileset>

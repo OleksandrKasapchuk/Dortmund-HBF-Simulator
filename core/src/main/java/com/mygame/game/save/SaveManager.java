@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
+import com.mygame.Config;
 import com.mygame.Main;
 import com.mygame.assets.audio.MusicManager;
 import com.mygame.assets.audio.SoundManager;
@@ -61,7 +62,7 @@ public class SaveManager {
 
         try {
             Net.HttpRequest postRequest = new Net.HttpRequest(Net.HttpMethods.POST);
-            postRequest.setUrl("https://hbf-simulator-backend.onrender.com/api/save/?format=json");
+            postRequest.setUrl(Config.getServerUrl() + "/api/save/?format=json");
             postRequest.setHeader("Content-Type", "application/json");
             postRequest.setHeader("Authorization", "Token " + AuthManager.getToken());
 

@@ -131,7 +131,7 @@ project(":core") {
 
 subprojects {
     version = "$projectVersion"
-    ext.appName = 'TravelToPast'
+    ext.appName = 'Dortmund HBF Simulator'
     repositories {
         mavenCentral()
         mavenLocal()
@@ -140,4 +140,4 @@ subprojects {
     }
 }
 
-eclipse.project.name = 'TravelToPast' + '-parent'
+eclipse.project.name = 'Dortmund HBF Simulator' + '-parent'

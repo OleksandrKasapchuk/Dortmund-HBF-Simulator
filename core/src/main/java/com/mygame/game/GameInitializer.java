@@ -5,6 +5,7 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Json;
+import com.mygame.Config;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
@@ -53,7 +54,7 @@ public class GameInitializer {
     private void requestServerLoad(){
         Gdx.app.log("GameInitializer", "requestServerLoad() called with token: " + AuthManager.getToken());
         Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.GET);
-        request.setUrl("https://hbf-simulator-backend.onrender.com/api/load/?format=json&username=" + AuthManager.getUsername());
+        request.setUrl(Config.getServerUrl() + "/api/load/?format=json&username=" + AuthManager.getUsername());
         request.setHeader("Authorization", "Token " + AuthManager.getToken());
 
         Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {

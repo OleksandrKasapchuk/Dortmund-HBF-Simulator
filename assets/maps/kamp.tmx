@@ -95,7 +95,7 @@
   <object id="3" name="murat" gid="3" x="2555.3" y="854.606" width="80" height="170"/>
   <object id="4" name="talahon1" gid="3" x="1705.43" y="1191.16" width="80" height="170"/>
   <object id="5" name="talahon2" gid="3" x="1793" y="782" width="80" height="170"/>
-  <object id="11" name="jamal" gid="3" x="1015" y="2300" width="70" height="100"/>
+  <object id="11" name="jamal" gid="3" x="1015" y="2300" width="80" height="170"/>
   <object id="12" gid="28" x="516.667" y="2133" width="60" height="90">
    <properties>
     <property name="isSolid" type="bool" value="true"/>

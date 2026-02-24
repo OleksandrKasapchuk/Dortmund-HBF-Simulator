@@ -1,7 +1,6 @@
 package com.mygame.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygame.action.ActionRegistry;
 import com.mygame.dialogue.DialogueManager;
 import com.mygame.dialogue.DialogueRegistry;
@@ -66,14 +65,14 @@ public class GameContext {
     public final QuestProgressTriggers questProgressTriggers;
     public final ScenarioController scController;
 
-    public GameContext(SpriteBatch batch, Player player, Skin skin, UIManager ui, GameStateManager gsm) {
+    public GameContext(SpriteBatch batch, Player player, UIManager ui, GameStateManager gsm) {
         this.ui = ui;
         this.gsm = gsm;
         this.player = player;
 
         // 1. Core Systems
         this.overlay = new Overlay();
-        this.worldManager = new WorldManager(player, overlay);
+        this.worldManager = new WorldManager();
         this.dayManager = new DayManager();
 
         // 2. Registries
@@ -85,7 +84,7 @@ public class GameContext {
         // 3. Managers that depend on registries and core systems
         this.playerEffectManager = new PlayerEffectManager();
         this.questManager = new QuestManager(questRegistry);
-        this.zoneRegistry = new ZoneRegistry(itemRegistry, player);
+        this.zoneRegistry = new ZoneRegistry();
         this.itemManager = new ItemManager(itemRegistry, worldManager, zoneRegistry);
         this.plantSystem = new PlantSystem(itemManager, itemRegistry, zoneRegistry, worldManager);
         this.itemEventHandler = new ItemEventHandler(itemRegistry, itemManager, worldManager);

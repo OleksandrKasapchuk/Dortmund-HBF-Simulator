@@ -9,11 +9,13 @@
   { "key": "igo2", "path": "images/npc/igo2.png" },
   { "key": "baryga", "path": "images/npc/baryga.png" },
   { "key": "chikita", "path": "images/npc/chikita.png" },
+  { "key": "chikita.3d", "path": "images/npc/chikita_3d.png" },
 
-  { "key": "police.3d", "path": "images/npc/police_3d.png" },
+  { "key": "police.front.3d", "path": "images/npc/police_3d_front.png" },
+  { "key": "police.right.3d", "path": "images/npc/police_3d_right.png" },
   { "key": "police", "path": "images/npc/police.png" },
 
-  { "key": "kioskman.3d", "path": "images/npc/kioskman_3d.png" },
+  { "key": "kioskman.3d", "path": "images/npc/kioskman_3d_2.png" },
   { "key": "kioskman", "path": "images/npc/kioskman.png" },
 
   { "key": "zoe", "path": "images/npc/zoe/zoe.png" },
@@ -44,6 +46,7 @@
   { "key": "murat.3d", "path": "images/npc/murat_3d.png" },
 
   { "key": "jamal", "path": "images/npc/jamal.png" },
+  { "key": "jamal.3d", "path": "images/npc/jamal_3d.png" },
   { "key": "dmitri", "path": "images/npc/dmitri.png" },
   { "key": "dmitri.3d", "path": "images/npc/dmitri_3d.png" },
   { "key": "maksym", "path": "images/npc/maksym.png" },

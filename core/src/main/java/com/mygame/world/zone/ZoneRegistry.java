@@ -4,8 +4,6 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.Rectangle;
-import com.mygame.entity.item.ItemRegistry;
-import com.mygame.entity.player.Player;
 import com.mygame.game.save.data.ServerSaveData;
 import com.mygame.game.save.SettingsManager;
 import com.mygame.world.World;
@@ -14,14 +12,7 @@ import java.util.ArrayList;
 
 public class ZoneRegistry {
 
-    private final ItemRegistry itemRegistry;
-    private final Player player;
-    private ArrayList<Zone> zones = new ArrayList<>();
-
-    public ZoneRegistry(ItemRegistry itemRegistry, Player player) {
-        this.itemRegistry = itemRegistry;
-        this.player = player;
-    }
+    private final ArrayList<Zone> zones = new ArrayList<>();
 
     public void loadZonesFromMap(World world) {
         MapLayer zoneLayer = world.getMap().getLayers().get("zones");
@@ -63,7 +54,7 @@ public class ZoneRegistry {
 
                 case "place" -> {
                     String key = props.get("key", String.class);
-                    zone = new PlaceZone(key, rect, player, itemRegistry, settings);
+                    zone = new PlaceZone(key, rect, settings);
                     zones.add(zone);
                     world.getZones().add(zone);
                 }

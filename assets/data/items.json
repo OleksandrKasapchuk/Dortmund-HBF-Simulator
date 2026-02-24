@@ -3,6 +3,8 @@
   {"key": "weed", "pickupable": true},
   {"key": "weed_seed", "pickupable": true},
   {"key": "pape", "pickupable": true},
+  {"key": "bun", "pickupable": true, "effect": "true"},
+  {"key": "water", "pickupable": true, "effect": "true"},
   {"key": "joint", "pickupable": true, "effect": "true"},
   {"key": "ice_tea", "pickupable": true, "effect": "true"},
   {"key": "table", "pickupable": false},

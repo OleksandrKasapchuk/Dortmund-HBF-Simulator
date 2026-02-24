@@ -54,6 +54,7 @@ public class NpcManager {
         float y = props.get("y", 0f, Float.class);
         World targetWorld = world;
         String npcIdLower = npcId.toLowerCase();
+        String npcType = props.get("type", npcId, String.class).toLowerCase();
 
         if (npcStates != null && npcStates.containsKey(npcIdLower)) {
             ServerSaveData.NpcSaveData state = npcStates.get(npcIdLower);
@@ -66,24 +67,27 @@ public class NpcManager {
                 }
             }
         }
-
-        String textureKey = (Assets.getTexture(npcId + ".3d") != null) ? npcId + ".3d" : npcId;
+        String textureKey;
+        if (props.get("textureKey", null, String.class) != null)
+            textureKey = props.get("textureKey", null, String.class);
+        else
+            textureKey = (Assets.getTexture(npcType + ".3d") != null) ? npcType + ".3d" : npcType;
 
         String npcName = getNpcName(npcId);
-        DialogueNode initialDialogue = dialogueRegistry.getInitialDialogue(npcIdLower);
+        DialogueNode initialDialogue = dialogueRegistry.getInitialDialogue(npcType);
         int speed = props.get("speed", 50, Integer.class);
         float width = props.get("width", 100f, Float.class);
         float height = props.get("height", 100f, Float.class);
 
-        if ("police".equalsIgnoreCase(npcId)) {
-            return new Police("police", npcName, (int) width, (int) height, x, y, textureKey, npcId, targetWorld, speed, initialDialogue, itemManager);
+        if ("police".equalsIgnoreCase(npcType)) {
+            return new Police(npcId, npcName, (int) width, (int) height, x, y, textureKey, npcType, targetWorld, speed, initialDialogue, itemManager);
         } else {
             int directionX = props.get("directionX", 0, Integer.class);
             int directionY = props.get("directionY", 0, Integer.class);
             float pauseTime = props.get("pauseTime", 0f, Float.class);
             float moveTime = props.get("moveTime", 0f, Float.class);
 
-            return new NPC(npcIdLower, npcName, (int) width, (int) height, x, y, textureKey, npcId, targetWorld, directionX, directionY, pauseTime, moveTime, speed, initialDialogue, itemManager);
+            return new NPC(npcIdLower, npcName, npcType, (int) width, (int) height, x, y, textureKey, npcId, targetWorld, directionX, directionY, pauseTime, moveTime, speed, initialDialogue, itemManager);
         }
     }
 
@@ -92,7 +96,7 @@ public class NpcManager {
             ServerSaveData.NpcSaveData state = npcStates.get(npc.getId());
 
             if (state.currentNode != null) {
-                npc.setDialogue(dialogueRegistry.getDialogue(npc.getId(), state.currentNode));
+                npc.setDialogue(dialogueRegistry.getDialogue(npc.getType(), state.currentNode));
                 npc.setCurrentDialogueNodeId(state.currentNode);
             }
 

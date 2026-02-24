@@ -34,19 +34,21 @@ public class NPC extends Entity {
     private String currentTextureKey;
     private ItemManager itemManager;
     private Texture face_texture;
+    private String type;
 
     public Texture getFace_texture() {
         return face_texture;
     }
 
     public NPC(
-        String id, String name,
+        String id, String name, String type,
         int width, int height, float x, float y, String textureKey, String faceTextureKey, World world,
         int directionX, int directionY, float pauseTime, float moveTime,
         int speed, DialogueNode dialogue, ItemManager itemManager
     ) {
         super(width, height, x, y, Assets.getTexture(textureKey), world);
         this.id = id;
+        this.type = type;
         this.name = name;
         this.dialogue = dialogue;
         this.currentTextureKey = textureKey;
@@ -143,6 +145,7 @@ public class NPC extends Entity {
     }
 
     public String getId(){ return id; }
+    public String getType(){ return type; }
     public String getName() { return this.name; }
     public int getSpeed() { return speed; }
 

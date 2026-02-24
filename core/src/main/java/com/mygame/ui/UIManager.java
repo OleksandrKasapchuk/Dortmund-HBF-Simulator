@@ -27,7 +27,6 @@ import java.util.Map;
 public class UIManager {
     private SpriteBatch batch;
     private Player player;
-    private QuestManager questManager;
     private WorldManager worldManager;
     private InWorldUIRenderer inWorldUIRenderer;
     private Skin skin;
@@ -55,7 +54,6 @@ public class UIManager {
     public void init(Player player, QuestManager questManager, WorldManager worldManager, DayManager dayManager, NpcManager npcManager, ItemManager itemManager, ZoneManager zoneManager, GameStateManager gsm){
         this.player = player;
         this.gsm = gsm;
-        this.questManager = questManager;
         this.worldManager = worldManager;
         this.inWorldUIRenderer = new InWorldUIRenderer(batch, player, questManager, worldManager, npcManager, itemManager, zoneManager);
         createScreens(skin, dayManager);
@@ -72,13 +70,13 @@ public class UIManager {
     }
 
     private void createScreens(Skin skin, DayManager dayManager) {
-        screens.put(GameStateManager.GameState.PLAYING, new GameScreen(skin, worldManager, dayManager, player));
+        screens.put(GameStateManager.GameState.PLAYING, new GameScreen(skin, dayManager, player));
         screens.put(GameStateManager.GameState.MENU, new MenuScreen(skin, gsm));
         screens.put(GameStateManager.GameState.PAUSED, new PauseScreen(skin));
         screens.put(GameStateManager.GameState.SETTINGS, new SettingsScreen(skin));
         screens.put(GameStateManager.GameState.DEATH, new DeathScreen(skin));
         screens.put(GameStateManager.GameState.MAP, new MapScreen(skin, worldManager));
-        screens.put(GameStateManager.GameState.USER_INFO, new UserInfoScreen(skin));
+        screens.put(GameStateManager.GameState.USER_INFO, new UserInfoScreen(skin, dayManager));
     }
 
     public void setCurrentStage(GameStateManager.GameState state) {
