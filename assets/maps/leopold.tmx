@@ -168,7 +168,7 @@
  <objectgroup id="6" name="items"/>
  <objectgroup id="5" name="npcs">
   <object id="29" name="baryga" gid="3" x="2566.52" y="4088.73" width="80" height="170"/>
-  <object id="30" name="chikita" gid="3" x="3010.45" y="5092.43" width="80" height="100"/>
+  <object id="30" name="chikita" gid="3" x="3010.45" y="5092.43" width="80" height="170"/>
   <object id="34" name="boss" gid="3" x="1509" y="5310" width="80" height="170"/>
   <object id="37" name="filip" gid="3" x="1949.85" y="3646.97" width="70" height="100"/>
  </objectgroup>
