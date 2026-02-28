@@ -1,6 +1,7 @@
 package com.mygame.entity.item;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
 import com.mygame.entity.Entity;
 import com.mygame.entity.item.itemData.InteractionData;
 import com.mygame.entity.item.itemData.SearchData;
@@ -23,6 +24,8 @@ public class Item extends Entity {
 
     private InteractionData interactionData;
     private SearchData searchData;
+
+    private Rectangle customBounds;
 
     public Item(String id, ItemDefinition type, int width, int height, float x, float y, Texture texture, World world,
         boolean canBePickedUp, boolean solid,  String questId, boolean isDynamic) {
@@ -79,4 +82,17 @@ public class Item extends Entity {
 
     public String getQuestId(){ return questId; }
     public boolean isDynamic() { return isDynamic; }
+
+    public void setCustomBounds(Rectangle customBounds) {
+        this.customBounds = customBounds;
+    }
+
+    @Override
+    public Rectangle getBounds() {
+        if (customBounds != null) {
+            bounds.set(getX() + customBounds.x, getY() + customBounds.y, customBounds.width, customBounds.height);
+            return bounds;
+        }
+        return super.getBounds();
+    }
 }

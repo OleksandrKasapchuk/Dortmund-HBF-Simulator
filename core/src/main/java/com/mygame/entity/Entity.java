@@ -94,9 +94,6 @@ public abstract class Entity implements Renderable {
     public boolean isPlayerNear(Player player, int distance) {
         return distanceTo(player, distance);
     }
-    public boolean isPlayerNear(Player player) {
-        return distanceTo(player, 150);
-    }
 
     public boolean distanceTo(Player player, int distance) {
         float dx = player.getCenterX() - this.getCenterX();

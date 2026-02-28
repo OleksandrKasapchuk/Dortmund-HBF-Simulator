@@ -86,8 +86,8 @@ public class NpcManager {
             int directionY = props.get("directionY", 0, Integer.class);
             float pauseTime = props.get("pauseTime", 0f, Float.class);
             float moveTime = props.get("moveTime", 0f, Float.class);
-
-            return new NPC(npcIdLower, npcName, npcType, (int) width, (int) height, x, y, textureKey, npcId, targetWorld, directionX, directionY, pauseTime, moveTime, speed, initialDialogue, itemManager);
+            int distance = props.get("distance", 150, Integer.class);
+            return new NPC(npcIdLower, npcName, npcType, (int) width, (int) height, x, y, textureKey, npcId, targetWorld, directionX, directionY, pauseTime, moveTime, speed, distance, initialDialogue, itemManager);
         }
     }
 

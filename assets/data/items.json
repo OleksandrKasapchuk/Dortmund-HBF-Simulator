@@ -26,5 +26,14 @@
   {"key": "small_plant", "pickupable": false},
   {"key": "lamp", "pickupable": false},
   {"key": "TV", "pickupable": false},
-  {"key": "trash_can", "pickupable": false}
+  {"key": "trash_can", "pickupable": false},
+
+  {"key": "breadshelf", "pickupable": false},
+  {"key": "breads", "pickupable": false},
+  {"key": "counter1", "pickupable": false},
+  {"key": "counter2", "pickupable": false},
+  {"key": "counter3", "pickupable": false},
+
+  {"key": "kiosk", "pickupable": false},
+  {"key": "kiosk2", "pickupable": false}
 ]

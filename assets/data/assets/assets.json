@@ -45,10 +45,15 @@
   { "key": "murat", "path": "images/npc/murat.png" },
   { "key": "murat.3d", "path": "images/npc/murat_3d.png" },
 
+  { "key": "cashier", "path": "images/npc/cashier.png" },
+  { "key": "cashier.3d", "path": "images/npc/cashier_3d.png" },
+
   { "key": "jamal", "path": "images/npc/jamal.png" },
   { "key": "jamal.3d", "path": "images/npc/jamal_3d.png" },
+
   { "key": "dmitri", "path": "images/npc/dmitri.png" },
   { "key": "dmitri.3d", "path": "images/npc/dmitri_3d.png" },
+
   { "key": "maksym", "path": "images/npc/maksym.png" },
 
   { "key": "ihor", "path": "images/npc/ihor.png" },
@@ -57,25 +62,35 @@
   { "key": "menuBack", "path": "images/background/menu.jpg" },
   { "key": "menuBlurBack", "path": "images/background/menublur.jpg" },
   { "key": "pfand", "path": "images/item/pfand.png" },
+
   { "key": "plant_1", "path": "images/item/plant/plant_1.png" },
   { "key": "plant_2", "path": "images/item/plant/plant_2.png" },
   { "key": "plant_3", "path": "images/item/plant/plant_3.png" },
   { "key": "plant_4", "path": "images/item/plant/plant_4.png" },
+
   { "key": "pfandAutomat", "path": "images/item/pfand_automat.png" },
   { "key": "firework", "path": "images/item/firework.png" },
   { "key": "bush", "path": "images/block/bush.jpg" },
-  { "key": "wood", "path": "images/block/wood.jpeg" },
-  { "key": "wardrobe", "path": "images/block/wardrobe.png" },
-  { "key": "bed", "path": "images/block/bed.png"},
-  { "key": "drawer", "path": "images/block/drawer.png"},
-  { "key": "nightstand", "path": "images/block/nightstand.png"},
-  { "key": "table", "path": "images/block/table.png"},
-  { "key": "sofa", "path": "images/block/sofa.png"},
-  {"key": "bookshell", "path": "images/block/bookshell.png"},
-  {"key": "carpet", "path": "images/block/carpet.png"},
-  {"key": "big_plant", "path": "images/block/big_plant.png"},
-  {"key": "small_plant", "path": "images/block/small_plant.png"},
-  {"key": "lamp", "path": "images/block/lamp.png"},
-  {"key": "TV", "path": "images/block/TV.png"},
-  {"key": "trash_can", "path": "images/block/trash_can.png"}
+  { "key": "wardrobe", "path": "images/block/furniture/wardrobe.png" },
+  { "key": "bed", "path": "images/block/furniture/bed.png"},
+  { "key": "drawer", "path": "images/block/furniture/drawer.png"},
+  { "key": "nightstand", "path": "images/block/furniture/nightstand.png"},
+  { "key": "table", "path": "images/block/furniture/table.png"},
+  { "key": "sofa", "path": "images/block/furniture/sofa.png"},
+  {"key": "bookshell", "path": "images/block/furniture/bookshell.png"},
+  {"key": "carpet", "path": "images/block/furniture/carpet.png"},
+  {"key": "big_plant", "path": "images/block/furniture/big_plant.png"},
+  {"key": "small_plant", "path": "images/block/furniture/small_plant.png"},
+  {"key": "lamp", "path": "images/block/furniture/lamp.png"},
+  {"key": "TV", "path": "images/block/furniture/TV.png"},
+  {"key": "trash_can", "path": "images/block/trash_can.png"},
+
+  {"key": "kiosk", "path": "images/block/kiosk.png"},
+  {"key": "kiosk2", "path": "images/block/kiosk2.png"},
+
+  {"key": "breads", "path": "images/block/bakery/breads.png"},
+  {"key": "breadshelf", "path": "images/block/bakery/breadshelf.png"},
+  {"key": "counter1", "path": "images/block/bakery/counter1.png"},
+  {"key": "counter2", "path": "images/block/bakery/counter2.png"},
+  {"key": "counter3", "path": "images/block/bakery/counter3.png"}
 ]

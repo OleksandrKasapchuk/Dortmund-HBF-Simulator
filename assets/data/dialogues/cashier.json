@@ -1,0 +1,14 @@
+{
+  "cashier": {
+    "nodes": {
+      "start": "trade.offer",
+      "trade.offer": {
+        "texts": ["dialogue.cashier.trade_offer.1"],
+        "choices": [
+          { "text": "dialogue.cashier.trade_offer.choice.1", "action": "act.inventory.cashier.buy.bun" },
+          "dialogue.choice.leave"
+        ]
+      }
+    }
+  }
+}

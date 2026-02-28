@@ -7,6 +7,7 @@ import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.Entity;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemManager;
+import com.mygame.entity.player.Player;
 import com.mygame.world.World;
 
 /**
@@ -25,6 +26,7 @@ public class NPC extends Entity {
     private float pauseTime;
     private float moveTime;
     private int speed;
+    private int distance;
 
     // --- Identity & interaction ---
     private final String id;
@@ -44,7 +46,7 @@ public class NPC extends Entity {
         String id, String name, String type,
         int width, int height, float x, float y, String textureKey, String faceTextureKey, World world,
         int directionX, int directionY, float pauseTime, float moveTime,
-        int speed, DialogueNode dialogue, ItemManager itemManager
+        int speed, int distance, DialogueNode dialogue, ItemManager itemManager
     ) {
         super(width, height, x, y, Assets.getTexture(textureKey), world);
         this.id = id;
@@ -62,6 +64,7 @@ public class NPC extends Entity {
         this.speed = speed;
         this.itemManager = itemManager;
         this.face_texture = Assets.getTexture(faceTextureKey);
+        this.distance = distance;
     }
 
     @Override
@@ -123,7 +126,9 @@ public class NPC extends Entity {
         }
         return false;
     }
-
+    public boolean isPlayerNear(Player player) {
+        return distanceTo(player, distance);
+    }
     // --- Dialogue ---
     public DialogueNode getDialogue() { return dialogue; }
     public void setDialogue(DialogueNode dialogue) { this.dialogue = dialogue; }
