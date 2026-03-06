@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.11.2" name="wardrobe" tilewidth="935" tileheight="814" tilecount="25" columns="0">
+<tileset version="1.10" tiledversion="1.11.2" name="wardrobe" tilewidth="935" tileheight="814" tilecount="32" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
   <image source="../images/block/furniture/wardrobe.png" width="104" height="122"/>
@@ -90,9 +90,36 @@
   </objectgroup>
  </tile>
  <tile id="26">
-  <image source="../images/block/kiosk.png" width="219" height="600"/>
+  <image source="../images/block/kiosk/kiosk.png" width="219" height="600"/>
  </tile>
  <tile id="29">
-  <image source="../images/block/kiosk2.png" width="300" height="277"/>
+  <image source="../images/block/kiosk/kiosk2.png" width="300" height="277"/>
+ </tile>
+ <tile id="30">
+  <image source="../images/block/kiosk/lamp_kiosk.png" width="134" height="41"/>
+ </tile>
+ <tile id="31">
+  <image source="../images/block/kebab/kebab_lamp.png" width="32" height="94"/>
+ </tile>
+ <tile id="32">
+  <image source="../images/block/kebab/kebab_paydesk1.png" width="295" height="147"/>
+ </tile>
+ <tile id="33">
+  <image source="../images/block/kebab/kebab_paydesk2.png" width="88" height="303"/>
+ </tile>
+ <tile id="34">
+  <image source="../images/block/kebab/kebabstand.png" width="297" height="252"/>
+ </tile>
+ <tile id="35">
+  <image source="../images/block/kebab/chair_kebab.png" width="50" height="85"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="0" y="47.5572" width="50" height="37.4428"/>
+  </objectgroup>
+ </tile>
+ <tile id="36">
+  <image source="../images/block/kebab/table1_kebab.png" width="115" height="163"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="0" y="77" width="115" height="86"/>
+  </objectgroup>
  </tile>
 </tileset>

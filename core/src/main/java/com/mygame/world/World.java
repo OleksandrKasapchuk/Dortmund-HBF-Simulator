@@ -35,6 +35,7 @@ public class World {
 
     private int[] bottomLayersIndices;
     private int[] topLayersIndices;
+    private int[] decorationTopLayersIndices;
     private final List<TiledMapTileLayer> topLayers = new ArrayList<>();
     private final Rectangle tmpRect = new Rectangle();
     private final Polygon playerPoly = new Polygon();
@@ -55,12 +56,12 @@ public class World {
     private void initializeRenderLayers() {
         ArrayList<Integer> bottomIndices = new ArrayList<>();
         int backgroundIndex = this.map.getLayers().getIndex("background");
-        int backgroundIndex2 = this.map.getLayers().getIndex("decoration");
+        int decorationIndex = this.map.getLayers().getIndex("decoration");
         if (backgroundIndex != -1) {
             bottomIndices.add(backgroundIndex);
         }
-        if (backgroundIndex2 != -1) {
-            bottomIndices.add(backgroundIndex2);
+        if (decorationIndex != -1) {
+            bottomIndices.add(decorationIndex);
         }
         this.bottomLayersIndices = bottomIndices.stream().mapToInt(i -> i).toArray();
 
@@ -70,6 +71,13 @@ public class World {
             topIndices.add(collisionIndex);
         }
         this.topLayersIndices = topIndices.stream().mapToInt(i -> i).toArray();
+
+        ArrayList<Integer> decorationTopIndices = new ArrayList<>();
+        int decorationTopIndex = this.map.getLayers().getIndex("decoration_top");
+        if (decorationTopIndex != -1) {
+            decorationTopIndices.add(decorationTopIndex);
+        }
+        this.decorationTopLayersIndices = decorationTopIndices.stream().mapToInt(i -> i).toArray();
     }
 
     private void initializeMapDimensions() {
@@ -144,6 +152,13 @@ public class World {
         mapRenderer.getViewBounds().height += bottomBuffer;
         if (bottomLayersIndices.length > 0) {
             mapRenderer.render(bottomLayersIndices);
+        }
+    }
+
+    public void renderDecorationTopLayers(OrthographicCamera camera) {
+        mapRenderer.setView(camera);
+        if (decorationTopLayersIndices.length > 0) {
+            mapRenderer.render(decorationTopLayersIndices);
         }
     }
 

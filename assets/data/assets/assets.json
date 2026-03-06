@@ -85,8 +85,16 @@
   {"key": "TV", "path": "images/block/furniture/TV.png"},
   {"key": "trash_can", "path": "images/block/trash_can.png"},
 
-  {"key": "kiosk", "path": "images/block/kiosk.png"},
-  {"key": "kiosk2", "path": "images/block/kiosk2.png"},
+  {"key": "lamp_kiosk", "path": "images/block/kiosk/lamp_kiosk.png"},
+  {"key": "kiosk", "path": "images/block/kiosk/kiosk.png"},
+  {"key": "kiosk2", "path": "images/block/kiosk/kiosk2.png"},
+
+
+  {"key": "kebab_paydesk1", "path": "images/block/kebab/kebab_paydesk1.png"},
+  {"key": "kebab_paydesk2", "path": "images/block/kebab/kebab_paydesk2.png"},
+  {"key": "kebabstand", "path": "images/block/kebab/kebabstand.png"},
+  {"key": "chair_kebab", "path": "images/block/kebab/chair_kebab.png"},
+  {"key": "table1_kebab", "path": "images/block/kebab/table1_kebab.png"},
 
   {"key": "breads", "path": "images/block/bakery/breads.png"},
   {"key": "breadshelf", "path": "images/block/bakery/breadshelf.png"},

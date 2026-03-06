@@ -74,6 +74,8 @@ public class Main extends ApplicationAdapter {
 
         batch.end();
 
+        ctx.worldManager.renderTopLayers(camera);
+
         currentWorld.drawZones(shapeRenderer, camera);
 
         gameInitializer.getUiManager().render();

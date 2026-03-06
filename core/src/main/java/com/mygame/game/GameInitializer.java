@@ -5,6 +5,7 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.Timer;
 import com.mygame.Config;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
@@ -114,7 +115,12 @@ public class GameInitializer {
     private void retryLater() {
         Gdx.app.postRunnable(() -> {
             uiManager.setServerStatus("Server waking up...");
-            Gdx.app.postRunnable(this::requestServerLoad);
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    requestServerLoad();
+                }
+            }, 2f);
         });
     }
 

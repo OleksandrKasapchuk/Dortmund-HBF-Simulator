@@ -65,9 +65,9 @@ public class InWorldUIRenderer {
         Zone activeZone = zoneManager.getActiveZone();
         if (inZone && player != null && activeZone.isEnabled()) {
             if (activeZone instanceof TransitionZone tz) {
-                drawText(Assets.ui.get("world.pressEToTransition"), player.getX(), player.getY() + player.getHeight() + 30);
+                drawText(Assets.ui.get("world.pressEToTransition"), player.getCenterX(), player.getY() + player.getHeight() + 30);
             } else if (activeZone instanceof PlaceZone qz) {
-                drawText(Assets.ui.get("interact"), player.getX(), player.getY() + player.getHeight() + 30);
+                drawText(Assets.ui.get("interact"), player.getCenterX(), player.getY() + player.getHeight() + 30);
             }
         }
     }
@@ -76,7 +76,7 @@ public class InWorldUIRenderer {
         for (NPC npc : npcManager.getNpcs()) {
             if (npc.getWorld() != worldManager.getCurrentWorld()) continue;
             if (npc.isPlayerNear(player)) {
-                Assets.myFont.draw(batch, Assets.ui.get("interact"), npc.getX() - 100, npc.getY() + npc.getHeight() + 40);
+                drawText(Assets.ui.get("interact"), npc.getCenterX(), npc.getY() + npc.getHeight() + 30);
             }
         }
     }
@@ -96,15 +96,15 @@ public class InWorldUIRenderer {
 
             // Вибір тексту в залежності від того, яка data є
             if (hasSearchData) {
-                drawText(Assets.ui.get("interact.search"), item.getCenterX(), item.getCenterY() + 20);
+                drawText(Assets.ui.get("interact.search"), item.getCenterX(), item.getY() + item.getHeight() + 20);
             } else { // тільки InteractionData
-                drawText(Assets.ui.get("interact"), item.getCenterX(), item.getCenterY() + 20);
+                drawText(Assets.ui.get("interact"), item.getCenterX(), item.getY() + item.getHeight() + 20);
             }
         }
     }
 
     public void drawText(String text, float x, float y) {
         layout.setText(Assets.myFont, text);
-        Assets.myFont.draw(batch, text, x - layout.width / 2f, y + 60);
+        Assets.myFont.draw(batch, text, x - layout.width / 2f, y);
     }
 }

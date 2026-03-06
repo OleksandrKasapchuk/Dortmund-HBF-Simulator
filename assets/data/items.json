@@ -35,5 +35,13 @@
   {"key": "counter3", "pickupable": false},
 
   {"key": "kiosk", "pickupable": false},
-  {"key": "kiosk2", "pickupable": false}
+  {"key": "kiosk2", "pickupable": false},
+  {"key": "lamp_kiosk", "pickupable": false},
+
+  {"key": "kebab_paydesk1", "pickupable": false},
+  {"key": "kebab_paydesk2", "pickupable": false},
+  {"key": "kebabstand", "pickupable": false},
+
+  {"key": "chair_kebab", "pickupable": false},
+  {"key": "table1_kebab", "pickupable": false}
 ]

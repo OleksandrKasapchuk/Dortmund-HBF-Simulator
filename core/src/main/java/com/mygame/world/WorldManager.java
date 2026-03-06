@@ -56,4 +56,10 @@ public class WorldManager {
             currentWorld.renderBottomLayers(camera);
         }
     }
+
+    public void renderTopLayers(OrthographicCamera camera) {
+        if (currentWorld != null) {
+            currentWorld.renderDecorationTopLayers(camera);
+        }
+    }
 }
