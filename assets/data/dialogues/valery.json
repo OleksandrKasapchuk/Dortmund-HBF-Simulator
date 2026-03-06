@@ -1,0 +1,10 @@
+{
+  "valery": {
+    "nodes": {
+      "start": "idle",
+      "idle": {
+        "texts": ["dialogue.valery.idle.1"]
+      }
+    }
+  }
+}

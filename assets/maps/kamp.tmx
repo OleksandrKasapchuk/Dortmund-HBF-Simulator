@@ -149,7 +149,7 @@
  <objectgroup id="5" name="npcs">
   <object id="3" name="murat" gid="3" x="2404.64" y="510.606" width="80" height="170"/>
   <object id="4" name="talahon1" gid="3" x="1710.76" y="1104.49" width="80" height="170"/>
-  <object id="5" name="talahon2" gid="3" x="1702.33" y="604.667" width="80" height="170"/>
+  <object id="5" name="talahon2" gid="3" x="1786.33" y="786" width="80" height="170"/>
   <object id="11" name="jamal" gid="3" x="1015" y="2300" width="80" height="170"/>
   <object id="12" gid="28" x="516.667" y="2133" width="60" height="90">
    <properties>

@@ -72,7 +72,6 @@ public class SaveManager {
             json.setUsePrototypes(false);
 
             String jsonData = json.toJson(settings);
-            Gdx.app.log("SaveManager", "JSON Data: " + jsonData);
             postRequest.setContent(jsonData);
 
             Gdx.net.sendHttpRequest(postRequest, new Net.HttpResponseListener() {

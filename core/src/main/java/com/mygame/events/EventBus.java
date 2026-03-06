@@ -1,5 +1,7 @@
 package com.mygame.events;
 
+import com.badlogic.gdx.Gdx;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +26,7 @@ public class EventBus {
     }
 
     public static void clear() {
+        Gdx.app.error("EventBus", "================ [ CLEARING EVENT BUS ] ================");
         listeners.clear();
     }
 }

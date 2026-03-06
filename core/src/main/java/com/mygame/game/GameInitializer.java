@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Timer;
 import com.mygame.Config;
+import com.mygame.Main;
 import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
@@ -81,7 +82,6 @@ public class GameInitializer {
                     Json gdxJson = new Json();
                     gdxJson.setUsePrototypes(false);
                     gdxJson.setIgnoreUnknownFields(true);
-                    Gdx.app.log("GameInitializer", "JSON response:\n" + json);
                     ServerSaveData settings = gdxJson.fromJson(ServerSaveData.class, json);
 
                     Gdx.app.postRunnable(() -> {
@@ -124,7 +124,7 @@ public class GameInitializer {
         });
     }
 
-    public void initGame() {
+    public void initGame(Main.StartMode mode) {
         Gdx.app.log("GameInitializer", "initGame() called. Clearing event bus and resetting state.");
         isLoading = false; // Скидаємо прапор при кожному перезапуску
         EventBus.clear();
@@ -143,15 +143,21 @@ public class GameInitializer {
         uiManager = new UIManager(batch, skin);
         gsm = new GameStateManager(uiManager);
 
-        AuthManager.init(this);
         Gdx.app.log("GameInitializer", "Subscribing to TokenEvent.");
         EventBus.subscribe(Events.TokenEvent.class, (event) -> {
-            Gdx.app.log("GameInitializer", "TokenEvent received, calling loadGameFromServer().");
-            loadGameFromServer();
+            Gdx.app.log("GameInitializer", "TokenEvent received, checking startImmediately.");
+            if (mode == Main.StartMode.NEW_GAME) {
+                initAuthorithed(mode);
+            } else {
+                loadGameFromServer();
+            }
         });
 
         Gdx.app.log("GameInitializer", "Checking for existing token...");
-        if (AuthManager.hasToken()) {
+        if (mode == Main.StartMode.NEW_GAME) {
+            Gdx.app.log("GameInitializer", "startImmediately is true, calling initAuthorithed() skipping server load.");
+            initAuthorithed(mode);
+        } else if (AuthManager.hasToken()) {
             Gdx.app.log("GameInitializer", "Token found, calling loadGameFromServer() directly.");
             loadGameFromServer();
         } else {
@@ -160,8 +166,10 @@ public class GameInitializer {
             uiManager.setCurrentStage(GameStateManager.GameState.AUTH);
         }
     }
-
-    public void initAuthorithed(){
+    public void initAuthorithed() {
+        initAuthorithed(Main.StartMode.NORMAL);
+    }
+    public void initAuthorithed(Main.StartMode mode){
         Gdx.app.log("GameInitializer", "initAuthorithed() called.");
         ServerSaveData settings = SettingsManager.loadServer();
         player = new Player(500, 80, 160, settings.playerX, settings.playerY, null);
@@ -181,9 +189,15 @@ public class GameInitializer {
         ctx.worldManager.setCurrentWorld(startWorld);
 
         isLoading = false; // Завершили завантаження та ініціалізацію
-        Gdx.app.log("GameInitializer", "Authorization and initialization complete. Setting state to MENU.");
-        gsm.setState(GameStateManager.GameState.MENU);
-        uiManager.setCurrentStage(GameStateManager.GameState.MENU);
+        if (mode == Main.StartMode.NEW_GAME) {
+            Gdx.app.log("GameInitializer", "Starting game immediately.");
+            gsm.setState(GameStateManager.GameState.PLAYING);
+            uiManager.setCurrentStage(GameStateManager.GameState.PLAYING);
+        } else {
+            Gdx.app.log("GameInitializer", "Authorization and initialization complete. Setting state to MENU.");
+            gsm.setState(GameStateManager.GameState.MENU);
+            uiManager.setCurrentStage(GameStateManager.GameState.MENU);
+        }
     }
 
     public ManagerRegistry getManagerRegistry() { return managerRegistry; }

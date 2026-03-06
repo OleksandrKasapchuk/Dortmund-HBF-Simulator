@@ -64,9 +64,9 @@ public class InWorldUIRenderer {
         boolean inZone = zoneManager.isInZone();
         Zone activeZone = zoneManager.getActiveZone();
         if (inZone && player != null && activeZone.isEnabled()) {
-            if (activeZone instanceof TransitionZone tz) {
+            if (activeZone instanceof TransitionZone) {
                 drawText(Assets.ui.get("world.pressEToTransition"), player.getCenterX(), player.getY() + player.getHeight() + 30);
-            } else if (activeZone instanceof PlaceZone qz) {
+            } else if (activeZone instanceof PlaceZone) {
                 drawText(Assets.ui.get("interact"), player.getCenterX(), player.getY() + player.getHeight() + 30);
             }
         }

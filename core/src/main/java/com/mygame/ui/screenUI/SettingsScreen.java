@@ -99,6 +99,6 @@ public class SettingsScreen extends Screen {
         settings.language = languageCode;
         SettingsManager.saveClient(settings);
         Assets.loadBundle(new Locale(languageCode));
-        Main.restartGame();
+        Main.restartGame(Main.StartMode.NEW_GAME);
     }
 }

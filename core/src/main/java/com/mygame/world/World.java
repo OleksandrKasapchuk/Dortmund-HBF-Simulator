@@ -191,9 +191,5 @@ public class World {
     public String getName() { return name; }
     public ArrayList<Zone> getZones() { return zones; }
 
-    public OrthogonalTiledMapRenderer getMapRenderer() {
-        return mapRenderer;
-    }
-
     public List<TiledMapTileLayer> getTopLayers() { return topLayers; }
 }

@@ -6,7 +6,6 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.mygame.Config;
-import com.mygame.game.GameInitializer;
 import com.mygame.game.save.SettingsManager;
 
 public class AuthManager {
@@ -18,14 +17,9 @@ public class AuthManager {
     private static Json json = new Json();
     private static String token;
     private static String username;
-    private static GameInitializer gameInitializer;
 
     static {
         loadSession();
-    }
-
-    public static void init(GameInitializer gameInitializer) {
-        AuthManager.gameInitializer = gameInitializer;
     }
 
     private static void loadSession() {
@@ -111,7 +105,6 @@ public class AuthManager {
         prefs.remove(TOKEN_KEY);
         prefs.remove(USERNAME_KEY);
         prefs.flush();
-        gameInitializer.initGame();
     }
 
     public static boolean hasToken(){

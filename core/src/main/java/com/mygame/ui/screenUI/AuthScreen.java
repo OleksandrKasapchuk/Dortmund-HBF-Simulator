@@ -17,17 +17,13 @@ import com.mygame.assets.Assets;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.auth.AuthManager;
-import com.mygame.ui.UIManager;
 
 import java.util.function.Consumer;
 
 public class AuthScreen extends Screen {
 
-    private final UIManager uiManager;
-
-    public AuthScreen(Skin skin, UIManager uiManager) {
+    public AuthScreen(Skin skin) {
         super();
-        this.uiManager = uiManager;
 
         Image backgroundImage = new Image(Assets.getTexture("menuBlurBack"));
         backgroundImage.setFillParent(true);

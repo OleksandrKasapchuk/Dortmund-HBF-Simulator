@@ -48,7 +48,7 @@ public class UIManager {
         screens.put(GameStateManager.GameState.LOADING_SERVER, new LoadingServerScreen(skin));
         currentScreen = screens.get(GameStateManager.GameState.LOADING_SERVER);
         Gdx.input.setInputProcessor(currentScreen.getStage());
-        screens.put(GameStateManager.GameState.AUTH, new AuthScreen(skin, this));
+        screens.put(GameStateManager.GameState.AUTH, new AuthScreen(skin));
     }
 
     public void init(Player player, QuestManager questManager, WorldManager worldManager, DayManager dayManager, NpcManager npcManager, ItemManager itemManager, ZoneManager zoneManager, GameStateManager gsm){

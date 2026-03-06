@@ -12,7 +12,6 @@ import com.mygame.entity.player.Player;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.DayManager;
-import com.mygame.world.WorldManager;
 
 /**
  * GameUI handles the on-screen HUD elements during gameplay.

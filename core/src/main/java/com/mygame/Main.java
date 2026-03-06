@@ -17,18 +17,21 @@ public class Main extends ApplicationAdapter {
 
     private static GameInitializer gameInitializer;
     private ShapeRenderer shapeRenderer;
+    public enum StartMode {
+        NORMAL,
+        NEW_GAME
+    }
 
     @Override
     public void create() {
         Assets.load();
         gameInitializer = new GameInitializer();
         shapeRenderer = new ShapeRenderer();
-        restartGame();
+        restartGame(StartMode.NORMAL);
     }
 
-    public static void restartGame() {
-        gameInitializer.initGame();
-        gameInitializer.loadGameFromServer();
+    public static void restartGame(StartMode mode) {
+        gameInitializer.initGame(mode);
     }
 
     @Override
