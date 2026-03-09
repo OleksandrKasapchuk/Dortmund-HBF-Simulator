@@ -11,6 +11,15 @@
         "onFinish": "act.player.die",
         "texts": ["dialogue.police.check_failed.1", "dialogue.police.check_failed.2"],
         "isForced": true
+      },
+      "chase.offer": {
+        "onFinish": "act.quest.chase.start",
+        "texts": ["dialogue.summoned_police.chase_offer.1", "dialogue.summoned_police.chase_offer.2"],
+        "isForced": true
+      },
+      "chase.failed": {
+        "onFinish": "act.player.die",
+        "texts": ["dialogue.summoned_police.chase_failed.1"]
       }
     }
   }

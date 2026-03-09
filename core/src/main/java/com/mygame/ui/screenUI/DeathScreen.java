@@ -40,7 +40,7 @@ public class DeathScreen extends Screen {
         deathLabel.setColor(Color.RED);
         deathLabel.setFontScale(3f);
 
-        TextButton restartButton = createButton(skin, Assets.ui.get("death.restart"), 2f, () -> Main.restartGame(Main.StartMode.NEW_GAME));
+        TextButton restartButton = createButton(skin, Assets.ui.get("death.restart"), 2f, () -> Main.restartGame(Main.StartMode.NO_LOAD));
 
         table.add(deathLabel).padBottom(50).row();
         table.add(restartButton).width(300).height(100);

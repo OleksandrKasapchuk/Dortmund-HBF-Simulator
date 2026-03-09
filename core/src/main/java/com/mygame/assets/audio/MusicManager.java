@@ -29,7 +29,10 @@ public class MusicManager {
                     if(!isPaused) pauseMusic();
                 }
                 case MENU -> playMusic(Assets.getMusic("start"));
-                case DEATH -> playMusic(Assets.getMusic("back2"));
+                case DEATH -> {
+                    temporaryMusic = null;
+                    playMusic(Assets.getMusic("back2"));
+                }
                 case PLAYING, MAP -> {
                     if (temporaryMusic != null) playMusic(temporaryMusic);
                     else playBackgroundMusic();
@@ -82,16 +85,6 @@ public class MusicManager {
         if (currentMusic != null && currentMusic.isPlaying()) {
             currentMusic.pause();
             isPaused = true;
-        }
-    }
-
-    /**
-     * Resume music if it's paused.
-     */
-    public static void resumeMusic() {
-        if (currentMusic != null && isPaused) {
-            currentMusic.play();
-            isPaused = false;
         }
     }
 

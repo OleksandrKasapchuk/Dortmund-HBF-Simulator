@@ -5,7 +5,6 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.Timer;
 import com.mygame.Config;
 import com.mygame.Main;
 import com.mygame.entity.player.Player;
@@ -16,6 +15,7 @@ import com.mygame.game.save.DataLoader;
 import com.mygame.managers.ManagerRegistry;
 import com.mygame.game.save.data.ServerSaveData;
 import com.mygame.game.save.SettingsManager;
+import com.mygame.managers.TimerManager;
 import com.mygame.ui.UIManager;
 import com.mygame.ui.load.SkinLoader;
 import com.mygame.assets.audio.MusicManager;
@@ -115,12 +115,7 @@ public class GameInitializer {
     private void retryLater() {
         Gdx.app.postRunnable(() -> {
             uiManager.setServerStatus("Server waking up...");
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    requestServerLoad();
-                }
-            }, 2f);
+            TimerManager.setAction(this::requestServerLoad,5f);
         });
     }
 
@@ -128,6 +123,7 @@ public class GameInitializer {
         Gdx.app.log("GameInitializer", "initGame() called. Clearing event bus and resetting state.");
         isLoading = false; // Скидаємо прапор при кожному перезапуску
         EventBus.clear();
+        MusicManager.init();
 
         if (managerRegistry != null) {
             managerRegistry.dispose(false);
@@ -136,7 +132,6 @@ public class GameInitializer {
         }
         if (batch != null) batch.dispose();
 
-        MusicManager.init();
 
         batch = new SpriteBatch();
         skin = SkinLoader.loadSkin();
@@ -146,7 +141,7 @@ public class GameInitializer {
         Gdx.app.log("GameInitializer", "Subscribing to TokenEvent.");
         EventBus.subscribe(Events.TokenEvent.class, (event) -> {
             Gdx.app.log("GameInitializer", "TokenEvent received, checking startImmediately.");
-            if (mode == Main.StartMode.NEW_GAME) {
+            if (mode == Main.StartMode.NO_LOAD) {
                 initAuthorithed(mode);
             } else {
                 loadGameFromServer();
@@ -154,7 +149,7 @@ public class GameInitializer {
         });
 
         Gdx.app.log("GameInitializer", "Checking for existing token...");
-        if (mode == Main.StartMode.NEW_GAME) {
+        if (mode == Main.StartMode.NO_LOAD) {
             Gdx.app.log("GameInitializer", "startImmediately is true, calling initAuthorithed() skipping server load.");
             initAuthorithed(mode);
         } else if (AuthManager.hasToken()) {
@@ -172,13 +167,13 @@ public class GameInitializer {
     public void initAuthorithed(Main.StartMode mode){
         Gdx.app.log("GameInitializer", "initAuthorithed() called.");
         ServerSaveData settings = SettingsManager.loadServer();
-        player = new Player(500, 80, 160, settings.playerX, settings.playerY, null);
+        player = new Player(80, 160, settings.playerX, settings.playerY, null);
         player.getStatusController().setHunger(settings.playerHunger);
         player.getStatusController().setThirst(settings.playerThirst);
         player.getStatusController().setVibe(settings.playerVibe);
         player.setState(settings.playerState);
 
-        managerRegistry = new ManagerRegistry(batch, player, skin, uiManager, gsm);
+        managerRegistry = new ManagerRegistry(player, uiManager, gsm);
         GameContext ctx = managerRegistry.getContext();
 
         player.getInventory().init(ctx.itemRegistry);
@@ -189,7 +184,7 @@ public class GameInitializer {
         ctx.worldManager.setCurrentWorld(startWorld);
 
         isLoading = false; // Завершили завантаження та ініціалізацію
-        if (mode == Main.StartMode.NEW_GAME) {
+        if (mode == Main.StartMode.NO_LOAD) {
             Gdx.app.log("GameInitializer", "Starting game immediately.");
             gsm.setState(GameStateManager.GameState.PLAYING);
             uiManager.setCurrentStage(GameStateManager.GameState.PLAYING);

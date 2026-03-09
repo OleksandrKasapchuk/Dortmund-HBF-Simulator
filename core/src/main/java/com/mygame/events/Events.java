@@ -7,6 +7,7 @@ import com.mygame.entity.npc.Police;
 import com.mygame.entity.player.Player;
 import com.mygame.game.DayManager;
 import com.mygame.game.GameStateManager;
+import com.mygame.world.zone.TransitionZone;
 
 public class Events {
 
@@ -49,6 +50,7 @@ public class Events {
 
     // ───── Police ─────
     public record PoliceStateChangedEvent(Police.PoliceState newState) {}
+    public record PoliceTransitionEvent(Police police, TransitionZone zone) {}
 
     // ───── Message ─────
     public record MessageEvent(String message) {}

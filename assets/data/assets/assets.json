@@ -18,7 +18,6 @@
   { "key": "kioskman.3d", "path": "images/npc/kioskman_3d_2.png" },
   { "key": "kioskman", "path": "images/npc/kioskman.png" },
 
-  { "key": "zoe", "path": "images/npc/zoe/zoe.png" },
   { "key": "zoe.3d", "path": "images/npc/zoe/zoe_3d.png" },
   { "key": "zoe.3d_left", "path": "images/npc/zoe/zoe_3d_left.png" },
   { "key": "zoe.3d_right", "path": "images/npc/zoe/zoe_3d_right.png" },

@@ -10,7 +10,6 @@ import com.mygame.assets.audio.MusicManager;
 import com.mygame.assets.audio.SoundManager;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.npc.NPC;
-import com.mygame.entity.npc.Police;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.GameContext;
@@ -128,7 +127,6 @@ public class SaveManager {
             saveQuestTriggers(settings);
             saveSearchedItems(settings);
             saveNpcStates(settings);
-            saveSummonedPolice(settings);
             saveZones(settings);
             saveCreatedItems(settings);
             saveGameToServer(settings);
@@ -197,23 +195,16 @@ public class SaveManager {
         }
     }
 
-    private void saveSummonedPolice(ServerSaveData settings){
-        Police summonedPolice = ctx.npcManager.getSummonedPolice();
-        if (summonedPolice != null && summonedPolice.getState() == Police.PoliceState.CHASING) {
-            settings.policeX = summonedPolice.getX();
-            settings.policeY = summonedPolice.getY();
-            settings.policeWorldName = summonedPolice.getWorld().getName();
-        }
-    }
-
     private void saveNpcStates(ServerSaveData settings) {
+        settings.npcStates.clear();
         for (NPC npc : ctx.npcManager.getNpcs()) {
-            ServerSaveData.NpcSaveData data = settings.npcStates.computeIfAbsent(npc.getId(), k -> new ServerSaveData.NpcSaveData());
+            ServerSaveData.NpcSaveData data = new ServerSaveData.NpcSaveData();
             data.currentNode = npc.getCurrentDialogueNodeId();
             data.currentTexture = npc.getCurrentTextureKey();
             data.x = npc.getX();
             data.y = npc.getY();
             data.currentWorld = npc.getWorld() != null ? npc.getWorld().getName() : null;
+            settings.npcStates.put(npc.getId(), data);
         }
     }
     private void saveZones(ServerSaveData settings) {

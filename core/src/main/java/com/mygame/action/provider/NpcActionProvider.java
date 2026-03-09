@@ -29,6 +29,8 @@ public class NpcActionProvider implements ActionProvider {
             data.getFloat("y", 0f)
         ));
 
+        registry.registerCreator("npc.remove", (c, data) -> () -> c.npcManager.kill(c.npcManager.findNpcById(data.getString("npc"))));
+
 
         registry.registerCreator("npc.callPolice", (c, data) -> c.npcManager::callPolice);
     }

@@ -14,6 +14,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
+import com.mygame.util.pathfinding.Pathfinder;
 import com.mygame.world.zone.PlaceZone;
 import com.mygame.world.zone.TransitionZone;
 import com.mygame.world.zone.Zone;
@@ -41,6 +42,8 @@ public class World {
     private final Polygon playerPoly = new Polygon();
     private final Polygon worldPoly = new Polygon();
 
+    private Pathfinder pathfinder;
+
     public World(String name, String pathToMapFile) {
         this.name = name;
         this.map = new TmxMapLoader().load(pathToMapFile);
@@ -51,6 +54,7 @@ public class World {
         for (int index : topLayersIndices) {
             topLayers.add((TiledMapTileLayer) map.getLayers().get(index));
         }
+        initializePathfinder();
     }
 
     private void initializeRenderLayers() {
@@ -87,6 +91,22 @@ public class World {
         this.mapHeight = this.map.getProperties().get("height", Integer.class) * tileHeight;
     }
 
+    private void initializePathfinder() {
+        if (collisionLayer == null) return;
+        int w = collisionLayer.getWidth();
+        int h = collisionLayer.getHeight();
+        boolean[][] grid = new boolean[w][h];
+        Rectangle rect = new Rectangle(0, 0, tileWidth, tileHeight);
+
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                rect.setPosition(x * tileWidth, y * tileHeight);
+                grid[x][y] = isCollidingWithMap(rect);
+            }
+        }
+        this.pathfinder = new Pathfinder(grid);
+    }
+
     public boolean isCollidingWithMap(Rectangle rect) {
         if (collisionLayer == null) {
             return false;
@@ -105,7 +125,10 @@ public class World {
                 }
 
                 MapObjects objects = cell.getTile().getObjects();
-                if (objects.getCount() == 0) continue;
+                if (objects.getCount() == 0) {
+                    // Якщо в шарі collision є тайл, але немає об'єктів - вважаємо це колізією (весь тайл)
+                    return true;
+                }
 
                 for (MapObject object : objects) {
                     float tileWorldX = (float) x * tileWidth;
@@ -192,4 +215,8 @@ public class World {
     public ArrayList<Zone> getZones() { return zones; }
 
     public List<TiledMapTileLayer> getTopLayers() { return topLayers; }
+
+    public Pathfinder getPathfinder() {
+        return pathfinder;
+    }
 }

@@ -1,11 +1,11 @@
 package com.mygame.scenario;
 
+import com.badlogic.gdx.Gdx;
 import com.mygame.entity.npc.Police;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
 import com.mygame.game.GameContext;
-import com.mygame.game.save.data.ServerSaveData;
-import com.mygame.game.save.SettingsManager;
+import com.mygame.game.GameStateManager;
 import com.mygame.managers.TimerManager;
 import com.mygame.world.World;
 import com.mygame.world.zone.TransitionZone;
@@ -13,6 +13,7 @@ import com.mygame.world.zone.TransitionZone;
 public class PoliceChaseScenario implements Scenario {
     private GameContext ctx;
     private boolean completed;
+    private boolean musicRestored = false;
 
     public PoliceChaseScenario(GameContext ctx) {
         this.ctx = ctx;
@@ -20,28 +21,18 @@ public class PoliceChaseScenario implements Scenario {
 
     @Override
     public void init() {
-        ServerSaveData settings = SettingsManager.loadServer();
-
-        // Відновлення погоні зі збереження
-        if (ctx.questManager.hasQuest("chase")) {
-            completed = true;
-            EventBus.fire(new Events.ActionRequestEvent("npc.callPolice"));
-            Police police = ctx.npcManager.getSummonedPolice();
-            if (police != null) {
-                police.setX(settings.policeX);
-                police.setY(settings.policeY);
-                World world = ctx.worldManager.getWorld(settings.policeWorldName);
-                if (world != null) {
-                    ctx.npcManager.moveSummonedPoliceToNewWorld(world);
-                }
-                EventBus.fire(new Events.ActionRequestEvent("act.quest.chase.start"));
-                EventBus.fire(new Events.ActionRequestEvent("act.quest.chase.restore_ui"));
-            }
-        }
-
         // Слухаємо завершення квесту доставки
         EventBus.subscribe(Events.QuestCompletedEvent.class, event -> {
-            if (event.questId().equals("delivery")) completed = true;
+            if (event.questId().equals("delivery")) {
+                Gdx.app.log("PoliceChaseScenario", "Delivery completed, preparing for chase.");
+                completed = true;
+            }
+            // Скидаємо стан сценарію, коли сама погоня завершена
+            if (event.questId().equals("chase")) {
+                Gdx.app.log("PoliceChaseScenario", "Chase quest completed, cleaning up scenario.");
+                completed = false;
+                musicRestored = false;
+            }
         });
 
         // Слухаємо зміну стану поліції
@@ -57,7 +48,35 @@ public class PoliceChaseScenario implements Scenario {
 
     @Override
     public void update() {
+        if (ctx.gsm.getState() != GameStateManager.GameState.PLAYING) return;
+
+        // Якщо квест уже завершений — нічого не робимо
+        if (ctx.questManager.getQuest("chase") != null && ctx.questManager.getQuest("chase").isCompleted()) {
+            if (completed) {
+                completed = false;
+                musicRestored = false;
+            }
+            return;
+        }
+
+        // Якщо гра завантажена, перевіряємо чи активний квест погоні
+        if (!completed && ctx.questManager.hasQuest("chase")) {
+            completed = true;
+            Gdx.app.log("PoliceChaseScenario", "Chase quest detected active, restoring state.");
+        }
+
         if (!completed) return;
+
+        // Відновлення музики один раз після завантаження
+        if (!musicRestored) {
+            Police police = ctx.npcManager.getSummonedPolice();
+            if (police != null) {
+                Gdx.app.log("PoliceChaseScenario", "Restoring chase music and UI.");
+                EventBus.fire(new Events.ActionRequestEvent("act.quest.chase.restore_ui"));
+                musicRestored = true;
+            }
+        }
+
         handlePolice();
     }
 

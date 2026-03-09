@@ -35,12 +35,4 @@ public class SearchData {
     public void markSearched() {
         this.searched = true;
     }
-
-    public String getRewardItemKey() {
-        return rewardItemKey;
-    }
-
-    public int getRewardAmount() {
-        return rewardAmount;
-    }
 }

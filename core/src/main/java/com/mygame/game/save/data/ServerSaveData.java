@@ -30,21 +30,15 @@ public class ServerSaveData {
 
     public HashMap<String, Integer> inventory;
     public HashMap<String, QuestSaveData> activeQuests;
-    public ArrayList<String> completedDialogueEvents;
     public ArrayList<ItemSaveData> createdItems;
 
     public HashSet<String> talkedNpcs;
     public HashSet<String> visited;
     public HashSet<String> searchedItems;
-    public HashSet<String> enabledZones; // Changed from disabledQuestZones
+    public HashSet<String> enabledZones;
 
     // NPC State: Mapping NPC ID to their current status (dialogue and texture)
     public HashMap<String, NpcSaveData> npcStates;
-
-    // Police chase save data
-    public Float policeX;
-    public Float policeY;
-    public String policeWorldName;
 
     public static class ItemSaveData {
         public String itemKey;
@@ -105,7 +99,6 @@ public class ServerSaveData {
         this.currentWorldName = "main";
         this.inventory = new HashMap<>();
         this.activeQuests = new HashMap<>();
-        this.completedDialogueEvents = new ArrayList<>();
         this.playerState = Player.State.NORMAL;
         this.createdItems = new ArrayList<>();
 

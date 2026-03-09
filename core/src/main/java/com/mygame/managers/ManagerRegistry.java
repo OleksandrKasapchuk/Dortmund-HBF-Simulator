@@ -13,9 +13,9 @@ public class ManagerRegistry {
     private final GameContext ctx;
     private final GameInputHandler gameInputHandler;
 
-    public ManagerRegistry(SpriteBatch batch, Player player, Skin skin, UIManager ui, GameStateManager gsm) {
+    public ManagerRegistry(Player player, UIManager ui, GameStateManager gsm) {
         // 1. Create the context, which now creates and holds all managers
-        this.ctx = new GameContext(batch, player, ui, gsm);
+        this.ctx = new GameContext(player, ui, gsm);
 
         // 2. Create remaining objects that need the context
         this.gameInputHandler = new GameInputHandler(ctx.gsm, ctx.ui);

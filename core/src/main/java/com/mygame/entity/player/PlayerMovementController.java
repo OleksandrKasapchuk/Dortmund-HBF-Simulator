@@ -14,13 +14,15 @@ public class PlayerMovementController {
     private float speedMultiplier = 1;
     private int baseSpeed = 500;
     private boolean isMoving;
+    float dx, dy;
 
     public void update(Player player, float delta) {
         isMoving = false;
         int speed = player.getState() == Player.State.STONED ? 150 : baseSpeed;
-
+        dx=0;
+        dy=0;
         float moveSpeed = speed * delta;
-        float dx = 0, dy = 0;
+
 
         // === INPUT ===
         if (Gdx.app.getType() != Application.ApplicationType.Android) {
@@ -88,5 +90,11 @@ public class PlayerMovementController {
 
         player.setX(MathUtils.clamp(player.getX(), 0, world.mapWidth - player.getWidth()));
         player.setY(MathUtils.clamp(player.getY(), 0, world.mapHeight - player.getHeight()));
+    }
+    public float getDx(){
+        return dx;
+    }
+    public float getDy(){
+        return dy;
     }
 }

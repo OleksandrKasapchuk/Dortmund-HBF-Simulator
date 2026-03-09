@@ -62,7 +62,7 @@
               "type": "system.composite",
               "actions": [
                 { "type": "inventory.add", "id": "joint" },
-                { "type": "player.lockMovement", "locked": false }
+                { "type": "player.lockMovement", "locked": true }
               ]
             }
           }

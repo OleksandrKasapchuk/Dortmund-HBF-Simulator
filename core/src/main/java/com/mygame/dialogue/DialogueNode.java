@@ -30,9 +30,6 @@ public class DialogueNode {
     private final String action;      // виконується коли вузол завершується
     private boolean isForced;
     private String nextNode; // наступна нода після завершення поточної
-    public DialogueNode(String... textKeys) {
-        this(null, false,null, textKeys);
-    }
 
     public DialogueNode(String onFinish, boolean isForced, String nextNode, String... textKeys) {
         this.action = onFinish;
@@ -50,12 +47,6 @@ public class DialogueNode {
         this.isForced = isForced;
         this.nextNode = nextNode;
     }
-
-    // Новий сеттер
-    public void setNextNode(String next) {
-        this.nextNode = next;
-    }
-
     // Новий геттер
     public String getNextNode() {
         return nextNode;

@@ -1,5 +1,6 @@
 package com.mygame.entity.npc;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
@@ -13,10 +14,12 @@ import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 
 public class NpcManager {
     private final ArrayList<NPC> npcs = new ArrayList<>();
+    private final ArrayList<NPC> pendingRemoval = new ArrayList<>();
     private final Player player;
     private final DialogueRegistry dialogueRegistry;
     private final WorldManager worldManager;
@@ -30,8 +33,12 @@ public class NpcManager {
     }
 
     public void loadNpcsFromMap(World world, Map<String, ServerSaveData.NpcSaveData> npcStates) {
+        Gdx.app.log("NpcManager", "loadNpcsFromMap() called for world: " + world.getName());
         MapLayer npcLayer = world.getMap().getLayers().get("npcs");
-        if (npcLayer == null) return;
+        if (npcLayer == null) {
+            Gdx.app.log("NpcManager", "No 'npcs' layer found in world: " + world.getName());
+            return;
+        }
 
         for (MapObject object : npcLayer.getObjects()) {
             MapProperties props = object.getProperties();
@@ -40,13 +47,27 @@ public class NpcManager {
                 createNpcFromMap(npcId, props, world, npcStates);
             }
         }
+
+        restoreDynamicNpcs(npcStates);
+    }
+
+    private void restoreDynamicNpcs(Map<String, ServerSaveData.NpcSaveData> npcStates) {
+        if (npcStates == null) return;
+        if (npcStates.containsKey("summoned_police") && findNpcById("summoned_police") == null) {
+            ServerSaveData.NpcSaveData state = npcStates.get("summoned_police");
+            World targetWorld = state.currentWorld != null ? worldManager.getWorld(state.currentWorld) : worldManager.getCurrentWorld();
+            if (targetWorld != null) {
+                callPoliceAt(targetWorld, state.x, state.y);
+                NPC police = findNpcById("summoned_police");
+                if (police != null) restoreNpcState(police, npcStates);
+            }
+        }
     }
 
     private void createNpcFromMap(String npcId, MapProperties props, World world, Map<String, ServerSaveData.NpcSaveData> npcStates) {
         NPC npc = createNpcInstance(npcId, props, world, npcStates);
         restoreNpcState(npc, npcStates);
         npcs.add(npc);
-        System.out.println("SUCCESS: Loaded '" + npcId + "' from map (Node: " + npc.getCurrentDialogueNodeId() + ", Tex: " + npc.getCurrentTextureKey() + ")");
     }
 
     private NPC createNpcInstance(String npcId, MapProperties props, World world, Map<String, ServerSaveData.NpcSaveData> npcStates) {
@@ -67,11 +88,11 @@ public class NpcManager {
                 }
             }
         }
-        String textureKey;
-        if (props.get("textureKey", null, String.class) != null)
-            textureKey = props.get("textureKey", null, String.class);
-        else
+
+        String textureKey = props.get("textureKey", null, String.class);
+        if (textureKey == null) {
             textureKey = (Assets.getTexture(npcType + ".3d") != null) ? npcType + ".3d" : npcType;
+        }
 
         String npcName = getNpcName(npcId);
         DialogueNode initialDialogue = dialogueRegistry.getInitialDialogue(npcType);
@@ -94,14 +115,14 @@ public class NpcManager {
     private void restoreNpcState(NPC npc, Map<String, ServerSaveData.NpcSaveData> npcStates) {
         if (npcStates != null && npcStates.containsKey(npc.getId())) {
             ServerSaveData.NpcSaveData state = npcStates.get(npc.getId());
-
             if (state.currentNode != null) {
                 npc.setDialogue(dialogueRegistry.getDialogue(npc.getType(), state.currentNode));
                 npc.setCurrentDialogueNodeId(state.currentNode);
             }
+            if (state.currentTexture != null) npc.setTexture(state.currentTexture);
 
-            if (state.currentTexture != null) {
-                npc.setTexture(state.currentTexture);
+            if (npc.getId().equals("summoned_police") && npc instanceof Police police) {
+                police.startChase(player);
             }
         }
     }
@@ -110,16 +131,26 @@ public class NpcManager {
         try {
             return Assets.npcs.get("npc." + npcId.toLowerCase() + ".name");
         } catch (Exception e) {
-            return npcId; // Fallback to id
+            return npcId;
         }
     }
 
     public void update(float delta) {
+        // Видаляємо NPC, які позначені на видалення
+        if (!pendingRemoval.isEmpty()) {
+            npcs.removeAll(pendingRemoval);
+            pendingRemoval.clear();
+        }
+
         World currentWorld = worldManager.getCurrentWorld();
         if (currentWorld == null) return;
-        for (NPC npc : npcs) {
-            if (npc.getWorld() != worldManager.getCurrentWorld()) continue;
-            npc.update(delta);
+
+        // Використовуємо звичайний цикл for i, щоб уникнути ConcurrentModificationException
+        for (int i = 0; i < npcs.size(); i++) {
+            NPC npc = npcs.get(i);
+            if (npc.getWorld() == currentWorld) {
+                npc.update(delta);
+            }
         }
     }
 
@@ -133,15 +164,21 @@ public class NpcManager {
     public void callPolice() {
         World currentWorld = worldManager.getCurrentWorld();
         if (currentWorld == null) return;
+        callPoliceAt(currentWorld, player.getX(), player.getY() - 300);
+    }
 
+    private void callPoliceAt(World world, float x, float y) {
+        if (findNpcById("summoned_police") != null) return;
+        String textureKey = (Assets.getTexture("police.3d") != null) ? "police.3d" : "police";
         Police summonedPolice = new Police("summoned_police", Assets.npcs.get("npc.police.name"),
-                100, 100, player.getX(), player.getY() - 300, "police.3d", "police",
-                currentWorld, 200, dialogueRegistry.getDialogue("summoned_police", "chase.offer"), itemManager);
+                100, 100, x, y, textureKey, "police",
+                world, 200, dialogueRegistry.getDialogue("police", "chase.offer"), itemManager);
         npcs.add(summonedPolice);
     }
 
     public void moveSummonedPoliceToNewWorld(World newWorld) {
-        getSummonedPolice().setWorld(newWorld);
+        Police p = getSummonedPolice();
+        if (p != null) p.setWorld(newWorld);
     }
 
     public Police getSummonedPolice() {
@@ -150,15 +187,17 @@ public class NpcManager {
 
     public void kill(NPC npc) {
         if (npc == null) return;
-        npcs.remove(npc);
+        pendingRemoval.add(npc); // Позначаємо на видалення замість миттєвого видалення
+        Gdx.app.log("NpcManager", "NPC marked for removal: " + npc.getId());
     }
 
     public void teleportNpc(String npcId, World targetWorld, float x, float y) {
         NPC npc = findNpcById(npcId);
-        if (npc == null || targetWorld == null) return;
-        npc.setWorld(targetWorld);
-        npc.setX(x);
-        npc.setY(y);
+        if (npc != null && targetWorld != null) {
+            npc.setWorld(targetWorld);
+            npc.setX(x);
+            npc.setY(y);
+        }
     }
     public ArrayList<NPC> getNpcs() { return npcs; }
 }

@@ -20,7 +20,8 @@ public class SetDialogueAction implements GameAction {
     public void execute() {
         NPC npc = ctx.npcManager.findNpcById(npcId);
         if (npc != null) {
-            npc.setDialogue(ctx.dialogueRegistry.getDialogue(npcId, newDialogueId));
+            // Використовуємо тип NPC (наприклад, "police"), щоб знайти потрібний JSON файл діалогів
+            npc.setDialogue(ctx.dialogueRegistry.getDialogue(npc.getType(), newDialogueId));
             npc.setCurrentDialogueNodeId(newDialogueId);
         }
     }

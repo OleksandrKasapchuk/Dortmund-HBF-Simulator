@@ -1,6 +1,5 @@
 package com.mygame.game;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygame.action.ActionRegistry;
 import com.mygame.dialogue.DialogueManager;
 import com.mygame.dialogue.DialogueRegistry;
@@ -65,7 +64,7 @@ public class GameContext {
     public final QuestProgressTriggers questProgressTriggers;
     public final ScenarioController scController;
 
-    public GameContext(SpriteBatch batch, Player player, UIManager ui, GameStateManager gsm) {
+    public GameContext(Player player, UIManager ui, GameStateManager gsm) {
         this.ui = ui;
         this.gsm = gsm;
         this.player = player;
@@ -96,7 +95,7 @@ public class GameContext {
         player.setNpcManager(npcManager);
         this.ui.init(player, questManager, worldManager, dayManager, npcManager, itemManager, zoneManager, gsm);
         this.pfandManager = new PfandManager(itemRegistry, itemManager, worldManager);
-        this.interactionManager = new InteractionManager(batch, player, questManager, worldManager, npcManager, itemManager);
+        this.interactionManager = new InteractionManager(player, questManager, worldManager, itemManager);
         this.dialogueManager = new DialogueManager(ui.getDialogueUI(), player, worldManager, dialogueRegistry, npcManager);
 
         // 4. High-level logic

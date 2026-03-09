@@ -26,7 +26,7 @@ public class SystemActionProvider implements ActionProvider {
 
         registry.registerAction("act.system.newGame", () -> {
             SettingsManager.resetSettings();
-            Main.restartGame(Main.StartMode.NEW_GAME);
+            Main.restartGame(Main.StartMode.NO_LOAD);
         });
 
         registry.registerAction("act.system.pause", context.gsm::togglePause);

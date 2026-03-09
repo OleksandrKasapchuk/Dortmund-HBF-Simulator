@@ -19,7 +19,7 @@ public class Main extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
     public enum StartMode {
         NORMAL,
-        NEW_GAME
+        NO_LOAD
     }
 
     @Override
