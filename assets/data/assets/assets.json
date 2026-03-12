@@ -59,6 +59,10 @@
 
   { "key": "ihor", "path": "images/npc/ihor.png" },
 
+  { "key": "crowd_1", "path": "images/npc/crowd/crowd_1.png" },
+  { "key": "crowd_2", "path": "images/npc/crowd/crowd_2.png" },
+  { "key": "crowd_3", "path": "images/npc/crowd/crowd_3.png" },
+
   { "key": "deathBack", "path": "images/background/deathScreen.jpg" },
   { "key": "menuBack", "path": "images/background/menu.jpg" },
   { "key": "menuBlurBack", "path": "images/background/menublur.jpg" },

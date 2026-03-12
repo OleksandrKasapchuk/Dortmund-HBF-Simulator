@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.math.Rectangle;
 import com.mygame.assets.Assets;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.dialogue.DialogueRegistry;
@@ -14,8 +16,8 @@ import com.mygame.world.World;
 import com.mygame.world.WorldManager;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 
 public class NpcManager {
     private final ArrayList<NPC> npcs = new ArrayList<>();
@@ -24,6 +26,7 @@ public class NpcManager {
     private final DialogueRegistry dialogueRegistry;
     private final WorldManager worldManager;
     private final ItemManager itemManager;
+    private final Random random = new Random();
 
     public NpcManager(Player player, DialogueRegistry dialogueRegistry, WorldManager worldManager, ItemManager itemManager) {
         this.player = player;
@@ -34,21 +37,49 @@ public class NpcManager {
 
     public void loadNpcsFromMap(World world, Map<String, ServerSaveData.NpcSaveData> npcStates) {
         Gdx.app.log("NpcManager", "loadNpcsFromMap() called for world: " + world.getName());
+
+        // 1. Завантаження основних NPC з шару 'npcs'
         MapLayer npcLayer = world.getMap().getLayers().get("npcs");
-        if (npcLayer == null) {
-            Gdx.app.log("NpcManager", "No 'npcs' layer found in world: " + world.getName());
-            return;
+        if (npcLayer != null) {
+            for (MapObject object : npcLayer.getObjects()) {
+                MapProperties props = object.getProperties();
+                String npcId = object.getName();
+                if (npcId != null && findNpcById(npcId.toLowerCase()) == null) {
+                    createNpcFromMap(npcId, props, world, npcStates);
+                }
+            }
         }
 
-        for (MapObject object : npcLayer.getObjects()) {
-            MapProperties props = object.getProperties();
-            String npcId = object.getName();
-            if (npcId != null && findNpcById(npcId.toLowerCase()) == null) {
-                createNpcFromMap(npcId, props, world, npcStates);
+        // 2. Завантаження зон масовки з шару 'ambient_zones'
+        MapLayer zoneLayer = world.getMap().getLayers().get("ambient_zones");
+        if (zoneLayer != null) {
+            Gdx.app.error("am", "ambient_zones isnt null");
+            for (MapObject object : zoneLayer.getObjects()) {
+                if (object instanceof RectangleMapObject rectObject) {
+                    Rectangle rect = rectObject.getRectangle();
+                    int count = rectObject.getProperties().get("count", 1, Integer.class);
+                    spawnCrowdInZone(world, rect, count);
+                }
             }
         }
 
         restoreDynamicNpcs(npcStates);
+    }
+
+    private void spawnCrowdInZone(World world, Rectangle zone, int count) {
+        String[] crowdTextures = {"crowd_1", "crowd_2", "crowd_3"};
+        for (int i = 0; i < count; i++) {
+            float x = zone.x + random.nextFloat() * zone.width;
+            float y = zone.y + random.nextFloat() * zone.height;
+
+            String textureKey = crowdTextures[random.nextInt(crowdTextures.length)];
+            String id = "ambient_" + world.getName() + "_" + random.nextInt(10000);
+
+            // Створюємо статичного NPC (без руху)
+            NPC ambient = new NPC(id, "", 80, 170, x, y, textureKey, world);
+            npcs.add(ambient);
+        }
+        Gdx.app.log("NpcManager", "Spawned " + count + " ambient NPCs in zone at " + zone.x + "," + zone.y);
     }
 
     private void restoreDynamicNpcs(Map<String, ServerSaveData.NpcSaveData> npcStates) {
@@ -136,7 +167,6 @@ public class NpcManager {
     }
 
     public void update(float delta) {
-        // Видаляємо NPC, які позначені на видалення
         if (!pendingRemoval.isEmpty()) {
             npcs.removeAll(pendingRemoval);
             pendingRemoval.clear();
@@ -145,7 +175,6 @@ public class NpcManager {
         World currentWorld = worldManager.getCurrentWorld();
         if (currentWorld == null) return;
 
-        // Використовуємо звичайний цикл for i, щоб уникнути ConcurrentModificationException
         for (int i = 0; i < npcs.size(); i++) {
             NPC npc = npcs.get(i);
             if (npc.getWorld() == currentWorld) {
@@ -187,7 +216,7 @@ public class NpcManager {
 
     public void kill(NPC npc) {
         if (npc == null) return;
-        pendingRemoval.add(npc); // Позначаємо на видалення замість миттєвого видалення
+        pendingRemoval.add(npc);
         Gdx.app.log("NpcManager", "NPC marked for removal: " + npc.getId());
     }
 

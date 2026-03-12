@@ -202,7 +202,7 @@ public class DialogueManager {
 
             // Police auto-dialog
             for (NPC npc : npcManager.getNpcs()) {
-                if (npc.getWorld() != worldManager.getCurrentWorld()) continue;
+                if (npc.getWorld() != worldManager.getCurrentWorld() || npc.getDialogue() == null) continue;
                 if (npc.getDialogue().isForced() && npc.isPlayerNear(player) && npc != recentlyFinishedForcedNpc) {
                     startForcedDialogue(npc);
                     return;

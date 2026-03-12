@@ -2,7 +2,6 @@ package com.mygame.entity.npc;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.mygame.dialogue.DialogueNode;
 import com.mygame.entity.item.Item;
 import com.mygame.entity.item.ItemManager;
@@ -42,7 +41,6 @@ public class Police extends NPC {
     private float pathRecalculateTimer = 0f;
     private static final float PATH_RECALC_INTERVAL = 0.5f;
 
-    private final Vector2 tmpVec = new Vector2();
     private final Rectangle tmpRect = new Rectangle();
 
     public Police(String id, String name, int width, int height, float x, float y,

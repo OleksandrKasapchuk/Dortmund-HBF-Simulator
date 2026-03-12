@@ -42,6 +42,13 @@ public class NPC extends Entity {
         return face_texture;
     }
 
+    public NPC(String id, String name,
+               int width, int height, float x, float y, String textureKey,World world){
+        super(width, height, x, y, Assets.getTexture(textureKey), world);
+        this.id = id;
+        this.name = name;
+    }
+
     public NPC(
         String id, String name, String type,
         int width, int height, float x, float y, String textureKey, String faceTextureKey, World world,
