@@ -288,7 +288,7 @@
     <property name="type" value="police"/>
    </properties>
   </object>
-  <object id="82" name="cashier" gid="3" x="3249.67" y="4067" width="70" height="170">
+  <object id="82" name="baker" gid="3" x="3249.67" y="4067" width="70" height="170">
    <properties>
     <property name="distance" type="int" value="350"/>
    </properties>

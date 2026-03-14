@@ -41,7 +41,12 @@ public class PlayerMovementController {
         }
         dx *= speedMultiplier;
         dy *= speedMultiplier;
-        if (dy < 0) isMoving = true;
+
+        // Виправлено: тепер персонаж вважається рухомим, якщо хоча б одна швидкість не нульова
+        if (Math.abs(dx) > 0.1f || Math.abs(dy) > 0.1f) {
+            isMoving = true;
+        }
+
         // === MOVEMENT ===
         moveWithCollision(player, dx, dy);
         clampToWorld(player);

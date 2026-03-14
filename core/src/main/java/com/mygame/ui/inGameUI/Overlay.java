@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
+import com.mygame.game.DayManager;
 
 public class Overlay {
 
@@ -96,6 +97,24 @@ public class Overlay {
         shapeRenderer.end();
 
         // Вимикаємо змішування, щоб не впливати на інший рендеринг
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+    }
+
+    public void renderDayNightOverlay(DayManager dayManager) {
+        Color ambient = dayManager.getAmbientColor();
+        if (ambient.a <= 0.01f) return;
+
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+        // ВАЖЛИВО: Використовуємо setProjectionMatrix, щоб ShapeRenderer знав про зміни
+        shapeRenderer.setProjectionMatrix(shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(ambient);
+        shapeRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        shapeRenderer.end();
+
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 

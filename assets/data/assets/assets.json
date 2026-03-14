@@ -7,6 +7,7 @@
   { "key": "igo", "path": "images/npc/igo.png" },
   { "key": "igo.3d", "path": "images/npc/igo_3d.png" },
   { "key": "igo2", "path": "images/npc/igo2.png" },
+
   { "key": "baryga", "path": "images/npc/baryga.png" },
   { "key": "chikita", "path": "images/npc/chikita.png" },
   { "key": "chikita.3d", "path": "images/npc/chikita_3d.png" },
@@ -46,8 +47,8 @@
   { "key": "murat", "path": "images/npc/murat.png" },
   { "key": "murat.3d", "path": "images/npc/murat_3d.png" },
 
-  { "key": "cashier", "path": "images/npc/cashier.png" },
-  { "key": "cashier.3d", "path": "images/npc/cashier_3d.png" },
+  { "key": "baker", "path": "images/npc/baker.png" },
+  { "key": "baker.3d", "path": "images/npc/baker_3d.png" },
 
   { "key": "jamal", "path": "images/npc/jamal.png" },
   { "key": "jamal.3d", "path": "images/npc/jamal_3d.png" },

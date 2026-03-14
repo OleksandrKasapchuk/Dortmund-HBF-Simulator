@@ -75,11 +75,19 @@ public class NpcManager {
             String textureKey = crowdTextures[random.nextInt(crowdTextures.length)];
             String id = "ambient_" + world.getName() + "_" + random.nextInt(10000);
 
-            // Створюємо статичного NPC (без руху)
-            NPC ambient = new NPC(id, "", 80, 170, x, y, textureKey, world);
+            // Створюємо NPC з рухом для перевірки анімації
+            // NPC буде рухатися по осі X туди-сюди
+            NPC ambient = new NPC(
+                id, "", "ambient",
+                80, 170, x, y,
+                textureKey, "face_placeholder", world,
+                1, 0, // directionX = 1, directionY = 0
+                2f, 3f, // pauseTime = 2s, moveTime = 3s
+                100, 150, null, itemManager
+            );
             npcs.add(ambient);
         }
-        Gdx.app.log("NpcManager", "Spawned " + count + " ambient NPCs in zone at " + zone.x + "," + zone.y);
+        Gdx.app.log("NpcManager", "Spawned " + count + " ambient NPCs with movement in zone at " + zone.x + "," + zone.y);
     }
 
     private void restoreDynamicNpcs(Map<String, ServerSaveData.NpcSaveData> npcStates) {

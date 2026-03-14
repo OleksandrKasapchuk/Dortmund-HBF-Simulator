@@ -1,0 +1,14 @@
+{
+  "baker": {
+    "nodes": {
+      "start": "trade.offer",
+      "trade.offer": {
+        "texts": ["dialogue.baker.trade_offer.1"],
+        "choices": [
+          { "text": "dialogue.baker.trade_offer.choice.1", "action": "act.inventory.baker.buy.bun" },
+          "dialogue.choice.leave"
+        ]
+      }
+    }
+  }
+}

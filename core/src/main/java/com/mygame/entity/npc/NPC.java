@@ -1,6 +1,7 @@
 package com.mygame.entity.npc;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygame.assets.Assets;
 import com.mygame.dialogue.DialogueNode;
@@ -21,6 +22,9 @@ public class NPC extends Entity {
     private boolean isPaused = false;
     private int directionX;
     private int directionY;
+
+    // Animation timer for procedural movement effects
+    private float animationTimer = 0f;
 
     // --- Behaviour settings ---
     private float pauseTime;
@@ -78,12 +82,16 @@ public class NPC extends Entity {
     public void update(float delta) {
 
         // If NPC is static → do nothing
-        if (moveTime == 0 || speed == 0) return;
+        if (moveTime == 0 || speed == 0) {
+            resetAnimation();
+            return;
+        }
 
         timer += delta;
 
         if (isPaused) {
             // --- Pause state ---
+            resetAnimation();
             if (timer >= pauseTime) {
                 timer = 0f;
                 isPaused = false;
@@ -96,6 +104,8 @@ public class NPC extends Entity {
             // --- Movement state ---
             float dx = directionX * speed * delta;
             float dy = directionY * speed * delta;
+
+            updateProceduralAnimation(delta);
 
             Rectangle npcRect = getBounds();
 
@@ -111,7 +121,6 @@ public class NPC extends Entity {
             if (!world.isCollidingWithMap(npcRect) && !isCollidingWithSolidItems(npcRect)) {
                 this.setY(this.getY() + dy);
             }
-            // npcRect.y is not reset because it's re-created on the next frame
 
             // After moving → switch to pause
             if (timer > moveTime) {
@@ -119,6 +128,25 @@ public class NPC extends Entity {
                 timer = 0f;
             }
         }
+    }
+
+    private void updateProceduralAnimation(float delta) {
+        animationTimer += delta * 10f; // Speed of animation
+
+        // Wobble effect (rotation)
+        setRotation(MathUtils.sin(animationTimer) * 5f); // rotate +/- 5 degrees
+
+        // Squash and stretch effect (scaling)
+        float bounce = MathUtils.sin(animationTimer * 2f);
+        setScaleY(1f + bounce * 0.05f);
+        setScaleX(1f - bounce * 0.05f);
+    }
+
+    private void resetAnimation() {
+        animationTimer = 0;
+        setRotation(0);
+        setScaleX(1f);
+        setScaleY(1f);
     }
 
     private boolean isCollidingWithSolidItems(Rectangle npcRect) {

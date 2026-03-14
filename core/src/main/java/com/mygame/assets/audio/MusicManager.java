@@ -45,7 +45,6 @@ public class MusicManager {
         Music startMusic = Assets.getMusic("start");
         boolean sync = (currentMusic != null && currentMusic == startMusic);
         playMusic(Assets.getMusic("back1"), sync);
-        currentMusic.setVolume(0.1f);
     }
 
     public static void playTemporaryMusic(Music music){

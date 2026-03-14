@@ -1,78 +1,39 @@
 package com.mygame.entity.player;
 
-import com.mygame.assets.Assets;
+import com.badlogic.gdx.math.MathUtils;
 
 public class PlayerAnimationController {
-    public enum WalkFrame {
-        IDLE,
-        LEFT,
-        RIGHT
-    }
-    private WalkFrame currentWalkFrame = WalkFrame.IDLE;
-
-    private float walkAnimTimer = 0f;
-    private float walkAnimInterval = 0.1f; // швидкість анімації
-    private float walkBobbingTimer = 0f; // таймер для коливань
-    private final int baseHeight; // базова висота
-
-    private boolean stepRightNext = true; // щоб чергувати ноги
+    private float proceduralTimer = 0f;
     private Player player;
 
-    public PlayerAnimationController(Player player, int baseHeight) {
-        this.baseHeight = baseHeight;
+    public PlayerAnimationController(Player player) {
         this.player = player;
     }
 
     public void update(float delta, boolean isMoving) {
-        updateWalkAnimation(delta, isMoving);
-        updateTexture(isMoving);
-    }
-
-    private void updateWalkAnimation(float delta, boolean isMoving) {
         if (!isMoving) {
-            currentWalkFrame = WalkFrame.IDLE;
-            walkAnimTimer = 0f;
-            walkBobbingTimer = 0f; // Скидаємо таймер коливань
+            resetAnimation();
             return;
         }
 
-        walkAnimTimer += delta;
-        walkBobbingTimer += delta; // Оновлюємо таймер коливань
+        proceduralTimer += delta * 15f; // Трохи швидше для впевненості
 
-        if (walkAnimTimer >= walkAnimInterval) {
-            walkAnimTimer = 0f;
+        // 1. Обертання: тільки 2-3 градуси, імітуємо нахил тіла при кроці
+        player.setRotation(MathUtils.sin(proceduralTimer) * 3f);
 
-            if (currentWalkFrame == WalkFrame.IDLE) {
-                currentWalkFrame = stepRightNext ? WalkFrame.RIGHT : WalkFrame.LEFT;
-            } else {
-                currentWalkFrame = WalkFrame.IDLE;
-                stepRightNext = !stepRightNext;
-            }
-        }
+        // 2. Squash & Stretch: тільки Y, щоб персонаж "присідав" при кроці
+        // 0.05f - це дуже легке стиснення, ледь помітне
+        float bounce = Math.abs(MathUtils.sin(proceduralTimer));
+        player.setScaleY(1f - bounce * 0.08f);
+
+        // Не чіпаємо ScaleX, або робимо його мінімальним
+        player.setScaleX(1f);
     }
 
-    private void updateTexture(boolean isMoving) {
-        if (!isMoving) {
-            player.setTexture(Assets.getTexture("zoe.3d"));
-            player.setHeight(baseHeight);
-            return;
-        }
-
-        // Плавна зміна висоти за допомогою синусоїди
-        float bobbingAmount = (float) (Math.sin(walkBobbingTimer * 20f) * 5f);
-        player.setHeight(baseHeight + (int) bobbingAmount);
-
-        switch (currentWalkFrame) {
-            case LEFT:
-                player.setTexture(Assets.getTexture("zoe.3d_left"));
-                break;
-            case RIGHT:
-                player.setTexture(Assets.getTexture("zoe.3d_right"));
-                break;
-            default:
-                // Залишаємось на останній текстурі кроку, поки не зупинимось
-                // Це запобігає мерехтінню до idle текстури під час ходьби
-                break;
-        }
+    private void resetAnimation() {
+        proceduralTimer = 0;
+        player.setRotation(0);
+        player.setScaleX(1f);
+        player.setScaleY(1f);
     }
 }

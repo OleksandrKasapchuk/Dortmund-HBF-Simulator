@@ -49,7 +49,7 @@ public class Player extends Entity {
 
     public Player(int width, int height, float x, float y, World world) {
         super(width, height, x, y,  Assets.getTexture("zoe.3d"), world);
-        this.animationController = new PlayerAnimationController(this, height);
+        this.animationController = new PlayerAnimationController(this);
         this.statusController = new PlayerStatusController();
         this.movementController = new PlayerMovementController();
         this.currentState = SettingsManager.loadServer().playerState;
@@ -113,11 +113,4 @@ public class Player extends Entity {
         bounds.set(getX(), getY(), getWidth(), getHeight()*0.3f);
         return bounds;
     }
-    public float getDx(){
-        return movementController.getDx();
-    }
-    public float getDy(){
-        return movementController.getDy();
-    }
-
 }

@@ -2,13 +2,11 @@ package com.mygame;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygame.assets.Assets;
-import com.mygame.game.DayManager;
 import com.mygame.game.GameContext;
 import com.mygame.game.GameInitializer;
 import com.mygame.assets.audio.MusicManager;
@@ -83,30 +81,11 @@ public class Main extends ApplicationAdapter {
 
         currentWorld.drawZones(shapeRenderer, camera);
 
-        renderDayNightOverlay(ctx.dayManager);
+        ctx.overlay.renderDayNightOverlay(ctx.dayManager);
 
         gameInitializer.getUiManager().render();
         ctx.overlay.render();
     }
-
-    private void renderDayNightOverlay(DayManager dayManager) {
-        Color ambient = dayManager.getAmbientColor();
-        if (ambient.a <= 0.01f) return;
-
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
-        // ВАЖЛИВО: Використовуємо setProjectionMatrix, щоб ShapeRenderer знав про зміни
-        shapeRenderer.setProjectionMatrix(shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(ambient);
-        shapeRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        shapeRenderer.end();
-
-        Gdx.gl.glDisable(GL20.GL_BLEND);
-    }
-
 
     @Override
     public void resize(int width, int height) {

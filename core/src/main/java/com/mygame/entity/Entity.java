@@ -27,6 +27,11 @@ public abstract class Entity implements Renderable {
     protected Rectangle bounds;
     protected boolean hasShadow = true;
 
+    // Animation properties
+    private float rotation = 0;
+    private float scaleX = 1f;
+    private float scaleY = 1f;
+
     public Entity(int width, int height, float x, float y, Texture texture, World world) {
         this.width = width;
         this.height = height;
@@ -68,7 +73,17 @@ public abstract class Entity implements Renderable {
             // By setting the shadow's height as a ratio of its width, we ensure it's a nice ellipse.
             batch.draw(shadowTexture, shadowX, y - 8, shadowWidth, shadowWidth / 3f);
         }
-        batch.draw(this.texture, x, y, width, height);
+
+        // Draw the entity with support for rotation and scale (origin at bottom-center)
+        if (texture != null) {
+            batch.draw(texture, x, y,
+                    width / 2f, 0, // origin
+                    width, height,
+                    scaleX, scaleY,
+                    rotation,
+                    0, 0, texture.getWidth(), texture.getHeight(),
+                    false, false);
+        }
     }
 
     // --- Getters ---
@@ -82,6 +97,14 @@ public abstract class Entity implements Renderable {
     public int getHeight() { return height; }
     public void setWidth(int width) { this.width = width; }
     public void setHeight(int height) { this.height = height; }
+
+    public float getRotation() { return rotation; }
+    public void setRotation(float rotation) { this.rotation = rotation; }
+    public float getScaleX() { return scaleX; }
+    public void setScaleX(float scaleX) { this.scaleX = scaleX; }
+    public float getScaleY() { return scaleY; }
+    public void setScaleY(float scaleY) { this.scaleY = scaleY; }
+
     // --- Setters ---
     public void setX(float x) { this.x = x; }
     public void setY(float y) { this.y = y; }
