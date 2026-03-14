@@ -22,7 +22,7 @@ public class MusicManager {
      */
 
     public static void init(){
-        stopAll();
+        // Не викликаємо stopAll(), щоб не втратити поточну музику меню при ресеті гри
         EventBus.subscribe(Events.GameStateChangedEvent.class, event -> {
             switch (event.newState()) {
                 case PAUSED, SETTINGS -> {
@@ -39,25 +39,43 @@ public class MusicManager {
                 }
         }});
     }
+
     public static void playBackgroundMusic(){
-        playMusic(Assets.getMusic("back1"));
+        // Перевіряємо, чи зараз грає музика меню (start)
+        Music startMusic = Assets.getMusic("start");
+        boolean sync = (currentMusic != null && currentMusic == startMusic);
+        playMusic(Assets.getMusic("back1"), sync);
+        currentMusic.setVolume(0.1f);
     }
+
     public static void playTemporaryMusic(Music music){
         temporaryMusic = music;
         playMusic(music);
     }
+
     public static void resetTemporaryMusic(){
         temporaryMusic = null;
         playBackgroundMusic();
     }
 
     public static void playMusic(Music newMusic) {
+        playMusic(newMusic, false);
+    }
+
+    /**
+     * Plays new music track with optional position synchronization.
+     */
+    public static void playMusic(Music newMusic, boolean syncPosition) {
         if (newMusic == null) return;
         // If the same track is already playing — do nothing.
-        if (currentMusic == newMusic && !isPaused) return;
+        if (currentMusic == newMusic && !isPaused && currentMusic.isPlaying()) return;
 
-        // Stop previous track if switching to a new one
+        float position = 0;
+        // Stop previous track and capture position if needed
         if (currentMusic != null && currentMusic != newMusic) {
+            if (syncPosition) {
+                position = currentMusic.getPosition();
+            }
             currentMusic.stop();
         }
 
@@ -66,7 +84,14 @@ public class MusicManager {
 
         currentMusic.setLooping(true);
         currentMusic.setVolume(currentVolume);
+
+        // Спочатку запускаємо відтворення
         currentMusic.play();
+
+        // Після play() встановлюємо позицію
+        if (syncPosition && position > 0) {
+            currentMusic.setPosition(position);
+        }
     }
 
     // --- Volume control ---

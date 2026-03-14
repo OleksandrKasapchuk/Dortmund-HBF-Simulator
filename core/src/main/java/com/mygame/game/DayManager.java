@@ -1,6 +1,7 @@
 package com.mygame.game;
 
 
+import com.badlogic.gdx.graphics.Color;
 import com.mygame.assets.Assets;
 import com.mygame.events.EventBus;
 import com.mygame.events.Events;
@@ -28,6 +29,7 @@ public class DayManager {
     }
     private Phase currentPhase;
     private float currentTime;
+    private final Color ambientColor = new Color();
 
 
     public DayManager(){
@@ -68,6 +70,23 @@ public class DayManager {
             currentPhase = newPhase;
             EventBus.fire(new Events.PhaseChangedEvent(newPhase));
         }
+    }
+
+    public Color getAmbientColor() {
+        switch (currentPhase) {
+            case NIGHT:
+                ambientColor.set(0.05f, 0.05f, 0.2f, 0.6f);
+                break;
+            case EVENING:
+                ambientColor.set(0.2f, 0.1f, 0.3f, 0.35f);
+                break;
+            case MORNING:
+            case DAY:
+            default:
+                ambientColor.set(1, 1, 1, 0f);
+                break;
+        }
+        return ambientColor;
     }
 
     public void sleep() {
