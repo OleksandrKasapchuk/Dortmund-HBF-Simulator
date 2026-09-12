@@ -7,7 +7,7 @@ buildscript {
         maven { url 'https://central.sonatype.com/repository/maven-snapshots/' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.13.2'
+        classpath 'com.android.tools.build:gradle:9.4.0'
     }
 }
 
@@ -96,7 +96,10 @@ allprojects { project ->
 
 project(":lwjgl3") {
     apply plugin: 'application'
-    sourceCompatibility = 17
+    java {
+      sourceCompatibility = JavaVersion.VERSION_17
+      targetCompatibility = JavaVersion.VERSION_17
+    }
 
     sourceSets.main.resources.srcDirs += [rootProject.file("assets")]
 
@@ -119,7 +122,10 @@ project(":lwjgl3") {
 
 project(":core") {
     apply plugin: 'java-library'
-    sourceCompatibility = 17
+    java {
+      sourceCompatibility = JavaVersion.VERSION_17
+      targetCompatibility = JavaVersion.VERSION_17
+    }
 
     dependencies {
         //noinspection NewerVersionAvailable

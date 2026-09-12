@@ -60,7 +60,7 @@ public class SaveManager {
         }
 
         try {
-            Net.HttpRequest postRequest = new Net.HttpRequest(Net.HttpMethods.POST);
+            Net.HttpRequest postRequest = new Net.HttpRequest(Net.HttpMethods.PUT);
             postRequest.setUrl(Config.getServerUrl() + "/api/save/?format=json");
             postRequest.setHeader("Content-Type", "application/json");
             postRequest.setHeader("Authorization", "Token " + AuthManager.getToken());
