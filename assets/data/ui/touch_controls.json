@@ -26,7 +26,7 @@
       "width": 200,
       "height": 100,
       "x": 20,
-      "y": 700,
+      "y": 650,
       "fontScale": 1.0,
       "stage": "gameStage"
     },
@@ -36,7 +36,7 @@
       "width": 200,
       "height": 100,
       "x": 20,
-      "y": 850,
+      "y": 800,
       "fontScale": 1.0,
       "stage": "gameStage"
     },
@@ -46,7 +46,7 @@
       "width": 200,
       "height": 100,
       "x": 20,
-      "y": 850,
+      "y": 800,
       "fontScale": 1.0,
       "stage": "mapStage"
     },
@@ -55,7 +55,7 @@
       "textKey": "button.pause.text",
       "width": 150,
       "height": 75,
-      "x": 1750,
+      "x": 1800,
       "y": 800,
       "fontScale": 1.0,
       "stage": "gameStage"
