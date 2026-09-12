@@ -50,3 +50,19 @@
 # These two lines are used with mapping files; see https://developer.android.com/build/shrink-code#retracing
 -keepattributes LineNumberTable,SourceFile
 -renamesourcefileattribute SourceFile
+
+# Keep names of classes and fields used for JSON serialization and network requests
+-keep class com.mygame.game.auth.** { *; }
+-keep class com.mygame.game.save.data.** { *; }
+-keep class com.mygame.game.save.data.ServerSaveData$* { *; }
+
+# Keep Enums intact because LibGDX Json serializes them by name
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+# Keep Event classes if EventBus uses reflection or class names
+-keep class com.mygame.events.** { *; }
+
+
